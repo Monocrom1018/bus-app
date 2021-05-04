@@ -1,12 +1,12 @@
-import { CategoriesService } from './../categories/categories.service';
-import { CategoriesRepository } from './../categories/categories.repository';
+import { CategoriesService } from '../categories/categories.service';
+import { CategoriesRepository } from '../categories/categories.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersRepository } from './../users/users.repository';
-import { UsersService } from './../users/users.service';
+import { UsersRepository } from '../users/users.repository';
+import { UsersService } from '../users/users.service';
 import { Module } from '@nestjs/common';
 import { ObjectsService } from './objects.service';
 import { ObjectsController } from './objects.controller';
-import { UsersModule } from 'src/users/users.module';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UsersRepository, CategoriesRepository])],
