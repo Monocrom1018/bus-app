@@ -1,20 +1,46 @@
 ---
-name: 기능 요청 사항
+name: "\U0001F680 Feature request"
 about: Suggest an idea for this project
 title: ''
-labels: ''
+labels: todo
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+### 추가하고자 하는 기능
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+<!--
+  간결하고 명확하게
+-->
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+(Write your answer here.)
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+###  원하는 해결 방법
+
+<!--
+  원하는 작업에 대해 명확하고 간결하게 설명 
+-->
+
+(Describe your proposed solution here.)
+
+### 예상 소요시간 
+#### 파싱해야해서 [h: 소요시간] 이형태로 적어주시면 감사하겠습니다.  ex) [h: 3.0]
+[h: 소요시간]
+
+
+
+### 고려했던 대안 
+
+<!--
+ 시도하거나 생각해본 다른 해결 방안
+-->
+
+(Write your answer here.)
+
+### Additional context
+
+<!--
+   더 추가할 내용, 관련 이슈나 ... 
+-->
+
+(Write your answer here.)
