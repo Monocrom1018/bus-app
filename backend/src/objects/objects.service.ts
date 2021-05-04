@@ -1,6 +1,6 @@
 import { getRepository } from 'typeorm';
-import { UsersService } from './../users/users.service';
-import { CategoriesService } from './../categories/categories.service';
+import { UsersService } from '../users/users.service';
+import { CategoriesService } from '../categories/categories.service';
 import { Injectable } from '@nestjs/common';
 import { CreateObjectDto } from './dto/create-object.dto';
 import { UpdateObjectDto } from './dto/update-object.dto';
