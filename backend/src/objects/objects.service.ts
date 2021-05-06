@@ -49,7 +49,6 @@ export class ObjectsService {
         model = await this.categoriesService.findAll();
       }
     }
-    console.log(model);
     return { objects: model };
   }
 }

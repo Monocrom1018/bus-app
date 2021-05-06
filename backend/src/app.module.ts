@@ -19,17 +19,14 @@ import { CommentsModule } from './comments/comments.module';
 import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
 import { Users as User } from './users/entities/user.entity';
-import { Categories as Category } from './categories/entities/category.entity';
-import { Items as Item } from './items/entities/item.entity';
 
 AdminBro.registerAdapter({ Database, Resource });
-
 @Module({
   imports: [
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User, Category, Item],
+        resources: [User],
       },
     }),
     TypeOrmModule.forRoot(typeOrmConfig),

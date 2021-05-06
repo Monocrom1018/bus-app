@@ -10,9 +10,7 @@ define(User, (faker: typeof Faker) => {
   const lastName = faker.name.lastName(gender);
 
   const user = new User();
-  user.email = faker.internet.email();
   user.name = `${firstName} ${lastName}`;
-  // user.password = faker.internet.password();
   user.encrypted_password = bcrypt.hash('123qwe!', saltRounds);
   // bcrypt.genSalt(saltRounds, (_err: any, salt: any) => {
   //   bcrypt.hash('123qwe!', salt, (_err: any, hash: string) => {

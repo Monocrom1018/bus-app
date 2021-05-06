@@ -10,7 +10,6 @@ const AgreeCheckboxes = ({ names }: AgreeCheckBoxProps) => {
   const { values, handleChange, setFieldValue, validateField } = useFormikContext();
 
   const onClickAgreeAll = () => {
-    console.log(names);
     _.map(names, (name) => {
       setFieldValue(name, true);
       validateField(name);

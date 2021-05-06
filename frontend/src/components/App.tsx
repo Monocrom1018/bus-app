@@ -50,8 +50,7 @@ const F7App = () => {
     });
   }, []);
 
-  console.log(routes);
-
+  
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
