@@ -12,7 +12,7 @@ const BuySheet = ({ selectedOption, quantity, setQuantity }) => {
       toast.get().setToastText('상품을 담았습니다').setToastIcon('cart_badge_plus').openIconToast();
     },
     onError: (error, variables, context) => {
-      console.log(`에러가 발생했습니다: `, error);
+      
     },
   });
   const queryClient = useQueryClient();

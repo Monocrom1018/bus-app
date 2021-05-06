@@ -39,10 +39,6 @@ export class Items extends DateAudit {
   @JoinColumn({ name: 'category_id' })
   category: Category;
 
-  @ManyToOne(() => User, (user) => user.items)
-  @JoinColumn({ name: 'user_id' })
-  user: User;
-
   @Column({ nullable: true })
   image: string;
 

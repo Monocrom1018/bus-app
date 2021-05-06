@@ -23,7 +23,6 @@ export class UsersRepository extends Repository<User> {
     try {
       await user.save();
     } catch (error) {
-      console.log(error);
       // duplicate email
       if (error.code === '23505') {
         throw new ConflictException('email alerady exists');
