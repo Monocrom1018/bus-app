@@ -10,6 +10,12 @@ import { DateAudit } from '../../shared/entity/date-audit.entity';
 import { Items as Item } from '../../items/entities/item.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
+
+export enum UserType {
+  NORMAL = 'normal',
+  DRIVER = 'driver',
+}
+
 @Entity()
 @Unique(['email'])
 export class Users extends DateAudit {
@@ -48,9 +54,12 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   phone: string;
 
-  // has_many
-  @OneToMany(() => Item, (item) => item.user)
-  items: Item[];
+  @Column({
+    type: 'enum',
+    enum: UserType,
+    default: UserType.NORMAL,
+  })
+  user_type: UserType;
 
   async validateUserPassword(password: string): Promise<boolean> {
     // const hash = await bcrypt.hash(password, this.encrypted_password);

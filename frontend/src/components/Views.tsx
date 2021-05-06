@@ -45,15 +45,15 @@ const F7Views = () => {
     <Views tabs className="safe-areas">
       <Toolbar tabbar labels bottom>
         <Link tabLink="#view-home" tabLinkActive icon="las la-home" text="홈" />
-        <Link tabLink="#view-items" icon="las la-gift" text="쇼핑" />
-        <Link tabLink="#view-users" icon="las la-address-book" text="전문가" />
-        <Link tabLink="#view-contacts" icon="las la-edit" text="문의하기" />
+        <Link tabLink="#view-search" icon="las la-gift" text="검색" />
+        <Link tabLink="#view-reservations" icon="las la-address-book" text="일정" />
+        <Link tabLink="#view-rooms" icon="las la-edit" text="채팅" />
         <Link tabLink="#view-mypage" icon="las la-user" text="마이페이지" />
       </Toolbar>
-      <View id="view-home" stackPages main tab tabActive url="/" iosDynamicNavbar={false} />
-      <View id="view-items" stackPages name="items" tab url="/items?is_main=true/" />
-      <View id="view-users" stackPages name="users" tab url="/users?is_main=true" />
-      <View id="view-contacts" stackPages name="contacts" tab url="/contacts?is_main=true" />
+      <View id="view-home" stackPages name="home" main tab tabActive url="/" iosDynamicNavbar={false} />
+      <View id="view-search" stackPages name="search" tab url="/search?is_main=true/" />
+      <View id="view-reservations" stackPages name="reservations" tab url="/reservations?is_main=true" />
+      <View id="view-rooms" stackPages name="rooms" tab url="/rooms?is_main=true" />
       <View id="view-mypage" stackPages name="mypage" tab url="/mypage?is_main=true" />
     </Views>
   );

@@ -1,13 +1,14 @@
 import _ from 'lodash';
 import HomePage from '@pages/home';
 import MyPage from '@pages/mypage';
+import SearchPage from '@pages/search';
 import LoginPage from '@pages/users/sessions/new';
 import SignUpPage from '@pages/users/registrations/new';
 import { ResourceRoute } from '@constants';
 import ItemIndexPage from '@pages/items/index';
 import IntroPage from '@pages/intro';
-import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 import OptionIndexPage from '@pages/options';
+import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
 /**
  * @resourceRoutes
@@ -44,6 +45,12 @@ const resourceRoutes: ResourceRoute[] = [
   {
     resource: 'contacts',
   },
+  {
+    resource: 'reservations',
+  },
+  {
+    resource: 'rooms',
+  },
 ];
 
 /**
@@ -53,10 +60,11 @@ const resourceRoutes: ResourceRoute[] = [
  */
 const customRoutes = [
   { path: '/', component: HomePage },
+  { path: '/mypage', component: MyPage },
   { path: '/intro', component: IntroPage },
+  { path: '/search', component: SearchPage },
   { path: '/users/sign_in', component: LoginPage },
   { path: '/users/sign_up', component: SignUpPage },
-  { path: '/mypage', component: MyPage },
   { path: '/items/:item_id/options', component: OptionIndexPage },
 ];
 

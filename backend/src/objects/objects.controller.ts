@@ -46,7 +46,6 @@ export class ObjectsController {
     //   objects = @object_class.ransack(index_params).result
     //   render json: each_serialize(objects)
     // end
-    console.log(query);
     return this.objectsService.getModel(query);
   }
 

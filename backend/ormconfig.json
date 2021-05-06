@@ -4,7 +4,7 @@
     "port": "5432",
     "username": "woo_bottle",
     "password": "0000",
-    "database": "bone_node_type_development",
+    "database": "bus_development",
     "ssl": false,
     "synchronize": true,
     "logging": false,
