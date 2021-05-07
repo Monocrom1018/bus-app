@@ -48,6 +48,7 @@ export class AuthController {
     @Body() authCredentialsDto: AuthCredentialsDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
+    console.log(authCredentialsDto);
     const csrfToken = randomBytes(32).toString('base64');
     const accessToken = await this.authService.login(authCredentialsDto);
 
