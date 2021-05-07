@@ -23,7 +23,7 @@ module.exports = {
     app: './src/app.ts',
   },
   output: {
-    path: resolvePath('../public/www'),
+    path: resolvePath('../backend/public/www/'),
     filename: 'js/[name].[hash].js',
     chunkFilename: 'js/[name].[hash].js',
     publicPath: '',
