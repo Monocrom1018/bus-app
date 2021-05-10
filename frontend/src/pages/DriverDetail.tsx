@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Page, Navbar, Block, Button } from 'framework7-react';
+import { Page, Navbar, Block, Button, List, ListItem, AccordionContent } from 'framework7-react';
 
 const DriverDetailPage = (props) => {
   return (
@@ -30,7 +30,7 @@ const DriverDetailPage = (props) => {
             </div>
           </div>
           <hr />
-          <div className="mt-5 mx-4 flex items-center space-x-5 text-center">
+          <div className="mt-5 mx-4 flex items-center space-x-5 italic text-center">
             항상 웃음띤 얼굴로 고객을 대하며 친절과 안전운행으로 처음부터 끝까지 최선을 다하겠습니다.
           </div>
         </div>
@@ -41,7 +41,7 @@ const DriverDetailPage = (props) => {
       {/* 부대비용 컴포넌트 */}
 
       <div className="mt-3 mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">부대비용</div>
-      <div className="flex flex-col mb-10 mt-4">
+      <div className="flex flex-col mb-6 mt-4">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden sm:rounded-lg">
@@ -93,7 +93,7 @@ const DriverDetailPage = (props) => {
 
       {/* 편의시설 컴포넌트 */}
 
-      <div className="mt-3 mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
+      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
       <div className="flex flex-col mb-10 mt-4">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -139,6 +139,16 @@ const DriverDetailPage = (props) => {
           </div>
         </div>
       </div>
+
+      {/* <List accordionList className="m-0">
+        <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
+          <AccordionContent>
+            <div className="p-3">
+              <p>견적신청 후 기사님과 채팅하실 수 있습니다.</p>
+            </div>
+          </AccordionContent>
+        </ListItem>
+      </List> */}
 
       <Block className="my-4">
         <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4">
