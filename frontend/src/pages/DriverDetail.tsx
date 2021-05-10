@@ -41,7 +41,7 @@ const DriverDetailPage = (props) => {
       {/* 부대비용 컴포넌트 */}
 
       <div className="mt-3 mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">부대비용</div>
-      <div className="flex flex-col mb-6 mt-4">
+      <div className="flex flex-col mb-6 mt-3">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden sm:rounded-lg">
@@ -94,7 +94,7 @@ const DriverDetailPage = (props) => {
       {/* 편의시설 컴포넌트 */}
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
-      <div className="flex flex-col mb-10 mt-4">
+      <div className="flex flex-col mb-10 mt-3">
         <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
             <div className="shadow overflow-hidden sm:rounded-lg">
@@ -140,15 +140,16 @@ const DriverDetailPage = (props) => {
         </div>
       </div>
 
-      {/* <List accordionList className="m-0">
+      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
+      <List accordionList className="mt-3">
         <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
           <AccordionContent>
-            <div className="p-3">
-              <p>견적신청 후 기사님과 채팅하실 수 있습니다.</p>
+            <div className="px-4 py-3">
+              <p>견적신청 후 기사님과 본 앱을 통해 채팅하실 수 있습니다.</p>
             </div>
           </AccordionContent>
         </ListItem>
-      </List> */}
+      </List>
 
       <Block className="my-4">
         <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4">
@@ -156,7 +157,7 @@ const DriverDetailPage = (props) => {
           <div>5,000원</div>
         </div>
       </Block>
-      <Button fill outline className="py-5 mx-3 font-bold text-lg tracking-wide">
+      <Button fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
         견적신청
       </Button>
     </Page>
