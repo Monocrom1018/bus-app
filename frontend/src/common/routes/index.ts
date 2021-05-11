@@ -10,6 +10,7 @@ import ItemIndexPage from '@pages/items/index';
 import IntroPage from '@pages/intro';
 import OptionIndexPage from '@pages/options';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
+import DriverDetailPage from '@pages/DriverDetail';
 
 /**
  * @resourceRoutes
@@ -70,6 +71,7 @@ const customRoutes = [
   { path: '/users/sign_up', component: SignUpPage },
   { path: '/users/modify', component: ModifyPage },
   { path: '/items/:item_id/options', component: OptionIndexPage },
+  { path: '/drivers/:id', component: DriverDetailPage },
 ];
 
 /**
