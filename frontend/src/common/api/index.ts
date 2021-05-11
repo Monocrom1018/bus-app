@@ -82,3 +82,9 @@ export const getNotice = async (params) => {
   const { data } = await API.get(`/notices/${params}`);
   return data;
 };
+
+export const getFaqs = async () => {
+  const { data } = await API.get(`/faqs`);
+  console.log(data);
+  return data;
+};
