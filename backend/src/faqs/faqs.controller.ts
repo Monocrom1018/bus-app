@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
+import { FaqsService } from './faqs.service';
 
 @Controller('faqs')
-export class FaqsController {}
+export class FaqsController {
+  constructor(private readonly faqsService: FaqsService) {}
+
+  @Get()
+  getAll() {
+    return this.faqsService.getAll();
+  }
+}
