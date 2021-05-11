@@ -30,13 +30,13 @@ const MyPage = () => {
 
       <List linksList>
         <li>
-          <a href="#">회원정보 수정</a>
+          <a href="/users/modify">회원정보 수정</a>
         </li>
         <li>
           <a href="#">저장한 일정</a>
         </li>
         <li>
-          <a href="#">공지사항</a>
+          <a href="/notices">공지사항</a>
         </li>
         <li>
           <a href="#">자주 묻는 질문</a>
