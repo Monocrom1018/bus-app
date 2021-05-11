@@ -40,6 +40,7 @@ const resourceRoutes: ResourceRoute[] = [
   },
   {
     resource: 'faqs',
+    only: ['index'],
   },
   {
     resource: 'line_items',

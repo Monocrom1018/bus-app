@@ -39,10 +39,10 @@ const MyPage = () => {
           <a href="/notices">공지사항</a>
         </li>
         <li>
-          <a href="#">자주 묻는 질문</a>
+          <a href="/faqs">자주 묻는 질문</a>
         </li>
         <li>
-          <a href="#">이메일 문의</a>
+          <a href="/contacts">이메일 문의</a>
         </li>
         <li>
           <a href="#">로그아웃</a>
