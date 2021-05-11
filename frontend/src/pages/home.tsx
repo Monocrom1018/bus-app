@@ -31,7 +31,7 @@ import Driver from './users/Driver';
 const HomePage = () => {
   const queryClient = useQueryClient();
   const state = getRecoilRootState(authState);
-  const { currentUser } = state.contents as AuthState;
+  // const { currentUser } = state.contents as AuthState;
 
   return (
     <Page name="home" className="home-page">

@@ -63,7 +63,7 @@ const F7Views = () => {
   return (
     <>
       <Panel handleLogout={logoutHandler} isLoggedIn={isAuthenticated} />
-      {isAuthenticated ? loggedInViews() : loggedOutViews()}
+      {isAuthenticated ? loggedInViews() : loggedInViews()}
     </>
   );
 };
