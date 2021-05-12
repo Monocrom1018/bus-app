@@ -85,6 +85,5 @@ export const getNotice = async (params) => {
 
 export const getFaqs = async () => {
   const { data } = await API.get(`/faqs`);
-  console.log(data);
   return data;
 };
