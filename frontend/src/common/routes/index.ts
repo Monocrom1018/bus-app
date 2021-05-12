@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import HomePage from '@pages/home';
 import MyPage from '@pages/mypage';
+import ModifyPage from '@pages/users/modify';
 import SearchPage from '@pages/search';
 import LoginPage from '@pages/users/sessions/new';
 import SignUpPage from '@pages/users/registrations/new';
@@ -36,9 +37,11 @@ const resourceRoutes: ResourceRoute[] = [
   },
   {
     resource: 'notices',
+    only: ['index', 'show'],
   },
   {
     resource: 'faqs',
+    only: ['index'],
   },
   {
     resource: 'line_items',
@@ -66,6 +69,8 @@ const customRoutes = [
   { path: '/search', component: SearchPage },
   { path: '/users/sign_in', component: LoginPage },
   { path: '/users/sign_up', component: SignUpPage },
+  { path: '/users/modify', component: ModifyPage },
+  { path: '/items/:item_id/options', component: OptionIndexPage },
   { path: '/drivers/:id', component: DriverDetailPage },
 ];
 

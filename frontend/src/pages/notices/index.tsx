@@ -1,12 +1,12 @@
 import React from 'react';
 import { Navbar, Page, List, ListItem } from 'framework7-react';
-import { getObjects } from '@api';
+import { getNotices } from '@api';
 import { sleep } from '@js/utils';
 import ReactQueryState from '@components/shared/ReactQueryState';
 import { useQuery } from 'react-query';
 
 const NoticeIndexPage = () => {
-  const { status, data, error, refetch, isFetching } = useQuery('notices', getObjects({ model_name: 'notice' }));
+  const { status, data, error, refetch, isFetching } = useQuery('notices', getNotices);
 
   const onRefresh = async (done) => {
     refetch();
@@ -21,7 +21,7 @@ const NoticeIndexPage = () => {
       <ReactQueryState data={data} status={status} error={error} isFetching={isFetching} />
       {data && (
         <List mediaList className="m-0">
-          {data.objects.map((notice) => (
+          {data.map((notice) => (
             <ListItem
               key={notice.id}
               link={`/notices/${notice.id}/`}

@@ -72,3 +72,18 @@ export const changeLineItemQuantity = (lineItemId) => async (params) => {
   const { data } = await API.post(`/line_items/${lineItemId}/quantity`, params);
   return data;
 };
+
+export const getNotices = async () => {
+  const { data } = await API.get(`/notices`);
+  return data;
+};
+
+export const getNotice = async (params) => {
+  const { data } = await API.get(`/notices/${params}`);
+  return data;
+};
+
+export const getFaqs = async () => {
+  const { data } = await API.get(`/faqs`);
+  return data;
+};
