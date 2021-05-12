@@ -4,9 +4,9 @@ import { Page, Navbar, Block, Button, List, ListItem, AccordionContent } from 'f
 
 const DriverDetailPage = (props) => {
   return (
-    <Page noToolbar>
+    <Page noToolbar name="driverdetail">
       {/* Top Navbar */}
-      <Navbar title="기사님 정보" backLink="Back"></Navbar>
+      <Navbar title="기사정보" backLink></Navbar>
       {/* Page Content */}
       <img
         src={

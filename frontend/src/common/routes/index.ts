@@ -52,6 +52,9 @@ const resourceRoutes: ResourceRoute[] = [
   {
     resource: 'rooms',
   },
+  {
+    resource: 'driverlists',
+  },
 ];
 
 /**

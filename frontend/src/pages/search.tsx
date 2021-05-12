@@ -1,4 +1,16 @@
-import { Block, BlockTitle, Button, Icon, Link, List, ListInput, Navbar, NavLeft, NavTitle, Page } from 'framework7-react';
+import {
+  Block,
+  BlockTitle,
+  Button,
+  Icon,
+  Link,
+  List,
+  ListInput,
+  Navbar,
+  NavLeft,
+  NavTitle,
+  Page,
+} from 'framework7-react';
 import React, { useEffect } from 'react';
 
 const SearchPage = () => {
@@ -21,7 +33,7 @@ const SearchPage = () => {
         <ListInput outline label="경유지" floatingLabel type="text" placeholder="경유지" clearButton />
         <ListInput outline label="도착지" floatingLabel type="text" placeholder="도착지" clearButton />
         <ListInput outline label="인원수" floatingLabel type="text" placeholder="인원수" clearButton />
-        <Button text="견적신청" className="bg-red-500 text-white mt-8 mx-4 h-10" />
+        <Button href="/driverlists" text="견적신청" className="bg-red-500 text-white mt-8 mx-4 h-10" />
       </List>
     </Page>
   );
