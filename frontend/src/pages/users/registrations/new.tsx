@@ -10,15 +10,16 @@ import { signupAPI } from '@api';
 import useAuth from '@hooks/useAuth';
 import { Address } from 'src/common/constants/users';
 
-interface FormValues extends Address {
+// interface FormValues extends Address {
+interface FormValues {
   name: string;
   email: string;
   password: string;
   password_confirmation: string;
-  phone: string;
-  termCheck: boolean;
-  privacyCheck: boolean;
-  marketingCheck: boolean;
+  // phone: string;
+  // termCheck: boolean;
+  // privacyCheck: boolean;
+  // marketingCheck: boolean;
 }
 
 const SignUpSchema = Yup.object().shape({
@@ -29,15 +30,15 @@ const SignUpSchema = Yup.object().shape({
     .min(4, '길이가 너무 짧습니다')
     .max(50, '길이가 너무 깁니다')
     .required('필수 입력사항 입니다'),
-  zipcode: Yup.string().min(4, '길이가 너무 짧습니다').max(8, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
-  address1: Yup.string().required('필수 입력사항 입니다'),
-  phone: Yup.string()
-    .min(9, '길이가 너무 짧습니다')
-    .max(15, '길이가 너무 깁니다')
-    .required('휴대폰 번호를 인증해주세요'),
-  termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
-  privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
-  marketingCheck: Yup.boolean(),
+  // zipcode: Yup.string().min(4, '길이가 너무 짧습니다').max(8, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
+  // address1: Yup.string().required('필수 입력사항 입니다'),
+  // phone: Yup.string()
+  //   .min(9, '길이가 너무 짧습니다')
+  //   .max(15, '길이가 너무 깁니다')
+  //   .required('휴대폰 번호를 인증해주세요'),
+  // termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
+  // privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
+  // marketingCheck: Yup.boolean(),
 });
 
 const SignUpPage = () => {
@@ -48,13 +49,13 @@ const SignUpPage = () => {
     email: '',
     password: '',
     password_confirmation: '',
-    zipcode: '',
-    address1: '',
-    address2: '',
-    phone: '',
-    termCheck: false,
-    privacyCheck: false,
-    marketingCheck: false,
+    // zipcode: '',
+    // address1: '',
+    // address2: '',
+    // phone: '',
+    // termCheck: false,
+    // privacyCheck: false,
+    // marketingCheck: false,
   };
 
   return (
@@ -71,6 +72,7 @@ const SignUpPage = () => {
           try {
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
             const response = await signupAPI(fd);
+            console.log(response);
             f7.dialog.close();
             authenticateUser(response.data);
           } catch (error) {
@@ -135,19 +137,20 @@ const SignUpPage = () => {
               />
             </List>
 
-            <DaumAddressSearch />
+            {/* <DaumAddressSearch />
 
             <div className="bg-white">
               <PhoneCertiication setCertComplete={setCertComplete} />
             </div>
 
-            <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />
+            <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} /> */}
 
             <div className="p-4">
               <button
                 type="submit"
                 className="button button-fill button-large disabled:opacity-50"
-                disabled={isSubmitting || !isValid || !certComplete}
+                // disabled={isSubmitting || !isValid || !certComplete}
+                disabled={isSubmitting || !isValid}
               >
                 회원가입
               </button>
