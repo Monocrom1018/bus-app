@@ -41,7 +41,7 @@ const SignUpSchema = Yup.object().shape({
   // marketingCheck: Yup.boolean(),
 });
 
-const SignUpPage = () => {
+const NormalSignUpPage = () => {
   const [certComplete, setCertComplete] = useState(false);
   const { authenticateUser } = useAuth();
   const initialValues: FormValues = {
@@ -60,7 +60,7 @@ const SignUpPage = () => {
 
   return (
     <Page>
-      <Navbar title="회원가입" backLink sliding={false} />
+      <Navbar title="회원가입 - 승객" backLink sliding={false} />
       <p className="font-semibole text-4xl text-center mt-5">배낭버스</p>
       <Formik
         initialValues={initialValues}
@@ -72,7 +72,6 @@ const SignUpPage = () => {
           try {
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
             const response = await signupAPI(fd);
-            console.log(response);
             f7.dialog.close();
             authenticateUser(response.data);
           } catch (error) {
@@ -162,4 +161,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage;
+export default NormalSignUpPage;

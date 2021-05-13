@@ -4,13 +4,16 @@ import MyPage from '@pages/mypage';
 import ModifyPage from '@pages/users/modify';
 import SearchPage from '@pages/search';
 import LoginPage from '@pages/users/sessions/new';
-import SignUpPage from '@pages/users/registrations/new';
+import NormalSignUpPage from '@pages/users/registrations/normal';
+import DriverSignUpPage from '@pages/users/registrations/driver';
+import SignUpIntroPage from '@pages/users/registrations/intro';
 import { ResourceRoute } from '@constants';
 import ItemIndexPage from '@pages/items/index';
 import IntroPage from '@pages/intro';
 import OptionIndexPage from '@pages/options';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 import DriverDetailPage from '@pages/DriverDetail';
+import CompanySignUpPage from '@pages/users/registrations/company';
 
 /**
  * @resourceRoutes
@@ -71,7 +74,10 @@ const customRoutes = [
   { path: '/intro', component: IntroPage },
   { path: '/search', component: SearchPage },
   { path: '/users/sign_in', component: LoginPage },
-  { path: '/users/sign_up', component: SignUpPage },
+  { path: '/users/sign_up/normal', component: NormalSignUpPage },
+  { path: '/users/sign_up/driver', component: DriverSignUpPage },
+  { path: '/users/sign_up/company', component: CompanySignUpPage },
+  { path: '/users/sign_up/intro', component: SignUpIntroPage },
   { path: '/users/modify', component: ModifyPage },
   { path: '/items/:item_id/options', component: OptionIndexPage },
   { path: '/drivers/:id', component: DriverDetailPage },

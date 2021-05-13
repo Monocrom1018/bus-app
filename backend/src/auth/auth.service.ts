@@ -24,7 +24,6 @@ export class AuthService {
     }
 
     const payload = { user_id: user.id, user: JSON.stringify(user) };
-    console.log(payload);
     const accessToken = this.jwtService.sign(payload);
 
     return accessToken;
