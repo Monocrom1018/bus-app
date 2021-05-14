@@ -19,17 +19,28 @@ import { CommentsModule } from './comments/comments.module';
 import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
 import { Users as User } from './users/entities/user.entity';
+import { ConfigModule } from '@nestjs/config';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
         resources: [User],
       },
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: 5432,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities: [__dirname + '/../**/*.entity.{js,ts}'],
+      synchronize: false,
+    }),
     ObjectsModule,
     AuthModule,
     // DefaultAdminModule,
