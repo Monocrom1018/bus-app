@@ -15,7 +15,7 @@ export const refresh = (): Promise<{ data: Token }> =>
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
-export const signupAPI = (params: FormData) => PlainAPI.post('/signup', params);
+export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
 /* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */

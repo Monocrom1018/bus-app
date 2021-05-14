@@ -71,7 +71,7 @@ const IntroPage = (props) => {
           <Button className="w-full rounded-none" large href="/users/sign_in">
             로그인
           </Button>
-          <Button className="w-full rounded-none" large href="/users/sign_up" fill>
+          <Button className="w-full rounded-none" large href="/users/sign_up/intro" fill>
             회원가입
           </Button>
         </div>

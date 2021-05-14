@@ -1,8 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import useAuth from '@hooks/useAuth';
+import { logoutAPI } from '@api';
 import { f7, Navbar, Page, NavLeft, NavTitle, Link, Button, List } from 'framework7-react';
 
 const MyPage = () => {
+  const { isAuthenticated, authenticateUser, unAuthenticateUser } = useAuth();
+
   const a = 'T';
+
+  const logoutHandler = useCallback(async () => {
+    try {
+      await logoutAPI();
+    } finally {
+      unAuthenticateUser();
+    }
+  }, []);
 
   return (
     <Page ptr ptrPreloader>
@@ -45,7 +57,7 @@ const MyPage = () => {
           <a href="/contacts">이메일 문의</a>
         </li>
         <li>
-          <a href="#">로그아웃</a>
+          <a onClick={logoutHandler}>로그아웃</a>
         </li>
       </List>
     </Page>

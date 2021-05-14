@@ -17,7 +17,7 @@ export class UsersRepository extends Repository<User> {
     const user = new User();
     user.email = email;
     user.name = name;
-    user.encrypted_password = await bcrypt.genSalt(10);
+    user.encrypted_password = await bcrypt.hash(password, 10);
     user.password = await this.hashPassword(password, user.encrypted_password);
 
     try {
