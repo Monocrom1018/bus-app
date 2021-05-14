@@ -29,6 +29,12 @@ AdminBro.registerAdapter({ Database, Resource });
         rootPath: '/admin',
         resources: [User],
       },
+      auth: {
+        authenticate: async (email, password) =>
+          Promise.resolve({ email: 'test' }),
+        cookieName: 'test',
+        cookiePassword: 'testPass',
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
