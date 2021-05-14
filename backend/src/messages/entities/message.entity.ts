@@ -13,9 +13,9 @@ export class Messages extends DateAudit {
   @Column()
   content: string;
 
-  @ManyToOne((type) => Users, (user) => user.id)
+  @ManyToOne((type) => Users, (user) => user.messages)
   user: Users;
 
-  @ManyToOne((type) => Rooms, (room) => room.id)
+  @ManyToOne((type) => Rooms, (room) => room.messages)
   room: Rooms;
 }

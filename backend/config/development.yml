@@ -1,6 +1,6 @@
 db:
   host: 'localhost'
-  username: 'woo_bottle'
+  username: 'seungbaelee'
   database: 'bus_development'
   synchronize: false
   # false로 해주지 않으면 마이그레이션이 되어도 현재 선언되어있는 entity가 동기화되어 테이블이 선언된다.
