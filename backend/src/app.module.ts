@@ -4,7 +4,6 @@ import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
 import { DefaultAdminModule } from 'nestjs-admin';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from './config/typeorm.config';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ItemsModule } from './items/items.module';
@@ -29,6 +28,12 @@ AdminBro.registerAdapter({ Database, Resource });
       adminBroOptions: {
         rootPath: '/admin',
         resources: [User],
+      },
+      auth: {
+        authenticate: async (email, password) =>
+          Promise.resolve({ email: 'test' }),
+        cookieName: 'test',
+        cookiePassword: 'testPass',
       },
     }),
     TypeOrmModule.forRoot({

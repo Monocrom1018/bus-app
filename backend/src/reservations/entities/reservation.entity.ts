@@ -1,5 +1,4 @@
 import { Users } from '../../users/entities/user.entity';
-import { Messages } from '../../messages/entities/message.entity';
 import { DateAudit } from '../../shared/entity/date-audit.entity';
 
 import {
@@ -8,23 +7,19 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
-  OneToMany,
 } from 'typeorm';
 
 @Entity()
-export class Rooms extends DateAudit {
+export class Reservations extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  status: string;
 
   // 이렇게 하면 자동으로 중간테이블 생성?
   @ManyToMany(() => Users)
   @JoinTable({
-    name: 'rooms_users',
+    name: 'reservations_users',
     joinColumn: {
-      name: 'room',
+      name: 'reservation',
       referencedColumnName: 'id',
     },
     inverseJoinColumn: {
@@ -34,6 +29,24 @@ export class Rooms extends DateAudit {
   })
   users: Users[];
 
-  @OneToMany((type) => Messages, (message) => message.user)
-  messages: Messages[];
+  @Column()
+  departure: string;
+
+  @Column({ nullable: true })
+  stopover: string;
+
+  @Column()
+  destination: string;
+
+  @Column()
+  people: number;
+
+  @Column()
+  accompany: string;
+
+  @Column()
+  price: number;
+
+  @Column()
+  status: string;
 }

@@ -53,6 +53,9 @@ const HomePage = () => {
       <Block className="border-t-2 pt-8">
         <BlockTitle className="text-center text-xl font-bold">내 주변 추천 기사님들</BlockTitle>
         <Driver />
+        <Driver />
+        <Driver />
+        <Driver />
       </Block>
       <Footer />
     </Page>

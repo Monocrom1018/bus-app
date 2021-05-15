@@ -5,15 +5,19 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   getRepository,
+  ManyToMany,
 } from 'typeorm';
 import { DateAudit } from '../../shared/entity/date-audit.entity';
-import { Items as Item } from '../../items/entities/item.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
+import { Messages } from '../../messages/entities/message.entity';
+import { Rooms } from '../../rooms/entities/room.entity';
+import { Reservations } from '../../reservations/entities/reservation.entity';
 
 export enum UserType {
   NORMAL = 'normal',
   DRIVER = 'driver',
+  COMPANY = 'company',
 }
 
 @Entity()
@@ -60,6 +64,15 @@ export class Users extends DateAudit {
     default: UserType.NORMAL,
   })
   user_type: UserType;
+
+  @OneToMany((type) => Messages, (message) => message.user)
+  messages: Messages[];
+
+  @ManyToMany(() => Rooms)
+  rooms: Rooms[];
+
+  @ManyToMany(() => Reservations)
+  reservations: Reservations[];
 
   async validateUserPassword(password: string): Promise<boolean> {
     // const hash = await bcrypt.hash(password, this.encrypted_password);
