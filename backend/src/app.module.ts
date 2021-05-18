@@ -20,6 +20,9 @@ import AdminBro from 'admin-bro';
 import { Users as User } from './users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AdminUsers as AdminUser } from './adminUsers/entities/adminUser.entity';
+import { Notices as Notice } from './notices/entities/notice.entity';
+import { Faqs as Faq } from './faqs/entities/faq.entity';
+import { Reservations as Reservation } from './reservations/entities/reservation.entity';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -28,7 +31,7 @@ AdminBro.registerAdapter({ Database, Resource });
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User, AdminUser],
+        resources: [User, AdminUser, Notice, Faq, Reservation],
       },
       auth: {
         authenticate: async (email, password) => {
