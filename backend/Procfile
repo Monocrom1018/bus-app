@@ -1,2 +1,2 @@
 
-web: echo hihi > hihi.hi && NODE_ENV=production node dist/src/main
+web: NODE_ENV=production node dist/src/main
