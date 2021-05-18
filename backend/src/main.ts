@@ -26,6 +26,6 @@ async function bootstrap() {
   // Convert exceptions to JSON readable format
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  await app.listen(3000);
+  await app.listen(80);
 }
 bootstrap();

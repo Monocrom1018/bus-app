@@ -6,7 +6,7 @@ const ReservationIndexPage = () => {
   const test = 'test';
 
   return (
-    <Page>
+    <Page name="reservation">
       <Navbar>
         <NavLeft>
           <Link icon="las la-bars" panelOpen="left" />

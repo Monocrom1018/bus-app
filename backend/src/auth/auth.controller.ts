@@ -22,8 +22,10 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
+  @UseInterceptors(FileInterceptor('file'))
   async signUp(
     @Body() authCredentialsDto: AuthCredentialsDto,
+    @UploadedFile() file: Express.Multer.File,
     @Res({ passthrough: true }) response: Response,
   ) {
     response.cookie('jwt_access', 'jwt_access');

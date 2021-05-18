@@ -4,7 +4,6 @@ import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
 import { DefaultAdminModule } from 'nestjs-admin';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from './config/typeorm.config';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ItemsModule } from './items/items.module';
@@ -19,17 +18,45 @@ import { CommentsModule } from './comments/comments.module';
 import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
 import { Users as User } from './users/entities/user.entity';
+import { ConfigModule } from '@nestjs/config';
+import { AdminUsers as AdminUser } from './adminUsers/entities/adminUser.entity';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User],
+        resources: [User, AdminUser],
+      },
+      auth: {
+        authenticate: async (email, password) => {
+          const admin = await AdminUser.findOne({ email });
+          if (admin) {
+            if (password === admin.password) {
+              return {
+                email,
+                password,
+              };
+            }
+          }
+          return null;
+        },
+        cookieName: 'adminBro',
+        cookiePassword: 'testTest',
       },
     }),
-    TypeOrmModule.forRoot(typeOrmConfig),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: 5432,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
+      entities: [__dirname + '/../**/*.entity.{js,ts}'],
+      synchronize: false,
+    }),
     ObjectsModule,
     AuthModule,
     // DefaultAdminModule,
