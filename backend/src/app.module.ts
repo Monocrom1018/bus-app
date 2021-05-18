@@ -19,6 +19,7 @@ import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
 import { Users as User } from './users/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
+import { AdminUsers as AdminUser } from './adminUsers/entities/adminUser.entity';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -27,13 +28,23 @@ AdminBro.registerAdapter({ Database, Resource });
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User],
+        resources: [User, AdminUser],
       },
       auth: {
-        authenticate: async (email, password) =>
-          Promise.resolve({ email: 'test' }),
-        cookieName: 'test',
-        cookiePassword: 'testPass',
+        authenticate: async (email, password) => {
+          const admin = await AdminUser.findOne({ email });
+          if (admin) {
+            if (password === admin.password) {
+              return {
+                email,
+                password,
+              };
+            }
+          }
+          return null;
+        },
+        cookieName: 'adminBro',
+        cookiePassword: 'testTest',
       },
     }),
     TypeOrmModule.forRoot({

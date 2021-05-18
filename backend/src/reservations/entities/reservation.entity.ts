@@ -14,7 +14,6 @@ export class Reservations extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // 이렇게 하면 자동으로 중간테이블 생성?
   @ManyToMany(() => Users)
   @JoinTable({
     name: 'reservations_users',
