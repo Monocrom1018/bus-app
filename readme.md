@@ -19,3 +19,12 @@ which pm2
 ln -s pm2경로 /usr/local/bin/pm2
 
 pm2 start --name=bus "yarn start:prod"
+
+
+-----
+
+todo
+
+sync 
+
+.env 애매 - sym_link
