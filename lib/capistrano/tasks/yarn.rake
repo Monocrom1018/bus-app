@@ -36,6 +36,15 @@ namespace :yarn do
       end
     end
   end
+  task :build do
+    on roles fetch(:yarn_roles) do
+      within fetch(:yarn_target_path, release_path) do
+        with fetch(:yarn_env_variables, {}) do
+          execute :yarn, "schema:sync"
+        end
+      end
+    end
+  end
 end
 
 after "yarn:install", "yarn:build"
