@@ -6,6 +6,7 @@ import {
   OneToMany,
   getRepository,
   ManyToMany,
+  ManyToOne,
 } from 'typeorm';
 import { DateAudit } from '../../shared/entity/date-audit.entity';
 import { Exclude } from 'class-transformer';
@@ -13,6 +14,7 @@ import * as bcrypt from 'bcryptjs';
 import { Messages } from '../../messages/entities/message.entity';
 import { Rooms } from '../../rooms/entities/room.entity';
 import { Reservations } from '../../reservations/entities/reservation.entity';
+import { Reservations_users } from '../../reservations_users/entities/reservations_users.entity';
 
 export enum UserType {
   NORMAL = 'normal',
@@ -68,11 +70,14 @@ export class Users extends DateAudit {
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
 
+  @OneToMany(
+    (type) => Reservations_users,
+    (reservations_users) => reservations_users.user,
+  )
+  reservations_users: Reservations_users[];
+
   @ManyToMany(() => Rooms)
   rooms: Rooms[];
-
-  @ManyToMany(() => Reservations)
-  reservations: Reservations[];
 
   async validateUserPassword(password: string): Promise<boolean> {
     // const hash = await bcrypt.hash(password, this.encrypted_password);
