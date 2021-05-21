@@ -859,3 +859,123 @@ warning "@admin-bro/design-system > react-datepicker > react-popper@1.3.11" has 
  DEBUG [fa1eddf2] 	'pm2'
  DEBUG [fa1eddf2] 	: No such file or directory
  DEBUG [fa1eddf2] 	
+  INFO ---------------------------------------------------------------------------
+  INFO START 2021-05-21 12:35:29 +0900 cap production deploy
+  INFO ---------------------------------------------------------------------------
+  INFO [a237d13d] Running /usr/bin/env mkdir -p /tmp as deploy@54.180.40.195
+ DEBUG [a237d13d] Command: /usr/bin/env mkdir -p /tmp
+  INFO [a237d13d] Finished in 1.333 seconds with exit status 0 (successful).
+ DEBUG Uploading /tmp/git-ssh-72062fe0ab78e5a93d7a.sh 0.0%
+  INFO Uploading /tmp/git-ssh-72062fe0ab78e5a93d7a.sh 100.0%
+  INFO [083cace9] Running /usr/bin/env chmod 700 /tmp/git-ssh-72062fe0ab78e5a93d7a.sh as deploy@54.180.40.195
+ DEBUG [083cace9] Command: /usr/bin/env chmod 700 /tmp/git-ssh-72062fe0ab78e5a93d7a.sh
+  INFO [083cace9] Finished in 0.025 seconds with exit status 0 (successful).
+  INFO [6b2913de] Running /usr/bin/env git ls-remote git@github.com:insomenia/bus-server.git HEAD as deploy@54.180.40.195
+ DEBUG [6b2913de] Command: ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env git ls-remote git@github.com:insomenia/bus-server.git HEAD )
+ DEBUG [6b2913de] 	442f282f7751f14df24038dada1e596aea2babba	HEAD
+  INFO [6b2913de] Finished in 2.604 seconds with exit status 0 (successful).
+  INFO [a6c2bd61] Running /usr/bin/env mkdir -p /home/deploy/bus/shared /home/deploy/bus/releases as deploy@54.180.40.195
+ DEBUG [a6c2bd61] Command: /usr/bin/env mkdir -p /home/deploy/bus/shared /home/deploy/bus/releases
+  INFO [a6c2bd61] Finished in 0.026 seconds with exit status 0 (successful).
+  INFO [e00c36f6] Running /usr/bin/env mkdir -p /home/deploy/bus/shared/node_modules as deploy@54.180.40.195
+ DEBUG [e00c36f6] Command: /usr/bin/env mkdir -p /home/deploy/bus/shared/node_modules
+  INFO [e00c36f6] Finished in 0.078 seconds with exit status 0 (successful).
+ DEBUG [92ebf03f] Running [ -f /home/deploy/bus/current/REVISION ] as deploy@54.180.40.195
+ DEBUG [92ebf03f] Command: [ -f /home/deploy/bus/current/REVISION ]
+ DEBUG [92ebf03f] Finished in 0.022 seconds with exit status 0 (successful).
+ DEBUG [340c55d7] Running /usr/bin/env cat /home/deploy/bus/current/REVISION 2>/dev/null as deploy@54.180.40.195
+ DEBUG [340c55d7] Command: /usr/bin/env cat /home/deploy/bus/current/REVISION 2>/dev/null
+ DEBUG [340c55d7] 	8732d8e9288bd947c930efc5a15958ea5ed832f5
+ DEBUG [340c55d7] Finished in 0.071 seconds with exit status 0 (successful).
+ DEBUG [d72ccf23] Running [ -f /home/deploy/bus/repo/HEAD ] as deploy@54.180.40.195
+ DEBUG [d72ccf23] Command: [ -f /home/deploy/bus/repo/HEAD ]
+ DEBUG [d72ccf23] Finished in 0.044 seconds with exit status 0 (successful).
+  INFO The repository mirror is at /home/deploy/bus/repo
+ DEBUG [e485ae68] Running if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [e485ae68] Command: if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi
+ DEBUG [e485ae68] Finished in 0.163 seconds with exit status 0 (successful).
+  INFO [0831fcc5] Running /usr/bin/env git remote set-url origin git@github.com:insomenia/bus-server.git as deploy@54.180.40.195
+ DEBUG [0831fcc5] Command: cd /home/deploy/bus/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env git remote set-url origin git@github.com:insomenia/bus-server.git )
+  INFO [0831fcc5] Finished in 0.032 seconds with exit status 0 (successful).
+  INFO [9e2333fd] Running /usr/bin/env git remote update --prune as deploy@54.180.40.195
+ DEBUG [9e2333fd] Command: cd /home/deploy/bus/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env git remote update --prune )
+ DEBUG [9e2333fd] 	Fetching origin
+ DEBUG [9e2333fd] 	From github.com:insomenia/bus-server
+   8732d8e..442f282  master     -> master
+  INFO [9e2333fd] Finished in 2.462 seconds with exit status 0 (successful).
+ DEBUG [bf18271c] Running if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [bf18271c] Command: if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi
+ DEBUG [bf18271c] Finished in 0.278 seconds with exit status 0 (successful).
+  INFO [44e7e37e] Running /usr/bin/env mkdir -p /home/deploy/bus/releases/20210521033534 as deploy@54.180.40.195
+ DEBUG [44e7e37e] Command: cd /home/deploy/bus/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env mkdir -p /home/deploy/bus/releases/20210521033534 )
+  INFO [44e7e37e] Finished in 0.077 seconds with exit status 0 (successful).
+  INFO [b495c3c9] Running /usr/bin/env git archive master backend | /usr/bin/env tar -x --strip-components 1 -f - -C /home/deploy/bus/releases/20210521033534 as deploy@54.180.40.195
+ DEBUG [b495c3c9] Command: cd /home/deploy/bus/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env git archive master backend | /usr/bin/env tar -x --strip-components 1 -f - -C /home/deploy/bus/releases/20210521033534 )
+  INFO [b495c3c9] Finished in 0.157 seconds with exit status 0 (successful).
+ DEBUG [afbd0d6c] Running if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [afbd0d6c] Command: if test ! -d /home/deploy/bus/repo; then echo "Directory does not exist '/home/deploy/bus/repo'" 1>&2; false; fi
+ DEBUG [afbd0d6c] Finished in 0.126 seconds with exit status 0 (successful).
+ DEBUG [e0702446] Running /usr/bin/env git rev-list --max-count=1 master as deploy@54.180.40.195
+ DEBUG [e0702446] Command: cd /home/deploy/bus/repo && ( export GIT_ASKPASS="/bin/echo" GIT_SSH="/tmp/git-ssh-72062fe0ab78e5a93d7a.sh" ; /usr/bin/env git rev-list --max-count=1 master )
+ DEBUG [e0702446] 	442f282f7751f14df24038dada1e596aea2babba
+ DEBUG [e0702446] Finished in 0.022 seconds with exit status 0 (successful).
+ DEBUG [ea577900] Running if test ! -d /home/deploy/bus/releases/20210521033534; then echo "Directory does not exist '/home/deploy/bus/releases/20210521033534'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [ea577900] Command: if test ! -d /home/deploy/bus/releases/20210521033534; then echo "Directory does not exist '/home/deploy/bus/releases/20210521033534'" 1>&2; false; fi
+ DEBUG [ea577900] Finished in 0.061 seconds with exit status 0 (successful).
+  INFO [0b1d9aa2] Running /usr/bin/env echo "442f282f7751f14df24038dada1e596aea2babba" > REVISION as deploy@54.180.40.195
+ DEBUG [0b1d9aa2] Command: cd /home/deploy/bus/releases/20210521033534 && /usr/bin/env echo "442f282f7751f14df24038dada1e596aea2babba" > REVISION
+  INFO [0b1d9aa2] Finished in 0.021 seconds with exit status 0 (successful).
+  INFO [6f995bce] Running /usr/bin/env mkdir -p /home/deploy/bus/releases/20210521033534 as deploy@54.180.40.195
+ DEBUG [6f995bce] Command: /usr/bin/env mkdir -p /home/deploy/bus/releases/20210521033534
+  INFO [6f995bce] Finished in 0.061 seconds with exit status 0 (successful).
+ DEBUG [47afe019] Running [ -L /home/deploy/bus/releases/20210521033534/node_modules ] as deploy@54.180.40.195
+ DEBUG [47afe019] Command: [ -L /home/deploy/bus/releases/20210521033534/node_modules ]
+ DEBUG [47afe019] Finished in 0.016 seconds with exit status 1 (failed).
+ DEBUG [fee7a107] Running [ -d /home/deploy/bus/releases/20210521033534/node_modules ] as deploy@54.180.40.195
+ DEBUG [fee7a107] Command: [ -d /home/deploy/bus/releases/20210521033534/node_modules ]
+ DEBUG [fee7a107] Finished in 0.080 seconds with exit status 1 (failed).
+  INFO [5db59d42] Running /usr/bin/env ln -s /home/deploy/bus/shared/node_modules /home/deploy/bus/releases/20210521033534/node_modules as deploy@54.180.40.195
+ DEBUG [5db59d42] Command: /usr/bin/env ln -s /home/deploy/bus/shared/node_modules /home/deploy/bus/releases/20210521033534/node_modules
+  INFO [5db59d42] Finished in 0.021 seconds with exit status 0 (successful).
+ DEBUG [efaf164d] Running if test ! -d /home/deploy/bus/releases/20210521033534; then echo "Directory does not exist '/home/deploy/bus/releases/20210521033534'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [efaf164d] Command: if test ! -d /home/deploy/bus/releases/20210521033534; then echo "Directory does not exist '/home/deploy/bus/releases/20210521033534'" 1>&2; false; fi
+ DEBUG [efaf164d] Finished in 0.062 seconds with exit status 0 (successful).
+  INFO [ff2b9232] Running /usr/bin/env yarn install --production --silent --no-progress as deploy@54.180.40.195
+ DEBUG [ff2b9232] Command: cd /home/deploy/bus/releases/20210521033534 && /usr/bin/env yarn install --production --silent --no-progress
+ DEBUG [ff2b9232] 	warning " > @admin-bro/design-system@1.7.2" has unmet peer dependency "react@^16.13.1".
+ DEBUG [ff2b9232] 	warning " > @admin-bro/design-system@1.7.2" has unmet peer dependency "react-dom@^16.13.1".
+ DEBUG [ff2b9232] 	warning " > @admin-bro/design-system@1.7.2" has unmet peer dependency "styled-components@^5.2.0".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > @carbon/icons-react@10.28.0" has unmet peer dependency "react@>=16".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker@3.6.0" has unmet peer dependency "react@^16.9.0 || ^17".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker@3.6.0" has unmet peer dependency "react-dom@^16.9.0 || ^17".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker > react-onclickoutside@6.10.0" has unmet peer dependency "react@^15.5.x || ^16.x || ^17.x".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker > react-onclickoutside@6.10.0" has unmet peer dependency "react-dom@^15.5.x || ^16.x || ^17.x".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker > react-popper@1.3.11" has unmet peer dependency "react@0.14.x || ^15.0.0 || ^16.0.0 || ^17.0.0".
+ DEBUG [ff2b9232] 	warning "@admin-bro/design-system > react-datepicker > react-popper > @hypnosphi/create-react-context@0.3.1" has unmet peer dependency "react@>=0.14.0".
+ DEBUG [ff2b9232] 	warning " > @nestjs/common@7.6.14" has incorrect peer dependency "rxjs@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > @nestjs/config@0.6.3" has incorrect peer dependency "rxjs@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > @nestjs/core@7.6.14" has incorrect peer dependency "rxjs@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > @nestjs/typeorm@7.1.5" has incorrect peer dependency "rxjs@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > nestjs-admin@0.4.1" has incorrect peer dependency "@nestjs/common@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > nestjs-admin@0.4.1" has incorrect peer dependency "@nestjs/core@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > nestjs-admin@0.4.1" has incorrect peer dependency "@nestjs/platform-express@^6.0.0".
+ DEBUG [ff2b9232] 	warning " > nestjs-admin@0.4.1" has incorrect peer dependency "@nestjs/typeorm@^6.0.0".
+ DEBUG [ff2b9232] 	warning "nestjs-admin > bootstrap@4.6.0" has unmet peer dependency "jquery@1.9.1 - 3".
+ DEBUG [ff2b9232] 	warning "nestjs-admin > bootstrap@4.6.0" has unmet peer dependency "popper.js@^1.16.1".
+ DEBUG [ff2b9232] 	warning " > ts-loader@8.0.18" has unmet peer dependency "webpack@*".
+  INFO [ff2b9232] Finished in 19.771 seconds with exit status 0 (successful).
+  INFO [043350bd] Running /usr/bin/env ln -s /home/deploy/bus/releases/20210521033534 /home/deploy/bus/releases/current as deploy@54.180.40.195
+ DEBUG [043350bd] Command: /usr/bin/env ln -s /home/deploy/bus/releases/20210521033534 /home/deploy/bus/releases/current
+  INFO [043350bd] Finished in 0.096 seconds with exit status 0 (successful).
+  INFO [4a58b997] Running /usr/bin/env mv /home/deploy/bus/releases/current /home/deploy/bus as deploy@54.180.40.195
+ DEBUG [4a58b997] Command: /usr/bin/env mv /home/deploy/bus/releases/current /home/deploy/bus
+  INFO [4a58b997] Finished in 0.035 seconds with exit status 0 (successful).
+ DEBUG [d7f1ae6f] Running if test ! -d /home/deploy/bus/current; then echo "Directory does not exist '/home/deploy/bus/current'" 1>&2; false; fi as deploy@54.180.40.195
+ DEBUG [d7f1ae6f] Command: if test ! -d /home/deploy/bus/current; then echo "Directory does not exist '/home/deploy/bus/current'" 1>&2; false; fi
+ DEBUG [d7f1ae6f] Finished in 0.068 seconds with exit status 0 (successful).
+ DEBUG [acbb732a] Running /usr/bin/env pm2 jlist  as deploy@54.180.40.195
+ DEBUG [acbb732a] Command: cd /home/deploy/bus/current && /usr/bin/env pm2 jlist 
+ DEBUG [acbb732a] 	/usr/bin/env: 
+ DEBUG [acbb732a] 	'pm2'
+ DEBUG [acbb732a] 	: No such file or directory
+ DEBUG [acbb732a] 	
