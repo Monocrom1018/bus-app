@@ -15,13 +15,13 @@ namespace :pm2 do
 
   def restart_app
     within current_path do
-      execute :pm2, :restart, fetch(:app_command)
+      execute :pm2, :restart, :all
     end
   end
 
   def start_app
     within current_path do
-      execute :pm2, :stop, fetch(:app_command)
+      execute :pm2, :stop, :all
     end
   end
 

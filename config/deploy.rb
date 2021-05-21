@@ -10,6 +10,7 @@ set :ssh_options, { forward_agent: true }
 
 set :keep_releases, 2
 
+set :linked_files, %[.env]
 set :linked_dirs, %w[node_modules]
 
 namespace :deploy do
@@ -20,6 +21,7 @@ namespace :deploy do
 
   after :publishing, :restart
 end
+
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
