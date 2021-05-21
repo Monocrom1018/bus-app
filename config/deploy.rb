@@ -10,7 +10,7 @@ set :ssh_options, { forward_agent: true }
 
 set :keep_releases, 2
 
-set :linked_files, %[.env]
+set :linked_files, %w[.env]
 set :linked_dirs, %w[node_modules]
 
 namespace :deploy do
