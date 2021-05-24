@@ -8,6 +8,5 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 group :development do
   gem "capistrano", "~> 3.16.0"
-  gem "capistrano-nest", github: "insomenia/capistrano-nest"
   gem "json"
 end

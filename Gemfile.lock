@@ -1,10 +1,3 @@
-GIT
-  remote: https://github.com/insomenia/capistrano-nest
-  revision: f2c07e7f9713fcca40a600d8f63c6ad4018fa063
-  specs:
-    capistrano-nest (0.0.1)
-      capistrano (>= 3.0.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -32,7 +25,6 @@ PLATFORMS
 
 DEPENDENCIES
   capistrano (~> 3.16.0)
-  capistrano-nest!
   json
 
 BUNDLED WITH

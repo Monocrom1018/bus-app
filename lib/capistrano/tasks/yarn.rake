@@ -36,7 +36,7 @@ namespace :yarn do
       end
     end
   end
-  task :build do
+  task :sync do
     on roles fetch(:yarn_roles) do
       within fetch(:yarn_target_path, release_path) do
         with fetch(:yarn_env_variables, {}) do
