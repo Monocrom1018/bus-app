@@ -23,6 +23,8 @@ import { AdminUsers as AdminUser } from './adminUsers/entities/adminUser.entity'
 import { Notices as Notice } from './notices/entities/notice.entity';
 import { Faqs as Faq } from './faqs/entities/faq.entity';
 import { Reservations as Reservation } from './reservations/entities/reservation.entity';
+import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
+import { ReservationsModule } from './reservations/reservations.module';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -31,7 +33,14 @@ AdminBro.registerAdapter({ Database, Resource });
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User, AdminUser, Notice, Faq, Reservation],
+        resources: [
+          User,
+          AdminUser,
+          Notice,
+          Faq,
+          Reservation,
+          Reservations_users,
+        ],
       },
       auth: {
         authenticate: async (email, password) => {
@@ -74,6 +83,7 @@ AdminBro.registerAdapter({ Database, Resource });
     FaqsModule,
     ContactsModule,
     CommentsModule,
+    ReservationsModule,
   ],
 })
 export class AppModule {}

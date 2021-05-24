@@ -208,7 +208,6 @@ const DriverSignUpPage = () => {
                 label={i18next.t('차량유형')}
                 type="select"
                 name="bus_type"
-                clearButton
                 defaultValue="대형"
                 onChange={handleChange}
                 onBlur={handleBlur}

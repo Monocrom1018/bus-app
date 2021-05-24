@@ -87,3 +87,8 @@ export const getFaqs = async () => {
   const { data } = await API.get(`/faqs`);
   return data;
 };
+
+export const getDistance = async (params) => {
+  const { data } = await API.post(`/reservations/distance`, params);
+  return data;
+};

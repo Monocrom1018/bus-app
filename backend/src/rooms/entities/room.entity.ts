@@ -34,6 +34,6 @@ export class Rooms extends DateAudit {
   })
   users: Users[];
 
-  @OneToMany((type) => Messages, (message) => message.user)
+  @OneToMany((type) => Messages, (message) => message.room)
   messages: Messages[];
 }

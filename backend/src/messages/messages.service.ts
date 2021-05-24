@@ -1,4 +1,4 @@
-import { MessagesRepository } from './Messages.repository';
+import { MessagesRepository } from './messages.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Messages as Message } from './entities/message.entity';
