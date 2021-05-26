@@ -2,7 +2,6 @@ import {
   Block,
   BlockTitle,
   Button,
-  Icon,
   Link,
   List,
   ListInput,
@@ -14,7 +13,7 @@ import {
   Input,
 } from 'framework7-react';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from 'react-query';
+import Driver from './users/Driver';
 import { getDistance } from '../common/api/index';
 
 const SearchPage = () => {
@@ -22,38 +21,36 @@ const SearchPage = () => {
   const [departure, setDeparture] = useState('');
   const [destination, setDestination] = useState('');
   const [distance, setDistance] = useState('');
-  const [stopover, setStopover] = useState('');
-  const [isStopover, setIsStopover] = useState(false);
+  const [stopovers, setStopovers] = useState([]);
+  const [stopoverCount, setStopoverCount] = useState(0);
 
-  //? search 시 useQuery 사용
-  // const { data, error, refetch } = useQuery(
-  //   'distance',
-  //   () =>
-  //     getDistance({
-  //       departure,
-  //       destination,
-  //     }),
-  //   {
-  //     onSuccess: () => {
-  //       console.log(data);
-  //       setDistance(data);
-  //     },
-  //     onError: () => {
-  //       console.log(error);
-  //     },
-  //   },
-  // );
-
-  const handleSearchButton = async () => {
+  const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
-      const distance = await getDistance({ departure, destination });
+      const distance = await getDistance({ departure, destination, stopovers });
       setDistance(distance);
     } else {
       // 출발지 도착지 입력해달라고 토스트 띄우기
     }
   };
 
-  const handlePostCode = (e, value) => {
+  const handleAddStopover = async () => {
+    if (stopovers.length < 5) {
+      setStopovers(stopovers.concat({ id: stopoverCount, stopover: '' }));
+      setStopoverCount(stopoverCount + 1);
+    }
+  };
+
+  const handleDeleteStopover = async (param) => {
+    setStopovers(
+      stopovers.filter((item) => {
+        if (item.id !== param) {
+          return true;
+        }
+      }),
+    );
+  };
+
+  const handlePostCode = (e, value, id) => {
     new daum.Postcode({
       oncomplete: (data) => {
         if (value === 'departure') {
@@ -65,7 +62,15 @@ const SearchPage = () => {
         }
 
         if (value === 'stopover') {
-          setStopover(data.address);
+          const mapped = stopovers.map((item) => {
+            if (item.id === id) {
+              item.stopover = data.address;
+              return item;
+            }
+            return item;
+          });
+
+          setStopovers(mapped);
         }
       },
     }).open();
@@ -118,54 +123,84 @@ const SearchPage = () => {
           <div className="mx-6 mt-8 mb-2 font-semibold">장소입력</div>
 
           <div className="flex px-4 mb-3">
-            <input className="pl-3 flex-1 rounded-lg" value={departure} placeholder="출발지를 검색해주세요"></input>{' '}
-            <Button onClick={(e) => handlePostCode(e.target.value, 'departure')} raised className="w-20 ml-2">
+            <input
+              className="pl-3 flex-1 rounded-lg"
+              readOnly
+              value={departure}
+              placeholder="출발지를 검색해주세요"
+            ></input>{' '}
+            <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'departure', null)}>
               출발지검색
             </Button>
           </div>
         </div>
 
-        {isStopover ? (
-          <div className="flex px-4 py-2">
-            <input className="pl-3 flex-1 rounded-lg" value={stopover} placeholder="경유지를 검색해주세요"></input>{' '}
-            <Button onClick={(e) => handlePostCode(e.target.value, 'stopover')} raised className="w-20 ml-2">
-              경유지검색
-            </Button>
-          </div>
-        ) : null}
+        {stopovers.map((item) => {
+          return (
+            <div className="flex px-4 py-2" key={item.id}>
+              <button
+                className="f7-icons text-xl text-red-500 outline-none"
+                onClick={() => handleDeleteStopover(item.id)}
+              >
+                minus_circle_fill
+              </button>
+              <input
+                className="pl-3 ml-1 flex-1 rounded-lg"
+                readOnly
+                value={item.stopover}
+                placeholder="최대 5개까지 추가 가능합니다"
+              ></input>{' '}
+              <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'stopover', item.id)}>
+                경유지검색
+              </Button>
+            </div>
+          );
+        })}
 
         <div className="flex px-4 mt-3">
-          <input className="pl-3 flex-1 rounded-lg" value={destination} placeholder="도착지를 검색해주세요"></input>{' '}
-          <Button onClick={(e) => handlePostCode(e.target.value, 'destination')} raised className="w-20 ml-2">
+          <input
+            className="pl-3 flex-1 rounded-lg"
+            readOnly
+            value={destination}
+            placeholder="도착지를 검색해주세요"
+          ></input>{' '}
+          <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'destination', null)}>
             도착지검색
           </Button>
         </div>
 
-        {isStopover ? (
-          <Button onClick={() => setIsStopover(!isStopover)} className="mt-4">
-            경유지 삭제
-          </Button>
-        ) : (
-          <Button onClick={() => setIsStopover(!isStopover)} className="mt-4">
-            경유지 추가
-          </Button>
-        )}
+        <Button onClick={handleAddStopover} className="mt-4">
+          경유지 추가
+        </Button>
 
         <ListInput type="select" defaultValue="기사님의 동행여부를 선택해주세요" className="mt-8">
           <option disabled>기사님의 동행여부를 선택해주세요</option>
           <option value="전체일정 동행">전체일정 동행</option>
           <option value="출발, 귀환시에만 동행">출발, 귀환시에만 동행</option>
         </ListInput>
+        <br />
 
-        {distance ? <ListInput label="편도거리" value={`${distance}km`} /> : null}
-
-        <Button
-          // href="/driverlists"
-          onClick={handleSearchButton}
-          text="검색"
-          className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg"
-        />
+        <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
       </List>
+
+      {distance ? (
+        <div>
+          <div className="flex justify-between">
+            <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
+              <option value="인기순">인기순</option>
+              <option value="인승">인승</option>
+              <option value="최저가격순">최저가격순</option>
+            </Input>
+            <div className="mx-4 font-medium">편도거리 : {`${distance}km`}</div>
+          </div>
+          <div>
+            <Driver />
+            <Driver />
+            <Driver />
+            <Driver />
+          </div>
+        </div>
+      ) : null}
     </Page>
   );
 };
