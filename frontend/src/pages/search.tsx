@@ -193,7 +193,7 @@ const SearchPage = () => {
           <Input
             type="textarea"
             placeholder="구체적인 동행일정을 상세히 적어주세요"
-            className="m-3 pl-2 border-2 border-gray-200 rounded-lg"
+            className="m-3 pl-2 border-2 border-gray-200 rounded-lg bg-gray-50"
           ></Input>
         ) : null}
         <br />
