@@ -133,7 +133,7 @@ const SearchPage = () => {
 
           <div className="flex px-4 mb-3">
             <input
-              className="pl-3 flex-1 rounded-lg"
+              className="pl-3 flex-1 rounded-lg bg-gray-50"
               readOnly
               value={departure}
               placeholder="출발지를 검색해주세요"
@@ -153,7 +153,7 @@ const SearchPage = () => {
                 minus_circle_fill
               </button>
               <input
-                className="pl-3 ml-1 flex-1 rounded-lg"
+                className="pl-3 ml-1 flex-1 rounded-lg bg-gray-50"
                 readOnly
                 value={item.stopover}
                 placeholder="최대 5개까지 추가 가능합니다"
@@ -166,7 +166,7 @@ const SearchPage = () => {
         })}
         <div className="flex px-4 mt-3">
           <input
-            className="pl-3 flex-1 rounded-lg"
+            className="pl-3 flex-1 rounded-lg bg-gray-50"
             readOnly
             value={destination}
             placeholder="도착지를 검색해주세요"
