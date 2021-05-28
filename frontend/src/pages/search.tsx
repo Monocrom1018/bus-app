@@ -20,9 +20,11 @@ const SearchPage = () => {
   const test = 'test';
   const [departure, setDeparture] = useState('');
   const [destination, setDestination] = useState('');
-  const [distance, setDistance] = useState('');
+  const [distance, setDistance] = useState(0);
   const [stopovers, setStopovers] = useState([]);
   const [stopoverCount, setStopoverCount] = useState(0);
+  const [isRoundTrip, setIsRoundTrip] = useState(false);
+  const [withDriver, setWithDriver] = useState('');
 
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
@@ -85,42 +87,49 @@ const SearchPage = () => {
         <NavTitle>검색</NavTitle>
       </Navbar>
       <Block className="my-10">
-        <BlockTitle className="text-center text-xl">내용을 입력하고 예약해보세요</BlockTitle>
+        <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
       <List noHairlinesMd>
         <Segmented strong round className="mx-4 mb-4">
-          <Button>왕복</Button>
-          <Button>편도</Button>
+          <Button active={isRoundTrip === false} onClick={() => setIsRoundTrip(!isRoundTrip)}>
+            편도
+          </Button>
+          <Button active={isRoundTrip} onClick={() => setIsRoundTrip(!isRoundTrip)}>
+            왕복
+          </Button>
         </Segmented>
-
         <div className="flex flex-col">
-          <div className="mx-6 mb-2 font-semibold">일정입력</div>
-          <Input
-            type="datepicker"
-            placeholder="가는날과 탑승시간을 선택해주세요"
-            readonly
-            calendarParams={{
-              timePicker: true,
-              openIn: 'customModal',
-              footer: true,
-              dateFormat: '(가는날) yyyy년 mm월 dd일 hh시 :mm분',
-            }}
-            className="pl-3 mx-4 flex-1 border-2 rounded-lg"
-          />
-          <Input
-            type="datepicker"
-            placeholder="오는날과 탑승시간을 선택해주세요"
-            readonly
-            calendarParams={{
-              timePicker: true,
-              openIn: 'customModal',
-              footer: true,
-              dateFormat: '(오는날) yyyy년 mm월 dd일 hh시 :mm분',
-            }}
-            className="pl-3 mx-4 mt-2 flex-1 border-2 rounded-lg"
-          />
+          <div className="mx-6 mt-6 -mb-6 font-semibold">일정입력</div>
+          <List className="bg-gray-50">
+            <ListInput
+              label="가는날 및 탑승시간"
+              type="datepicker"
+              placeholder="가는날과 탑승시간을 선택해주세요"
+              readonly
+              calendarParams={{
+                timePicker: true,
+                openIn: 'customModal',
+                footer: true,
+                dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+              }}
+              className="bg-gray-50"
+            />
+            <ListInput
+              label="오는날 및 탑승시간"
+              type="datepicker"
+              placeholder="오는날과 탑승시간을 선택해주세요"
+              readonly
+              calendarParams={{
+                timePicker: true,
+                openIn: 'customModal',
+                footer: true,
+                dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+              }}
+              className="bg-gray-50"
+            />
+          </List>
 
-          <div className="mx-6 mt-8 mb-2 font-semibold">장소입력</div>
+          <div className="mx-6 mb-2 font-semibold">장소입력</div>
 
           <div className="flex px-4 mb-3">
             <input
@@ -134,7 +143,6 @@ const SearchPage = () => {
             </Button>
           </div>
         </div>
-
         {stopovers.map((item) => {
           return (
             <div className="flex px-4 py-2" key={item.id}>
@@ -156,7 +164,6 @@ const SearchPage = () => {
             </div>
           );
         })}
-
         <div className="flex px-4 mt-3">
           <input
             className="pl-3 flex-1 rounded-lg"
@@ -168,16 +175,27 @@ const SearchPage = () => {
             도착지검색
           </Button>
         </div>
-
         <Button onClick={handleAddStopover} className="mt-4">
           경유지 추가
         </Button>
-
-        <ListInput type="select" defaultValue="기사님의 동행여부를 선택해주세요" className="mt-8">
+        <ListInput
+          type="select"
+          defaultValue="기사님의 동행여부를 선택해주세요"
+          className="mt-8 bg-gray-50"
+          onChange={(e) => setWithDriver(e.target.value)}
+        >
           <option disabled>기사님의 동행여부를 선택해주세요</option>
           <option value="전체일정 동행">전체일정 동행</option>
           <option value="출발, 귀환시에만 동행">출발, 귀환시에만 동행</option>
         </ListInput>
+
+        {withDriver === '전체일정 동행' ? (
+          <Input
+            type="textarea"
+            placeholder="구체적인 동행일정을 상세히 적어주세요"
+            className="m-3 pl-2 border-2 border-gray-200 rounded-lg"
+          ></Input>
+        ) : null}
         <br />
 
         <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
@@ -191,7 +209,11 @@ const SearchPage = () => {
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
-            <div className="mx-4 font-medium">편도거리 : {`${distance}km`}</div>
+            {isRoundTrip ? (
+              <div className="mx-4 font-medium text-gray-700">왕복거리 : {Number(`${distance}`) * 2}km</div>
+            ) : (
+              <div className="mx-4 font-medium text-gray-700">편도거리 : {`${distance}km`}</div>
+            )}
           </div>
           <div>
             <Driver />
