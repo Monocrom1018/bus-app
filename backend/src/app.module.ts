@@ -25,6 +25,7 @@ import { Faqs as Faq } from './faqs/entities/faq.entity';
 import { Reservations as Reservation } from './reservations/entities/reservation.entity';
 import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
 import { ReservationsModule } from './reservations/reservations.module';
+import { MulterModule } from '@nestjs/platform-express';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -68,6 +69,9 @@ AdminBro.registerAdapter({ Database, Resource });
       database: process.env.DB_DATABASE,
       entities: [__dirname + '/../**/*.entity.{js,ts}'],
       synchronize: false,
+    }),
+    MulterModule.register({
+      dest: '../uploads',
     }),
     ObjectsModule,
     AuthModule,

@@ -4,15 +4,16 @@ import { convertObjectToFormData, sleep } from '@utils';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import DaumAddressSearch from '@components/shared/DaumAddressSearch';
+import { modifyAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
   password_confirmation: Yup.string(),
-  profile_img: Yup.mixed().required('A file is required'),
+  profile_img: Yup.mixed(),
 });
 
 const ModifyPage = () => {
-  const [imgState, setImgState] = useState({ file: '', previewURL: null });
+  const [imgState, setImgState] = useState({ file: '', imageURL: null });
 
   const handleImgButton = () => {
     document.getElementById('imageInput').click();
@@ -28,9 +29,10 @@ const ModifyPage = () => {
       reader.onloadend = () => {
         setImgState({
           file: file,
-          previewURL: reader.result,
+          imageURL: reader.result,
         });
       };
+
       reader.readAsDataURL(file);
     }
   };
@@ -57,9 +59,13 @@ const ModifyPage = () => {
           setSubmitting(false);
           f7.dialog.preloader('잠시만 기다려주세요...');
           try {
-            console.log(values);
-            // const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            // const response = await modifyAPI(fd);
+            if (imgState.file !== '') {
+              values.profile_img = imgState.file;
+            }
+            console.log(imgState.file);
+            const fd = convertObjectToFormData({ modelName: 'user', data: values });
+            const response = await modifyAPI(fd);
+            console.log(response);
             f7.dialog.close();
           } catch (error) {
             f7.dialog.close();
@@ -68,12 +74,12 @@ const ModifyPage = () => {
         }}
         validateOnMount={true}
       >
-        {({ setFieldValue, handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
+        {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
           <Form encType="multipart/form-data">
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
               <div className="flex flex-col items-center bg-white border-t">
-                <img src={imgState.previewURL} className="rounded-3xl mt-4 w-36 h-36 object-cover"></img>
+                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover"></img>
                 <Button className="my-2 font-semibold" onClick={handleImgButton}>
                   프로필사진 변경
                 </Button>

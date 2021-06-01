@@ -40,25 +40,30 @@ const refreshInterceptor = (axiosInstance) => (error) => {
 
     return new Promise((resolve, reject) => {
       const { token: oldToken, csrf: oldCsrf } = getToken();
-      axios.post(
-        API_URL + '/token', {},
-        {
-          headers: { 'X-CSRF-TOKEN': oldCsrf, Authorization: `Bearer ${oldToken}` },
-        }
-      ).then((res) => {
-        const { csrf, token } = res.data;
-        authenticateUserThroughPortal({ csrf, token });
-        _axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-        originalRequest.headers.Authorization = `Bearer ${token}`;
-        processQueue(null, token);
-        resolve(_axios(originalRequest));
-      }).catch((err) => {
-        processQueue(err, null);
-        unAuthenticateUserThroughPortal();
-        reject(err);
-      }).finally(() => {
-        isRefreshing = false;
-      });
+      axios
+        .post(
+          API_URL + '/token',
+          {},
+          {
+            headers: { 'X-CSRF-TOKEN': oldCsrf, Authorization: `Bearer ${oldToken}` },
+          },
+        )
+        .then((res) => {
+          const { csrf, token } = res.data;
+          authenticateUserThroughPortal({ csrf, token });
+          _axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+          originalRequest.headers.Authorization = `Bearer ${token}`;
+          processQueue(null, token);
+          resolve(_axios(originalRequest));
+        })
+        .catch((err) => {
+          processQueue(err, null);
+          unAuthenticateUserThroughPortal();
+          reject(err);
+        })
+        .finally(() => {
+          isRefreshing = false;
+        });
     });
   }
 
@@ -98,4 +103,3 @@ API.interceptors.request.use(headerTokenConfig);
 API.interceptors.response.use(null, refreshInterceptor(API));
 
 export { PlainAPI, API, API_URL, VERSION };
-
