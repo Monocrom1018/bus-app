@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Post('/Update')
+  @Post('/update')
   @UseInterceptors(FileInterceptor('file')) // formData의 key값
   async userUpdate(
     @Body() userUpdateDto: UserUpdateDto,
