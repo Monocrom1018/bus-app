@@ -7,25 +7,47 @@ import {
   UseInterceptors,
   Res,
   Response,
+  Request,
+  Param,
+  ValidationPipe,
+  ParseIntPipe,
+  Header,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+} from '@nestjs/platform-express';
+import * as fs from 'fs';
+import { diskStorage } from 'multer';
+import path = require('path');
+import { paramsToFormData } from 'admin-bro';
+
+export const storage = {
+  storage: diskStorage({
+    destination: './uploads',
+    filename: (req, file, cb) => {
+      const filename: string = path
+        .parse(file.originalname)
+        .name.replace(/\s/g, '');
+      const extension: string = path.parse(file.originalname).ext;
+      cb(null, `${filename}${extension}`);
+    },
+  }),
+};
 
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @Post('/Update')
-  @UseInterceptors(FileInterceptor('file')) // formData의 key값
+  @Post('update')
+  @UseInterceptors(FileInterceptor('user[profile_img]', storage))
   async userUpdate(
-    @Body() userUpdateDto: UserUpdateDto,
+    @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
-    @Res({ passthrough: true }) response: Response,
+    @Request() req,
   ) {
-    console.log(response);
-    console.log('1231');
-    console.log(userUpdateDto);
-    console.log('gggg');
     console.log(file);
+    console.log(userUpdateDto);
   }
 }

@@ -5,11 +5,12 @@ import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import DaumAddressSearch from '@components/shared/DaumAddressSearch';
 import { modifyAPI } from '../../common/api/index';
+import * as fs from 'fs';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
   password_confirmation: Yup.string(),
-  profile_img: Yup.mixed(),
+  // profile_img: Yup.mixed(),
 });
 
 const ModifyPage = () => {
@@ -23,12 +24,12 @@ const ModifyPage = () => {
     event.preventDefault();
 
     if (event.target.files[0]) {
-      let reader = new FileReader();
-      let file = event.target.files[0];
+      const reader = new FileReader();
+      const file = event.target.files[0];
 
       reader.onloadend = () => {
         setImgState({
-          file: file,
+          file,
           imageURL: reader.result,
         });
       };
@@ -40,18 +41,18 @@ const ModifyPage = () => {
   return (
     <Page noToolbar>
       {/* Top Navbar */}
-      <Navbar title="회원정보 수정" backLink={true} sliding={false}></Navbar>
+      <Navbar title="회원정보 수정" backLink sliding={false} />
 
       {/* Page Contents */}
       <Formik
         enableReinitialize
         initialValues={{
+          profile_img: '',
           password: '',
           password_confirmation: '',
           zipcode: '',
           address1: '',
           address2: '',
-          profile_img: '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -62,8 +63,9 @@ const ModifyPage = () => {
             if (imgState.file !== '') {
               values.profile_img = imgState.file;
             }
-            console.log(imgState.file);
+            console.log(values);
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
+            fd.append('user[profile_img]', values.profile_img);
             const response = await modifyAPI(fd);
             console.log(response);
             f7.dialog.close();
@@ -90,7 +92,7 @@ const ModifyPage = () => {
                   name="profile_img"
                   onChange={handleFileOnChange}
                   className="hidden"
-                ></input>
+                />
               </div>
               <ListInput disabled outline label={i18next.t('login.name')} type="text" name="name" value="홍길동" />
               <ListInput
@@ -107,6 +109,8 @@ const ModifyPage = () => {
                 type="password"
                 name="password"
                 placeholder="새로운 비밀번호를 입력해주세요"
+                onBlur={handleBlur}
+                onChange={handleChange}
                 clearButton
                 errorMessageForce={true}
                 errorMessage={touched.password && errors.password}
@@ -117,6 +121,8 @@ const ModifyPage = () => {
                 type="password"
                 name="password_confirmation"
                 placeholder="비밀번호를 확인해주세요"
+                onBlur={handleBlur}
+                onChange={handleChange}
                 clearButton
                 errorMessageForce={true}
                 errorMessage={touched.password_confirmation && errors.password_confirmation}

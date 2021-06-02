@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { Token } from '@constants';
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
@@ -15,7 +16,7 @@ export const refresh = (): Promise<{ data: Token }> =>
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
-export const modifyAPI = (params: FormData) => API.post('/users/Update', params);
+export const modifyAPI = (params: FormData) => API.post('/users/update', params, { headers: { 'Content-Type': 'multipart/form-data' } });
 export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
