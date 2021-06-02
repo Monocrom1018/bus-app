@@ -13,4 +13,16 @@ export class UsersService {
     const users = this.usersRepository.findAll();
     return users;
   }
+
+  async update(path, userUpdateDto) {
+    const user = await this.usersRepository.findOne({
+      email: 'test01@bus.com',
+    });
+    if (!user) {
+      return 'Unauthorized';
+    }
+    user.profile_img = path;
+    user.save();
+    return;
+  }
 }

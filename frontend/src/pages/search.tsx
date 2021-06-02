@@ -12,7 +12,7 @@ import {
   Segmented,
   Input,
 } from 'framework7-react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Driver from './users/Driver';
 import { getDistance } from '../common/api/index';
 
@@ -25,6 +25,7 @@ const SearchPage = () => {
   const [stopoverCount, setStopoverCount] = useState(0);
   const [isRoundTrip, setIsRoundTrip] = useState(false);
   const [withDriver, setWithDriver] = useState('');
+  const postCodeRef = useRef();
 
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
@@ -75,7 +76,9 @@ const SearchPage = () => {
           setStopovers(mapped);
         }
       },
-    }).open();
+      width: 360,
+      height: 466,
+    }).embed(postCodeRef.current);
   };
 
   return (
@@ -90,14 +93,6 @@ const SearchPage = () => {
         <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
       <List noHairlinesMd>
-        <Segmented strong round className="mx-4 mb-4">
-          <Button active={isRoundTrip === false} onClick={() => setIsRoundTrip(!isRoundTrip)}>
-            편도
-          </Button>
-          <Button active={isRoundTrip} onClick={() => setIsRoundTrip(!isRoundTrip)}>
-            왕복
-          </Button>
-        </Segmented>
         <div className="flex flex-col">
           <div className="mx-6 mt-6 -mb-6 font-semibold">일정입력</div>
           <List className="bg-gray-50">
@@ -131,16 +126,16 @@ const SearchPage = () => {
 
           <div className="mx-6 mb-2 font-semibold">장소입력</div>
 
+          <div ref={postCodeRef} className="ml-2"></div>
+
           <div className="flex px-4 mb-3">
             <input
-              className="pl-3 flex-1 rounded-lg bg-gray-50"
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
               readOnly
               value={departure}
               placeholder="출발지를 검색해주세요"
+              onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
             ></input>{' '}
-            <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'departure', null)}>
-              출발지검색
-            </Button>
           </div>
         </div>
         {stopovers.map((item) => {
@@ -153,32 +148,28 @@ const SearchPage = () => {
                 minus_circle_fill
               </button>
               <input
-                className="pl-3 ml-1 flex-1 rounded-lg bg-gray-50"
+                className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
                 readOnly
                 value={item.stopover}
                 placeholder="최대 5개까지 추가 가능합니다"
+                onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
               ></input>{' '}
-              <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'stopover', item.id)}>
-                경유지검색
-              </Button>
             </div>
           );
         })}
         <div className="flex px-4 mt-3">
           <input
-            className="pl-3 flex-1 rounded-lg bg-gray-50"
+            className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
             readOnly
             value={destination}
             placeholder="도착지를 검색해주세요"
+            onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
           ></input>{' '}
-          <Button raised className="w-20 ml-2" onClick={(e) => handlePostCode(e.target.value, 'destination', null)}>
-            도착지검색
-          </Button>
         </div>
         <Button onClick={handleAddStopover} className="mt-4">
           경유지 추가
         </Button>
-        <ListInput
+        {/* <ListInput
           type="select"
           defaultValue="기사님의 동행여부를 선택해주세요"
           className="mt-8 bg-gray-50"
@@ -187,7 +178,7 @@ const SearchPage = () => {
           <option disabled>기사님의 동행여부를 선택해주세요</option>
           <option value="전체일정 동행">전체일정 동행</option>
           <option value="출발, 귀환시에만 동행">출발, 귀환시에만 동행</option>
-        </ListInput>
+        </ListInput> */}
 
         {withDriver === '전체일정 동행' ? (
           <Input
