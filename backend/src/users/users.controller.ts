@@ -41,7 +41,7 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @Post('update')
-  @UseInterceptors(FileInterceptor('user[profile_img]', storage))
+  @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
   async userUpdate(
     @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
