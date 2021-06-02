@@ -10,4 +10,18 @@ export class UserUpdateDto {
   @IsString()
   @IsOptional()
   password_confirmation: string;
+
+  @IsString()
+  @IsOptional()
+  @MinLength(4)
+  @MaxLength(8)
+  zipcode: string;
+
+  @IsString()
+  @IsOptional()
+  address1: string;
+
+  @IsString()
+  @IsOptional()
+  address2: string;
 }

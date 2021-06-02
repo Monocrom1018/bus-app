@@ -31,7 +31,7 @@ export const storage = {
         .parse(file.originalname)
         .name.replace(/\s/g, '');
       const extension: string = path.parse(file.originalname).ext;
-      cb(null, `${filename}${extension}`);
+      cb(null, `${filename}-${Date.now()}${extension}`);
     },
   }),
 };
@@ -42,12 +42,15 @@ export class UsersController {
 
   @Post('update')
   @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
-  async userUpdate(
+  async update(
+    // @Body('user', ValidationPipe) userUpdateDto: UserUpdateDto,
     @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
     @Request() req,
   ) {
     console.log(file);
     console.log(userUpdateDto);
+
+    return this.userService.update(file.path, userUpdateDto);
   }
 }

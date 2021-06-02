@@ -49,6 +49,9 @@ export class Users extends DateAudit {
   name: string;
 
   @Column({ nullable: true })
+  profile_img: string;
+
+  @Column({ nullable: true })
   zipcode: string;
 
   @Column({ nullable: true })
