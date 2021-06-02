@@ -12,9 +12,5 @@
     "baseUrl": "./",
     "incremental": true
   },
-  "exclude": [
-      "node_modules",
-      "**/*.spec.ts",
-      "rails-cdk"
-  ]
+  "exclude": ["node_modules", "**/*.spec.ts", "rails-cdk"]
 }
