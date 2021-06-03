@@ -42,5 +42,5 @@ lerna-debug.log*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
-# upload files
 /uploads
+/public/images
