@@ -19,7 +19,7 @@ async function bootstrap() {
   app.use(helmet());
   app.use(cookieParser());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.useStaticAssets(join(process.cwd(), 'public'));
   // Validate query params and body
   // app.useGlobalPipes(new ValidationPipe({ transform: true }));
 

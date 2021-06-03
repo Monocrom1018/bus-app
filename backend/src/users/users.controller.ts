@@ -2,6 +2,7 @@ import { UserUpdateDto } from './dto/user-update.dto';
 import {
   Body,
   Post,
+  Get,
   Controller,
   UploadedFile,
   UseInterceptors,
@@ -25,8 +26,11 @@ import { paramsToFormData } from 'admin-bro';
 
 export const storage = {
   storage: diskStorage({
-    destination: './uploads',
+    destination: function (req, file, cb) {
+      cb(null, './public/images');
+    },
     filename: (req, file, cb) => {
+      console.log(file);
       const filename: string = path
         .parse(file.originalname)
         .name.replace(/\s/g, '');
@@ -49,8 +53,11 @@ export class UsersController {
     @Request() req,
   ) {
     console.log(file);
-    console.log(userUpdateDto);
+    return this.userService.update(file.filename, userUpdateDto);
+  }
 
-    return this.userService.update(file.path, userUpdateDto);
+  @Get('getInformation')
+  async getInformation() {
+    return this.userService.getInformation();
   }
 }

@@ -1,10 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import DaumAddressSearch from '@components/shared/DaumAddressSearch';
-import { modifyAPI } from '../../common/api/index';
+import { modifyAPI, get } from '../../common/api/index';
 import * as fs from 'fs';
 
 const UserInfoSchema = Yup.object().shape({
@@ -37,6 +37,16 @@ const ModifyPage = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  useEffect(() => {
+    async function getUser() {
+      const user = await get('/users/getInformation', null);
+      console.log(user.data);
+      setImgState({ file: '', imageURL: user.data.profile_img });
+    }
+
+    getUser();
+  }, []);
 
   return (
     <Page noToolbar>
@@ -130,13 +140,6 @@ const ModifyPage = () => {
             </List>
             <DaumAddressSearch />
 
-            {/* <input
-              type="file"
-              name="profile_img"
-              accept="image/jpg, image/png, image/jpeg"
-              onChange={(e) => setFieldValue('profile_img', e.currentTarget.files[0])}
-              className="p-4"
-            /> */}
             <div className="p-4">
               <button
                 type="submit"
