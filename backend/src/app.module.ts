@@ -2,7 +2,6 @@ import { AdminModule } from '@admin-bro/nestjs';
 import { Module } from '@nestjs/common';
 import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
-import { DefaultAdminModule } from 'nestjs-admin';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
@@ -26,43 +25,40 @@ import { Reservations as Reservation } from './reservations/reservations.entity'
 import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
 import { ReservationsModule } from './reservations/reservations.module';
 import { MulterModule } from '@nestjs/platform-express';
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { join } from 'path';
-import { Users } from './users/users.entity';
 
-// AdminBro.registerAdapter({ Database, Resource });
+AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    // AdminModule.createAdmin({
-    //   adminBroOptions: {
-    //     rootPath: '/admin',
-    //     resources: [
-    //       User,
-    //       AdminUser,
-    //       Notice,
-    //       Faq,
-    //       Reservation,
-    //       Reservations_users,
-    //     ],
-    //   },
-    //   auth: {
-    //     authenticate: async (email, password) => {
-    //       const admin = await AdminUser.findOne({ email });
-    //       if (admin) {
-    //         if (password === admin.password) {
-    //           return {
-    //             email,
-    //             password,
-    //           };
-    //         }
-    //       }
-    //       return null;
-    //     },
-    //     cookieName: 'adminBro',
-    //     cookiePassword: 'testTest',
-    //   },
-    // }),
+    AdminModule.createAdmin({
+      adminBroOptions: {
+        rootPath: '/admin',
+        resources: [
+          User,
+          AdminUser,
+          Notice,
+          Faq,
+          Reservation,
+          Reservations_users,
+        ],
+      },
+      auth: {
+        authenticate: async (email, password) => {
+          const admin = await AdminUser.findOne({ email });
+          if (admin) {
+            if (password === admin.password) {
+              return {
+                email,
+                password,
+              };
+            }
+          }
+          return null;
+        },
+        cookieName: 'adminBro',
+        cookiePassword: 'testTest',
+      },
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
