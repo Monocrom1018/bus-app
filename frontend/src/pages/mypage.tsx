@@ -25,7 +25,7 @@ const MyPage = () => {
         <NavTitle>마이페이지</NavTitle>
       </Navbar>
 
-      <div className="m-4 flex items-center">
+      <div className="ml-4 mt-6 -mb-3 flex items-center ">
         <div className="mr-4">
           <img
             src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=wffnP1KziQ&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
@@ -34,7 +34,7 @@ const MyPage = () => {
             className="radius"
           />
         </div>
-        <div className="flex-shrink-1 margin-left">
+        <div className="flex-shrink-1">
           <h4 className="text-lg font-bold">홍길동</h4>
           <p className="text-sm text-gray-600">test01@bus.com</p>
         </div>

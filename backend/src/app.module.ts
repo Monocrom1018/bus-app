@@ -17,9 +17,18 @@ import { ContactsModule } from './contacts/contacts.module';
 import { CommentsModule } from './comments/comments.module';
 import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
-import { Users as User } from './users/entities/user.entity';
+import { Users as User } from './users/users.entity';
 import { ConfigModule } from '@nestjs/config';
-import { AdminUsers as AdminUser } from './adminUsers/entities/adminUser.entity';
+import { AdminUsers as AdminUser } from './adminUsers/adminUsers.entity';
+import { Notices as Notice } from './notices/notices.entity';
+import { Faqs as Faq } from './faqs/faqs.entity';
+import { Reservations as Reservation } from './reservations/reservations.entity';
+import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
+import { ReservationsModule } from './reservations/reservations.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { Users } from './users/users.entity';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -28,7 +37,14 @@ AdminBro.registerAdapter({ Database, Resource });
     AdminModule.createAdmin({
       adminBroOptions: {
         rootPath: '/admin',
-        resources: [User, AdminUser],
+        resources: [
+          User,
+          AdminUser,
+          Notice,
+          Faq,
+          Reservation,
+          Reservations_users,
+        ],
       },
       auth: {
         authenticate: async (email, password) => {
@@ -54,12 +70,15 @@ AdminBro.registerAdapter({ Database, Resource });
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
-      entities: [__dirname + '/../**/*.entity.{js,ts}'],
+      // entities: [join(__dirname, '..', 'src', '**', '*.entity{.ts,.js}')],
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: false,
+    }),
+    MulterModule.register({
+      dest: '../uploads',
     }),
     ObjectsModule,
     AuthModule,
-    // DefaultAdminModule,
     UsersModule,
     CategoriesModule,
     ItemsModule,
@@ -71,6 +90,7 @@ AdminBro.registerAdapter({ Database, Resource });
     FaqsModule,
     ContactsModule,
     CommentsModule,
+    ReservationsModule,
   ],
 })
 export class AppModule {}

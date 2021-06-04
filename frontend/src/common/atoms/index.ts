@@ -1,15 +1,14 @@
 import { atom } from 'recoil';
-import { AuthState } from '@constants';
+import { CurrentUser, AuthState } from '@constants';
 
-const initialAuthState: AuthState = {
-  token: null,
-  csrf: null,
-  currentUser: null,
+const initialCurrentUser: CurrentUser = {
+  email: '',
+  isAuthenticated: false,
 };
 
-export const authState = atom({
-  key: 'authState',
-  default: initialAuthState,
+export const currentUserState = atom<CurrentUser>({
+  key: 'currentUser',
+  default: initialCurrentUser,
 });
 
 export const userLikes = atom({

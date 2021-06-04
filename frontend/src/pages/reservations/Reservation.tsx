@@ -51,7 +51,7 @@ const ReservationItem = (props) => {
         </Row>
         <Row>
           <Col width="20" className="text-center text-red-400 font-semibold">
-            ↓
+            ↓↑
           </Col>
         </Row>
         <Row className="mb-5">
@@ -87,6 +87,12 @@ const ReservationItem = (props) => {
           </Col>
         </Row>
         <Row className="pt-4 mb-2">
+          <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
+            운행
+          </Col>
+          <Col width="80">왕복</Col>
+        </Row>
+        <Row className="mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             인원
           </Col>

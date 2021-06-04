@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import { define, factory } from 'typeorm-seeding';
-import { Items as Item } from '../../items/entities/item.entity';
+import { Items as Item } from '../../items/items.entity';
 
 define(Item, (faker: typeof Faker) => {
   const item = new Item();

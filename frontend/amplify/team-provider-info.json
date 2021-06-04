@@ -1,0 +1,26 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-bone-dev-125734-authRole",
+      "UnauthRoleArn": "arn:aws:iam::408865485182:role/amplify-bone-dev-125734-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::408865485182:role/amplify-bone-dev-125734-authRole",
+      "Region": "ap-northeast-2",
+      "DeploymentBucketName": "amplify-bone-dev-125734-deployment",
+      "UnauthRoleName": "amplify-bone-dev-125734-unauthRole",
+      "StackName": "amplify-bone-dev-125734",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:408865485182:stack/amplify-bone-dev-125734/8054f200-c28d-11eb-a9f2-0ad87fac4364",
+      "AmplifyAppId": "d27yq1dognzqs5"
+    },
+    "categories": {
+      "auth": {
+        "bone3d797aa3": {}
+      },
+      "function": {
+        "bone3d797aa3PreSignup": {
+          "deploymentBucketName": "amplify-bone-dev-125734-deployment",
+          "s3Key": "amplify-builds/bone3d797aa3PreSignup-6d34356f756f48503045-build.zip"
+        }
+      }
+    }
+  }
+}

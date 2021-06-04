@@ -6,7 +6,9 @@ import '@styles/framework7-custom.less';
 import '@styles/icons.css';
 import '@styles/app.less';
 import App from '@components/App';
+import Auth from '@aws-amplify/auth';
 import i18n from './assets/lang/i18n';
+import awsconfig from './aws-exports';
 import 'lodash';
 
 const globalAny: any = global;

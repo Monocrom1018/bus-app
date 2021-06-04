@@ -31,7 +31,8 @@ module.exports = {
     hotUpdateMainFilename: 'hot/hot-update.json',
   },
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx', 'less', '.json'],
+    fallback: { crypto: false },
+    extensions: ['.js', '.jsx', '.ts', '.tsx', 'less', '.json', '.mjs'],
     alias: {
       '@utils': resolvePath('src/common/utils/'),
       '@components': resolvePath('src/components/'),
@@ -77,6 +78,12 @@ module.exports = {
                 : {},
           },
         ],
+      },
+      {
+        test: /\.m?js/,
+        resolve: {
+          fullySpecified: false,
+        },
       },
       {
         test: /\.js$/,

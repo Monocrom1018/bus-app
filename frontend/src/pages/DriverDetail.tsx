@@ -151,12 +151,6 @@ const DriverDetailPage = (props) => {
         </ListItem>
       </List>
 
-      <Block className="my-4">
-        <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4">
-          <div>km당 단가</div>
-          <div>5,000원</div>
-        </div>
-      </Block>
       <Button fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
         견적신청
       </Button>

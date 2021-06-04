@@ -20,6 +20,15 @@ interface FormValues {
   bus_type: string;
   bus_old: string;
   people_available: number;
+  drive_date: string;
+  night_begin: number;
+  night_end: number;
+  minimum_charge: number;
+  kmDistance: number;
+  charge_per_distance: number;
+  night_charge: number;
+  charge_per_day: number;
+  service_charge: number;
   certification1: string;
   certification2: string;
   introduce: string;
@@ -60,9 +69,16 @@ const DriverSignUpPage = () => {
     bus_type: '대형',
     bus_old: '2011년식',
     people_available: null,
+    drive_date: '',
     certification1: '',
     certification2: '',
     introduce: '',
+    minimum_charge: 0,
+    kmDistance: 0,
+    charge_per_distance: 0,
+    night_charge: 0,
+    charge_per_day: 0,
+    service_charge: 0,
     // phone: '',
     // termCheck: false,
     // privacyCheck: false,
@@ -208,7 +224,6 @@ const DriverSignUpPage = () => {
                 label={i18next.t('차량유형')}
                 type="select"
                 name="bus_type"
-                clearButton
                 defaultValue="대형"
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -248,6 +263,122 @@ const DriverSignUpPage = () => {
                 <option value="2020년식">2020년식</option>
                 <option value="2021년식">2021년식</option>
               </ListInput>
+
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">운행시간 정보</div>
+                <ListInput
+                  label={i18next.t('운행가능날짜')}
+                  type="text"
+                  name="drive_date"
+                  placeholder="임시로 만들어둔 인풋입니다."
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.drive_date}
+                  errorMessageForce
+                  errorMessage={touched.drive_date && errors.drive_date}
+                />
+                <ListInput
+                  label={i18next.t('심야 시작시간')}
+                  type="text"
+                  name="night_begin"
+                  placeholder="24시간 기준으로 숫자만 입력해주세요."
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_begin}
+                  errorMessageForce
+                  errorMessage={touched.night_begin && errors.night_begin}
+                />
+                <ListInput
+                  label={i18next.t('심야 종료시간')}
+                  type="text"
+                  name="night_end"
+                  placeholder="24시간 기준으로 숫자만 입력해주세요."
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+              </List>
+
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">운행단가 정보</div>
+                <ListInput
+                  label={i18next.t('기본요금')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 300000)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+                <ListInput
+                  label={i18next.t('기본거리(km)')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 100)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+                <ListInput
+                  label={i18next.t('km당 단가')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 1000)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+                <ListInput
+                  label={i18next.t('심야시간 추가요금')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 50000)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+                <ListInput
+                  label={i18next.t('1박 추가시 추가요금')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 400000)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+                <ListInput
+                  label={i18next.t('봉사료')}
+                  type="text"
+                  name="night_end"
+                  placeholder="숫자만 입력해주세요 (예 : 50000)"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.night_end}
+                  errorMessageForce
+                  errorMessage={touched.night_end && errors.night_end}
+                />
+              </List>
 
               <List noHairlinesMd>
                 <div className="p-3 font-semibold bg-white">자기소개</div>
