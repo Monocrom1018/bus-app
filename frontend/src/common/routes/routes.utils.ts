@@ -1,6 +1,6 @@
 import { getRecoilRootState } from '@components/RecoilRootPortal';
 import { ResourceRoute, Route, DEFAULT_ACTIONS, ACTIONS, AuthState } from '@constants';
-import { authState } from '@atoms';
+import { Auth } from 'aws-amplify';
 import IntroPage from '@pages/intro';
 
 const isActionMember = { index: false, new: false, edit: true, show: true };
@@ -53,17 +53,14 @@ function buildRoute(resource: string, actionName: string, isMember: boolean): Ro
 function mapAsyncRoute(asyncRoute: any) {
   return {
     path: asyncRoute.path,
-    async: ({ resolve }) => {
-      (() =>
-        new Promise((_resolve) => {
-          const state = getRecoilRootState(authState);
-          const { currentUser } = state.contents as AuthState;
-          const asyncComponent = currentUser ? asyncRoute.component : IntroPage;
-          return _resolve(asyncComponent);
-        }))().then((RC) => {
-        resolve({ component: RC });
-      });
-    },
+    async: ({ resolve }) =>
+      Auth.currentSession()
+        .then(() => {
+          resolve({ component: asyncRoute.component });
+        })
+        .catch(() => {
+          resolve({ component: IntroPage });
+        }),
   };
 }
 

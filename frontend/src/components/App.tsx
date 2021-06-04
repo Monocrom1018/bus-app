@@ -10,6 +10,10 @@ import { toast } from '@js/utils';
 import capacitorApp from '@js/capacitor-app';
 import routes from '@routes';
 import Views from '@components/Views';
+import Auth from '@aws-amplify/auth';
+import awsconfig from '../aws-exports';
+
+Auth.configure(awsconfig);
 
 const F7App = () => {
   const device = getDevice();
@@ -50,7 +54,8 @@ const F7App = () => {
     });
   }, []);
 
-  
+  if (!IS_PRODUCTION) console.log(routes);
+
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
@@ -58,7 +63,7 @@ const F7App = () => {
           <Views />
         </App>
         {IS_PRODUCTION ? null : <ReactQueryDevtools position="bottom-right" />}
-        <RecoilRootPortal />
+        {/* <RecoilRootPortal /> */}
       </RecoilRoot>
     </QueryClientProvider>
   );

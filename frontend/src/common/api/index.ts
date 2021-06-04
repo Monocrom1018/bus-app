@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Token } from '@constants';
+import { Token, CurrentUser, SignUpParams } from '@constants';
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
 import { ApiService } from './api.service';
@@ -13,11 +13,13 @@ export const refresh = (): Promise<{ data: Token }> =>
       headers: { 'X-CSRF-TOKEN': getToken().csrf, Authorization: `Bearer ${getToken().token}` },
     },
   );
+export const userMeApi = () => API.get<CurrentUser>('/users/me');
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
 export const modifyAPI = (params: FormData) => API.post('/users/update', params);
-export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
+export const signupAPI = (params: SignUpParams) => API.post('/users/signup', { user: params });
+// export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
 /* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */
