@@ -11,7 +11,7 @@ set :ssh_options, { forward_agent: true }
 set :keep_releases, 2
 
 set :linked_files, %w[.env]
-# set :linked_dirs, %w[node_modules]
+set :linked_dirs, %w[node_modules]
 
 namespace :deploy do
   desc "Restart application"
