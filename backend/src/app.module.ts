@@ -58,6 +58,11 @@ AdminBro.registerAdapter({ Database, Resource });
         cookieName: 'adminBro',
         cookiePassword: 'testTest',
       },
+      sessionOptions: {
+        secret: 'adminBro',
+        resave: false,
+        saveUninitialized: true,
+      },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
