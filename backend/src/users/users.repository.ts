@@ -11,7 +11,7 @@ import * as bcrypt from 'bcryptjs';
 export class UsersRepository extends Repository<User> {
   async signUp(userCreateDto: UserCreateDto): Promise<User> {
     const { email, password, password_confirmation, name } = userCreateDto;
-
+    console.log(password);
     const user = new User();
     user.email = email;
     user.name = name;

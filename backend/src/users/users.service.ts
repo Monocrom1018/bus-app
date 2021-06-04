@@ -40,7 +40,6 @@ export class UsersService {
     return;
   }
 
-<<<<<<< HEAD
   async me() {
     const users = this.usersRepository.me();
     return users;
@@ -48,13 +47,13 @@ export class UsersService {
 
   async findByUuid(uuid: string): Promise<User> {
     const user = this.usersRepository.findByUuid(uuid);
-=======
+    return user;
+  }
+
   async getInformation() {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
-
->>>>>>> 3065e3a63b6e65a750195199330452b07c4e54d0
     return user;
   }
 }
