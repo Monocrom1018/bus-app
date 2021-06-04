@@ -2,7 +2,6 @@ import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
 import {
   Body,
-  Get,
   Post,
   Get,
   Controller,
