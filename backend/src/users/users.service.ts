@@ -27,18 +27,20 @@ export class UsersService {
     return users;
   }
 
-  async update(path, userUpdateDto) {
+  async update(filename, userUpdateDto) {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
     if (!user) {
       return 'Unauthorized';
     }
-    user.profile_img = path;
+
+    user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
     user.save();
     return;
   }
 
+<<<<<<< HEAD
   async me() {
     const users = this.usersRepository.me();
     return users;
@@ -46,6 +48,13 @@ export class UsersService {
 
   async findByUuid(uuid: string): Promise<User> {
     const user = this.usersRepository.findByUuid(uuid);
+=======
+  async getInformation() {
+    const user = await this.usersRepository.findOne({
+      email: 'test01@bus.com',
+    });
+
+>>>>>>> 3065e3a63b6e65a750195199330452b07c4e54d0
     return user;
   }
 }

@@ -4,6 +4,7 @@ import {
   Body,
   Get,
   Post,
+  Get,
   Controller,
   UploadedFile,
   UseInterceptors,
@@ -16,8 +17,11 @@ import path = require('path');
 
 export const storage = {
   storage: diskStorage({
-    destination: './uploads',
+    destination: function (req, file, cb) {
+      cb(null, './public/images');
+    },
     filename: (req, file, cb) => {
+      console.log(file);
       const filename: string = path
         .parse(file.originalname)
         .name.replace(/\s/g, '');
@@ -45,8 +49,6 @@ export class UsersController {
     @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(userUpdateDto);
-
     return this.usersService.update(file.path, userUpdateDto);
   }
 
