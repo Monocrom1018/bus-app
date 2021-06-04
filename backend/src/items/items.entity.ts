@@ -5,9 +5,9 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DateAudit } from '../../shared/entity/date-audit.entity';
-import { Categories as Category } from '../../categories/entities/category.entity';
-import { Users as User } from '../../users/entities/user.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
+import { Categories as Category } from '../categories/categories.entity';
+import { Users as User } from '../users/users.entity';
 @Entity()
 export class Items extends DateAudit {
   @PrimaryGeneratedColumn()

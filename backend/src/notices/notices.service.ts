@@ -1,7 +1,7 @@
 import { NoticesRepository } from './notices.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Notices as Notice } from './entities/notice.entity';
+import { Notices as Notice } from './notices.entity';
 @Injectable()
 export class NoticesService {
   constructor(
@@ -9,7 +9,7 @@ export class NoticesService {
     private noticesRepository: NoticesRepository,
   ) {}
 
-  async getAll(): Promise<Notice[]>{
+  async getAll(): Promise<Notice[]> {
     const notices = this.noticesRepository.getAll();
     return notices;
   }

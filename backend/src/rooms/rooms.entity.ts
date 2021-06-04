@@ -1,6 +1,6 @@
-import { Users } from '../../users/entities/user.entity';
-import { Messages } from '../../messages/entities/message.entity';
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { Users } from '../users/users.entity';
+import { Messages } from '../messages/messages.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 import {
   Column,

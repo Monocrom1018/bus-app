@@ -1,9 +1,9 @@
-import { Users } from '../../users/entities/user.entity';
-import { Rooms } from '../../rooms/entities/room.entity';
+import { Users } from '../users/users.entity';
+import { Rooms } from '../rooms/rooms.entity';
 
 import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 @Entity()
 export class Messages extends DateAudit {

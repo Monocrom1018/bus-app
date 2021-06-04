@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Faqs as Faq } from './entities/faq.entity';
+import { Faqs as Faq } from './faqs.entity';
 
 @EntityRepository(Faq)
 export class FaqsRepository extends Repository<Faq> {

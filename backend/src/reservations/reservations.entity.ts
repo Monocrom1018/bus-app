@@ -1,4 +1,4 @@
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 import {
   Column,
@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Reservations_users } from '../../reservations_users/entities/reservations_users.entity';
+import { Reservations_users } from '../reservations_users/entities/reservations_users.entity';
 
 @Entity()
 export class Reservations extends DateAudit {

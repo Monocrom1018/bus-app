@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { Notices as Notice } from './entities/notice.entity';
+import { Notices as Notice } from './notices.entity';
 
 @EntityRepository(Notice)
 export class NoticesRepository extends Repository<Notice> {

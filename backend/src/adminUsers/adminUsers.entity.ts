@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 @Entity()
 export class AdminUsers extends DateAudit {

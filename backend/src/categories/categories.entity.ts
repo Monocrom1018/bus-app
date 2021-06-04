@@ -5,8 +5,8 @@ import {
   OneToMany,
   getRepository,
 } from 'typeorm';
-import { DateAudit } from '../../shared/entity/date-audit.entity';
-import { Items as Item } from '../../items/entities/item.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
+import { Items as Item } from '../items/items.entity';
 @Entity()
 export class Categories extends DateAudit {
   @PrimaryGeneratedColumn()

@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Reservations as Reservation } from '../../reservations/entities/reservation.entity';
+import { Reservations as Reservation } from '../../reservations/reservations.entity';
 
 define(Reservation, (faker: typeof Faker) => {
   const reservation = new Reservation();

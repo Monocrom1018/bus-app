@@ -6,15 +6,13 @@ import {
   OneToMany,
   getRepository,
   ManyToMany,
-  ManyToOne,
 } from 'typeorm';
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { Messages } from '../../messages/entities/message.entity';
-import { Rooms } from '../../rooms/entities/room.entity';
-import { Reservations } from '../../reservations/entities/reservation.entity';
-import { Reservations_users } from '../../reservations_users/entities/reservations_users.entity';
+import { Messages } from '../messages/messages.entity';
+import { Rooms } from '../rooms/rooms.entity';
+import { Reservations_users } from '../reservations_users/entities/reservations_users.entity';
 
 export enum UserType {
   NORMAL = 'normal',
@@ -69,6 +67,9 @@ export class Users extends DateAudit {
     default: UserType.NORMAL,
   })
   user_type: UserType;
+
+  @Column({ nullable: true })
+  uuid: string;
 
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];

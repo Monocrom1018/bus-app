@@ -1,6 +1,6 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Users as User } from '../../users/entities/user.entity';
+import { Users as User } from '../../users/users.entity';
 import * as bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';

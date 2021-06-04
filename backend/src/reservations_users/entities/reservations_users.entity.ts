@@ -1,6 +1,6 @@
-import { Users } from '../../users/entities/user.entity';
-import { Reservations } from '../../reservations/entities/reservation.entity';
-import { DateAudit } from '../../shared/entity/date-audit.entity';
+import { Users } from '../../users/users.entity';
+import { Reservations } from '../../reservations/reservations.entity';
+import { DateAudit } from '../../shared/entities/date-audit.entity';
 
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
