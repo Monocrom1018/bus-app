@@ -7,7 +7,7 @@ const RoomIndexPage = () => {
   const rooms = [];
 
   return (
-    <Page>
+    <Page name="room">
       <Navbar>
         <NavLeft>
           <Link icon="las la-bars" panelOpen="left" />

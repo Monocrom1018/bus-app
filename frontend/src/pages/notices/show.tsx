@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navbar, Page } from 'framework7-react';
-import { getObject } from '@api';
+import { getNotice } from '@api';
 import { useQuery, useQueryClient } from 'react-query';
 import ReactQueryState from '../../components/shared/ReactQueryState';
 import sanitizeHtml from '../../js/utils/sanitizeHtml';
@@ -8,19 +8,7 @@ import { dateFormat } from '@js/utils';
 
 const NoticeShowPage = ({ f7route }) => {
   const noticeId = f7route.params.id;
-  const queryClient = useQueryClient();
-
-  const { status, data: notice, error } = useQuery(
-    ['notice', parseInt(noticeId, 10)],
-    getObject({
-      id: noticeId,
-      model_name: 'notice',
-    }),
-    {
-      placeholderData: () => queryClient.getQueryData('notices').objects?.find((d) => d.id === parseInt(noticeId, 10)),
-      enabled: !!noticeId,
-    },
-  );
+  const { status, data: notice, error } = useQuery(['notice', parseInt(noticeId, 10)], () => getNotice(noticeId));
 
   return (
     <Page className="bg-white" noToolbar>

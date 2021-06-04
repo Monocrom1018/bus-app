@@ -1,0 +1,18 @@
+{
+  "availability-zones:account=408865485182:region=ap-northeast-2": [
+    "ap-northeast-2a",
+    "ap-northeast-2b",
+    "ap-northeast-2c",
+    "ap-northeast-2d"
+  ],
+  "availability-zones:account=450752033014:region=ap-northeast-2": [
+    "ap-northeast-2a",
+    "ap-northeast-2b",
+    "ap-northeast-2c",
+    "ap-northeast-2d"
+  ],
+  "hosted-zone:account=450752033014:domainName=backpack-bus-api.barber.work:region=ap-northeast-2": {
+    "Id": "/hostedzone/Z02566251QIH3EP7X2QKX",
+    "Name": "backpack-bus-api.barber.work."
+  }
+}

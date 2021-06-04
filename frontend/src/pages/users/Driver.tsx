@@ -3,15 +3,16 @@ import React from 'react';
 
 const Driver = (props) => {
   const a = 'test';
+  const { id } = props;
   return (
     <Card outline>
       <List mediaList>
         <ListItem
-          link="#"
-          title="Yellow Submarine"
-          after="$15"
-          subtitle="Beatles"
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sagittis tellus ut turpis condimentum, ut dignissim lacus tincidunt. Cras dolor metus, ultrices condimentum sodales sit amet, pharetra sodales eros. Phasellus vel felis tellus. Mauris rutrum ligula nec dapibus feugiat. In vel dui laoreet, commodo augue id, pulvinar lacus."
+          link={`/drivers/1`}
+          title="김예시"
+          subtitle="28인승 대형우등"
+          text="2018년식 | 배낭 여행사"
+          after="520,000원"
         >
           <img
             slot="media"

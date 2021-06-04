@@ -1,0 +1,20 @@
+module.exports = {
+  type: 'postgres',
+  host: process.env.DB_HOST || 'localhost',
+  port: '5432',
+  username: process.env.DB_USERNAME || 'woo_bottle',
+  password: process.env.DB_PASSWORD || '0000',
+  database: process.env.DB_DATABASE || 'bus_development',
+  ssl: false,
+  synchronize: false,
+  logging: false,
+  entities: ['src/**/*.entity.ts'],
+  seeds: ['src/db/seeds/**/*.seed.ts'],
+  factories: ['src/db/factories/**/*.factory.ts'],
+  migrations: ['src/db/migration/**/*.ts'],
+  subscribers: ['src/subscriber/**/*.ts'],
+  cli: {
+    migrationsDir: 'src/db/migration',
+    subscribersDir: 'src/db/subscriber',
+  },
+};

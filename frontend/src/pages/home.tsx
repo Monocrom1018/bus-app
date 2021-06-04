@@ -17,21 +17,20 @@ import {
   Icon,
 } from 'framework7-react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { userLikes, lineItemsCount, authState } from '@atoms';
+import { userLikes, lineItemsCount } from '@atoms';
 import { getLikes, getObjects, API_URL, getLineItems } from '@api';
 import Categories from '@components/categories/Categories';
 import NewItems from '@components/shared/NewItems';
 import MainBanner from '@components/shared/MainBanner';
 import { useQuery, useQueryClient } from 'react-query';
-import { getRecoilRootState } from '@components/RecoilRootPortal';
 import { AuthState } from '@constants';
 import Footer from '@components/shared/Footer';
+import useAuth from '@hooks/useAuth';
 import Driver from './users/Driver';
 
 const HomePage = () => {
   const queryClient = useQueryClient();
-  const state = getRecoilRootState(authState);
-  // const { currentUser } = state.contents as AuthState;
+  // const { isAuthenticated } = useAuth();
 
   return (
     <Page name="home" className="home-page">
@@ -51,7 +50,7 @@ const HomePage = () => {
         </Button>
       </Block>
       <Block className="border-t-2 pt-8">
-        <BlockTitle className="text-center text-xl">내 주변 추천 기사님들</BlockTitle>
+        <BlockTitle className="text-center text-xl font-bold">내 주변 추천 기사님들</BlockTitle>
         <Driver />
         <Driver />
         <Driver />

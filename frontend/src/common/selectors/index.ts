@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { selector, selectorFamily } from 'recoil';
-import { AuthState, Like } from '@constants';
-import { userLikes, authState } from '@atoms';
+import { CurrentUser } from '@constants';
+import { userLikes, currentUserState } from '@atoms';
 
 export const authSelector = selector({
   key: 'authSelector',
-  get: ({ get }) => get(authState),
-  set: ({ set }, newAuthState: AuthState) => set(authState, newAuthState),
+  get: ({ get }) => get(currentUserState),
+  set: ({ set }, newcurrentUserState: CurrentUser) => set(currentUserState, newcurrentUserState),
 });
 
 export const getLikeIds = selectorFamily({
   key: 'likeIds',
   get: (model_name: string) => ({ get }) => {
     const likes = get(userLikes);
-    return _.filter(likes, (like: Like) => like.target_type === model_name);
+    return likes[model_name] || [];
   },
 });
