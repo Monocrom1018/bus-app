@@ -42,27 +42,27 @@ AdminBro.registerAdapter({ Database, Resource });
           Reservations_users,
         ],
       },
-      auth: {
-        authenticate: async (email, password) => {
-          const admin = await AdminUser.findOne({ email });
-          if (admin) {
-            if (password === admin.password) {
-              return {
-                email,
-                password,
-              };
-            }
-          }
-          return null;
-        },
-        cookieName: 'adminBro',
-        cookiePassword: 'testTest',
-      },
-      sessionOptions: {
-        secret: 'adminBro',
-        resave: false,
-        saveUninitialized: true,
-      },
+      // auth: {
+      //   authenticate: async (email, password) => {
+      //     const admin = await AdminUser.findOne({ email });
+      //     if (admin) {
+      //       if (password === admin.password) {
+      //         return {
+      //           email,
+      //           password,
+      //         };
+      //       }
+      //     }
+      //     return null;
+      //   },
+      //   cookieName: 'adminBro',
+      //   cookiePassword: 'testTest',
+      // },
+      // sessionOptions: {
+      //   secret: 'adminBro',
+      //   resave: false,
+      //   saveUninitialized: true,
+      // },
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
