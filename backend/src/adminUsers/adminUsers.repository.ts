@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from 'typeorm';
-import { AdminUsers as AdminUser } from './entities/adminUser.entity';
+import { AdminUsers as AdminUser } from './adminUsers.entity';
 
 @EntityRepository(AdminUser)
 export class AdminUsersRepository extends Repository<AdminUser> {}

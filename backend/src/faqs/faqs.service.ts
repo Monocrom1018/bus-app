@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { FaqsRepository } from './faqs.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Faqs as Faq } from './entities/faq.entity';
+import { Faqs as Faq } from './faqs.entity';
 
 @Injectable()
 export class FaqsService {

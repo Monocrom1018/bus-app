@@ -6,67 +6,10 @@ import sanitizeHtml from '../js/utils/sanitizeHtml';
 
 const IntroPage = (props) => {
   const [slides, setSlides] = useState([]);
-  // let images: string[] = [
-  //   'couple',
-  //   'segment',
-  //   'chilling',
-  //   'choose',
-  //   'chatting',
-  //   'confirmed',
-  //   'agreement',
-  //   'grades',
-  //   'brainstorming',
-  //   'hiring',
-  //   'love',
-  //   'messages1',
-  //   'development',
-  //   'team',
-  //   'together',
-  //   'space',
-  //   'mobile',
-  //   'website',
-  //   'easter',
-  //   'romantic',
-  //   'tasting',
-  //   'drone',
-  //   'coding',
-  //   'mindfulness',
-  //   'artificial',
-  //   'celebration',
-  //   'virtual',
-  //   'doggy',
-  //   'static',
-  //   'healthy',
-  //   'data',
-  //   'sleep',
-  //   'force',
-  //   'makeup',
-  //   'bicycle',
-  //   'podcast',
-  //   'fishing',
-  //   'credit',
-  //   'workout',
-  //   'pilates',
-  //   'group',
-  //   'mouth',
-  //   'school',
-  // ];
-
-  // useEffect(() => {
-  //   f7ready(async (f7) => {
-  //     setSlides(
-  //       _.zip(_.sampleSize(images, 3), [
-  //         "<script>console.log('a')</script>\n인썸니아의 사전<br/> 구축 기능 \n 시연용 앱입니다",
-  //         '사전 구축 기능을 선택하면',
-  //         '이미 구현된 기능을 활용해<br/>개발 비용이 절감됩니다',
-  //       ]),
-  //     );
-  //   });
-  // }, []);
 
   return (
     <Page>
-      <Navbar className="hidden"></Navbar>
+      <Navbar className="hidden" />
       <Toolbar bottom className="p-0" inner={false}>
         <div className="w-full flex">
           <Button className="w-full rounded-none" large href="/users/sign_in">
@@ -98,7 +41,7 @@ const IntroPage = (props) => {
           5,000명의 버스기사님들이 <br />
           배낭버스와 함께 수익을 내고 계십니다.
         </div>
-        <Button className=" border text-lg h-10" href="/users/sign_up/intro">
+        <Button className="border text-lg h-10" href="/users/sign_up/intro">
           버스기사/운수회사 회원가입
         </Button>
       </div>

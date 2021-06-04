@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReservationsRepository } from './reservations.repository';
-import { Reservations as Reservation } from './entities/reservation.entity';
+import { Reservations as Reservation } from './reservations.entity';
 
 const axios = require('axios');
 const dotenv = require('dotenv');

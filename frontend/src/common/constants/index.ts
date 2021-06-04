@@ -1,10 +1,16 @@
 import React from 'react';
+import { Router } from 'framework7/types';
+import { CognitoUser } from '@aws-amplify/auth';
+import { CognitoIdToken, CognitoAccessToken, CognitoRefreshToken } from 'amazon-cognito-identity-js';
 import packageJson from '../../../package.json';
+import { fromPairs } from 'lodash';
+
+// export * from './schema';
+export * from './api';
 
 /** 리터럴 혹은 불변 객체 */
 export const TOKEN_KEY = `${packageJson.name}_TOKEN`;
 export const CSRF_KEY = `${packageJson.name}_CSRF`;
-
 export const ACTIONS = {
   NEW: 'new',
   INDEX: 'index',
@@ -13,6 +19,19 @@ export const ACTIONS = {
 };
 
 export const DEFAULT_ACTIONS = Object.values(ACTIONS);
+
+// export interface Route {
+//   path: string;
+//   component?: React.FunctionComponent;
+//   async?: any;
+// }
+
+// export interface ResourceRoute {
+//   resource: string;
+//   collection?: string[];
+//   member?: string[];
+//   only?: ('show' | 'edit' | 'new' | 'index')[];
+// }
 
 /** 인터페이스 */
 /* User Auth Interfaces */
@@ -49,4 +68,19 @@ export interface ResourceRoute {
   collection?: string[];
   member?: string[];
   only?: ('show' | 'edit' | 'new' | 'index')[];
+}
+
+interface CurrentUserState {
+  isAuthenticated: boolean;
+}
+
+export interface CurrentUser extends CurrentUserState {
+  email: string;
+  // TODO
+}
+
+export interface Address {
+  zipcode: string;
+  address1: string;
+  address2?: string;
 }

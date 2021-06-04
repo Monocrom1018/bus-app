@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { UserCreateDto } from './dto/user-create.dto';
+import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
-import { Users as User } from './entities/user.entity';
-const dotenv = require('dotenv');
-dotenv.config();
+import { Users as User } from './users.entity';
 
 @Injectable()
 export class UsersService {
@@ -11,6 +10,17 @@ export class UsersService {
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
   ) {}
+
+  async signUp(userCreateDto: UserCreateDto): Promise<string> {
+    console.log(userCreateDto);
+    const user = await this.usersRepository.signUp(userCreateDto);
+
+    if (!user) {
+      throw new NotAcceptableException();
+    }
+
+    return 'user created';
+  }
 
   async findAll(): Promise<User[]> {
     const users = this.usersRepository.findAll();
@@ -30,11 +40,21 @@ export class UsersService {
     return;
   }
 
+<<<<<<< HEAD
+  async me() {
+    const users = this.usersRepository.me();
+    return users;
+  }
+
+  async findByUuid(uuid: string): Promise<User> {
+    const user = this.usersRepository.findByUuid(uuid);
+=======
   async getInformation() {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
 
+>>>>>>> 3065e3a63b6e65a750195199330452b07c4e54d0
     return user;
   }
 }

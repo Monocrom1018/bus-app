@@ -1,28 +1,19 @@
 import { UserUpdateDto } from './dto/user-update.dto';
+import { UserCreateDto } from './dto/user-create.dto';
 import {
   Body,
+  Get,
   Post,
   Get,
   Controller,
   UploadedFile,
   UseInterceptors,
-  Res,
-  Response,
-  Request,
-  Param,
   ValidationPipe,
-  ParseIntPipe,
-  Header,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import {
-  FileFieldsInterceptor,
-  FileInterceptor,
-} from '@nestjs/platform-express';
-import * as fs from 'fs';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
-import { paramsToFormData } from 'admin-bro';
 
 export const storage = {
   storage: diskStorage({
@@ -42,22 +33,27 @@ export const storage = {
 
 @Controller('users')
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(private usersService: UsersService) {}
+
+  @Post('/signup')
+  @UseInterceptors(FileInterceptor('file'))
+  async signUp(@Body('user') userCreateDto: UserCreateDto) {
+    console.log(userCreateDto);
+    await this.usersService.signUp(userCreateDto);
+    return 'user saved';
+  }
 
   @Post('update')
   @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
   async update(
-    // @Body('user', ValidationPipe) userUpdateDto: UserUpdateDto,
     @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
-    @Request() req,
   ) {
-    console.log(file);
-    return this.userService.update(file.filename, userUpdateDto);
+    return this.usersService.update(file.path, userUpdateDto);
   }
 
-  @Get('getInformation')
-  async getInformation() {
-    return this.userService.getInformation();
+  @Get('me')
+  async me() {
+    return this.usersService.me();
   }
 }
