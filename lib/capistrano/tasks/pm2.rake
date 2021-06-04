@@ -21,7 +21,7 @@ namespace :pm2 do
 
   def start_app
     within current_path do
-      execute :pm2, :start, :all
+      execute :pm2, :stop, :dist/src/main.js
     end
   end
 
