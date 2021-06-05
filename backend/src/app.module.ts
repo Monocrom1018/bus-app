@@ -22,45 +22,14 @@ import { Reservations as Reservation } from './reservations/reservations.entity'
 import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
 import { ReservationsModule } from './reservations/reservations.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { AdminModule } from '@admin-bro/nestjs';
+import { Database, Resource } from '@admin-bro/typeorm';
+import AdminBro from 'admin-bro';
 
-// AdminBro.registerAdapter({ Database, Resource });
+AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    // AdminModule.createAdmin({
-    //   adminBroOptions: {
-    //     rootPath: '/admin',
-    //     resources: [
-    //       User,
-    //       AdminUser,
-    //       Notice,
-    //       Faq,
-    //       Reservation,
-    //       Reservations_users,
-    //     ],
-    //   },
-    //   auth: {
-    //     authenticate: async (email, password) => {
-    //       const admin = await AdminUser.findOne({ email });
-    //       if (admin) {
-    //         if (password === admin.password) {
-    //           return {
-    //             email,
-    //             password,
-    //           };
-    //         }
-    //       }
-    //       return null;
-    //     },
-    //     cookieName: 'adminBro',
-    //     cookiePassword: 'testTest',
-    //   },
-    //   sessionOptions: {
-    //     secret: 'adminBro',
-    //     resave: false,
-    //     saveUninitialized: true,
-    //   },
-    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -71,6 +40,35 @@ import { MulterModule } from '@nestjs/platform-express';
       // entities: [join(__dirname, '..', 'src', '**', '*.entity{.ts,.js}')],
       entities: [__dirname + '/**/*.entity.{js,ts}'],
       synchronize: false,
+    }),
+    AdminModule.createAdmin({
+      adminBroOptions: {
+        rootPath: '/admin',
+        resources: [
+          User,
+          AdminUser,
+          Notice,
+          Faq,
+          Reservation,
+          Reservations_users,
+        ],
+      },
+      auth: {
+        authenticate: async (email, password) => {
+          const admin = await AdminUser.findOne({ email });
+          if (admin) {
+            if (password === admin.password) {
+              return {
+                email,
+                password,
+              };
+            }
+          }
+          return null;
+        },
+        cookieName: 'adminBro',
+        cookiePassword: 'testTest',
+      },
     }),
     MulterModule.register({
       dest: '../uploads',
