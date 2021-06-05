@@ -1,4 +1,4 @@
-import { AdminModule } from '@admin-bro/nestjs';
+// import { AdminModule } from '@admin-bro/nestjs';
 import { Module } from '@nestjs/common';
 import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
@@ -14,8 +14,8 @@ import { FollowsModule } from './follows/follows.module';
 import { FaqsModule } from './faqs/faqs.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { CommentsModule } from './comments/comments.module';
-import { Database, Resource } from '@admin-bro/typeorm';
-import AdminBro from 'admin-bro';
+// import { Database, Resource } from '@admin-bro/typeorm';
+// import AdminBro from 'admin-bro';
 import { Users as User } from './users/users.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AdminUsers as AdminUser } from './adminUsers/adminUsers.entity';
@@ -26,44 +26,44 @@ import { Reservations_users } from './reservations_users/entities/reservations_u
 import { ReservationsModule } from './reservations/reservations.module';
 import { MulterModule } from '@nestjs/platform-express';
 
-AdminBro.registerAdapter({ Database, Resource });
+// AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    AdminModule.createAdmin({
-      adminBroOptions: {
-        rootPath: '/admin',
-        resources: [
-          User,
-          AdminUser,
-          Notice,
-          Faq,
-          Reservation,
-          Reservations_users,
-        ],
-      },
-      // auth: {
-      //   authenticate: async (email, password) => {
-      //     const admin = await AdminUser.findOne({ email });
-      //     if (admin) {
-      //       if (password === admin.password) {
-      //         return {
-      //           email,
-      //           password,
-      //         };
-      //       }
-      //     }
-      //     return null;
-      //   },
-      //   cookieName: 'adminBro',
-      //   cookiePassword: 'testTest',
-      // },
-      // sessionOptions: {
-      //   secret: 'adminBro',
-      //   resave: false,
-      //   saveUninitialized: true,
-      // },
-    }),
+    // AdminModule.createAdmin({
+    //   adminBroOptions: {
+    //     rootPath: '/admin',
+    //     resources: [
+    //       User,
+    //       AdminUser,
+    //       Notice,
+    //       Faq,
+    //       Reservation,
+    //       Reservations_users,
+    //     ],
+    //   },
+    //   auth: {
+    //     authenticate: async (email, password) => {
+    //       const admin = await AdminUser.findOne({ email });
+    //       if (admin) {
+    //         if (password === admin.password) {
+    //           return {
+    //             email,
+    //             password,
+    //           };
+    //         }
+    //       }
+    //       return null;
+    //     },
+    //     cookieName: 'adminBro',
+    //     cookiePassword: 'testTest',
+    //   },
+    //   sessionOptions: {
+    //     secret: 'adminBro',
+    //     resave: false,
+    //     saveUninitialized: true,
+    //   },
+    // }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
