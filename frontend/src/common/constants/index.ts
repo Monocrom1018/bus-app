@@ -77,6 +77,7 @@ interface CurrentUserState {
 export interface CurrentUser extends CurrentUserState {
   email: string;
   // TODO
+  user_type: string;
 }
 
 export interface Address {
