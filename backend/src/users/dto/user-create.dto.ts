@@ -1,4 +1,10 @@
-import { IsString, MinLength, MaxLength } from 'class-validator';
+import {
+  IsString,
+  MinLength,
+  MaxLength,
+  IsOptional,
+  IsBoolean,
+} from 'class-validator';
 
 export class UserCreateDto {
   @IsString()
@@ -12,10 +18,21 @@ export class UserCreateDto {
   password: string;
 
   @IsString()
-  @MinLength(8)
-  @MaxLength(20)
-  password_confirmation: string;
+  user_type: string;
 
   @IsString()
   name: string;
+
+  @IsString()
+  @IsOptional()
+  company_name: string;
+
+  @IsBoolean()
+  termCheck;
+
+  @IsBoolean()
+  privacyCheck;
+
+  @IsBoolean()
+  marketingCheck;
 }

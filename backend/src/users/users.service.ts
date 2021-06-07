@@ -12,7 +12,6 @@ export class UsersService {
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    console.log(userCreateDto);
     const user = await this.usersRepository.signUp(userCreateDto);
 
     if (!user) {

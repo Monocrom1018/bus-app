@@ -26,7 +26,6 @@ import { Reservations as Reservation } from './reservations/reservations.entity'
 import { Reservations_users } from './reservations_users/entities/reservations_users.entity';
 import { ReservationsModule } from './reservations/reservations.module';
 import { MulterModule } from '@nestjs/platform-express';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { Users } from './users/users.entity';
 
