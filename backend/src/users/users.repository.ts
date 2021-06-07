@@ -18,7 +18,11 @@ export class UsersRepository extends Repository<User> {
     user.email = email;
     user.name = name;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
-    user.registration_confirmed = false;
+    if (user_type === 'DRIVER' || user_type === 'COMPANY') {
+      user.registration_confirmed = false;
+    } else {
+      user.registration_confirmed = true;
+    }
 
     try {
       await user.save();
