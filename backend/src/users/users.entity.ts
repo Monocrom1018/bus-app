@@ -26,16 +26,15 @@ export class Users extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  registration_confirmed: boolean;
+
   @Column()
   email: string;
 
   @Column({ nullable: true })
   @Exclude() // serialization 제외
   password: string;
-
-  @Column({ nullable: true })
-  @Exclude()
-  password_confirmation: string;
 
   @Column()
   @Exclude()
@@ -48,15 +47,6 @@ export class Users extends DateAudit {
 
   @Column({ nullable: true })
   profile_img: string;
-
-  @Column({ nullable: true })
-  zipcode: string;
-
-  @Column({ nullable: true })
-  address1: string;
-
-  @Column({ nullable: true })
-  address2: string;
 
   @Column({ nullable: true })
   phone: string;

@@ -12,7 +12,6 @@ export class UsersService {
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    console.log(userCreateDto);
     const user = await this.usersRepository.signUp(userCreateDto);
 
     if (!user) {
@@ -54,7 +53,6 @@ export class UsersService {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
-
     return user;
   }
 }

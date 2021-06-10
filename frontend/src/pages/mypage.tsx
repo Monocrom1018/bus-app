@@ -4,7 +4,7 @@ import { logoutAPI } from '@api';
 import { f7, Navbar, Page, NavLeft, NavTitle, Link, Button, List } from 'framework7-react';
 
 const MyPage = () => {
-  const { isAuthenticated, authenticateUser, unAuthenticateUser } = useAuth();
+  const { signOutUser, authenticateUser, unAuthenticateUser } = useAuth();
 
   const a = 'T';
 
@@ -57,7 +57,7 @@ const MyPage = () => {
           <a href="/contacts">이메일 문의</a>
         </li>
         <li>
-          <a onClick={logoutHandler}>로그아웃</a>
+          <a onClick={signOutUser}>로그아웃</a>
         </li>
       </List>
     </Page>

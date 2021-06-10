@@ -5,21 +5,24 @@ import {
 } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 import { Users as User } from './users.entity';
+import { UserType } from './users.entity';
+
 import * as bcrypt from 'bcryptjs';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async signUp(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password, password_confirmation, name } = userCreateDto;
-
+    const { email, password, name, user_type } = userCreateDto;
     const user = new User();
+    user.user_type = UserType[user_type];
     user.email = email;
     user.name = name;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
-    // user.password = await this.hashPassword(
-    //   `${password}`,
-    //   user.encrypted_password,
-    // );
+    if (user_type === 'DRIVER' || user_type === 'COMPANY') {
+      user.registration_confirmed = false;
+    } else {
+      user.registration_confirmed = true;
+    }
 
     try {
       await user.save();

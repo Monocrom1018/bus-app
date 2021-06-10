@@ -73,11 +73,9 @@ const ModifyPage = () => {
             if (imgState.file !== '') {
               values.profile_img = imgState.file;
             }
-            console.log(values);
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
             fd.append('user[profile_img]', values.profile_img);
             const response = await modifyAPI(fd);
-            console.log(response);
             f7.dialog.close();
           } catch (error) {
             f7.dialog.close();
