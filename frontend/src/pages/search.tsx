@@ -14,23 +14,25 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import Driver from './users/Driver';
-import { getDistance } from '../common/api/index';
+import { getDrivers } from '../common/api/index';
 
 const SearchPage = () => {
   const test = 'test';
   const [departure, setDeparture] = useState('');
+  const [departureDate, setDepartureDate] = useState('');
   const [destination, setDestination] = useState('');
   const [distance, setDistance] = useState(0);
   const [stopovers, setStopovers] = useState([]);
   const [stopoverCount, setStopoverCount] = useState(0);
-  const [isRoundTrip, setIsRoundTrip] = useState(false);
-  const [withDriver, setWithDriver] = useState('');
+  const [drivers, setDrivers] = useState(null);
   const postCodeRef = useRef();
 
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
-      const distance = await getDistance({ departure, destination, stopovers });
-      setDistance(distance);
+      const searchParam = { departure, departureDate, destination, stopovers };
+      const result = await getDrivers(searchParam);
+      console.log('result', result);
+      setDrivers(result);
     } else {
       // 출발지 도착지 입력해달라고 토스트 띄우기
     }
@@ -108,6 +110,7 @@ const SearchPage = () => {
                 dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
               }}
               className="bg-gray-50"
+              onCalendarChange={(e) => setDepartureDate(String(e[0]))}
             />
             <ListInput
               label="오는날 및 탑승시간"
@@ -180,19 +183,19 @@ const SearchPage = () => {
           <option value="출발, 귀환시에만 동행">출발, 귀환시에만 동행</option>
         </ListInput> */}
 
-        {withDriver === '전체일정 동행' ? (
+        {/* {withDriver === '전체일정 동행' ? (
           <Input
             type="textarea"
             placeholder="구체적인 동행일정을 상세히 적어주세요"
             className="m-3 pl-2 border-2 border-gray-200 rounded-lg bg-gray-50"
           ></Input>
         ) : null}
-        <br />
+        <br /> */}
 
         <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
       </List>
 
-      {distance ? (
+      {drivers ? (
         <div>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
@@ -200,17 +203,11 @@ const SearchPage = () => {
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
-            {isRoundTrip ? (
-              <div className="mx-4 font-medium text-gray-700">왕복거리 : {Number(`${distance}`) * 2}km</div>
-            ) : (
-              <div className="mx-4 font-medium text-gray-700">편도거리 : {`${distance}km`}</div>
-            )}
           </div>
           <div>
-            <Driver />
-            <Driver />
-            <Driver />
-            <Driver />
+            {drivers.map((driver) => {
+              return <Driver driver={driver} key={driver.id} />;
+            })}
           </div>
         </div>
       ) : null}
