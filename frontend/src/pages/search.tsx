@@ -30,9 +30,9 @@ const SearchPage = () => {
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
       const searchParam = { departure, departureDate, destination, stopovers };
-      const result = await getDrivers(searchParam);
-      console.log('result', result);
-      setDrivers(result);
+      const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
+      console.log('result', foundDrivers);
+      setDrivers(foundDrivers);
     } else {
       // 출발지 도착지 입력해달라고 토스트 띄우기
     }

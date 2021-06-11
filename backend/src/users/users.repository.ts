@@ -3,7 +3,14 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { EntityRepository, getManager, In, Raw, Repository } from 'typeorm';
+import {
+  Brackets,
+  EntityRepository,
+  getManager,
+  In,
+  Raw,
+  Repository,
+} from 'typeorm';
 import { Users as User } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 
@@ -80,30 +87,72 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async findTargetDrivers(params, distance): Promise<User[]> {
+  async findTargetDrivers(params): Promise<User[]> {
     const { departureDate, departure } = params;
     const date = departureDate.split(' ')[0];
     const legion = departure.split(' ')[0];
 
-    console.log('거리 : ', distance);
     console.log('출발요일 : ', date);
     console.log('출발지역 : ', legion);
 
     // TODO 운행날짜(일 ~ 토) -> [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
     // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
 
-    //? user 중 uer_type 이 driver 또는 company 이고
-    //? 운행날짜 배열에  date 가 포함되어 있고
-    //? 운행지역 배열에 legion 이 포함되어 있는 사람을 findAll!
+    // const entityManager = getManager();
 
-    const entityManager = getManager();
-    let drivers = await entityManager.query(
-      `select * from users where 
-        drivable_legion @> ARRAY['${legion}'] 
-        AND drivable_date @> ARRAY['${date}'] 
-        AND user_type = 'driver' 
-        OR user_type = 'company'`,
-    );
+    // let drivers = await entityManager.query(
+    //   `select * from users where
+    //     drivable_legion @> ARRAY['${legion}']
+    //     AND drivable_date @> ARRAY['${date}']
+    //     AND (user_type = 'driver'
+    //     OR user_type = 'company')`,
+    // );
+
+    // const userQb = await this.createQueryBuilder('User')
+    //   .where('user_type = :driver', { driver: 'driver' })
+    //   .orWhere('user_type = :company', { company: 'company' });
+
+    // console.log(userQb);
+
+    // const posts = await this.createQueryBuilder('User')
+    //   .where("drivable_legion @> ARRAY['${" + userQb.getQuery().legion + "}']")
+    //   .andWhere("drivable_date @> ARRAY['${" + userQb.getQuery().date + "}']")
+    //   .setParameters(userQb.getParameters())
+    //   .getMany();
+
+    // const posts = await this.createQueryBuilder('User')
+    //   .where((qb) => {
+    //     const subQuery = qb
+    //       .subQuery()
+    //       .from(User, 'User')
+    // .where('user_type = :company', { company: 'company' })
+    // .orWhere('user_type = :driver', { driver: 'driver' })
+    //       .getQuery();
+
+    //     return subQuery + '.drivable_date @> ARRAY[' + `${date}` + ']';
+    //   })
+    //   .getMany();
+
+    // .where("user.registered = :registered", { registered: true })
+    // .andWhere(new Brackets(qb => {
+    //     qb.where("user.firstName = :firstName", { firstName: "Timber" })
+    //       .orWhere("user.lastName = :lastName", { lastName: "Saw" })
+    // }))
+
+    const drivers = await this.createQueryBuilder('User')
+      .where(`drivable_legion @> ARRAY['${legion}']`)
+      .andWhere(`drivable_date @> ARRAY['${date}']`)
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('user_type = :company', { company: 'company' }).orWhere(
+            'user_type = :driver',
+            { driver: 'driver' },
+          );
+        }),
+      )
+      .getMany();
+
+    console.log(drivers);
 
     return drivers;
   }

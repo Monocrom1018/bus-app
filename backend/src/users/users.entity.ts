@@ -63,11 +63,13 @@ export class Users extends DateAudit {
 
   @Column('text', {
     array: true,
+    nullable: true,
   })
   drivable_date: string[];
 
   @Column('text', {
     array: true,
+    nullable: true,
   })
   drivable_legion: string[];
 

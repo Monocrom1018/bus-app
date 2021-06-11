@@ -12,5 +12,9 @@ export class UserSearchDto {
 
   @IsString()
   @IsOptional()
-  stopovers: string;
+  stopovers: string[];
+
+  @IsString()
+  @IsOptional()
+  distance: number;
 }

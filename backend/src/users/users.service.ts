@@ -1,6 +1,10 @@
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
-import { Injectable, NotAcceptableException } from '@nestjs/common';
+import {
+  Injectable,
+  NotAcceptableException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
@@ -62,8 +66,14 @@ export class UsersService {
 
   async getDrivers(params: UserSearchDto) {
     const distance = await this.getDistance(params);
-    const drivers = this.usersRepository.findTargetDrivers(params, distance);
-    return drivers;
+
+    if (!distance) {
+      throw new NotFoundException();
+    }
+
+    const drivers = await this.usersRepository.findTargetDrivers(params);
+
+    return { foundDrivers: drivers, foundDistance: distance };
   }
 
   async getDistance(params) {
@@ -118,6 +128,6 @@ export class UsersService {
     //   distanceData.data.route.traoptimal[0].summary.distance / 1000
     // ).toFixed(1);
 
-    return '81.9';
+    return 81.9;
   }
 }
