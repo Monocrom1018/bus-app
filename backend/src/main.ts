@@ -18,7 +18,7 @@ async function bootstrap() {
   // app.setGlobalPrefix(apiConfig.version);
   // app.use(csurf({ cookie: true }));
   // app.use(csrf({ cookie: true })); // csrf 방어
-  app.useStaticAssets(join(process.cwd(), 'public'));
+  // app.useStaticAssets(join(process.cwd(), 'public'));
   app.enableCors();
   app.use(helmet());
   app.use(cookieParser());

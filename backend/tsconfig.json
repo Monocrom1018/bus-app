@@ -11,6 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
+    "skipLibCheck": true,
     "paths": {
       "@decorators/*": ["src/shared/decorators/*"],
       "@entities/*": ["src/shared/entities/*"],
@@ -35,7 +36,7 @@
       "@reservations/*": ["src/reservations/*"],
       "@reservations_users/*": ["src/reservations_users/*"],
       "@rooms/*": ["src/rooms/*"]
-    }
+    },
   },
   "exclude": ["node_modules", "**/*.spec.ts", "rails-cdk"]
 }
