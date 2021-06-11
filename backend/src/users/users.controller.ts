@@ -1,5 +1,6 @@
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
+import { UserSearchDto } from './dto/user-search.dto';
 import {
   Body,
   Post,
@@ -8,6 +9,7 @@ import {
   UploadedFile,
   UseInterceptors,
   ValidationPipe,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -54,5 +56,10 @@ export class UsersController {
   @Get('me')
   async me() {
     return this.usersService.me();
+  }
+
+  @Post('drivers')
+  async getDrivers(@Body() userSearchDto: UserSearchDto) {
+    return this.usersService.getDrivers(userSearchDto);
   }
 }

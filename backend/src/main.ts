@@ -29,7 +29,8 @@ async function bootstrap() {
   // Convert exceptions to JSON readable format
   app.useGlobalFilters(new HttpExceptionFilter());
   // console.log(JSON.parse(process.env.JWKS));
-  await app.listen(3000);
+
+  await app.listen(process.env.PORT);
   // if (module.hot) {
   //   module.hot.accept();
   //   module.hot.dispose(() => app.close());

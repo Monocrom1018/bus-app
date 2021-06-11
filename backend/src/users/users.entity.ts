@@ -26,16 +26,15 @@ export class Users extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: true })
+  registration_confirmed: boolean;
+
   @Column()
   email: string;
 
   @Column({ nullable: true })
   @Exclude() // serialization 제외
   password: string;
-
-  @Column({ nullable: true })
-  @Exclude()
-  password_confirmation: string;
 
   @Column()
   @Exclude()
@@ -50,15 +49,6 @@ export class Users extends DateAudit {
   profile_img: string;
 
   @Column({ nullable: true })
-  zipcode: string;
-
-  @Column({ nullable: true })
-  address1: string;
-
-  @Column({ nullable: true })
-  address2: string;
-
-  @Column({ nullable: true })
   phone: string;
 
   @Column({
@@ -70,6 +60,30 @@ export class Users extends DateAudit {
 
   @Column({ nullable: true })
   uuid: string;
+
+  @Column('text', {
+    array: true,
+    nullable: true,
+  })
+  drivable_date: string[];
+
+  @Column('text', {
+    array: true,
+    nullable: true,
+  })
+  drivable_legion: string[];
+
+  @Column({ nullable: true })
+  basic_km: number;
+
+  @Column({ nullable: true })
+  basic_charge: number;
+
+  @Column({ nullable: true })
+  charge_per_km: number;
+
+  @Column({ nullable: true })
+  service_charge: number;
 
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
