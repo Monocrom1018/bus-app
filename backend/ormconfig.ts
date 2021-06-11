@@ -7,7 +7,7 @@ module.exports = {
   database: process.env.DB_DATABASE || 'bus_development',
   ssl: false,
   synchronize: false,
-  logging: false,
+  logging: true,
   entities: ['src/**/*.entity.ts'],
   seeds: ['src/db/seeds/**/*.seed.ts'],
   factories: ['src/db/factories/**/*.factory.ts'],

@@ -1,5 +1,6 @@
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
+import { UserSearchDto } from './dto/user-search.dto';
 import {
   Body,
   Post,
@@ -7,6 +8,8 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
+  ValidationPipe,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -19,6 +22,7 @@ export const storage = {
       cb(null, './public/images');
     },
     filename: (req, file, cb) => {
+      console.log(file);
       const filename: string = path
         .parse(file.originalname)
         .name.replace(/\s/g, '');
@@ -33,11 +37,9 @@ export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Post('/signup')
-  @UseInterceptors(FileInterceptor('user[license]', storage))
-  async signUp(
-    @Body('user') userCreateDto: UserCreateDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  @UseInterceptors(FileInterceptor('file'))
+  async signUp(@Body('user') userCreateDto: UserCreateDto) {
+    console.log(userCreateDto);
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
@@ -54,5 +56,10 @@ export class UsersController {
   @Get('me')
   async me() {
     return this.usersService.me();
+  }
+
+  @Post('drivers')
+  async getDrivers(@Body() userSearchDto: UserSearchDto) {
+    return this.usersService.getDrivers(userSearchDto);
   }
 }

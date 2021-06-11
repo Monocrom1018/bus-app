@@ -3,26 +3,30 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { EntityRepository, Repository } from 'typeorm';
+import {
+  Brackets,
+  EntityRepository,
+  getManager,
+  In,
+  Raw,
+  Repository,
+} from 'typeorm';
 import { Users as User } from './users.entity';
-import { UserType } from './users.entity';
-
 import * as bcrypt from 'bcryptjs';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async signUp(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password, name, user_type } = userCreateDto;
+    const { email, password, name } = userCreateDto;
+
     const user = new User();
-    user.user_type = UserType[user_type];
     user.email = email;
     user.name = name;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
-    if (user_type === 'DRIVER' || user_type === 'COMPANY') {
-      user.registration_confirmed = false;
-    } else {
-      user.registration_confirmed = true;
-    }
+    // user.password = await this.hashPassword(
+    //   `${password}`,
+    //   user.encrypted_password,
+    // );
 
     try {
       await user.save();
@@ -81,5 +85,55 @@ export class UsersRepository extends Repository<User> {
       },
     });
     return user;
+  }
+
+  async findTargetDrivers(params): Promise<User[]> {
+    const { departureDate, departure } = params;
+    const date = departureDate.split(' ')[0];
+    const legion = departure.split(' ')[0];
+
+    console.log('출발요일 : ', date);
+    console.log('출발지역 : ', legion);
+
+    // TODO 운행날짜(일 ~ 토) -> [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
+    // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
+
+    // const entityManager = getManager();
+
+    // let drivers = await entityManager.query(
+    //   `select * from users where
+    //     drivable_legion @> ARRAY['${legion}']
+    //     AND drivable_date @> ARRAY['${date}']
+    //     AND (user_type = 'driver'
+    //     OR user_type = 'company')`,
+    // );
+
+    // const posts = await this.createQueryBuilder('User')
+    //   .where((qb) => {
+    //     const subQuery = qb
+    //       .subQuery()
+    //       .from(User, 'User')
+    // .where('user_type = :company', { company: 'company' })
+    // .orWhere('user_type = :driver', { driver: 'driver' })
+    //       .getQuery();
+
+    //     return subQuery + '.drivable_date @> ARRAY[' + `${date}` + ']';
+    //   })
+    //   .getMany();
+
+    const drivers = await this.createQueryBuilder('User')
+      .where(`drivable_legion @> ARRAY['${legion}']`)
+      .andWhere(`drivable_date @> ARRAY['${date}']`)
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where('user_type = :company', { company: 'company' }).orWhere(
+            'user_type = :driver',
+            { driver: 'driver' },
+          );
+        }),
+      )
+      .getMany();
+
+    return drivers;
   }
 }
