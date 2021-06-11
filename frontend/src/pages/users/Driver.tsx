@@ -3,7 +3,7 @@ import React from 'react';
 
 const Driver = (props) => {
   const a = 'test';
-  const { id, name, profile_img } = props.driver;
+  const { id, name, profile_img, totalCharge } = props.driver;
 
   return (
     <Card outline>
@@ -13,7 +13,7 @@ const Driver = (props) => {
           title={name}
           subtitle="28인승 대형우등"
           text="2018년식 | 배낭 여행사"
-          after="520,000원"
+          after={`${totalCharge.toLocaleString()}₩`}
         >
           <img slot="media" src={profile_img} width="80" />
         </ListItem>

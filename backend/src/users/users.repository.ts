@@ -108,18 +108,6 @@ export class UsersRepository extends Repository<User> {
     //     OR user_type = 'company')`,
     // );
 
-    // const userQb = await this.createQueryBuilder('User')
-    //   .where('user_type = :driver', { driver: 'driver' })
-    //   .orWhere('user_type = :company', { company: 'company' });
-
-    // console.log(userQb);
-
-    // const posts = await this.createQueryBuilder('User')
-    //   .where("drivable_legion @> ARRAY['${" + userQb.getQuery().legion + "}']")
-    //   .andWhere("drivable_date @> ARRAY['${" + userQb.getQuery().date + "}']")
-    //   .setParameters(userQb.getParameters())
-    //   .getMany();
-
     // const posts = await this.createQueryBuilder('User')
     //   .where((qb) => {
     //     const subQuery = qb
@@ -133,12 +121,6 @@ export class UsersRepository extends Repository<User> {
     //   })
     //   .getMany();
 
-    // .where("user.registered = :registered", { registered: true })
-    // .andWhere(new Brackets(qb => {
-    //     qb.where("user.firstName = :firstName", { firstName: "Timber" })
-    //       .orWhere("user.lastName = :lastName", { lastName: "Saw" })
-    // }))
-
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_legion @> ARRAY['${legion}']`)
       .andWhere(`drivable_date @> ARRAY['${date}']`)
@@ -151,8 +133,6 @@ export class UsersRepository extends Repository<User> {
         }),
       )
       .getMany();
-
-    console.log(drivers);
 
     return drivers;
   }

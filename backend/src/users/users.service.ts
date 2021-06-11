@@ -71,7 +71,21 @@ export class UsersService {
       throw new NotFoundException();
     }
 
-    const drivers = await this.usersRepository.findTargetDrivers(params);
+    let drivers = await this.usersRepository.findTargetDrivers(params);
+
+    if (drivers) {
+      drivers.map((driver) => {
+        const restDistance =
+          distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
+        const totalCharge =
+          restDistance * driver.charge_per_km +
+          driver.basic_charge +
+          driver.service_charge;
+        driver['totalCharge'] = totalCharge;
+      });
+    }
+
+    console.log(drivers);
 
     return { foundDrivers: drivers, foundDistance: distance };
   }
@@ -128,6 +142,9 @@ export class UsersService {
     //   distanceData.data.route.traoptimal[0].summary.distance / 1000
     // ).toFixed(1);
 
-    return 81.9;
+    // 간단하게 왕복거리를 나타내기 위해 * 2 처리 해두었습니다.
+    // 차후 경유지 로직이 붙고나면 실제 거리로 치환되어야 합니다.
+    // return Number(kmData) * 2;
+    return 187;
   }
 }

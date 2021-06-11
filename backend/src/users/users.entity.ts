@@ -73,6 +73,18 @@ export class Users extends DateAudit {
   })
   drivable_legion: string[];
 
+  @Column({ nullable: true })
+  basic_km: number;
+
+  @Column({ nullable: true })
+  basic_charge: number;
+
+  @Column({ nullable: true })
+  charge_per_km: number;
+
+  @Column({ nullable: true })
+  service_charge: number;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
 
