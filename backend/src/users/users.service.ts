@@ -72,15 +72,25 @@ export class UsersService {
     }
 
     let drivers = await this.usersRepository.findTargetDrivers(params);
+    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
 
     if (drivers) {
       drivers.map((driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
-        const totalCharge =
+
+        let totalCharge =
           restDistance * driver.charge_per_km +
           driver.basic_charge +
           driver.service_charge;
+
+        if (
+          Number(departureTime) >= driver.night_begin ||
+          Number(departureTime) <= driver.night_end
+        ) {
+          totalCharge = totalCharge + driver.night_charge;
+        }
+
         driver['totalCharge'] = totalCharge;
       });
     }
