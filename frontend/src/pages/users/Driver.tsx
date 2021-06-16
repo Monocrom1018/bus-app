@@ -3,7 +3,7 @@ import React from 'react';
 
 const Driver = (props) => {
   const a = 'test';
-  const { id, name, profile_img, totalCharge } = props.driver;
+  const { id, name, profile_img, totalCharge, people_available, bus_old, bus_type, company_name } = props.driver;
 
   return (
     <Card outline>
@@ -11,8 +11,8 @@ const Driver = (props) => {
         <ListItem
           link={`/drivers/${id}`}
           title={name}
-          subtitle="28인승 대형우등"
-          text="2018년식 | 배낭 여행사"
+          subtitle={`${people_available}인승 ${bus_type}`}
+          text={`${bus_old}년식 | ${company_name}`}
           after={`${totalCharge.toLocaleString()}₩`}
         >
           <img slot="media" src={profile_img} width="80" />
