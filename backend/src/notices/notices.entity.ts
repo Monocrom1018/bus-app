@@ -1,7 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { DateAudit } from '../shared/entities/date-audit.entity';
+import { PolymorphicChildInterface } from 'typeorm-polymorphic/dist/polymorphic.interface';
+import { PolymorphicParent } from 'typeorm-polymorphic';
+import { Users as User } from '@users/users.entity';
 @Entity()
-export class Notices extends DateAudit {
+export class Notices extends DateAudit implements PolymorphicChildInterface {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -10,4 +13,13 @@ export class Notices extends DateAudit {
 
   @Column()
   body: string;
+
+  @PolymorphicParent(() => [User])
+  owner: User;
+
+  @Column()
+  entityId: number;
+
+  @Column()
+  entityType: string;
 }
