@@ -9,7 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 
-const axios = require('axios');
+import axios from 'axios';
 
 @Injectable()
 export class UsersService {
@@ -76,7 +76,7 @@ export class UsersService {
       throw new NotFoundException();
     }
 
-    let drivers = await this.usersRepository.findTargetDrivers(params);
+    const drivers = await this.usersRepository.findTargetDrivers(params);
     const departureTime = params.departureDate.split(' ')[4].split(':')[0];
 
     if (drivers) {
