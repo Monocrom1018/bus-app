@@ -56,6 +56,11 @@ export class UsersService {
     return user;
   }
 
+  async getOneDriver(param: number): Promise<User> {
+    const user = this.usersRepository.getOneDriver(param);
+    return user;
+  }
+
   async getInformation() {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',

@@ -87,6 +87,15 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
+  async getOneDriver(param: number): Promise<User> {
+    const user = await this.findOne({
+      where: {
+        id: param,
+      },
+    });
+    return user;
+  }
+
   async findTargetDrivers(params): Promise<User[]> {
     const { departureDate, departure } = params;
     const date = departureDate.split(' ')[0];
