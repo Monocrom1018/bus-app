@@ -99,8 +99,10 @@ export class UsersRepository extends Repository<User> {
   async findTargetDrivers(params): Promise<User[]> {
     const { departureDate, departure } = params;
     const date = departureDate.split(' ')[0];
+    const time = departureDate.split(' ')[4].split(':')[0];
     const legion = departure.split(' ')[0];
 
+    console.log('몇시야????!!!!!!!!?????!!!!!!', time);
     console.log('출발요일 : ', date);
     console.log('출발지역 : ', legion);
 

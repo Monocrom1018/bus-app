@@ -77,28 +77,65 @@ export class UsersService {
     }
 
     let drivers = await this.usersRepository.findTargetDrivers(params);
+    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
 
     if (drivers) {
       drivers.map((driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
-        const totalCharge =
+
+        let totalCharge =
           restDistance * driver.charge_per_km +
           driver.basic_charge +
           driver.service_charge;
+
+        if (
+          Number(departureTime) >= driver.night_begin ||
+          Number(departureTime) <= driver.night_end
+        ) {
+          totalCharge = totalCharge + driver.night_charge;
+        }
+
         driver['totalCharge'] = totalCharge;
       });
     }
 
-    console.log(drivers);
-
-    return { foundDrivers: drivers, foundDistance: distance };
+    return { foundDrivers: drivers, calculatedDistance: distance };
   }
 
   async getDistance(params) {
-    const { departure, destination } = params;
+    const { departure, destination, stopovers } = params;
     const depCoord = { x: '', y: '' };
     const destCoord = { x: '', y: '' };
+    let geoData = '';
+
+    if (stopovers.length > 0) {
+      await Promise.all(
+        stopovers.map(async (stopover) => {
+          if (stopover.stopover === '') {
+            return false;
+          }
+
+          const stopoverData = await axios.get(
+            `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
+            {
+              headers: {
+                'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
+                'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
+              },
+              params: {
+                query: stopover.stopover,
+              },
+            },
+          );
+
+          const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
+          geoData = geoData + data;
+        }),
+      );
+
+      geoData = geoData.slice(0, -1);
+    }
 
     const departureData = await axios.get(
       `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
@@ -132,24 +169,24 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    //! 아래는 이용 시 요금 부과되는 서비스라 주석처리 해뒀습니다. 주석해제 시 km거리 산출됩니다.
-    // const distanceData = await axios.get(
-    //   `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}`,
-    //   {
-    //     headers: {
-    //       'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-    //       'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-    //     },
-    //   },
+    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}`;
+
+    const distanceData = await axios.get(distanceURL, {
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
+        'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
+      },
+    });
+
+    // console.log(
+    //   'distanceData : ',
+    //   distanceData.data.route.traoptimal[0].summary,
     // );
 
-    // const kmData = (
-    //   distanceData.data.route.traoptimal[0].summary.distance / 1000
-    // ).toFixed(1);
+    const kmData = Math.round(
+      distanceData.data.route.traoptimal[0].summary.distance / 1000,
+    );
 
-    // 간단하게 왕복거리를 나타내기 위해 * 2 처리 해두었습니다.
-    // 차후 경유지 로직이 붙고나면 실제 거리로 치환되어야 합니다.
-    // return Number(kmData) * 2;
-    return 187;
+    return kmData;
   }
 }

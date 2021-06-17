@@ -31,8 +31,8 @@ const SearchPage = () => {
     if (departure !== '' && destination !== '') {
       const searchParam = { departure, departureDate, destination, stopovers };
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
-      console.log('result', foundDrivers);
       setDrivers(foundDrivers);
+      setDistance(calculatedDistance);
     } else {
       // 출발지 도착지 입력해달라고 토스트 띄우기
     }
@@ -203,6 +203,7 @@ const SearchPage = () => {
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
+            <div className="mx-4 font-medium text-gray-700">거리 : {distance}km</div>
           </div>
           <div>
             {drivers.map((driver) => {

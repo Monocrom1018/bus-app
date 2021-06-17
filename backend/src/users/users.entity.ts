@@ -86,6 +86,15 @@ export class Users extends DateAudit {
   service_charge: number;
 
   @Column({ nullable: true })
+  night_begin: number;
+
+  @Column({ nullable: true })
+  night_end: number;
+
+  @Column({ nullable: true })
+  night_charge: number;
+
+  @Column({ nullable: true })
   bus_type: string;
 
   @Column({ nullable: true })
