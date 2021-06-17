@@ -62,4 +62,9 @@ export class UsersController {
   async getDrivers(@Body() userSearchDto: UserSearchDto) {
     return this.usersService.getDrivers(userSearchDto);
   }
+
+  @Get('driver/:id')
+  async getOneDriver(@Param('id') param) {
+    return this.usersService.getOneDriver(param);
+  }
 }

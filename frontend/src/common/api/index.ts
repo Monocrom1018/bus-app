@@ -96,3 +96,8 @@ export const getDrivers = async (params) => {
   const { data } = await API.post(`/users/drivers`, params);
   return data;
 };
+
+export const getOneDriver = async (params) => {
+  const { data } = await API.get(`users/driver/${params}`);
+  return data;
+};
