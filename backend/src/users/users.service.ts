@@ -95,7 +95,6 @@ export class UsersService {
         ) {
           totalCharge = totalCharge + driver.night_charge;
         }
-
         driver['totalCharge'] = totalCharge;
       });
     }
@@ -116,18 +115,7 @@ export class UsersService {
             return false;
           }
 
-          const stopoverData = await axios.get(
-            `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-            {
-              headers: {
-                'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-                'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-              },
-              params: {
-                query: stopover.stopover,
-              },
-            },
-          );
+          const stopoverData = await this.getGeoData(stopover.stopover);
 
           const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
           geoData = geoData + data;
@@ -137,31 +125,8 @@ export class UsersService {
       geoData = geoData.slice(0, -1);
     }
 
-    const departureData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: departure,
-        },
-      },
-    );
-
-    const destinationData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: destination,
-        },
-      },
-    );
+    const departureData = await this.getGeoData(departure);
+    const destinationData = await this.getGeoData(destination);
 
     depCoord.x = departureData.data.addresses[0].x;
     depCoord.y = departureData.data.addresses[0].y;
@@ -169,7 +134,7 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}`;
+    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option='trafast'`;
 
     const distanceData = await axios.get(distanceURL, {
       headers: {
@@ -178,15 +143,25 @@ export class UsersService {
       },
     });
 
-    // console.log(
-    //   'distanceData : ',
-    //   distanceData.data.route.traoptimal[0].summary,
-    // );
-
     const kmData = Math.round(
       distanceData.data.route.traoptimal[0].summary.distance / 1000,
     );
 
     return kmData;
+  }
+
+  async getGeoData(param) {
+    return await axios.get(
+      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
+      {
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
+          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
+        },
+        params: {
+          query: param,
+        },
+      },
+    );
   }
 }

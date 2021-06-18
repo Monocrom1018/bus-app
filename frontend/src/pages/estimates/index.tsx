@@ -1,0 +1,117 @@
+import {
+  Block,
+  BlockTitle,
+  Button,
+  Link,
+  List,
+  ListInput,
+  Navbar,
+  NavLeft,
+  NavTitle,
+  Page,
+  Input,
+} from 'framework7-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useRecoilValue } from 'recoil';
+import {
+  comebackDateState,
+  departureDateState,
+  departureState,
+  destinationState,
+  distanceState,
+  stopoversState,
+  totalChargeState,
+} from '../../atoms';
+import moment from 'moment';
+// import { getDrivers } from '../../common/api/index';
+
+const EstimatePage = () => {
+  const departure = useRecoilValue(departureState);
+  const departureDate = useRecoilValue(departureDateState);
+  const comebackDate = useRecoilValue(comebackDateState);
+  const destination = useRecoilValue(destinationState);
+  const stopovers = useRecoilValue(stopoversState);
+  const totalCharge = useRecoilValue(totalChargeState);
+
+  const handleSubmit = () => {
+    /*
+      여기서 토스 페이먼츠 호출
+      유저에게 billingKey 있는지 확인해서 없으면 카드등록으로, 있으면 스킵
+
+      마지막에는 
+
+    
+    */
+    return;
+  };
+
+  return (
+    <Page name="search">
+      <Navbar title="견적확인" backLink></Navbar>
+      <List noHairlinesMd>
+        <div className="flex flex-col">
+          <div className="mx-6 mt-6 -mb-6 font-semibold">일정확인</div>
+          <List className="bg-gray-50">
+            <ListInput
+              label="가는날 및 탑승시간"
+              placeholder="가는날과 탑승시간을 선택해주세요"
+              className="bg-gray-50"
+              disabled
+              value={moment(departureDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+            />
+            <ListInput
+              label="오는날 및 탑승시간"
+              disabled
+              placeholder="오는날과 탑승시간을 선택해주세요"
+              className="bg-gray-50"
+              value={moment(comebackDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+            />
+          </List>
+
+          <div className="mx-6 mb-2 font-semibold">장소확인</div>
+
+          <div className="flex px-4 mb-3">
+            <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
+            <input
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+              readOnly
+              value={departure}
+              placeholder="출발지를 검색해주세요"
+              disabled
+            ></input>{' '}
+          </div>
+        </div>
+        {stopovers.map((item) => {
+          return (
+            <div className="flex px-4 py-2" key={item.id}>
+              <div className="f7-icons text-base mr-1">placemark</div>
+              <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover}></input>{' '}
+            </div>
+          );
+        })}
+        <div className="flex px-4 mt-3">
+          <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
+          <input
+            className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+            value={destination}
+            placeholder="도착지를 검색해주세요"
+            disabled
+          ></input>{' '}
+        </div>
+
+        <div className="mx-6 mb-2 mt-8 font-semibold">입력사항</div>
+        <ListInput label="탑승 인원수" placeholder="탑승 인원수를 숫자만 입력해주세요" className="bg-gray-50 mb-32" />
+
+        <div className="fixed bottom-12 pb-4 z-50 w-full bg-white pt-1">
+          <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
+            <div>요금 총액</div>
+            <div>{totalCharge.toLocaleString()}₩</div>
+          </div>
+          <Button text="견적 전달하기" className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg" />
+        </div>
+      </List>
+    </Page>
+  );
+};
+
+export default EstimatePage;

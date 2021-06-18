@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { getOneDriver } from '../common/api/index';
 import { Page, Navbar, Button, List, ListItem, AccordionContent } from 'framework7-react';
+import { useRecoilValue } from 'recoil';
+import { totalChargeState } from '../atoms';
 
 const DriverDetailPage = (props) => {
+  const totalCharge = useRecoilValue(totalChargeState);
   const [driverData, setDriverData] = useState({
     name: '',
     bus_old: '',
@@ -16,11 +19,11 @@ const DriverDetailPage = (props) => {
     async function getTargetDriver() {
       const targetDriver = await getOneDriver(props.id);
       setDriverData(targetDriver);
+      console.log(totalCharge);
+      // setTotalCharge(targetDriver.totalCharge);
     }
     getTargetDriver();
   }, []);
-
-  // 이렇게 driverData 세팅해두고, 밑에 기사정보 란에 박아넣기
 
   return (
     <Page noToolbar name="driverdetail">
@@ -173,8 +176,8 @@ const DriverDetailPage = (props) => {
         </ListItem>
       </List>
 
-      <Button fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
-        견적신청
+      <Button href={'/drivers/:id/esimate'} fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+        견적 전달하기
       </Button>
     </Page>
   );
