@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { ReservationsUsers as ReservationsUser } from '../reservations_users/entities/reservations_users.entity';
+import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
 
 @Entity()
 export class Reservations extends DateAudit {
