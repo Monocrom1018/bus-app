@@ -17,9 +17,9 @@ export class Notices extends DateAudit implements PolymorphicChildInterface {
   @PolymorphicParent(() => [User])
   owner: User;
 
-  @Column()
+  @Column({ nullable: true })
   entityId: number;
 
-  @Column()
+  @Column({ nullable: true })
   entityType: string;
 }

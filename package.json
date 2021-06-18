@@ -1,0 +1,27 @@
+{
+  "name": "bus-server",
+  "version": "1.0.0",
+  "repository": "git@github.com:insomenia/bus-server.git",
+  "author": "insomenia-woobyeong <woobyeong@insomenia.com>",
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn lint"
+    }
+  },
+  "lint-staged": {
+    "backend/src": [
+      "prettier --write",
+      "git add"
+    ],
+    "frontend/src": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "dependencies": {
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0"
+  }
+}

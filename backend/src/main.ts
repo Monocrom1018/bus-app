@@ -31,6 +31,7 @@ async function bootstrap() {
   // console.log(JSON.parse(process.env.JWKS));
 
   await app.listen(process.env.PORT);
+
   // if (module.hot) {
   //   module.hot.accept();
   //   module.hot.dispose(() => app.close());

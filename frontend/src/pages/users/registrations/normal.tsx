@@ -27,7 +27,7 @@ interface NormalSignUpParams {
 const SignUpSchema = Yup.object().shape({
   name: Yup.string().required('필수 입력사항 입니다'),
   email: Yup.string().email().required('필수 입력사항 입니다'),
-  password: Yup.string().min(8, '길이가 너무 짧습니다').max(50, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
+  password: Yup.string().min(4, '길이가 너무 짧습니다').max(50, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
   password_confirmation: Yup.string()
     .required('필수 입력사항 입니다')
     .when('password', {
@@ -99,7 +99,7 @@ const NormalSignUpPage: React.FC = () => {
         f7.dialog.alert(message);
       }
       // amplify signup 실패 시
-      // if (!cognitoUserSession) return;
+      if (!cognitoUserSession) return;
 
       // signup api 시도
       try {
