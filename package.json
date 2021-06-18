@@ -11,11 +11,11 @@
     }
   },
   "lint-staged": {
-    "backend/src": [
+    "backend/src/**/*.{js, ts}": [
       "prettier --write",
       "git add"
     ],
-    "frontend/src": [
+    "frontend/src/**/*.{js, ts}": [
       "prettier --write",
       "git add"
     ]
