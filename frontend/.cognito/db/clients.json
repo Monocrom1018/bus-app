@@ -1,0 +1,13 @@
+{
+  "Clients": {
+    "dnylzvu9n5i1d7kxrroybibv0": {
+      "ClientId": "dnylzvu9n5i1d7kxrroybibv0",
+      "ClientName": "client",
+      "UserPoolId": "local_bus",
+      "CreationDate": 1624004727082,
+      "LastModifiedDate": 1624004727082,
+      "AllowedOAuthFlowsUserPoolClient": false,
+      "RefreshTokenValidity": 30
+    }
+  }
+}
