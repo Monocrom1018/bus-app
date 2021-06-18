@@ -1,24 +1,24 @@
 {
   "dev": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-bone-dev-125734-authRole",
-      "UnauthRoleArn": "arn:aws:iam::408865485182:role/amplify-bone-dev-125734-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::408865485182:role/amplify-bone-dev-125734-authRole",
+      "AuthRoleName": "amplify-backpackbusdev-dev-155633-authRole",
+      "UnauthRoleArn": "arn:aws:iam::450752033014:role/amplify-backpackbusdev-dev-155633-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::450752033014:role/amplify-backpackbusdev-dev-155633-authRole",
       "Region": "ap-northeast-2",
-      "DeploymentBucketName": "amplify-bone-dev-125734-deployment",
-      "UnauthRoleName": "amplify-bone-dev-125734-unauthRole",
-      "StackName": "amplify-bone-dev-125734",
-      "StackId": "arn:aws:cloudformation:ap-northeast-2:408865485182:stack/amplify-bone-dev-125734/8054f200-c28d-11eb-a9f2-0ad87fac4364",
-      "AmplifyAppId": "d27yq1dognzqs5"
+      "DeploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
+      "UnauthRoleName": "amplify-backpackbusdev-dev-155633-unauthRole",
+      "StackName": "amplify-backpackbusdev-dev-155633",
+      "StackId": "arn:aws:cloudformation:ap-northeast-2:450752033014:stack/amplify-backpackbusdev-dev-155633/54973600-d002-11eb-bc26-02a0aece9d54",
+      "AmplifyAppId": "dfn6xkl371br7"
     },
     "categories": {
       "auth": {
-        "bone3d797aa3": {}
+        "backpackbusdevfe582237": {}
       },
       "function": {
-        "bone3d797aa3PreSignup": {
-          "deploymentBucketName": "amplify-bone-dev-125734-deployment",
-          "s3Key": "amplify-builds/bone3d797aa3PreSignup-6d34356f756f48503045-build.zip"
+        "backpackbusdeva2a308af": {
+          "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
+          "s3Key": "amplify-builds/backpackbusdeva2a308af-692f3669573343436b33-build.zip"
         }
       }
     }

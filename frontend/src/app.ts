@@ -7,9 +7,18 @@ import '@styles/icons.css';
 import '@styles/app.less';
 import App from '@components/App';
 import Auth from '@aws-amplify/auth';
+import Amplify from 'aws-amplify';
+import { getCognitoMockConfig } from '@utils/cognito-client';
 import i18n from './assets/lang/i18n';
 import awsconfig from './aws-exports';
 import 'lodash';
+
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+Amplify.configure({
+  ...awsconfig,
+  // ...(IS_PRODUCTION ? {} : getCognitoMockConfig()),
+});
 
 const globalAny: any = global;
 globalAny.i18next = i18n;

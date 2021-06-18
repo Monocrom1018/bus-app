@@ -36,7 +36,7 @@ AdminBro.registerAdapter({ Database, Resource });
       database: process.env.DB_DATABASE,
       logging: true,
       // entities: [join(__dirname, '..', 'src', '**', '*.entity{.ts,.js}')],
-      entities: [__dirname + '/**/*.entity.{js,ts}'],
+      entities: [`${__dirname}/**/*.entity.{js, ts}`],
       synchronize: false,
     }),
     MulterModule.register({
