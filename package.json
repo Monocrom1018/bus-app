@@ -12,10 +12,12 @@
   },
   "lint-staged": {
     "backend/src/**/*.{js, ts}": [
+      "eslint --fix",
       "prettier --write",
       "git add"
     ],
     "frontend/src/**/*.{js, ts}": [
+      "eslint --fix",
       "prettier --write",
       "git add"
     ]
