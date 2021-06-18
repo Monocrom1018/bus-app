@@ -33,11 +33,21 @@ const EstimatePage = () => {
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
+  const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
-    const params = { driver: driver.id, departure, returnDate, departureDate, destination, totalCharge };
+    const params = {
+      driver: driver.id,
+      departure,
+      returnDate,
+      departureDate,
+      destination,
+      totalCharge,
+      stopovers,
+      people,
+    };
     const result = await createReservation(params);
-    console.log(result);
+    console.log(params);
 
     return;
   };
@@ -97,11 +107,17 @@ const EstimatePage = () => {
         </div>
 
         <div className="mx-6 mb-2 mt-8 font-semibold">입력사항</div>
-        <ListInput label="탑승 인원수" placeholder="탑승 인원수를 숫자만 입력해주세요" className="bg-gray-50 mb-32" />
+        <ListInput
+          label="탑승 인원수"
+          placeholder="탑승 인원수를 숫자만 입력해주세요"
+          className="bg-gray-50 mb-32"
+          onChange={(e) => setPeople(e.target.value)}
+        />
 
         <div className="fixed bottom-12 pb-4 z-50 w-full bg-white pt-1">
           <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
-            <div>요금 총액</div> d<div>{totalCharge.toLocaleString()}₩</div>
+            <div>요금 총액</div>
+            <div>{totalCharge.toLocaleString()}₩</div>
           </div>
           <Button
             text="견적 전달하기"
