@@ -14,34 +14,31 @@ import {
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import {
-  comebackDateState,
+  returnDateState,
   departureDateState,
   departureState,
   destinationState,
-  distanceState,
   stopoversState,
   totalChargeState,
-} from '../../atoms';
+  driverState,
+} from '@atoms';
 import moment from 'moment';
-// import { getDrivers } from '../../common/api/index';
+import { createReservation } from '../../common/api/index';
 
 const EstimatePage = () => {
   const departure = useRecoilValue(departureState);
   const departureDate = useRecoilValue(departureDateState);
-  const comebackDate = useRecoilValue(comebackDateState);
+  const returnDate = useRecoilValue(returnDateState);
   const destination = useRecoilValue(destinationState);
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
+  const driver = useRecoilValue(driverState);
 
-  const handleSubmit = () => {
-    /*
-      여기서 토스 페이먼츠 호출
-      유저에게 billingKey 있는지 확인해서 없으면 카드등록으로, 있으면 스킵
+  const handleSubmit = async () => {
+    const params = { driver: driver.id, departure, returnDate, departureDate, destination, totalCharge };
+    const result = await createReservation(params);
+    console.log(result);
 
-      마지막에는 
-
-    
-    */
     return;
   };
 
@@ -64,7 +61,7 @@ const EstimatePage = () => {
               disabled
               placeholder="오는날과 탑승시간을 선택해주세요"
               className="bg-gray-50"
-              value={moment(comebackDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+              value={moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
             />
           </List>
 
@@ -104,10 +101,13 @@ const EstimatePage = () => {
 
         <div className="fixed bottom-12 pb-4 z-50 w-full bg-white pt-1">
           <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
-            <div>요금 총액</div>
-            <div>{totalCharge.toLocaleString()}₩</div>
+            <div>요금 총액</div> d<div>{totalCharge.toLocaleString()}₩</div>
           </div>
-          <Button text="견적 전달하기" className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg" />
+          <Button
+            text="견적 전달하기"
+            className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg"
+            onClick={handleSubmit}
+          />
         </div>
       </List>
     </Page>

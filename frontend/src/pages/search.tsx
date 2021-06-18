@@ -16,23 +16,22 @@ import { useRecoilState } from 'recoil';
 import Driver from './users/Driver';
 import { getDrivers } from '../common/api/index';
 import {
-  comebackDateState,
+  returnDateState,
   departureDateState,
   departureState,
   destinationState,
   distanceState,
   stopoversState,
-} from '../atoms';
+} from '@atoms';
 
 const SearchPage = () => {
   const test = 'test';
   const [departure, setDeparture] = useRecoilState(departureState);
   const [departureDate, setDepartureDate] = useRecoilState(departureDateState);
-  const [comebackDate, setComebackDate] = useRecoilState(comebackDateState);
+  const [returnDate, setReturnDate] = useRecoilState(returnDateState);
   const [destination, setDestination] = useRecoilState(destinationState);
   const [distance, setDistance] = useRecoilState(distanceState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
-  // const [recoilStopovers, setRecoilStopovers] = useRecoilState(stopoversState);
   const [stopoverCount, setStopoverCount] = useState(0);
   const [drivers, setDrivers] = useState(null);
   const postCodeRef = useRef();
@@ -135,7 +134,7 @@ const SearchPage = () => {
                 dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
               }}
               className="bg-gray-50"
-              onCalendarChange={(e) => setComebackDate(String(e[0]))}
+              onCalendarChange={(e) => setReturnDate(String(e[0]))}
             />
           </List>
 

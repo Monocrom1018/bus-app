@@ -1,7 +1,7 @@
 import { Card, List, ListItem } from 'framework7-react';
 import React from 'react';
 import { useRecoilState } from 'recoil';
-import { totalChargeState } from '../../atoms';
+import { totalChargeState } from '@atoms';
 
 const Driver = (props) => {
   const a = 'test';

@@ -9,4 +9,10 @@ export class ReservationsService {
     @InjectRepository(ReservationsRepository)
     private reservationsRepository: ReservationsRepository,
   ) {}
+
+  async create(params) {
+    const result = await this.reservationsRepository.create(params);
+
+    return 'success!!!!';
+  }
 }

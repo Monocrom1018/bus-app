@@ -1,26 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { getOneDriver } from '../common/api/index';
 import { Page, Navbar, Button, List, ListItem, AccordionContent } from 'framework7-react';
-import { useRecoilValue } from 'recoil';
-import { totalChargeState } from '../atoms';
+import { useRecoilValue, useRecoilState } from 'recoil';
+import { totalChargeState, driverState } from '@atoms';
 
 const DriverDetailPage = (props) => {
-  const totalCharge = useRecoilValue(totalChargeState);
-  const [driverData, setDriverData] = useState({
-    name: '',
-    bus_old: '',
-    bus_type: '',
-    company_name: '',
-    people_available: 0,
-    profile_img: '',
-  });
+  const [driver, setDriver] = useRecoilState(driverState);
 
   useEffect(() => {
     async function getTargetDriver() {
       const targetDriver = await getOneDriver(props.id);
-      setDriverData(targetDriver);
-      console.log(totalCharge);
-      // setTotalCharge(targetDriver.totalCharge);
+      setDriver(targetDriver);
     }
     getTargetDriver();
   }, []);
@@ -41,17 +31,17 @@ const DriverDetailPage = (props) => {
           <div className="flex items-center space-x-5">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img className="h-24 w-24 rounded-2xl" src={driverData.profile_img} />
+                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} />
                 {/* <i className="h-24 w-24 rounded-full las la-user-circle" style={{ fontSize: '96px', color: 'gray' }} /> */}
                 {/* <span className="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span> */}
               </div>
             </div>
             <div className="w-full">
-              <h1 className="text-xl font-bold text-gray-900">{driverData.name}</h1>
+              <h1 className="text-xl font-bold text-gray-900">{driver.name}</h1>
               <p className="mt-1 text-xs font-medium text-gray-500">
-                {driverData.bus_old}년식 | {driverData.people_available}인승 {driverData.bus_type}
+                {driver.bus_old}년식 | {driver.people_available}인승 {driver.bus_type}
               </p>
-              <p className="mt-1 text-xs font-medium text-gray-500">{driverData.company_name}</p>
+              <p className="mt-1 text-xs font-medium text-gray-500">{driver.company_name}</p>
             </div>
           </div>
           <hr />

@@ -5,8 +5,8 @@ export const departureState = atom({
   default: '',
 });
 
-export const comebackDateState = atom({
-  key: 'comebackDateState',
+export const returnDateState = atom({
+  key: 'returnDateState',
   default: '',
 });
 
