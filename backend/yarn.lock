@@ -8771,6 +8771,11 @@ typeorm-cli@^1.0.7:
     typescript "^3.5.3"
     warning "^4.0.3"
 
+typeorm-polymorphic@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/typeorm-polymorphic/-/typeorm-polymorphic-0.0.10.tgz#4412b7df329feea0e4672b109e3ec824ac3cf21c"
+  integrity sha512-HZ8jnccmfz4MdN2G1cBNhHsMcFCkSpNefmjumy97TaET7tgxxqFte3U9tm1Nk8SbZyWYqjJ7N4Osxpm3rNVnYQ==
+
 typeorm-seeding@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/typeorm-seeding/-/typeorm-seeding-1.6.1.tgz#4fe3a1aec9a611007d1135419cde286cced8defd"

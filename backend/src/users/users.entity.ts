@@ -11,8 +11,10 @@ import { DateAudit } from '../shared/entities/date-audit.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 import { Messages } from '../messages/messages.entity';
-import { Rooms } from '../rooms/rooms.entity';
-import { Reservations_users } from '../reservations_users/entities/reservations_users.entity';
+import { Rooms as Room } from '@rooms/rooms.entity';
+import { Notices as Notice } from '@notices/notices.entity';
+import { PolymorphicChildren } from 'typeorm-polymorphic';
+import { ReservationsUsers as ReservatonsUser } from '../reservations_users/entities/reservations_users.entity';
 
 export enum UserType {
   NORMAL = 'normal',
@@ -110,13 +112,16 @@ export class Users extends DateAudit {
   messages: Messages[];
 
   @OneToMany(
-    (type) => Reservations_users,
-    (reservations_users) => reservations_users.user,
+    (type) => ReservatonsUser,
+    (reservationsUsers) => reservationsUsers.user,
   )
-  reservations_users: Reservations_users[];
+  reservationsUsers: ReservatonsUser[];
 
-  @ManyToMany(() => Rooms)
-  rooms: Rooms[];
+  @ManyToMany(() => Room)
+  rooms: Room[];
+
+  @PolymorphicChildren(() => Notice, { eager: false })
+  notices: Notice[];
 
   async validateUserPassword(password: string): Promise<boolean> {
     // const hash = await bcrypt.hash(password, this.encrypted_password);

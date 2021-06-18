@@ -1,6 +1,5 @@
 import { getRepository } from 'typeorm';
 import { UsersService } from '../users/users.service';
-import { CategoriesService } from '../categories/categories.service';
 import { Injectable } from '@nestjs/common';
 import { CreateObjectDto } from './dto/create-object.dto';
 import { UpdateObjectDto } from './dto/update-object.dto';
@@ -13,10 +12,7 @@ import * as ts from 'typescript';
 // Injectable 데코레이터를 통해 Singleton 의 Dependency가 생기게 되는데
 // Controller 에 존재했던 로직을 Service 영역으로 책임과 역할을 수행하도록 로직을 옮겼다
 export class ObjectsService {
-  constructor(
-    private userService: UsersService,
-    private categoriesService: CategoriesService,
-  ) {}
+  constructor(private userService: UsersService) {}
 
   create(createObjectDto: CreateObjectDto) {
     return 'This action adds a new object';
@@ -45,8 +41,6 @@ export class ObjectsService {
         pluralize(_.capitalize(query.model_name)) + 'Service';
       if (modelService === UsersService.name) {
         model = await this.userService.findAll();
-      } else if (modelService === CategoriesService.name) {
-        model = await this.categoriesService.findAll();
       }
     }
     return { objects: model };

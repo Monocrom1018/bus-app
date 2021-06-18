@@ -4,6 +4,6 @@ import { PhoneCertificationsService } from './phone-certifications.service';
 
 @Module({
   controllers: [PhoneCertificationsController],
-  providers: [PhoneCertificationsService]
+  providers: [PhoneCertificationsService],
 })
 export class PhoneCertificationsModule {}

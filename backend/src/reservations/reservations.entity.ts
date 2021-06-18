@@ -7,7 +7,7 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Reservations_users } from '../reservations_users/entities/reservations_users.entity';
+import { ReservationsUsers as ReservationsUser } from '../reservations_users/entities/reservations_users.entity';
 
 @Entity()
 export class Reservations extends DateAudit {
@@ -32,10 +32,10 @@ export class Reservations extends DateAudit {
   // users: Users[];
 
   @OneToMany(
-    (type) => Reservations_users,
-    (reservations_users) => reservations_users.reservation,
+    (type) => ReservationsUser,
+    (reservationsUsers) => reservationsUsers.reservation,
   )
-  reservations_users: Reservations_users[];
+  reservationsUsers: ReservationsUser[];
 
   @Column()
   departure: string;
