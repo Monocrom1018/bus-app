@@ -14,7 +14,7 @@ import { Messages } from '../messages/messages.entity';
 import { Rooms as Room } from '@rooms/rooms.entity';
 import { Notices as Notice } from '@notices/notices.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { ReservationsUsers as ReservatonsUser } from '../reservations_users/entities/reservations_users.entity';
+import { ReservationsUsers as ReservatonsUser } from '../reservations_users/reservations_users.entity';
 
 export enum UserType {
   NORMAL = 'normal',

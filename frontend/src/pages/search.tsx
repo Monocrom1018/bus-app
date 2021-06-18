@@ -9,20 +9,29 @@ import {
   NavLeft,
   NavTitle,
   Page,
-  Segmented,
   Input,
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
+import { useRecoilState } from 'recoil';
 import Driver from './users/Driver';
 import { getDrivers } from '../common/api/index';
+import {
+  returnDateState,
+  departureDateState,
+  departureState,
+  destinationState,
+  distanceState,
+  stopoversState,
+} from '@atoms';
 
 const SearchPage = () => {
   const test = 'test';
-  const [departure, setDeparture] = useState('');
-  const [departureDate, setDepartureDate] = useState('');
-  const [destination, setDestination] = useState('');
-  const [distance, setDistance] = useState(0);
-  const [stopovers, setStopovers] = useState([]);
+  const [departure, setDeparture] = useRecoilState(departureState);
+  const [departureDate, setDepartureDate] = useRecoilState(departureDateState);
+  const [returnDate, setReturnDate] = useRecoilState(returnDateState);
+  const [destination, setDestination] = useRecoilState(destinationState);
+  const [distance, setDistance] = useRecoilState(distanceState);
+  const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [stopoverCount, setStopoverCount] = useState(0);
   const [drivers, setDrivers] = useState(null);
   const postCodeRef = useRef();
@@ -67,7 +76,8 @@ const SearchPage = () => {
         }
 
         if (value === 'stopover') {
-          const mapped = stopovers.map((item) => {
+          let duplicatedArr = JSON.parse(JSON.stringify(stopovers));
+          let mapped = duplicatedArr.map((item) => {
             if (item.id === id) {
               item.stopover = data.address;
               return item;
@@ -124,6 +134,7 @@ const SearchPage = () => {
                 dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
               }}
               className="bg-gray-50"
+              onCalendarChange={(e) => setReturnDate(String(e[0]))}
             />
           </List>
 

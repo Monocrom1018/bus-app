@@ -14,6 +14,7 @@ import OptionIndexPage from '@pages/options';
 import SignUpPage from '@pages/users/registrations/new';
 import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/company';
+import EstimatePage from '@pages/estimates';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
 /**
@@ -45,6 +46,10 @@ const resourceRoutes: ResourceRoute[] = [
   },
   {
     resource: 'faqs',
+    only: ['index'],
+  },
+  {
+    resource: 'estimates',
     only: ['index'],
   },
   {
@@ -83,6 +88,7 @@ const customRoutes = [
   { path: '/users/modify', component: ModifyPage },
   { path: '/items/:item_id/options', component: OptionIndexPage },
   { path: '/drivers/:id', component: DriverDetailPage },
+  { path: '/drivers/:id/esimate', component: EstimatePage },
 ];
 
 /**

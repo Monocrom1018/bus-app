@@ -101,3 +101,8 @@ export const getOneDriver = async (params) => {
   const { data } = await API.get(`users/driver/${params}`);
   return data;
 };
+
+export const createReservation = async (params) => {
+  const { data } = await API.post(`reservations/create`, params);
+  return data;
+};
