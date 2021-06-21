@@ -21,6 +21,15 @@ export class ReservationsRepository extends Repository<Reservation> {
       people,
     } = params;
 
+    const existingCheck = await Reservation.findOne({
+      relations: ['reservationsUsers'],
+      where: {
+        reservationsUsers: [{ user: user }, { user: driver }],
+      },
+    });
+
+    console.log(existingCheck);
+
     const userSide = new ReservationsUsers();
     userSide.user = user;
     await ReservationsUsers.save(userSide);
@@ -41,6 +50,8 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.status = 'waiting';
     reservation.reservationsUsers = [userSide, driverSide];
     await Reservation.save(reservation);
+
+    // console.log(reservation);
 
     return reservation;
   }

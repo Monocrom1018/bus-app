@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
 
 @ApiTags('예약')
@@ -8,6 +8,10 @@ export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
   @ApiOperation({ summary: '예약 생성' })
   @Post('create')
+  @ApiResponse({
+    status: 200,
+    description: 'Reservation created',
+  })
   async create(@Body() params) {
     return this.reservationsService.create(params);
   }
