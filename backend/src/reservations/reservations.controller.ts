@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
 
@@ -14,5 +14,11 @@ export class ReservationsController {
   })
   async create(@Body() params) {
     return this.reservationsService.create(params);
+  }
+
+  @Get(':email')
+  async getAllFromUser(@Param() email) {
+    console.log('레저컨 도착', email);
+    return this.reservationsService.getAllFromUser(email.email);
   }
 }

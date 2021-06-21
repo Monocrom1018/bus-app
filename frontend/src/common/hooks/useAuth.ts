@@ -26,8 +26,10 @@ const useAuth: UseAuthHooks = () => {
   const authenticateUser = useCallback(
     async (cognitoUser: CognitoUser) => {
       const isCognitoUser = cognitoUser instanceof CognitoUser;
+      const userEmail = cognitoUser.attributes.email;
+      console.log('email 찍히나요????', userEmail);
       if (!isCognitoUser) return;
-      const { data: user } = await userMeApi();
+      const { data: user } = await userMeApi(userEmail);
       setCurrentUser({ ...user, isAuthenticated: true });
     },
     [setCurrentUser],

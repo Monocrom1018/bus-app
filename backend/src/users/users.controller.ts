@@ -53,9 +53,10 @@ export class UsersController {
     return this.usersService.update(file.path, userUpdateDto);
   }
 
-  @Get('me')
-  async me() {
-    return this.usersService.me();
+  @Get('me/:email')
+  async me(@Param() email) {
+    const emailData = email.email;
+    return this.usersService.me(emailData);
   }
 
   @Post('drivers')

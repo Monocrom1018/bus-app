@@ -1,12 +1,14 @@
 import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon } from 'framework7-react';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import moment from 'moment';
+import useAuth from '@hooks/useAuth';
 
-const ReservationItem = (props) => {
+const DriverReservationPage = (props) => {
   const a = props;
   const actionsToPopover = useRef(null);
-  const { departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
-  const { name, bus_old, bus_type } = props.reservation.driver;
+  const { currentUser } = useAuth();
+  //   const { departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
+  //   const { name, bus_old, bus_type } = props.reservation.driver;
 
   const openActionsPopover = () => {
     if (!actionsToPopover.current) {
@@ -17,7 +19,10 @@ const ReservationItem = (props) => {
             bold: true,
           },
           {
-            text: '예약취소',
+            text: '예약수락',
+          },
+          {
+            text: '예약거절',
           },
           {
             text: 'Cancel',
@@ -36,10 +41,8 @@ const ReservationItem = (props) => {
     <Card className="bg-white mb-5 rounded relative h-auto">
       <CardHeader className="no-border">
         <div>
-          <p className="font-bold text-lg">{name} 기사님</p>
-          <p className="text-sm text-gray-600">
-            {bus_old}년식 | {bus_type}
-          </p>
+          <p className="font-bold text-lg">김예시 기사님</p>
+          <p className="text-sm text-gray-600">2018년식 | 미니우등</p>
         </div>
       </CardHeader>
       <CardContent>
@@ -51,7 +54,7 @@ const ReservationItem = (props) => {
             출발지
           </Col>
           <Col width="80" className="text-base text-gray-900">
-            {departure}
+            서울시 진관4로 87
           </Col>
         </Row>
         <Row>
@@ -64,7 +67,7 @@ const ReservationItem = (props) => {
             도착지
           </Col>
           <Col width="80" className="text-base text-gray-900">
-            {destination}
+            부산시 해운대 해수욕장
           </Col>
         </Row>
         <Row>
@@ -75,7 +78,7 @@ const ReservationItem = (props) => {
             출발일
           </Col>
           <Col width="80" className="text-base">
-            {moment(departureDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+            'YYYY년 MM월 DD일 HH시 MM분'
           </Col>
         </Row>
         <Row>
@@ -88,7 +91,7 @@ const ReservationItem = (props) => {
             복귀일
           </Col>
           <Col width="80" className="text-base">
-            {moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+            'YYYY년 MM월 DD일 HH시 MM분'
           </Col>
         </Row>
         {/* <Row className="pt-4 mb-2">
@@ -101,18 +104,18 @@ const ReservationItem = (props) => {
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             인원
           </Col>
-          <Col width="80">{people}명</Col>
+          <Col width="80">10명</Col>
         </Row>
         <Row>
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             동행
           </Col>
-          <Col width="80">{accompany}</Col>
+          <Col width="80">동행</Col>
         </Row>
       </CardContent>
       <CardFooter>
-        <p>가격: {price.toLocaleString()}₩</p>
-        <p>상태: {status}</p>
+        <p>가격: 350,000₩</p>
+        <p>상태: 수락대기중</p>
       </CardFooter>
       <Button
         style={{ display: 'inline-block' }}
@@ -125,4 +128,4 @@ const ReservationItem = (props) => {
   );
 };
 
-export default ReservationItem;
+export default DriverReservationPage;

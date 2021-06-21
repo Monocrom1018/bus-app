@@ -2,7 +2,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ReservationsUsers } from '@reservations_users/reservations_users.entity';
+import { Users } from '@users/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { Reservations as Reservation } from './reservations.entity';
 
@@ -22,21 +22,16 @@ export class ReservationsRepository extends Repository<Reservation> {
     } = params;
 
     const existingCheck = await Reservation.findOne({
-      relations: ['reservationsUsers'],
       where: {
-        reservationsUsers: [{ user: user }, { user: driver }],
+        user: user,
+        driver: driver,
+        status: '수락대기중',
       },
     });
 
-    console.log(existingCheck);
-
-    const userSide = new ReservationsUsers();
-    userSide.user = user;
-    await ReservationsUsers.save(userSide);
-
-    const driverSide = new ReservationsUsers();
-    driverSide.user = driver;
-    await ReservationsUsers.save(driverSide);
+    if (existingCheck) {
+      throw new ConflictException('reservation already exists');
+    }
 
     const reservation = new Reservation();
     reservation.departure = departure;
@@ -46,13 +41,23 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.stopover = stopovers;
     reservation.price = totalCharge;
     reservation.people = people;
-    reservation.accompany = 'together';
-    reservation.status = 'waiting';
-    reservation.reservationsUsers = [userSide, driverSide];
+    reservation.accompany = '출발, 복귀 시 동행';
+    reservation.status = '수락대기중';
+    reservation.user = user;
+    reservation.driver = driver;
     await Reservation.save(reservation);
 
-    // console.log(reservation);
-
     return reservation;
+  }
+
+  async getAllFromUser(me): Promise<Reservation[]> {
+    const reservations = await Reservation.find({
+      relations: ['driver'],
+      where: {
+        user: me,
+      },
+    });
+
+    return reservations;
   }
 }
