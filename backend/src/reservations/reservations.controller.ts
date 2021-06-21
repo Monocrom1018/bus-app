@@ -6,7 +6,6 @@ import { ReservationsService } from './reservations.service';
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
-
   @ApiOperation({ summary: '예약 생성' })
   @Post('create')
   async create(@Body() params) {
