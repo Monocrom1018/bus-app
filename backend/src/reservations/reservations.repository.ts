@@ -50,14 +50,33 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getAllFromUser(me): Promise<Reservation[]> {
+  async getAllFromUser(myId): Promise<Reservation[]> {
     const reservations = await Reservation.find({
       relations: ['driver'],
-      where: {
-        user: me,
+      where: [
+        {
+          user: myId,
+        },
+        {
+          driver: myId,
+        },
+      ],
+      order: {
+        createdAt: 'DESC',
       },
     });
 
     return reservations;
+  }
+
+  async updateReservation(param) {
+    const targetReservation = await Reservation.findOne({
+      where: { id: param.reservationId },
+    });
+
+    targetReservation.status = param.status;
+    Reservation.save(targetReservation);
+
+    return targetReservation;
   }
 }

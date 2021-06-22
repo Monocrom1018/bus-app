@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Param } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Patch } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
@@ -15,6 +15,16 @@ export class ReservationsController {
   })
   async create(@Body() reservationCreateDto: ReservationCreateDto) {
     return this.reservationsService.create(reservationCreateDto);
+  }
+
+  @ApiOperation({ summary: '예약요청 수락 or 거절' })
+  @Post('update')
+  @ApiResponse({
+    status: 200,
+    description: 'confirm or refusal success',
+  })
+  async updateReservation(@Body() param) {
+    return this.reservationsService.updateReservation(param);
   }
 
   @ApiOperation({ summary: '예약목록 가져오기' })

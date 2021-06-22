@@ -52,15 +52,7 @@ const F7Views = () => {
         <Link tabLink="#view-rooms" icon="las la-edit" text="채팅" />
         <Link tabLink="#view-mypage" icon="las la-user" text="마이페이지" />
       </Toolbar>
-      <View
-        id="view-reservations"
-        stackPages
-        name="reservations"
-        main
-        tab
-        tabActive
-        url="/driverReservation?is_main=true"
-      />
+      <View id="view-reservations" stackPages name="reservations" main tab tabActive url="/reservations?is_main=true" />
       <View id="view-rooms" stackPages name="rooms" tab url="/rooms?is_main=true" />
       <View id="view-mypage" stackPages name="mypage" tab url="/mypage?is_main=true" />
     </Views>

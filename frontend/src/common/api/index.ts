@@ -111,3 +111,8 @@ export const getReservations = async (params) => {
   const { data } = await API.get(`reservations/${params}`);
   return data;
 };
+
+export const updateReservation = async (params) => {
+  const { data } = await API.post(`reservations/update`, params);
+  return data;
+};

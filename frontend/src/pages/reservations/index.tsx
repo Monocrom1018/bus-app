@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Block, Button, f7, Link, List, ListItem, Navbar, NavLeft, NavTitle, Page } from 'framework7-react';
 import Reservation from './Reservation';
+import DriverReservationPage from './DriverReservation';
 import { useRecoilValue } from 'recoil';
-import { getReservations } from '@api';
+import { getReservations, userMeApi } from '@api';
 import { reservationState } from '@atoms';
 import useAuth from '@hooks/useAuth';
 
@@ -11,17 +12,20 @@ const ReservationIndexPage = () => {
   const [reservations, setReservations] = useState(null);
   const reservationUpdate = useRecoilValue(reservationState);
   const { currentUser } = useAuth();
+  const [userType, setUserType] = useState(null);
 
   useEffect(() => {
     const getDatas = async () => {
-      const reservations = await getReservations(currentUser.email);
-      setReservations(reservations);
+      const user = await userMeApi(currentUser.email);
+      setUserType(user.data.user_type);
+      const reservationsData = await getReservations(currentUser.email);
+      setReservations(reservationsData);
     };
     getDatas();
   }, [reservationUpdate]);
 
   return (
-    <Page name="reservation">
+    <Page name="DriverReservation">
       <Navbar>
         <NavLeft>
           <Link icon="las la-bars" panelOpen="left" />
@@ -32,7 +36,11 @@ const ReservationIndexPage = () => {
         {reservations ? (
           <div>
             {reservations.map((reservation) => {
-              return <Reservation reservation={reservation} key={reservation.id} />;
+              if (userType === 'normal') {
+                return <Reservation reservation={reservation} key={reservation.id} />;
+              } else {
+                return <DriverReservationPage reservation={reservation} key={reservation.id} />;
+              }
             })}
           </div>
         ) : null}

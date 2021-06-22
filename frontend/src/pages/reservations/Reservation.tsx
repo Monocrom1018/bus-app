@@ -1,6 +1,7 @@
 import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon } from 'framework7-react';
 import React, { useRef } from 'react';
 import moment from 'moment';
+import { updateReservation } from '@api';
 
 const ReservationItem = (props) => {
   const a = props;

@@ -3,14 +3,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import {
-  Brackets,
-  EntityRepository,
-  getManager,
-  In,
-  Raw,
-  Repository,
-} from 'typeorm';
+import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 
@@ -100,7 +93,6 @@ export class UsersRepository extends Repository<User> {
   async findTargetDrivers(params): Promise<User[]> {
     const { departureDate, departure } = params;
     const date = departureDate.split(' ')[0];
-    const time = departureDate.split(' ')[4].split(':')[0];
     const legion = departure.split(' ')[0];
 
     // console.log('몇시야????!!!!!!!!?????!!!!!!', time);
