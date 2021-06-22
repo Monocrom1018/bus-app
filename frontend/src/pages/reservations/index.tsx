@@ -15,7 +15,6 @@ const ReservationIndexPage = () => {
   useEffect(() => {
     const getDatas = async () => {
       const reservations = await getReservations(currentUser.email);
-      console.log('@#@#@#@#@#', reservations);
       setReservations(reservations);
     };
     getDatas();

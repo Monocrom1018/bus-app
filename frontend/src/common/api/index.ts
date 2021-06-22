@@ -18,7 +18,7 @@ export const userMeApi = (params) => API.get<CurrentUser>(`/users/me/${params}`)
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
 export const modifyAPI = (params: FormData) => API.post('/users/update', params);
-export const signupAPI = (params: SignUpParams) => API.post('/users/signup', { user: params });
+export const signupAPI = (params: SignUpParams) => API.post('/users/signup', { params });
 // export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 

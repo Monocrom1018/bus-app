@@ -14,20 +14,14 @@ const F7Views = () => {
 
   const renderViews = () => {
     if (currentUser.isAuthenticated && currentUser.user_type === 'normal') {
-      console.log('111111');
-      console.log(currentUser);
       return normalViews;
     }
 
     if (currentUser.isAuthenticated && currentUser.user_type === 'driver') {
-      console.log('22222222');
-      console.log(currentUser);
       return driverViews;
     }
 
     if (currentUser.isAuthenticated && currentUser.user_type === 'company') {
-      console.log('333333333');
-      console.log(currentUser);
       return driverViews;
     }
 

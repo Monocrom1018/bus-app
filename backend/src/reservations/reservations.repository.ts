@@ -10,8 +10,8 @@ import { Reservations as Reservation } from './reservations.entity';
 export class ReservationsRepository extends Repository<Reservation> {
   async createReservation(params): Promise<Reservation> {
     const {
-      user,
-      driver,
+      userId,
+      driverId,
       departure,
       returnDate,
       departureDate,
@@ -23,8 +23,8 @@ export class ReservationsRepository extends Repository<Reservation> {
 
     const existingCheck = await Reservation.findOne({
       where: {
-        user: user,
-        driver: driver,
+        user: userId,
+        driver: driverId,
         status: '수락대기중',
       },
     });
@@ -43,8 +43,8 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.people = people;
     reservation.accompany = '출발, 복귀 시 동행';
     reservation.status = '수락대기중';
-    reservation.user = user;
-    reservation.driver = driver;
+    reservation.user = userId;
+    reservation.driver = driverId;
     await Reservation.save(reservation);
 
     return reservation;

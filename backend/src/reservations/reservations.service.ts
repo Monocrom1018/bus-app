@@ -13,8 +13,8 @@ export class ReservationsService {
   ) {}
 
   async create(params) {
-    const me = await this.usersService.me(params.user);
-    params['user'] = me.id;
+    const me = await this.usersService.me(params.userEmail);
+    params['userId'] = me.id;
 
     return await this.reservationsRepository.createReservation(params);
   }

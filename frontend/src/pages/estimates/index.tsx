@@ -43,8 +43,8 @@ const EstimatePage = () => {
 
   const handleSubmit = async () => {
     const params = {
-      user: currentUser.email,
-      driver: driver.id,
+      userEmail: currentUser.email,
+      driverId: driver.id,
       departure,
       returnDate,
       departureDate,

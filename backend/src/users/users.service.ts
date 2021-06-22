@@ -48,7 +48,6 @@ export class UsersService {
 
   async me(email) {
     const users = this.usersRepository.me(email);
-    console.log(users);
     return users;
   }
 

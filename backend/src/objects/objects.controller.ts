@@ -19,7 +19,6 @@ import { UpdateObjectDto } from './dto/update-object.dto';
 export class ObjectsController {
   // 의존성 주입 작업
   constructor(private readonly objectsService: ObjectsService) {}
-  
 
   @Post()
   create(@Body() createObjectDto: CreateObjectDto) {

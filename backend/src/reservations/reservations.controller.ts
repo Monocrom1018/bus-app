@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
+import { ReservationCreateDto } from './dto/create-reservation.dto';
 
 @ApiTags('예약')
 @Controller('reservations')
@@ -10,15 +11,24 @@ export class ReservationsController {
   @Post('create')
   @ApiResponse({
     status: 200,
-    description: 'Reservation created',
+    description: 'create Reservation success',
   })
-  async create(@Body() params) {
-    return this.reservationsService.create(params);
+  async create(@Body() reservationCreateDto: ReservationCreateDto) {
+    return this.reservationsService.create(reservationCreateDto);
   }
 
+  @ApiOperation({ summary: '예약목록 가져오기' })
   @Get(':email')
-  async getAllFromUser(@Param() email) {
-    console.log('레저컨 도착', email);
-    return this.reservationsService.getAllFromUser(email.email);
+  @ApiResponse({
+    status: 200,
+    description: 'get all Reservations success',
+  })
+  @ApiParam({
+    name: 'email',
+    required: true,
+    type: 'string',
+  })
+  async getAllFromUser(@Param('email') param: string) {
+    return this.reservationsService.getAllFromUser(param);
   }
 }

@@ -41,7 +41,6 @@ const ModifyPage = () => {
   useEffect(() => {
     async function getUser() {
       const user = await get('/users/getInformation', null);
-      console.log(user.data);
       setImgState({ file: '', imageURL: user.data.profile_img });
     }
 

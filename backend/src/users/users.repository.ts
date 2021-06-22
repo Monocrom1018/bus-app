@@ -76,7 +76,6 @@ export class UsersRepository extends Repository<User> {
         email: email,
       },
     });
-    console.log('!@#!#@!$#!$#%#$#$#!$#!$', user);
     return user;
   }
 
