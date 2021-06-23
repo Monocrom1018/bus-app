@@ -73,7 +73,7 @@ const amplifySignUp: AmplifySignUp = async (params: DriverSignUpParams) => {
   const user = await Auth.signUp({
     username,
     password,
-    // attributes,
+    attributes: { email: username },
   });
 
   return user;
@@ -226,7 +226,7 @@ const DriverSignUpPage: React.FC = () => {
               onChange={(event) => {
                 setFieldValue('driver_license', event.currentTarget.files[0]);
               }}
-            ></input>
+            />
           </List>
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
@@ -237,7 +237,7 @@ const DriverSignUpPage: React.FC = () => {
               onChange={(event) => {
                 setFieldValue('deductible_confirmation', event.currentTarget.files[0]);
               }}
-            ></input>
+            />
           </List>
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />
