@@ -67,7 +67,7 @@ const amplifySignUp: AmplifySignUp = async (params: NormalSignUpParams) => {
   const user = await Auth.signUp({
     username,
     password,
-    // attributes,
+    attributes: { email: username },
   });
 
   return user;

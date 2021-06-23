@@ -12,22 +12,6 @@ const F7Views = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { authenticateUser, unAuthenticateUser, currentUser, signOutUser } = useAuth();
 
-  const renderViews = () => {
-    if (currentUser.isAuthenticated && currentUser.user_type === 'normal') {
-      return normalViews;
-    }
-
-    if (currentUser.isAuthenticated && currentUser.user_type === 'driver') {
-      return driverViews;
-    }
-
-    if (currentUser.isAuthenticated && currentUser.user_type === 'company') {
-      return driverViews;
-    }
-
-    return <View id="view-intro" main url="/intro" />;
-  };
-
   const normalViews = (
     <Views tabs className="safe-areas">
       <Toolbar tabbar labels bottom>
@@ -57,6 +41,22 @@ const F7Views = () => {
       <View id="view-mypage" stackPages name="mypage" tab url="/mypage?is_main=true" />
     </Views>
   );
+
+  const renderViews = () => {
+    if (currentUser.isAuthenticated && currentUser.user_type === 'normal') {
+      return normalViews;
+    }
+
+    if (currentUser.isAuthenticated && currentUser.user_type === 'driver') {
+      return driverViews;
+    }
+
+    if (currentUser.isAuthenticated && currentUser.user_type === 'company') {
+      return driverViews;
+    }
+
+    return <View id="view-intro" main url="/intro" />;
+  };
 
   const getCognitoUserSession = useCallback(async () => {
     try {

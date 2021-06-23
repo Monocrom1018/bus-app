@@ -14,10 +14,10 @@ import awsconfig from './aws-exports';
 import 'lodash';
 
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-
+console.log(IS_PRODUCTION);
 Amplify.configure({
   ...awsconfig,
-  // ...(IS_PRODUCTION ? {} : getCognitoMockConfig()),
+  ...(IS_PRODUCTION ? {} : getCognitoMockConfig()),
 });
 
 const globalAny: any = global;
