@@ -68,3 +68,8 @@ export const driverState = atom({
     profile_img: '',
   },
 });
+
+export const reservationState = atom({
+  key: 'reservationState',
+  default: null,
+});

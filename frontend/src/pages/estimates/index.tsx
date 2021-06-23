@@ -1,4 +1,5 @@
 import {
+  f7,
   Block,
   BlockTitle,
   Button,
@@ -12,7 +13,7 @@ import {
   Input,
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 import {
   returnDateState,
   departureDateState,
@@ -21,9 +22,11 @@ import {
   stopoversState,
   totalChargeState,
   driverState,
+  reservationState,
 } from '@atoms';
 import moment from 'moment';
 import { createReservation } from '../../common/api/index';
+import useAuth from '@hooks/useAuth';
 
 const EstimatePage = () => {
   const departure = useRecoilValue(departureState);
@@ -33,11 +36,15 @@ const EstimatePage = () => {
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
+  const [reservation, setReservation] = useRecoilState(reservationState);
+
+  const { currentUser } = useAuth();
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
     const params = {
-      driver: driver.id,
+      userEmail: currentUser.email,
+      driverId: driver.id,
       departure,
       returnDate,
       departureDate,
@@ -46,10 +53,20 @@ const EstimatePage = () => {
       stopovers,
       people,
     };
-    const result = await createReservation(params);
-    console.log(params);
+    f7.preloader.show();
+    let message: string;
 
-    return;
+    try {
+      const result = await createReservation(params);
+      setReservation(result);
+      message = '기사님께 예약이 전달되었습니다';
+    } catch (error) {
+      if (typeof error.message === 'string') message = '이미 동일한 예약이 존재합니다';
+      else message = '예상치 못한 오류가 발생하였습니다';
+    } finally {
+      f7.preloader.hide();
+      f7.dialog.alert(message);
+    }
   };
 
   return (

@@ -13,12 +13,12 @@ export const refresh = (): Promise<{ data: Token }> =>
       headers: { 'X-CSRF-TOKEN': getToken().csrf, Authorization: `Bearer ${getToken().token}` },
     },
   );
-export const userMeApi = () => API.get<CurrentUser>('/users/me');
+export const userMeApi = (params) => API.get<CurrentUser>(`/users/me/${params}`);
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
 export const modifyAPI = (params: FormData) => API.post('/users/update', params);
-export const signupAPI = (params: SignUpParams) => API.post('/users/signup', { user: params });
+export const signupAPI = (params: SignUpParams) => API.post('/users/signup', { params });
 // export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
@@ -104,5 +104,15 @@ export const getOneDriver = async (params) => {
 
 export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
+  return data;
+};
+
+export const getReservations = async (params) => {
+  const { data } = await API.get(`reservations/${params}`);
+  return data;
+};
+
+export const updateReservation = async (params) => {
+  const { data } = await API.post(`reservations/update`, params);
   return data;
 };

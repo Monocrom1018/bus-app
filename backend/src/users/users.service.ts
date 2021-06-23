@@ -46,9 +46,9 @@ export class UsersService {
     return;
   }
 
-  async me() {
-    const users = this.usersRepository.me();
-    return users;
+  async me(email) {
+    const user = await this.usersRepository.me(email);
+    return user;
   }
 
   async findByUuid(uuid: string): Promise<User> {

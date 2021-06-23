@@ -2,7 +2,7 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { ReservationsUsers } from '@reservations_users/reservations_users.entity';
+import { Users } from '@users/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { Reservations as Reservation } from './reservations.entity';
 
@@ -10,8 +10,8 @@ import { Reservations as Reservation } from './reservations.entity';
 export class ReservationsRepository extends Repository<Reservation> {
   async createReservation(params): Promise<Reservation> {
     const {
-      user,
-      driver,
+      userId,
+      driverId,
       departure,
       returnDate,
       departureDate,
@@ -21,13 +21,17 @@ export class ReservationsRepository extends Repository<Reservation> {
       people,
     } = params;
 
-    const userSide = new ReservationsUsers();
-    userSide.user = user;
-    await ReservationsUsers.save(userSide);
+    const existingCheck = await Reservation.findOne({
+      where: {
+        user: userId,
+        driver: driverId,
+        status: '수락대기중',
+      },
+    });
 
-    const driverSide = new ReservationsUsers();
-    driverSide.user = driver;
-    await ReservationsUsers.save(driverSide);
+    if (existingCheck) {
+      throw new ConflictException('reservation already exists');
+    }
 
     const reservation = new Reservation();
     reservation.departure = departure;
@@ -37,11 +41,42 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.stopover = stopovers;
     reservation.price = totalCharge;
     reservation.people = people;
-    reservation.accompany = 'together';
-    reservation.status = 'waiting';
-    reservation.reservationsUsers = [userSide, driverSide];
+    reservation.accompany = '출발, 복귀 시 동행';
+    reservation.status = '수락대기중';
+    reservation.user = userId;
+    reservation.driver = driverId;
     await Reservation.save(reservation);
 
     return reservation;
+  }
+
+  async getAllFromUser(myId): Promise<Reservation[]> {
+    const reservations = await Reservation.find({
+      relations: ['driver'],
+      where: [
+        {
+          user: myId,
+        },
+        {
+          driver: myId,
+        },
+      ],
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+
+    return reservations;
+  }
+
+  async updateReservation(param) {
+    const targetReservation = await Reservation.findOne({
+      where: { id: param.reservationId },
+    });
+
+    targetReservation.status = param.status;
+    Reservation.save(targetReservation);
+
+    return targetReservation;
   }
 }

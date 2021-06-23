@@ -1,13 +1,32 @@
 import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon } from 'framework7-react';
 import React, { useRef } from 'react';
+import { useRecoilState } from 'recoil';
+import { reservationState } from '@atoms';
 import moment from 'moment';
+import useAuth from '@hooks/useAuth';
 import { updateReservation } from '@api';
 
-const ReservationItem = (props) => {
-  const a = props;
+const DriverReservationPage = (props) => {
+  const [reservation, setReservation] = useRecoilState(reservationState);
   const actionsToPopover = useRef(null);
-  const { departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
-  const { name, bus_old, bus_type } = props.reservation.driver;
+  const {
+    id,
+    departure,
+    destination,
+    departureDate,
+    status,
+    returnDate,
+    stopover,
+    price,
+    people,
+    createdDate,
+    accompany,
+  } = props.reservation;
+
+  const handleButton = async (param) => {
+    const updatedReservation = await updateReservation(param);
+    setReservation(updatedReservation);
+  };
 
   const openActionsPopover = () => {
     if (!actionsToPopover.current) {
@@ -18,7 +37,12 @@ const ReservationItem = (props) => {
             bold: true,
           },
           {
-            text: '예약취소',
+            text: '예약수락',
+            onClick: () => handleButton({ reservationId: id, status: '수락' }),
+          },
+          {
+            text: '예약거절',
+            onClick: () => handleButton({ reservationId: id, status: '거절' }),
           },
           {
             text: 'Cancel',
@@ -35,14 +59,12 @@ const ReservationItem = (props) => {
 
   return (
     <Card className="bg-white mb-5 rounded relative h-auto">
-      <CardHeader className="no-border">
+      {/* <CardHeader className="no-border">
         <div>
-          <p className="font-bold text-lg">{name} 기사님</p>
-          <p className="text-sm text-gray-600">
-            {bus_old}년식 | {bus_type}
-          </p>
+          <p className="font-bold text-lg">김예시 기사님</p>
+          <p className="text-sm text-gray-600">2018년식 | 미니우등</p>
         </div>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <Row>
           <Col
@@ -126,4 +148,4 @@ const ReservationItem = (props) => {
   );
 };
 
-export default ReservationItem;
+export default DriverReservationPage;
