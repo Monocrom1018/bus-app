@@ -70,7 +70,7 @@ const amplifySignUp: AmplifySignUp = async (params: UserSignUpParams) => {
   const user = await Auth.signUp({
     username,
     password,
-    // attributes,
+    attributes: { email: username },
   });
 
   return user;
