@@ -74,6 +74,19 @@ export class ReservationsRepository extends Repository<Reservation> {
       where: { id: param.reservationId },
     });
 
+    if (param.status === '취소') {
+      if (targetReservation.status === '수락') {
+        throw new ConflictException('이미 체결된 예약은 취소할 수 없습니다.');
+      }
+
+      await Reservation.delete({
+        id: param.reservationId,
+      });
+
+      const restReservations = Reservation.find();
+      return restReservations;
+    }
+
     targetReservation.status = param.status;
     Reservation.save(targetReservation);
 

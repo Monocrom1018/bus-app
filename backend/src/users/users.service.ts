@@ -11,6 +11,8 @@ import { Users as User } from './users.entity';
 
 import axios from 'axios';
 
+import { getDistance, getPreciseDistance } from 'geolib';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -134,7 +136,7 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option='trafast'`;
+    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option=tracomfort`;
 
     const distanceData = await axios.get(distanceURL, {
       headers: {
@@ -143,11 +145,29 @@ export class UsersService {
       },
     });
 
-    const kmData = Math.round(
-      distanceData.data.route.traoptimal[0].summary.distance / 1000,
-    );
+    // const testData = await getDistance(
+    //   { latitude: depCoord.y, longitude: depCoord.x },
+    //   { latitude: destCoord.y, longitude: destCoord.x },
+    // );
 
-    return kmData;
+    // const testData2 = await getPreciseDistance(
+    //   { latitude: depCoord.y, longitude: depCoord.x },
+    //   { latitude: destCoord.y, longitude: destCoord.x },
+    // );
+
+    // console.log('아래는 geolib - getDistance 거리');
+    // console.log(testData);
+    // console.log('아래는 geolib - getPreciseDistance 거리');
+    // console.log(testData2);
+    // console.log('아래는 naver - direction 5 거리');
+    // // console.log(distanceData.data.route.tracomfort[0].summary.waypoints);
+    // console.log(distanceData.data.route.tracomfort[0].summary.distance);
+
+    // const kmData = Math.round(
+    //   distanceData.data.route.tracomfort[0].summary.distance / 1000,
+    // );
+
+    return 300;
   }
 
   async getGeoData(param) {
