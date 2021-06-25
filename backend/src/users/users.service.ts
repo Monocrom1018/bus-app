@@ -111,18 +111,18 @@ export class UsersService {
     let geoData = '';
 
     if (stopovers.length > 0) {
-      await Promise.all(
-        stopovers.map(async (stopover) => {
-          if (stopover.stopover === '') {
-            return false;
-          }
+      for (let i = 0; i < stopovers.length; i++) {
+        // stopovers.map(async (stopover, index) => {
+        if (stopovers[i].stopover === '') {
+          return false;
+        }
 
-          const stopoverData = await this.getGeoData(stopover.stopover);
+        const stopoverData = await this.getGeoData(stopovers[i].stopover);
 
-          const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
-          geoData = geoData + data;
-        }),
-      );
+        const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
+        geoData = geoData + data;
+        // }),
+      }
 
       geoData = geoData.slice(0, -1);
     }
@@ -163,11 +163,11 @@ export class UsersService {
     // // console.log(distanceData.data.route.tracomfort[0].summary.waypoints);
     // console.log(distanceData.data.route.tracomfort[0].summary.distance);
 
-    // const kmData = Math.round(
-    //   distanceData.data.route.tracomfort[0].summary.distance / 1000,
-    // );
+    const kmData = Math.round(
+      distanceData.data.route.tracomfort[0].summary.distance / 1000,
+    );
 
-    return 300;
+    return kmData;
   }
 
   async getGeoData(param) {
