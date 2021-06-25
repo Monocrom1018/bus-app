@@ -119,7 +119,9 @@ export class UsersService {
 
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
 
-        const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
+        const data =
+          `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}` +
+          '|';
         geoData = geoData + data;
         // }),
       }
