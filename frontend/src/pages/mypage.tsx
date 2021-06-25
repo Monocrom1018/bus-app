@@ -4,7 +4,7 @@ import { logoutAPI } from '@api';
 import { f7, Navbar, Page, NavLeft, NavTitle, Link, Button, List } from 'framework7-react';
 
 const MyPage = () => {
-  const { signOutUser, authenticateUser, unAuthenticateUser } = useAuth();
+  const { signOutUser, authenticateUser, unAuthenticateUser, currentUser } = useAuth();
 
   const a = 'T';
 
@@ -40,26 +40,43 @@ const MyPage = () => {
         </div>
       </div>
 
-      <List linksList>
-        <li>
-          <a href="/users/modify">회원정보 수정</a>
-        </li>
-        <li>
-          <a href="#">저장한 일정</a>
-        </li>
-        <li>
-          <a href="/notices">공지사항</a>
-        </li>
-        <li>
-          <a href="/faqs">자주 묻는 질문</a>
-        </li>
-        <li>
-          <a href="/contacts">이메일 문의</a>
-        </li>
-        <li>
-          <a onClick={signOutUser}>로그아웃</a>
-        </li>
-      </List>
+      {currentUser.isAuthenticated ? (
+        <List linksList>
+          <li>
+            <a href="/notices">공지사항</a>
+          </li>
+          <li>
+            <a href="/faqs">자주 묻는 질문</a>
+          </li>
+          <li>
+            <a href="#">저장한 일정</a>
+          </li>
+          <li>
+            <a href="/contacts">이메일 문의</a>
+          </li>
+          <li>
+            <a href="/users/modify">회원정보 수정</a>
+          </li>
+          <li>
+            <a onClick={signOutUser}>로그아웃</a>
+          </li>
+        </List>
+      ) : (
+        <List linksList>
+          <li>
+            <a href="/notices">공지사항</a>
+          </li>
+          <li>
+            <a href="/faqs">자주 묻는 질문</a>
+          </li>
+          <li>
+            <a href="/users/sign_in">로그인</a>
+          </li>
+          <li>
+            <a href="/users/sign_up/intro">회원가입</a>
+          </li>
+        </List>
+      )}
     </Page>
   );
 };

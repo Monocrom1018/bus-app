@@ -21,7 +21,10 @@ const ReservationIndexPage = () => {
       const reservationsData = await getReservations(currentUser.email);
       setReservations(reservationsData);
     };
-    getDatas();
+
+    if (currentUser.isAuthenticated) {
+      getDatas();
+    }
   }, [reservationUpdate]);
 
   return (
@@ -38,12 +41,17 @@ const ReservationIndexPage = () => {
             {reservations.map((reservation) => {
               if (userType === 'normal') {
                 return <Reservation reservation={reservation} key={reservation.id} />;
-              } else {
+              } else if (userType === 'normal' || userType === 'comapany') {
                 return <DriverReservationPage reservation={reservation} key={reservation.id} />;
               }
             })}
           </div>
-        ) : null}
+        ) : (
+          <div className="text-center mt-60">
+            <i className="f7-icons text-8xl text-gray-400">lock</i>
+            <div className="text-xl text-gray-400 mt-4 tracking-wide">로그인 후 이용해보세요 :)</div>
+          </div>
+        )}
       </Block>
     </Page>
   );

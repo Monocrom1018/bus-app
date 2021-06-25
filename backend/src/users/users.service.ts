@@ -9,7 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 
-import axios from 'axios';
+const axios = require('axios');
+const qs = require('qs');
 
 @Injectable()
 export class UsersService {
@@ -107,21 +108,22 @@ export class UsersService {
     const depCoord = { x: '', y: '' };
     const destCoord = { x: '', y: '' };
     let geoData = '';
+    let tmapData = '';
 
     if (stopovers.length > 0) {
-      await Promise.all(
-        stopovers.map(async (stopover) => {
-          if (stopover.stopover === '') {
-            return false;
-          }
+      for (let i = 0; i < stopovers.length; i++) {
+        if (stopovers[i] === '') {
+          return false;
+        }
+        const stopoverData = await this.getGeoData(stopovers[i].stopover);
+        const naverGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
+        geoData = geoData + naverGeo;
 
-          const stopoverData = await this.getGeoData(stopover.stopover);
+        const tmapsGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}_`;
+        tmapData = tmapData + tmapsGeo;
+      }
 
-          const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
-          geoData = geoData + data;
-        }),
-      );
-
+      tmapData = tmapData.slice(0, -1);
       geoData = geoData.slice(0, -1);
     }
 
@@ -134,7 +136,7 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option='trafast'`;
+    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option=tracomfort`;
 
     const distanceData = await axios.get(distanceURL, {
       headers: {
@@ -143,8 +145,36 @@ export class UsersService {
       },
     });
 
+    const tmapBody = qs.stringify({
+      appKey: 'l7xx8b2b9259862740968f554824c1740369',
+      endX: depCoord.x,
+      endY: depCoord.y,
+      startX: destCoord.x,
+      startY: destCoord.y,
+      passList: tmapData,
+      searchOption: 10,
+    });
+    const tmapConfig = {
+      method: 'post',
+      url: 'https://apis.openapi.sk.com/tmap/routes?version=1',
+      headers: {
+        'Accept-Language': 'ko',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: tmapBody,
+    };
+
+    const tmap = await axios(tmapConfig);
+
+    console.log('아래는 티맵으로 산출한 거리<최단거리 + 유/무료>');
+    console.log(tmap.data.features[0].properties.totalDistance / 1000 + 'km');
+    console.log('아래는 네이버맵스로 산출한 거리<실시간 편한길>');
+    console.log(
+      distanceData.data.route.tracomfort[0].summary.distance / 1000 + 'km',
+    );
+
     const kmData = Math.round(
-      distanceData.data.route.traoptimal[0].summary.distance / 1000,
+      distanceData.data.route.tracomfort[0].summary.distance / 1000,
     );
 
     return kmData;
