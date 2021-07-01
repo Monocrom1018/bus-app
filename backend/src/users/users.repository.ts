@@ -6,11 +6,20 @@ import {
 import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
+import { use } from 'passport';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async signUp(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password, name, user_type } = userCreateDto;
+    const {
+      email,
+      password,
+      name,
+      user_type,
+      termCheck,
+      privacyCheck,
+      marketingCheck,
+    } = userCreateDto;
 
     const user = new User();
     user.email = email;
@@ -23,7 +32,7 @@ export class UsersRepository extends Repository<User> {
     // );
 
     try {
-      await user.save();
+      // await user.save();
     } catch (error) {
       // duplicate email
       if (error.code === '23505') {
@@ -79,6 +88,68 @@ export class UsersRepository extends Repository<User> {
       },
     });
     return user;
+  }
+
+  async updateUser(filename, userUpdateDto) {
+    const {
+      email,
+      drivableLegion,
+      drivableDate,
+      company,
+      busNumber,
+      busType,
+      busOld,
+      peopleAvailable,
+      introduce,
+      basicCharge,
+      basicKm,
+      nightCharge,
+      chargePerKm,
+      nightBegin,
+      nightEnd,
+      chargePerDay,
+      serviceCharge,
+    } = userUpdateDto.user;
+
+    const user = await this.findOne({
+      email: email,
+    });
+
+    if (!user) {
+      throw new ConflictException('유저정보가 조회되지 않습니다');
+    }
+
+    // user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
+    if (filename !== '') {
+      user.profile_img = filename;
+    }
+
+    try {
+      user.basic_charge = basicCharge;
+      user.basic_km = basicKm;
+      user.bus_old = busOld;
+      user.bus_type = busType;
+      user.charge_per_km = chargePerKm;
+      user.company_name = company;
+      user.drivable_date = drivableDate;
+      user.drivable_legion = drivableLegion;
+      user.night_begin = nightBegin;
+      user.night_end = nightEnd;
+      user.night_charge = nightCharge;
+      user.service_charge = serviceCharge;
+      user.people_available = peopleAvailable;
+      user.charge_per_day = chargePerDay;
+      user.bus_number = busNumber;
+      user.introduce = introduce;
+
+      // if (password !== '') {
+      //   user.encrypted_password = await bcrypt.hash(password, 10);
+      // }
+    } catch (err) {
+      throw new ConflictException(err);
+    }
+
+    user.save();
   }
 
   async getOneDriver(param: number): Promise<User> {

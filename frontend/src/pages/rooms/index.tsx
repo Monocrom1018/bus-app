@@ -17,6 +17,7 @@ const RoomIndexPage = () => {
         <NavTitle>채팅목록</NavTitle>
       </Navbar>
       {currentUser.isAuthenticated ? (
+        // 나중에 room 생기면 유저에게 room이 존재하는지에 따른 분기 한 번 더 필요함
         <List mediaList style={{ margin: 0 }}>
           <ul>
             <Room />

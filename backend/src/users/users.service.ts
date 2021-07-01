@@ -35,16 +35,7 @@ export class UsersService {
   }
 
   async update(filename, userUpdateDto) {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-    if (!user) {
-      return 'Unauthorized';
-    }
-
-    user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
-    user.save();
-    return;
+    return this.usersRepository.updateUser(filename, userUpdateDto);
   }
 
   async me(email) {
