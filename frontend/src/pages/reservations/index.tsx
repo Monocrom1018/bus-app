@@ -43,7 +43,7 @@ const ReservationIndexPage = () => {
                 {reservations.map((reservation) => {
                   if (userType === 'normal') {
                     return <Reservation reservation={reservation} key={reservation.id} />;
-                  } else if (userType === 'driver' || userType === 'comapany') {
+                  } else if (userType === 'driver' || userType === 'company') {
                     return <DriverReservationPage reservation={reservation} key={reservation.id} />;
                   }
                 })}

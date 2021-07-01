@@ -7,6 +7,7 @@ import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
 import { use } from 'passport';
+import { UserUpdateDto } from './dto/user-update.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -26,6 +27,13 @@ export class UsersRepository extends Repository<User> {
     user.name = name;
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
+
+    if (user_type === 'driver' || user_type === 'company') {
+      user.registration_confirmed = false;
+    } else if (user_type === 'normal') {
+      user.registration_confirmed = true;
+    }
+
     // user.password = await this.hashPassword(
     //   `${password}`,
     //   user.encrypted_password,
@@ -145,11 +153,13 @@ export class UsersRepository extends Repository<User> {
       // if (password !== '') {
       //   user.encrypted_password = await bcrypt.hash(password, 10);
       // }
+
+      user.save();
     } catch (err) {
       throw new ConflictException(err);
     }
 
-    user.save();
+    return user;
   }
 
   async getOneDriver(param: number): Promise<User> {

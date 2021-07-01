@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { f7, Navbar, Page, List, ListInput, Button, ListItem, AccordionContent } from 'framework7-react';
+import { f7, Navbar, Page, List, ListInput, Button, ListItem, AccordionContent, Chip, Block } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
@@ -8,16 +8,6 @@ import { useRecoilState } from 'recoil';
 import useAuth from '@hooks/useAuth';
 import { currentUserState } from '@atoms';
 import * as fs from 'fs';
-
-const handleArrayChange = (e, arrayName) => {
-  const value = e.target.value;
-  const valueIndex = arrayName.indexOf(value);
-  if (valueIndex !== -1) {
-    arrayName.splice(valueIndex, 1);
-  } else {
-    arrayName.push(value);
-  }
-};
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -45,8 +35,10 @@ const UserInfoSchema = Yup.object().shape({
 const ModifyPage = () => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const drivableLegion = [...currentUser.drivable_legion];
-  const drivableDate = [...currentUser.drivable_date];
+  const [drivableLegion, setDrivableLegion] = useState(
+    currentUser.drivable_legion ? [...currentUser.drivable_legion] : [],
+  );
+  const [drivableDate, setDrivableDate] = useState(currentUser.drivable_date ? [...currentUser.drivable_date] : []);
   const { name, profile_img, email, user_type } = currentUser;
   const legions = [
     '서울',
@@ -69,6 +61,29 @@ const ModifyPage = () => {
   ];
   const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
   const daysOfEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+  const handleArrayChange = (e, arrayName) => {
+    const value = e.target.value;
+    const valueIndex = arrayName.indexOf(value);
+    const duplicatedArr = JSON.parse(JSON.stringify(arrayName));
+    if (valueIndex !== -1) {
+      duplicatedArr.splice(valueIndex, 1);
+      if (arrayName === drivableLegion) {
+        setDrivableLegion(duplicatedArr);
+      }
+      if (arrayName === drivableDate) {
+        setDrivableDate(duplicatedArr);
+      }
+    } else {
+      duplicatedArr.push(value);
+      if (arrayName === drivableLegion) {
+        setDrivableLegion(duplicatedArr);
+      }
+      if (arrayName === drivableDate) {
+        setDrivableDate(duplicatedArr);
+      }
+    }
+  };
 
   const handleImgButton = () => {
     document.getElementById('imageInput').click();
@@ -107,24 +122,24 @@ const ModifyPage = () => {
           passwordConfirmation: '',
           company: currentUser.company || '',
           busNumber: currentUser.bus_number || '',
-          busType: currentUser.bus_type || '',
-          busOld: currentUser.bus_old || '',
-          peopleAvailable: currentUser.people_available || '',
+          busType: currentUser.bus_type || '대형',
+          busOld: currentUser.bus_old || 2010,
+          peopleAvailable: currentUser.people_available || null,
           introduce: currentUser.introduce || '',
           basicCharge: currentUser.basic_charge || '',
           basicKm: currentUser.basic_km || '',
           chargePerKm: currentUser.charge_per_km || '',
           nightCharge: currentUser.night_charge || '',
-          nightBegin: currentUser.night_begin || '',
-          nightEnd: currentUser.night_end || '',
+          nightBegin: currentUser.night_begin || 21,
+          nightEnd: currentUser.night_end || 4,
           chargePerDay: currentUser.charge_per_day || '',
           serviceCharge: currentUser.service_charge || '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          await sleep(400);
           setSubmitting(false);
           f7.dialog.preloader('잠시만 기다려주세요...');
+          await sleep(400);
           try {
             if (imgState.file !== '') {
               values.profileImg = imgState.file;
@@ -141,7 +156,8 @@ const ModifyPage = () => {
               fd.append('user[drivableDate]', date);
             });
 
-            const response = await modifyAPI(fd);
+            const { data: user } = await modifyAPI(fd);
+            setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
           } catch (error) {
             f7.dialog.close();
@@ -208,13 +224,18 @@ const ModifyPage = () => {
                             onChange={(e) => handleArrayChange(e, drivableLegion)}
                             value={legion}
                             title={legion}
-                            checked={currentUser.drivable_legion.includes(legion)}
+                            defaultChecked={currentUser.drivable_legion?.includes(legion)}
                             name="demo-checkbox"
                           />
                         );
                       })}
                     </AccordionContent>
                   </ListItem>
+                  <Block strong className="ml-3 mt-1">
+                    {drivableLegion.map((legion) => {
+                      return <Chip outline className="mr-1" text={legion} />;
+                    })}
+                  </Block>
                 </List>
 
                 <List noHairlinesMd accordionList>
@@ -227,13 +248,19 @@ const ModifyPage = () => {
                             title={day}
                             value={daysOfEnglish[idx]}
                             onChange={(e) => handleArrayChange(e, drivableDate)}
-                            checked={currentUser.drivable_date.includes(daysOfEnglish[idx])}
+                            defaultChecked={currentUser.drivable_date?.includes(daysOfEnglish[idx])}
                             name="demo-checkbox"
                           />
                         );
                       })}
                     </AccordionContent>
                   </ListItem>
+                  <Block strong className="ml-3 mt-1">
+                    {drivableDate.map((day) => {
+                      const idx = daysOfEnglish.indexOf(day);
+                      return <Chip outline className="mr-1" text={daysOfWeek[idx]} />;
+                    })}
+                  </Block>
                 </List>
                 <List noHairlinesMd>
                   <div className="p-3 font-semibold bg-white">차량 정보</div>
@@ -387,7 +414,7 @@ const ModifyPage = () => {
                     <ListInput
                       label={i18next.t('심야시작시간')}
                       type="select"
-                      defaultValue="20시"
+                      defaultValue="21시"
                       name="nightBegin"
                       onChange={handleChange}
                       onBlur={handleBlur}
