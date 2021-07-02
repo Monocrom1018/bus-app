@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReservationsRepository } from './reservations.repository';
-import { Reservations as Reservation } from './reservations.entity';
 import { UsersService } from '@users/users.service';
 
 @Injectable()
@@ -12,11 +11,14 @@ export class ReservationsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(params) {
-    const me = await this.usersService.me(params.userEmail);
-    params['userId'] = me.id;
-
-    return await this.reservationsRepository.createReservation(params);
+  async create(reservationCreateDto) {
+    const { userEmail } = reservationCreateDto.reservation;
+    const me = await this.usersService.me(userEmail);
+    const userId = me.id;
+    return await this.reservationsRepository.createReservation(
+      reservationCreateDto,
+      userId,
+    );
   }
 
   async getAllFromUser(email) {

@@ -27,6 +27,7 @@ import {
 import moment from 'moment';
 import { createReservation } from '../../common/api/index';
 import useAuth from '@hooks/useAuth';
+import { convertObjectToFormData } from '@utils';
 
 const EstimatePage = () => {
   const departure = useRecoilValue(departureState);
@@ -53,14 +54,17 @@ const EstimatePage = () => {
       departureDate,
       destination,
       totalCharge,
-      stopoversArray,
       people,
     };
     f7.preloader.show();
     let message: string;
-
     try {
-      const result = await createReservation(params);
+      const fd = convertObjectToFormData({ modelName: 'reservation', data: params });
+
+      stopoversArray.forEach((point) => {
+        fd.append('reservation[stopoversArray]', point);
+      });
+      const result = await createReservation(fd);
       setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
     } catch (error) {

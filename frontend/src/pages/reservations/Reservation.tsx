@@ -9,7 +9,8 @@ const ReservationItem = (props) => {
   const a = props;
   const actionsToPopover = useRef(null);
   const [reservation, setReservation] = useRecoilState(reservationState);
-  const { id, departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
+  const { id, departure, destination, departureDate, returnDate, people, status, accompany, price, stopover } =
+    props.reservation;
   const { name, bus_old, bus_type } = props.reservation.driver;
 
   const handleReservationCancel = async (param) => {
@@ -73,23 +74,46 @@ const ReservationItem = (props) => {
           >
             출발지
           </Col>
-          <Col width="80" className="text-base text-gray-900">
+          <Col width="80" className="text-base font-bold text-gray-900">
             {departure}
           </Col>
         </Row>
         <Row>
           <Col width="20" className="text-center text-red-400 font-semibold">
-            ↓↑
+            ↓
           </Col>
         </Row>
-        <Row className="mb-5">
-          <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
+        {stopover?.map((name) => {
+          return (
+            <>
+              <Row>
+                <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
+                  경유지
+                </Col>
+                <Col width="80" className="text-base text-gray-900">
+                  {name}
+                </Col>
+              </Row>
+              <Row>
+                <Col width="20" className="text-center text-red-400 font-semibold">
+                  ↓
+                </Col>
+              </Row>
+            </>
+          );
+        })}
+        <Row className="mb-3">
+          <Col
+            width="20"
+            className="border-2 rounded-xl border-red-400 text-center font-semibold text-white bg-red-400"
+          >
             도착지
           </Col>
-          <Col width="80" className="text-base text-gray-900">
+          <Col width="80" className="text-base font-bold text-gray-900">
             {destination}
           </Col>
         </Row>
+        <hr className="my-4" />
         <Row>
           <Col
             width="20"
@@ -114,13 +138,14 @@ const ReservationItem = (props) => {
             {moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
           </Col>
         </Row>
+        <hr className="my-4" />
         {/* <Row className="pt-4 mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             운행
           </Col>
           <Col width="80">왕복</Col>
         </Row> */}
-        <Row className="pt-4 mb-2">
+        <Row className="mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             인원
           </Col>

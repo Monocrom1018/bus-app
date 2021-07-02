@@ -4,13 +4,13 @@ import {
 } from '@nestjs/common';
 import { Users } from '@users/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
+import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { Reservations as Reservation } from './reservations.entity';
 
 @EntityRepository(Reservation)
 export class ReservationsRepository extends Repository<Reservation> {
-  async createReservation(params): Promise<Reservation> {
+  async createReservation(reservationCreateDto, userId): Promise<Reservation> {
     const {
-      userId,
       driverId,
       departure,
       returnDate,
@@ -19,7 +19,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       stopoversArray,
       totalCharge,
       people,
-    } = params;
+    } = reservationCreateDto.reservation;
 
     const existingCheck = await Reservation.findOne({
       where: {
@@ -65,8 +65,6 @@ export class ReservationsRepository extends Repository<Reservation> {
         createdAt: 'DESC',
       },
     });
-
-    console.log(reservations);
 
     return reservations;
   }

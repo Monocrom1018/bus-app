@@ -129,6 +129,7 @@ const DriverSignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
+        location.replace('/');
       }
     },
     [authenticateUser],
