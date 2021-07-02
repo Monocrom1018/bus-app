@@ -16,10 +16,11 @@ export class ReservationsController {
     description: 'create Reservation success',
   })
   async create(@Body() reservationCreateDto: ReservationCreateDto) {
+    console.log(ReservationCreateDto);
     return this.reservationsService.create(reservationCreateDto);
   }
 
-  @ApiOperation({ summary: '예약요청 수락 or 거절' })
+  @ApiOperation({ summary: '예약요청 수락, 거절 또는 취소' })
   @Post('update')
   @ApiResponse({
     status: 200,

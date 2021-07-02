@@ -1,4 +1,5 @@
 import {
+  f7,
   Block,
   BlockTitle,
   Button,
@@ -38,10 +39,12 @@ const SearchPage = () => {
 
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
+      f7.dialog.preloader();
       const searchParam = { departure, departureDate, destination, stopovers };
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
       setDrivers(foundDrivers);
       setDistance(calculatedDistance);
+      f7.dialog.close();
     } else {
       // 출발지 도착지 입력해달라고 토스트 띄우기
     }

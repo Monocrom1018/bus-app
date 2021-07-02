@@ -62,6 +62,7 @@ const SessionNewPage: React.FC = () => {
         f7.preloader.hide();
         if (user) await authenticateUser(user);
         f7.dialog.alert('정보를 확인 해주세요. ');
+        location.replace('/');
       }
     },
     [authenticateUser],

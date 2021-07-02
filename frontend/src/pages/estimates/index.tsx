@@ -42,6 +42,9 @@ const EstimatePage = () => {
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
+    const stopoversArray = stopovers.map((stopover) => {
+      return stopover.stopover;
+    });
     const params = {
       userEmail: currentUser.email,
       driverId: driver.id,
@@ -50,7 +53,7 @@ const EstimatePage = () => {
       departureDate,
       destination,
       totalCharge,
-      stopovers,
+      stopoversArray,
       people,
     };
     f7.preloader.show();

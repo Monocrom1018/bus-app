@@ -9,7 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 
-import axios from 'axios';
+const axios = require('axios');
+const qs = require('qs');
 
 @Injectable()
 export class UsersService {
@@ -34,16 +35,7 @@ export class UsersService {
   }
 
   async update(filename, userUpdateDto) {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-    if (!user) {
-      return 'Unauthorized';
-    }
-
-    user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
-    user.save();
-    return;
+    return this.usersRepository.updateUser(filename, userUpdateDto);
   }
 
   async me(email) {
@@ -106,23 +98,19 @@ export class UsersService {
     const { departure, destination, stopovers } = params;
     const depCoord = { x: '', y: '' };
     const destCoord = { x: '', y: '' };
-    let geoData = '';
+    let tmapData = '';
 
     if (stopovers.length > 0) {
-      await Promise.all(
-        stopovers.map(async (stopover) => {
-          if (stopover.stopover === '') {
-            return false;
-          }
+      for (let i = 0; i < stopovers.length; i++) {
+        if (stopovers[i] === '') {
+          return false;
+        }
+        const stopoverData = await this.getGeoData(stopovers[i].stopover);
+        const tmapsGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}_`;
+        tmapData = tmapData + tmapsGeo;
+      }
 
-          const stopoverData = await this.getGeoData(stopover.stopover);
-
-          const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
-          geoData = geoData + data;
-        }),
-      );
-
-      geoData = geoData.slice(0, -1);
+      tmapData = tmapData.slice(0, -1);
     }
 
     const departureData = await this.getGeoData(departure);
@@ -134,17 +122,31 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}&option='trafast'`;
-
-    const distanceData = await axios.get(distanceURL, {
-      headers: {
-        'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-        'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-      },
+    const tmapBody = qs.stringify({
+      appKey: process.env.TMAP_API_KEY,
+      endX: depCoord.x,
+      endY: depCoord.y,
+      startX: destCoord.x,
+      startY: destCoord.y,
+      passList: tmapData,
+      searchOption: 10,
+      totalValue: 2,
+      trafficInfo: 'N',
     });
 
+    const tmapConfig = {
+      'Accept-Language': 'ko',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    const tmapApi = await axios.post(
+      'https://apis.openapi.sk.com/tmap/routes?version=1',
+      tmapBody,
+      tmapConfig,
+    );
+
     const kmData = Math.round(
-      distanceData.data.route.traoptimal[0].summary.distance / 1000,
+      tmapApi.data.features[0].properties.totalDistance / 1000,
     );
 
     return kmData;

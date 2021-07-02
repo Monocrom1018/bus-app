@@ -16,7 +16,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       returnDate,
       departureDate,
       destination,
-      stopovers,
+      stopoversArray,
       totalCharge,
       people,
     } = params;
@@ -38,7 +38,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.departureDate = departureDate;
     reservation.returnDate = returnDate;
     reservation.destination = destination;
-    reservation.stopover = stopovers;
+    reservation.stopover = stopoversArray;
     reservation.price = totalCharge;
     reservation.people = people;
     reservation.accompany = '출발, 복귀 시 동행';
@@ -66,6 +66,8 @@ export class ReservationsRepository extends Repository<Reservation> {
       },
     });
 
+    console.log(reservations);
+
     return reservations;
   }
 
@@ -73,6 +75,19 @@ export class ReservationsRepository extends Repository<Reservation> {
     const targetReservation = await Reservation.findOne({
       where: { id: param.reservationId },
     });
+
+    if (param.status === '취소') {
+      if (targetReservation.status === '수락') {
+        throw new ConflictException('이미 체결된 예약은 취소할 수 없습니다.');
+      }
+
+      await Reservation.delete({
+        id: param.reservationId,
+      });
+
+      const restReservations = Reservation.find();
+      return restReservations;
+    }
 
     targetReservation.status = param.status;
     Reservation.save(targetReservation);

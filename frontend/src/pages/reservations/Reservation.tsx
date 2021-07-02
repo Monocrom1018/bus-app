@@ -2,12 +2,33 @@ import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon }
 import React, { useRef } from 'react';
 import moment from 'moment';
 import { updateReservation } from '@api';
+import { useRecoilState } from 'recoil';
+import { reservationState } from '@atoms';
 
 const ReservationItem = (props) => {
   const a = props;
   const actionsToPopover = useRef(null);
-  const { departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
+  const [reservation, setReservation] = useRecoilState(reservationState);
+  const { id, departure, destination, departureDate, returnDate, people, status, accompany, price } = props.reservation;
   const { name, bus_old, bus_type } = props.reservation.driver;
+
+  const handleReservationCancel = async (param) => {
+    f7.dialog.confirm('예약을 취소하시겠어요?', async () => {
+      f7.preloader.show();
+      let message: string;
+      try {
+        const updatedReservation = await updateReservation(param);
+        setReservation(updatedReservation);
+        message = '예약이 취소되었습니다';
+      } catch (error) {
+        if (typeof error.message === 'string') message = '이미 수락된 예약은 취소할 수 없습니다';
+        else message = '예상치 못한 오류가 발생하였습니다';
+      } finally {
+        f7.preloader.hide();
+        f7.dialog.alert(message);
+      }
+    });
+  };
 
   const openActionsPopover = () => {
     if (!actionsToPopover.current) {
@@ -19,6 +40,7 @@ const ReservationItem = (props) => {
           },
           {
             text: '예약취소',
+            onClick: () => handleReservationCancel({ reservationId: id, status: '취소' }),
           },
           {
             text: 'Cancel',

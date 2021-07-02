@@ -71,7 +71,8 @@ export class UsersController {
     @Body() userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.update(file.path, userUpdateDto);
+    const filename = file?.path || '';
+    return this.usersService.update(filename, userUpdateDto);
   }
 
   @ApiOperation({ summary: '접속중인 유저정보 가져오기' })
