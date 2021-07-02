@@ -79,12 +79,12 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.0.1",
     "swagger-ui-express": "^4.1.6",
-    "ts-node": "^9.1.1",
+    "ts-node": "^10.0.0",
     "typeorm": "^0.2.31",
     "typeorm-cli": "^1.0.7",
     "typeorm-polymorphic": "^0.0.10",
     "typeorm-seeding": "^1.6.1",
-    "typescript": "^4.0.5"
+    "typescript": "^4.3.5"
   },
   "devDependencies": {
     "@nestjs/schematics": "^7.1.3",

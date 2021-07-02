@@ -13,8 +13,6 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
-import Driver from './users/Driver';
-import { getDrivers } from '../common/api/index';
 import {
   returnDateState,
   departureDateState,
@@ -23,6 +21,8 @@ import {
   distanceState,
   stopoversState,
 } from '@atoms';
+import Driver from './users/Driver';
+import { getDrivers } from '../common/api/index';
 
 const SearchPage = () => {
   const test = 'test';

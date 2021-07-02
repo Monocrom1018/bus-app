@@ -1,3 +1,4 @@
+import { LoggedInGuard } from './../auth/guards/logged-in.guard';
 import {
   ApiOperation,
   ApiTags,
@@ -17,11 +18,13 @@ import {
   UseInterceptors,
   ValidationPipe,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { NotLoggedInGuard } from '@auth/guards/not-logged-in.guard';
 
 export const storage = {
   storage: diskStorage({
@@ -51,11 +54,13 @@ export class UsersController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async signUp(@Body() userCreateDto: UserCreateDto) {
+    console.log(userCreateDto);
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
+  @UseGuards(LoggedInGuard)
   @Post('update')
   @ApiResponse({
     status: 200,

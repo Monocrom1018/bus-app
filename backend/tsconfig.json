@@ -3,6 +3,7 @@
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -15,7 +16,7 @@
     "paths": {
       "@decorators/*": ["src/shared/decorators/*"],
       "@entities/*": ["src/shared/entities/*"],
-      "@filters/*": ["src/sgared/filters/*"],
+      "@filters/*": ["src/shared/filters/*"],
       "@middlewares/*": ["src/middlewares/*"],
       "@users/*": ["src/users/*"],
       "@adminUsers/*": ["src/adminUsers/*"],

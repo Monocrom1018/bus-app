@@ -1,9 +1,11 @@
-import { Body, Controller, Get, Post, Param, Patch } from '@nestjs/common';
+import { JwkStrategy } from './../auth/strategies/jwk.strategy';
+import { Body, Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 
 @ApiTags('예약')
+@UseGuards(JwkStrategy)
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
