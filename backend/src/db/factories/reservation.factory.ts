@@ -1,5 +1,6 @@
+import { Users } from '@users/users.entity';
 import Faker from 'faker';
-import { define } from 'typeorm-seeding';
+import { define, factory } from 'typeorm-seeding';
 import { Reservations as Reservation } from '../../reservations/reservations.entity';
 
 define(Reservation, (faker: typeof Faker) => {
@@ -15,7 +16,6 @@ define(Reservation, (faker: typeof Faker) => {
   reservation.people = faker.random.number({ min: 10, max: 30 });
   reservation.accompany = '출발, 복귀만';
   reservation.price = Number(faker.commerce.price());
-  reservation.status = '수락대기중';
 
   return reservation;
 });
