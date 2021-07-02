@@ -48,7 +48,8 @@ const DriverDetailPage = (props) => {
           </div>
           <hr />
           <div className="mt-5 mx-4 flex items-center space-x-5 italic text-center">
-            항상 웃음띤 얼굴로 고객을 대하며 친절과 안전운행으로 처음부터 끝까지 최선을 다하겠습니다.
+            {driver.introduce ||
+              '항상 웃음띤 얼굴로 고객을 대하며 친절과 안전운행으로 처음부터 끝까지 최선을 다하겠습니다.'}
           </div>
         </div>
       </div>

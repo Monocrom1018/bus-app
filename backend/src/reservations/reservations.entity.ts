@@ -44,8 +44,11 @@ export class Reservations extends DateAudit {
   @Column()
   departureDate: Date;
 
-  @Column({ nullable: true })
-  stopover: string;
+  @Column('text', {
+    array: true,
+    nullable: true,
+  })
+  stopover: string[];
 
   @Column()
   destination: string;

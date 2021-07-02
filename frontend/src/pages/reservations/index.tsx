@@ -22,9 +22,9 @@ const ReservationIndexPage = () => {
       setReservations(reservationsData);
     };
 
-    if (currentUser.isAuthenticated) {
-      getDatas();
-    }
+    // if (currentUser.isAuthenticated) {
+    //   getDatas();
+    // }
   }, [reservationUpdate]);
 
   return (
@@ -42,9 +42,9 @@ const ReservationIndexPage = () => {
               <div>
                 {reservations.map((reservation) => {
                   if (userType === 'normal') {
-                    return <Reservation reservation={reservation} key={reservation.id} />;
+                    return <Reservation reservation={reservation} />;
                   } else if (userType === 'driver' || userType === 'company') {
-                    return <DriverReservationPage reservation={reservation} key={reservation.id} />;
+                    return <DriverReservationPage reservation={reservation} />;
                   }
                 })}
               </div>

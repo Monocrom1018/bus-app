@@ -40,7 +40,7 @@ export class UsersRepository extends Repository<User> {
     // );
 
     try {
-      // await user.save();
+      await user.save();
     } catch (error) {
       // duplicate email
       if (error.code === '23505') {

@@ -66,6 +66,7 @@ export const driverState = atom({
     company_name: '',
     people_available: 0,
     profile_img: '',
+    introduce: null,
   },
 });
 
