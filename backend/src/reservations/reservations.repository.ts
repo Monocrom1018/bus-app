@@ -16,7 +16,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       returnDate,
       departureDate,
       destination,
-      stopovers,
+      stopoversArray,
       totalCharge,
       people,
     } = params;
@@ -38,7 +38,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.departureDate = departureDate;
     reservation.returnDate = returnDate;
     reservation.destination = destination;
-    reservation.stopover = stopovers;
+    reservation.stopover = stopoversArray;
     reservation.price = totalCharge;
     reservation.people = people;
     reservation.accompany = '출발, 복귀 시 동행';
@@ -65,6 +65,8 @@ export class ReservationsRepository extends Repository<Reservation> {
         createdAt: 'DESC',
       },
     });
+
+    console.log(reservations);
 
     return reservations;
   }

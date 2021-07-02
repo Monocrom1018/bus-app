@@ -109,6 +109,15 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   company_name: string;
 
+  @Column({ nullable: true })
+  bus_number: string;
+
+  @Column({ nullable: true })
+  introduce: string;
+
+  @Column({ nullable: true })
+  charge_per_day: string;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
 

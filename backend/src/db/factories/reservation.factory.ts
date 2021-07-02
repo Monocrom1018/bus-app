@@ -7,7 +7,7 @@ define(Reservation, (faker: typeof Faker) => {
   const reservation = new Reservation();
 
   reservation.departure = faker.address.city();
-  reservation.stopover = faker.address.city();
+  // reservation.stopover = faker.address.city();
   reservation.destination = faker.address.city();
 
   reservation.departureDate = faker.date.recent();

@@ -77,7 +77,27 @@ interface CurrentUserState {
 export interface CurrentUser extends CurrentUserState {
   email: string;
   // TODO
+  name: string;
   user_type: string;
+  profile_img: any;
+  password: string;
+  password_confirmation: string;
+  drivable_legion: string[];
+  drivable_date: string[];
+  company: string;
+  bus_number: string;
+  bus_type: string;
+  bus_old: string;
+  people_available: number;
+  introduce: string;
+  basic_charge: number;
+  basic_km: number;
+  night_charge: number;
+  charge_per_km: number;
+  night_begin: string;
+  night_end: string;
+  charge_per_day: number;
+  service_charge: number;
 }
 
 export interface Address {

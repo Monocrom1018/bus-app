@@ -1,20 +1,27 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import DaumAddressSearch from '@components/shared/DaumAddressSearch';
-import { modifyAPI, get } from '../../common/api/index';
+import { modifyAPI } from '../../common/api/index';
+import { useRecoilState } from 'recoil';
+import { currentUserState } from '@atoms';
 import * as fs from 'fs';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
-  password_confirmation: Yup.string(),
-  // profile_img: Yup.mixed(),
+  passwordConfirmation: Yup.string().when('password', {
+    is: (val: string) => val && val.length > 0,
+    then:
+      Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요') &&
+      Yup.string().required('필수 입력사항 입니다'),
+  }),
 });
 
 const ModifyPage = () => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
+  const { name, profile_img, email, user_type } = currentUser;
 
   const handleImgButton = () => {
     document.getElementById('imageInput').click();
@@ -38,15 +45,6 @@ const ModifyPage = () => {
     }
   };
 
-  useEffect(() => {
-    async function getUser() {
-      const user = await get('/users/getInformation', null);
-      setImgState({ file: '', imageURL: user.data.profile_img });
-    }
-
-    getUser();
-  }, []);
-
   return (
     <Page noToolbar>
       {/* Top Navbar */}
@@ -56,25 +54,29 @@ const ModifyPage = () => {
       <Formik
         enableReinitialize
         initialValues={{
-          profile_img: '',
+          email: email,
+          profileImg: currentUser.profile_img || '',
           password: '',
-          password_confirmation: '',
-          zipcode: '',
-          address1: '',
-          address2: '',
+          passwordConfirmation: '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
-          await sleep(400);
+          if (imgState.file !== '') {
+            values.profileImg = imgState.file;
+          }
+
+          if ((values.profileImg === currentUser.profile_img || '') && values.password === '') {
+            return f7.dialog.alert('수정할 사항이 없습니다');
+          }
           setSubmitting(false);
           f7.dialog.preloader('잠시만 기다려주세요...');
+          await sleep(400);
           try {
-            if (imgState.file !== '') {
-              values.profile_img = imgState.file;
-            }
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            fd.append('user[profile_img]', values.profile_img);
-            const response = await modifyAPI(fd);
+            fd.append('user[profile_img]', values.profileImg);
+
+            const { data: user } = await modifyAPI(fd);
+            setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
           } catch (error) {
             f7.dialog.close();
@@ -101,15 +103,8 @@ const ModifyPage = () => {
                   className="hidden"
                 />
               </div>
-              <ListInput disabled outline label={i18next.t('login.name')} type="text" name="name" value="홍길동" />
-              <ListInput
-                disabled
-                outline
-                label={i18next.t('login.email')}
-                type="text"
-                name="email"
-                value="test01@bus.com"
-              />
+              <ListInput disabled outline label={i18next.t('login.name')} type="text" name="name" value={name} />
+              <ListInput disabled outline label={i18next.t('login.email')} type="text" name="email" value={email} />
               <ListInput
                 outline
                 label={i18next.t('login.password')}
@@ -132,10 +127,9 @@ const ModifyPage = () => {
                 onChange={handleChange}
                 clearButton
                 errorMessageForce={true}
-                errorMessage={touched.password_confirmation && errors.password_confirmation}
+                errorMessage={touched.passwordConfirmation && errors.passwordConfirmation}
               />
             </List>
-            <DaumAddressSearch />
 
             <div className="p-4">
               <button

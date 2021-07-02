@@ -14,6 +14,7 @@ export class ReservationsController {
     description: 'create Reservation success',
   })
   async create(@Body() reservationCreateDto: ReservationCreateDto) {
+    console.log(ReservationCreateDto);
     return this.reservationsService.create(reservationCreateDto);
   }
 

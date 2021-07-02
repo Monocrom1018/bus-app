@@ -50,7 +50,26 @@ const CustomPanel = ({ currentUser, handleLogout, isLoggedIn }) => (
               <i className="las la-sign-out-alt mr-4" style={{ fontSize: '28px', color: '#374151' }} />
               로그아웃
             </Link>
-          ) : null}
+          ) : (
+            <div>
+              <Link
+                href="/users/sign_in"
+                className="flex justify-start text-gray-900 hover:text-gray-900 hover:bg-gray-50 group px-6 py-4 text-base font-medium rounded-md"
+                panelClose
+              >
+                <i className="las la-sign-out-alt mr-4" style={{ fontSize: '28px', color: '#374151' }} />
+                로그인
+              </Link>
+              <Link
+                href="/users/sign_up/intro"
+                className="flex justify-start text-gray-900 hover:text-gray-900 hover:bg-gray-50 group px-6 py-4 text-base font-medium rounded-md"
+                panelClose
+              >
+                <i className="las la-sign-out-alt mr-4" style={{ fontSize: '28px', color: '#374151' }} />
+                회원가입
+              </Link>
+            </div>
+          )}
         </List>
       </PageContent>
     </Page>
