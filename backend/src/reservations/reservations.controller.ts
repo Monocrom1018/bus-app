@@ -1,8 +1,20 @@
 import { JwkStrategy } from './../auth/strategies/jwk.strategy';
-import { Body, Controller, Get, Post, Param, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Param,
+  Patch,
+  UploadedFile,
+  UseInterceptors,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
+import { request } from 'express';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('예약')
 @UseGuards(JwkStrategy)
@@ -15,8 +27,13 @@ export class ReservationsController {
     status: 200,
     description: 'create Reservation success',
   })
-  async create(@Body() reservationCreateDto: ReservationCreateDto) {
-    console.log(ReservationCreateDto);
+  // form-data 형식으로 post 요청할 경우에 FileInterceptor 설정이 없으면
+  // 전달받은 데이터의 내용을 인식하지 못합니다.
+  @UseInterceptors(FileInterceptor('file'))
+  async create(
+    @Body() reservationCreateDto: ReservationCreateDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
     return this.reservationsService.create(reservationCreateDto);
   }
 

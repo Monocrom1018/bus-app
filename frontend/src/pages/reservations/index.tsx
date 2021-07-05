@@ -15,16 +15,14 @@ const ReservationIndexPage = () => {
   const [userType, setUserType] = useState(null);
 
   useEffect(() => {
-    const getDatas = async () => {
-      const user = await userMeApi(currentUser.email);
-      setUserType(user.data.user_type);
+    const getData = async () => {
       const reservationsData = await getReservations(currentUser.email);
       setReservations(reservationsData);
     };
 
-    // if (currentUser.isAuthenticated) {
-    //   getDatas();
-    // }
+    if (currentUser.isAuthenticated) {
+      getData();
+    }
   }, [reservationUpdate]);
 
   return (
@@ -41,10 +39,10 @@ const ReservationIndexPage = () => {
             {reservations ? (
               <div>
                 {reservations.map((reservation) => {
-                  if (userType === 'normal') {
-                    return <Reservation reservation={reservation} />;
-                  } else if (userType === 'driver' || userType === 'company') {
-                    return <DriverReservationPage reservation={reservation} />;
+                  if (currentUser.user_type === 'normal') {
+                    return <Reservation reservation={reservation} key={reservation.id} />;
+                  } else if (currentUser.user_type === 'driver' || currentUser.user_type === 'company') {
+                    return <DriverReservationPage reservation={reservation} key={reservation.id} />;
                   }
                 })}
               </div>

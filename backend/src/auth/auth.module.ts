@@ -10,17 +10,9 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
 @Module({
-  imports: [
-    UsersModule,
-    PassportModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
-    }),
-    TypeOrmModule.forFeature([UsersRepository]),
-  ],
+  imports: [PassportModule, TypeOrmModule.forFeature([UsersRepository])],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwkStrategy],
-  exports: [AuthService, JwtModule, JwkStrategy, PassportModule],
+  providers: [AuthService, LocalStrategy],
+  exports: [AuthService, PassportModule],
 })
 export class AuthModule {}

@@ -1,11 +1,5 @@
 import { LoggedInGuard } from './../auth/guards/logged-in.guard';
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiParam,
-  ApiBody,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
@@ -16,15 +10,15 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
   Param,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
-import { NotLoggedInGuard } from '@auth/guards/not-logged-in.guard';
+import { JwtGuard } from '@auth/guards/jwt.guard';
 
 export const storage = {
   storage: diskStorage({
@@ -54,13 +48,12 @@ export class UsersController {
   })
   @UseInterceptors(FileInterceptor('file'))
   async signUp(@Body() userCreateDto: UserCreateDto) {
-    console.log(userCreateDto);
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
-  @UseGuards(LoggedInGuard)
+  @UseGuards(JwtGuard)
   @Post('update')
   @ApiResponse({
     status: 200,
