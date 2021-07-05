@@ -21,10 +21,10 @@ export class ReservationsService {
     );
   }
 
-  async getAllFromUser(email) {
+  async getAllFromUser(email, page) {
     const me = await this.usersService.me(email);
     const myId = me.id;
-    return await this.reservationsRepository.getAllFromUser(myId);
+    return await this.reservationsRepository.getAllFromUser(myId, page);
   }
 
   async updateReservation(param) {

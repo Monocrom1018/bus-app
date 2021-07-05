@@ -107,8 +107,8 @@ export const createReservation = async (params: FormData) => {
   return data;
 };
 
-export const getReservations = async (params) => {
-  const { data } = await API.get(`reservations/${params}`);
+export const getReservations = async (email, page) => {
+  const { data } = await API.get(`reservations?email=${email}&page=${page}`);
   return data;
 };
 

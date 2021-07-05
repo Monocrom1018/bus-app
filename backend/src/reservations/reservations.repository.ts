@@ -50,7 +50,8 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getAllFromUser(myId): Promise<Reservation[]> {
+  async getAllFromUser(myId, page): Promise<Reservation[]> {
+    const perPage = 3;
     const reservations = await Reservation.find({
       relations: ['driver'],
       where: [
@@ -64,6 +65,8 @@ export class ReservationsRepository extends Repository<Reservation> {
       order: {
         createdAt: 'DESC',
       },
+      take: perPage,
+      skip: perPage * (page - 1),
     });
 
     return reservations;
