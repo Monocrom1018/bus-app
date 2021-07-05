@@ -38,5 +38,4 @@
       "@rooms/*": ["src/rooms/*"]
     },
   },
-  "exclude": ["node_modules", "**/*.spec.ts", "rails-cdk"]
 }

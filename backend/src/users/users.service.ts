@@ -10,6 +10,7 @@ import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 
 const axios = require('axios');
+const qs = require('qs');
 
 @Injectable()
 export class UsersService {
@@ -34,25 +35,21 @@ export class UsersService {
   }
 
   async update(filename, userUpdateDto) {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-    if (!user) {
-      return 'Unauthorized';
-    }
-
-    user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
-    user.save();
-    return;
+    return this.usersRepository.updateUser(filename, userUpdateDto);
   }
 
-  async me() {
-    const users = this.usersRepository.me();
-    return users;
+  async me(email) {
+    const user = await this.usersRepository.me(email);
+    return user;
   }
 
   async findByUuid(uuid: string): Promise<User> {
     const user = this.usersRepository.findByUuid(uuid);
+    return user;
+  }
+
+  async getOneDriver(param: number): Promise<User> {
+    const user = this.usersRepository.getOneDriver(param);
     return user;
   }
 
@@ -71,55 +68,53 @@ export class UsersService {
       throw new NotFoundException();
     }
 
-    let drivers = await this.usersRepository.findTargetDrivers(params);
+    const drivers = await this.usersRepository.findTargetDrivers(params);
+    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
 
     if (drivers) {
       drivers.map((driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
-        const totalCharge =
+
+        let totalCharge =
           restDistance * driver.charge_per_km +
           driver.basic_charge +
           driver.service_charge;
+
+        if (
+          Number(departureTime) >= driver.night_begin ||
+          Number(departureTime) <= driver.night_end
+        ) {
+          totalCharge = totalCharge + driver.night_charge;
+        }
         driver['totalCharge'] = totalCharge;
       });
     }
 
-    console.log(drivers);
-
-    return { foundDrivers: drivers, foundDistance: distance };
+    return { foundDrivers: drivers, calculatedDistance: distance };
   }
 
   async getDistance(params) {
-    const { departure, destination } = params;
+    const { departure, destination, stopovers } = params;
     const depCoord = { x: '', y: '' };
     const destCoord = { x: '', y: '' };
+    let tmapData = '';
 
-    const departureData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: departure,
-        },
-      },
-    );
+    if (stopovers.length > 0) {
+      for (let i = 0; i < stopovers.length; i++) {
+        if (stopovers[i] === '') {
+          return false;
+        }
+        const stopoverData = await this.getGeoData(stopovers[i].stopover);
+        const tmapsGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}_`;
+        tmapData = tmapData + tmapsGeo;
+      }
 
-    const destinationData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: destination,
-        },
-      },
-    );
+      tmapData = tmapData.slice(0, -1);
+    }
+
+    const departureData = await this.getGeoData(departure);
+    const destinationData = await this.getGeoData(destination);
 
     depCoord.x = departureData.data.addresses[0].x;
     depCoord.y = departureData.data.addresses[0].y;
@@ -127,24 +122,48 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    //! 아래는 이용 시 요금 부과되는 서비스라 주석처리 해뒀습니다. 주석해제 시 km거리 산출됩니다.
-    // const distanceData = await axios.get(
-    //   `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}`,
-    //   {
-    //     headers: {
-    //       'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-    //       'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-    //     },
-    //   },
-    // );
+    const tmapBody = qs.stringify({
+      appKey: process.env.TMAP_API_KEY,
+      endX: depCoord.x,
+      endY: depCoord.y,
+      startX: destCoord.x,
+      startY: destCoord.y,
+      passList: tmapData,
+      searchOption: 10,
+      totalValue: 2,
+      trafficInfo: 'N',
+    });
 
-    // const kmData = (
-    //   distanceData.data.route.traoptimal[0].summary.distance / 1000
-    // ).toFixed(1);
+    const tmapConfig = {
+      'Accept-Language': 'ko',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
 
-    // 간단하게 왕복거리를 나타내기 위해 * 2 처리 해두었습니다.
-    // 차후 경유지 로직이 붙고나면 실제 거리로 치환되어야 합니다.
-    // return Number(kmData) * 2;
-    return 187;
+    const tmapApi = await axios.post(
+      'https://apis.openapi.sk.com/tmap/routes?version=1',
+      tmapBody,
+      tmapConfig,
+    );
+
+    const kmData = Math.round(
+      tmapApi.data.features[0].properties.totalDistance / 1000,
+    );
+
+    return kmData;
+  }
+
+  async getGeoData(param) {
+    return await axios.get(
+      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
+      {
+        headers: {
+          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
+          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
+        },
+        params: {
+          query: param,
+        },
+      },
+    );
   }
 }

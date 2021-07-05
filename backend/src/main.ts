@@ -9,6 +9,7 @@ import * as helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import express from 'express';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 declare const module: any;
 
@@ -30,7 +31,18 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   // console.log(JSON.parse(process.env.JWKS));
 
+  // api setting
+  const config = new DocumentBuilder()
+    .setTitle('BackpackBus API')
+    .setDescription('BackpackBus 개발을 위한 API 문서')
+    .setVersion('1.0')
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(process.env.PORT);
+
   // if (module.hot) {
   //   module.hot.accept();
   //   module.hot.dispose(() => app.close());

@@ -15,11 +15,6 @@ const SignUpIntroPage = () => (
     <div>
       <div className="grid grid-flow-col auto-cols-max grid-cols-3 gap-4 text-center px-4">
         <div className="text-center">
-          <a href="/users/sign_up/new">
-            <span className="text-sm text-gray-600 font-semibold text-base text-red-400">회원가입</span>
-          </a>
-        </div>
-        <div className="text-center">
           <a href="/users/sign_up/normal">
             <div className="f7-icons text-6xl text-red-400">person</div>
             <br />

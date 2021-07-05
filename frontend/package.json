@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "npm run dev",
+    "start:development": "concurrently --kill-others-on-fail \"npm run dev\" \"yarn cognito-mock start\"",
     "dev": "cross-env NODE_ENV=development webpack serve --config ./build/webpack.config.js --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production node ./build/build.js",
     "build-capacitor-ios": "cross-env NODE_ENV=production node ./build/build.js && npx cap copy ios",
@@ -15,7 +16,9 @@
     "prettier": "prettier --write --config ./prettier.config.js './src/**/*.{ts,tsx}'",
     "lint": "eslint './src/**/*.{ts,tsx,js,jsx}'",
     "lint:fix": "eslint --fix './src/**/*.{ts,tsx,js,jsx}'",
-    "deploy": "cross-env NODE_ENV=production node ./build/build.js && cd react-cdk && yarn cdk deploy"
+    "deploy": "cross-env NODE_ENV=production node ./build/build.js && cd react-cdk && yarn cdk deploy",
+    "cognito-mock": "./node_modules/.bin/cognito-mock",
+    "cognito-create-pool": "./node_modules/.bin/cognito-mock create-pool --user-pool-id=local_bus"
   },
   "browserslist": [
     "Android >= 7",
@@ -41,6 +44,8 @@
     "autoprefixer": "^10.2.4",
     "aws-amplify": "^4.0.2",
     "axios": "^0.21.1",
+    "cognito-mock": "^0.0.10",
+    "concurrently": "^6.2.0",
     "dom7": "^3.0.0",
     "dompurify": "^2.2.6",
     "dotenv-webpack": "^6.0.2",
@@ -70,7 +75,7 @@
     "recoil": "^0.1.3",
     "skeleton-elements": "^3.3.0",
     "swiper": "^6.4.14",
-    "typescript": "^4.2.3",
+    "typescript": "^4.3.3",
     "yup": "^0.32.9"
   },
   "devDependencies": {
@@ -118,6 +123,7 @@
     "rimraf": "^3.0.2",
     "source-map-loader": "^2.0.1",
     "style-loader": "^2.0.0",
+    "stylelint-prettier": "^1.2.0",
     "tailwindcss": "^2.1.2",
     "terser-webpack-plugin": "^5.1.2",
     "ts-loader": "^8.0.18",

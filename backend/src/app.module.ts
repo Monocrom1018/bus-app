@@ -3,8 +3,6 @@ import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
-import { CategoriesModule } from './categories/categories.module';
-import { ItemsModule } from './items/items.module';
 import { PhoneCertificationsModule } from './phone-certifications/phone-certifications.module';
 import { NoticesModule } from './notices/notices.module';
 import { LikesModule } from './likes/likes.module';
@@ -38,7 +36,7 @@ AdminBro.registerAdapter({ Database, Resource });
       database: process.env.DB_DATABASE,
       logging: true,
       // entities: [join(__dirname, '..', 'src', '**', '*.entity{.ts,.js}')],
-      entities: [__dirname + '/**/*.entity.{js,ts}'],
+      entities: [`${__dirname}/**/*.entity.{js, ts}`],
       synchronize: false,
     }),
     MulterModule.register({
@@ -47,8 +45,6 @@ AdminBro.registerAdapter({ Database, Resource });
     ObjectsModule,
     AuthModule,
     UsersModule,
-    CategoriesModule,
-    ItemsModule,
     PhoneCertificationsModule,
     NoticesModule,
     LikesModule,

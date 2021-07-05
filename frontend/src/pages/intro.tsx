@@ -18,6 +18,9 @@ const IntroPage = (props) => {
           <Button className="w-full rounded-none" large href="/users/sign_up/intro" fill>
             회원가입
           </Button>
+          <Button className="w-full rounded-none" large href="/" fill>
+            배낭버스 이용하기
+          </Button>
         </div>
       </Toolbar>
 
