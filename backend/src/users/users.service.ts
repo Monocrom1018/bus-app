@@ -122,7 +122,7 @@ export class UsersService {
     destCoord.x = destinationData.data.addresses[0].x;
     destCoord.y = destinationData.data.addresses[0].y;
 
-    const tmapBody = qs.stringify({
+    const tmapBody = await qs.stringify({
       appKey: process.env.TMAP_API_KEY,
       endX: depCoord.x,
       endY: depCoord.y,
