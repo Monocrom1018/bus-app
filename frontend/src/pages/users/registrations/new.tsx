@@ -34,8 +34,6 @@ const signUpSchema = Yup.object().shape({
       is: (val: string) => val && val.length > 0,
       then: Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요'),
     }),
-  zipcode: Yup.string().min(4, '길이가 너무 짧습니다').max(8, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
-  address1: Yup.string().required('필수 입력사항 입니다'),
   // phone: Yup.string()
   //   .min(9, '길이가 너무 짧습니다')
   //   .max(15, '길이가 너무 깁니다')

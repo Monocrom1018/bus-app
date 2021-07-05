@@ -41,7 +41,7 @@ export class ReservationCreateDto {
   @IsArray()
   @IsOptional()
   @ApiProperty()
-  stopovers: [];
+  stopoversArray: string[];
 
   @IsString()
   @ApiProperty()

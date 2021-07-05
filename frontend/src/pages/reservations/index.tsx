@@ -15,13 +15,14 @@ const ReservationIndexPage = () => {
   const [userType, setUserType] = useState(null);
 
   useEffect(() => {
-    const getDatas = async () => {
-      const user = await userMeApi(currentUser.email);
-      setUserType(user.data.user_type);
+    const getData = async () => {
       const reservationsData = await getReservations(currentUser.email);
       setReservations(reservationsData);
     };
-    getDatas();
+
+    if (currentUser.isAuthenticated) {
+      getData();
+    }
   }, [reservationUpdate]);
 
   return (
@@ -33,17 +34,31 @@ const ReservationIndexPage = () => {
         <NavTitle>예약목록</NavTitle>
       </Navbar>
       <Block>
-        {reservations ? (
-          <div>
-            {reservations.map((reservation) => {
-              if (userType === 'normal') {
-                return <Reservation reservation={reservation} key={reservation.id} />;
-              } else {
-                return <DriverReservationPage reservation={reservation} key={reservation.id} />;
-              }
-            })}
+        {currentUser.isAuthenticated ? (
+          <>
+            {reservations ? (
+              <div>
+                {reservations.map((reservation) => {
+                  if (currentUser.user_type === 'normal') {
+                    return <Reservation reservation={reservation} key={reservation.id} />;
+                  } else if (currentUser.user_type === 'driver' || currentUser.user_type === 'company') {
+                    return <DriverReservationPage reservation={reservation} key={reservation.id} />;
+                  }
+                })}
+              </div>
+            ) : (
+              <div className="text-center mt-60">
+                <i className="f7-icons text-8xl text-gray-400">lock</i>
+                <div className="text-xl text-gray-400 mt-4 tracking-wide">예약 내역이 없습니다 :)</div>
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="text-center mt-60">
+            <i className="f7-icons text-8xl text-gray-400">lock</i>
+            <div className="text-xl text-gray-400 mt-4 tracking-wide">로그인 후 이용해보세요 :)</div>
           </div>
-        ) : null}
+        )}
       </Block>
     </Page>
   );

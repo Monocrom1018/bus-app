@@ -24,8 +24,22 @@ const DriverReservationPage = (props) => {
   } = props.reservation;
 
   const handleButton = async (param) => {
-    const updatedReservation = await updateReservation(param);
-    setReservation(updatedReservation);
+    f7.dialog.confirm(` 요청을 ${param.status}하시겠어요?`, async () => {
+      f7.preloader.show();
+      let message: string;
+      param.status === '수락';
+      try {
+        const updatedReservation = await updateReservation(param);
+        setReservation(updatedReservation);
+        message = `예약을 ${param.status}하였습니다`;
+      } catch (error) {
+        if (typeof error.message === 'string') message = '';
+        else message = '예상치 못한 오류가 발생하였습니다';
+      } finally {
+        f7.preloader.hide();
+        f7.dialog.alert(message);
+      }
+    });
   };
 
   const openActionsPopover = () => {
