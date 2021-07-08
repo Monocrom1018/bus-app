@@ -19,6 +19,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
 import { JwtGuard } from '@auth/guards/jwt.guard';
+import { getCurrentApiUser } from '@decorators/current-api-user.decorator';
+import { Users as User } from '@users/users.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -53,7 +55,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
-  @UseGuards(JwtGuard)
+  // @UseGuards(JwtGuard)
   @Post('update')
   @ApiResponse({
     status: 200,

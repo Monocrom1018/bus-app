@@ -7,10 +7,11 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 import jwt, { decode } from 'jsonwebtoken';
-// import jwtToPem from 'jwk-to-pem';
-// // import jwksClient from 'jwks-rsa';
-// 
-// @Injectable()
+import jwtToPem from 'jwk-to-pem';
+import jwksClient from 'jwks-rsa';
+
+// decode 에러나거나 jwk error나면 걸러냄
+@Injectable()
 export class JwtGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
@@ -23,38 +24,33 @@ export class JwtGuard implements CanActivate {
     const claimlessTokenPayload = claimlessToken.payload;
     const kid = claimlessTokenHeader['kid'];
     const alg = claimlessTokenHeader['alg'];
-   
-    // const client = jwksClient({
-    //   jwksUri: process.env.JWS_URI,
-    // });
-    
-    // const jwk = await client.getSigningKey(kid);
-    // console.log(jwk);
-    
-    // const payload = jwt.verify(
-    //   token,
-      // jwk.getPublicKey(),
-    //   { algorithms: [alg], complete: true },
-    //   function (err, decodedToken) {
-    //     if (err) {
-    //       // console.log(err);
-    //       return new UnauthorizedException();
-    //     } else {
-    //       // console.log("------------")
-    //       return decodedToken;
-    //     }
-    //   },
-    // );
 
-    // const sub = payload['payload']['sub'];
-    // console.log(sub);
-    // try {
-    //   // console.log(payload['header']);
-    //   // console.log(sub);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    // jwk는 set Meta data쪽으로?
+    const client = jwksClient({
+      jwksUri: `${process.env.JWKS_URI}`,
+    });
 
-    return true;
+    const jwk = await client.getSigningKey(kid);
+
+    const payload = jwt.verify(
+      token,
+      jwk.getPublicKey(),
+      { algorithms: [alg], complete: true },
+      function (err, decodedToken) {
+        if (err) {
+          // 모든 요청에서 검증 안되면 거름
+          return new UnauthorizedException();
+        } else {
+          return decodedToken;
+        }
+      },
+    );
+
+    try {
+      const sub = payload['payload']['sub'];
+      return true;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }

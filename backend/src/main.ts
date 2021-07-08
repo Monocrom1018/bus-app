@@ -11,6 +11,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { VersionGuard } from '@guards/version.guard';
 
 declare const module: any;
 
@@ -49,6 +50,7 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   app.use(passport.initialize());
+  app.useGlobalGuards(new VersionGuard());
 
   await app.listen(3000);
 

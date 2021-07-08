@@ -12,7 +12,6 @@ export class JwkStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any, done: VerifiedCallback) {
-    console.log(payload);
     const {} = payload;
     return done(null, true);
   }
