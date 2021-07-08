@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber } from 'class-validator';
 
 export class UserSearchDto {
   @IsString()
@@ -21,7 +21,7 @@ export class UserSearchDto {
   @ApiProperty()
   stopovers: string[];
 
-  @IsString()
+  @IsNumber()
   @IsOptional()
   @ApiProperty()
   distance: number;

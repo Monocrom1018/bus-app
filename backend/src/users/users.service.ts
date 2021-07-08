@@ -111,7 +111,7 @@ export class UsersService {
           return false;
         }
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}_`;
+        const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
         tmapData = tmapData + tmapsGeo;
       }
 
@@ -121,11 +121,13 @@ export class UsersService {
     const departureData = await this.getGeoData(departure);
     const destinationData = await this.getGeoData(destination);
 
-    depCoord.x = departureData.data.addresses[0].x;
-    depCoord.y = departureData.data.addresses[0].y;
+    console.log(departureData);
 
-    destCoord.x = destinationData.data.addresses[0].x;
-    destCoord.y = destinationData.data.addresses[0].y;
+    depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
+    depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;
+
+    destCoord.x = destinationData.data.coordinateInfo.coordinate[0].newLon;
+    destCoord.y = destinationData.data.coordinateInfo.coordinate[0].newLat;
 
     const tmapBody = await qs.stringify({
       appKey: process.env.TMAP_API_KEY,
@@ -158,17 +160,13 @@ export class UsersService {
   }
 
   async getGeoData(param) {
-    return await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: param,
-        },
+    return await axios.get(`https://apis.openapi.sk.com/tmap/geo/fullAddrGeo`, {
+      params: {
+        addressFlag: 'F00',
+        version: '1',
+        fullAddr: param,
+        appKey: process.env.TMAP_API_KEY,
       },
-    );
+    });
   }
 }
