@@ -67,7 +67,7 @@ const amplifySignUp: AmplifySignUp = async (params: NormalSignUpParams) => {
   const user = await Auth.signUp({
     username,
     password,
-    // attributes,
+    attributes: { email: username },
   });
 
   return user;
@@ -123,6 +123,7 @@ const NormalSignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
+        location.replace('/');
       }
     },
     [authenticateUser],

@@ -13,8 +13,9 @@ import * as bcrypt from 'bcryptjs';
 import { Messages } from '../messages/messages.entity';
 import { Rooms as Room } from '@rooms/rooms.entity';
 import { Notices as Notice } from '@notices/notices.entity';
+import { Reservations as Reservation } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { ReservationsUsers as ReservatonsUser } from '../reservations_users/entities/reservations_users.entity';
+import { ReservationsUsers as ReservatonsUser } from '../reservations_users/reservations_users.entity';
 
 export enum UserType {
   NORMAL = 'normal',
@@ -108,6 +109,15 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   company_name: string;
 
+  @Column({ nullable: true })
+  bus_number: string;
+
+  @Column({ nullable: true })
+  introduce: string;
+
+  @Column({ nullable: true })
+  charge_per_day: string;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
 
@@ -116,6 +126,15 @@ export class Users extends DateAudit {
     (reservationsUsers) => reservationsUsers.user,
   )
   reservationsUsers: ReservatonsUser[];
+
+  @OneToMany((type) => Reservation, (reservations) => reservations.user)
+  reservations: Reservation[];
+
+  @OneToMany(
+    (type) => Reservation,
+    (drivingReservations) => drivingReservations.driver,
+  )
+  drivingReservations: Reservation[];
 
   @ManyToMany(() => Room)
   rooms: Room[];

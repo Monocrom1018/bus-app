@@ -73,7 +73,7 @@ const amplifySignUp: AmplifySignUp = async (params: CompanySignUpParams) => {
   const user = await Auth.signUp({
     username,
     password,
-    // attributes,
+    attributes: { email: username },
   });
 
   return user;
@@ -129,6 +129,7 @@ const CompanySignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
+        location.replace('/');
       }
     },
     [authenticateUser],
@@ -214,7 +215,7 @@ const CompanySignUpPage: React.FC = () => {
               onChange={(event) => {
                 setFieldValue('business_license', event.currentTarget.files[0]);
               }}
-            ></input>
+            />
           </List>
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">여객자동차운송사업등록증 (인증절차에만 사용됩니다)</div>
@@ -225,7 +226,7 @@ const CompanySignUpPage: React.FC = () => {
               onChange={(event) => {
                 setFieldValue('business_certificate', event.currentTarget.files[0]);
               }}
-            ></input>
+            />
           </List>
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />

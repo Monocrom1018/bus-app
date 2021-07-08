@@ -1,27 +1,39 @@
 import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon } from 'framework7-react';
 import React, { useRef } from 'react';
-import moment from 'moment';
-import { updateReservation } from '@api';
 import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
+import moment from 'moment';
+import useAuth from '@hooks/useAuth';
+import { updateReservation } from '@api';
 
-const ReservationItem = (props) => {
-  const actionsToPopover = useRef(null);
+const DriverReservationPage = (props) => {
   const [reservation, setReservation] = useRecoilState(reservationState);
-  const { id, departure, destination, departureDate, returnDate, people, status, accompany, price, stopover } =
-    props.reservation;
-  const { name, bus_old, bus_type } = props.reservation.driver;
+  const actionsToPopover = useRef(null);
+  const {
+    id,
+    departure,
+    destination,
+    departureDate,
+    status,
+    returnDate,
+    stopover,
+    price,
+    people,
+    createdDate,
+    accompany,
+  } = props.reservation;
 
-  const handleReservationCancel = async (param) => {
-    f7.dialog.confirm('예약을 취소하시겠어요?', async () => {
+  const handleButton = async (param) => {
+    f7.dialog.confirm(` 요청을 ${param.status}하시겠어요?`, async () => {
       f7.preloader.show();
       let message: string;
+      param.status === '수락';
       try {
         const updatedReservation = await updateReservation(param);
         setReservation(updatedReservation);
-        message = '예약이 취소되었습니다';
+        message = `예약을 ${param.status}하였습니다`;
       } catch (error) {
-        if (typeof error.message === 'string') message = '이미 수락된 예약은 취소할 수 없습니다';
+        if (typeof error.message === 'string') message = '';
         else message = '예상치 못한 오류가 발생하였습니다';
       } finally {
         f7.preloader.hide();
@@ -39,8 +51,12 @@ const ReservationItem = (props) => {
             bold: true,
           },
           {
-            text: '예약취소',
-            onClick: () => handleReservationCancel({ reservationId: id, status: '취소' }),
+            text: '예약수락',
+            onClick: () => handleButton({ reservationId: id, status: '수락' }),
+          },
+          {
+            text: '예약거절',
+            onClick: () => handleButton({ reservationId: id, status: '거절' }),
           },
           {
             text: 'Cancel',
@@ -56,15 +72,13 @@ const ReservationItem = (props) => {
   };
 
   return (
-    <Card className="bg-white mb-5 rounded relative h-auto" key={id}>
-      <CardHeader className="no-border">
+    <Card className="bg-white mb-5 rounded relative h-auto">
+      {/* <CardHeader className="no-border">
         <div>
-          <p className="font-bold text-lg">{name} 기사님</p>
-          <p className="text-sm text-gray-600">
-            {bus_old}년식 | {bus_type}
-          </p>
+          <p className="font-bold text-lg">김예시 기사님</p>
+          <p className="text-sm text-gray-600">2018년식 | 미니우등</p>
         </div>
-      </CardHeader>
+      </CardHeader> */}
       <CardContent>
         <Row>
           <Col
@@ -73,46 +87,23 @@ const ReservationItem = (props) => {
           >
             출발지
           </Col>
-          <Col width="80" className="text-base font-bold text-gray-900">
+          <Col width="80" className="text-base text-gray-900">
             {departure}
           </Col>
         </Row>
         <Row>
           <Col width="20" className="text-center text-red-400 font-semibold">
-            ↓
+            ↓↑
           </Col>
         </Row>
-        {stopover?.map((name) => {
-          return (
-            <>
-              <Row>
-                <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
-                  경유지
-                </Col>
-                <Col width="80" className="text-base text-gray-900">
-                  {name}
-                </Col>
-              </Row>
-              <Row>
-                <Col width="20" className="text-center text-red-400 font-semibold">
-                  ↓
-                </Col>
-              </Row>
-            </>
-          );
-        })}
-        <Row className="mb-3">
-          <Col
-            width="20"
-            className="border-2 rounded-xl border-red-400 text-center font-semibold text-white bg-red-400"
-          >
+        <Row className="mb-5">
+          <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
             도착지
           </Col>
-          <Col width="80" className="text-base font-bold text-gray-900">
+          <Col width="80" className="text-base text-gray-900">
             {destination}
           </Col>
         </Row>
-        <hr className="my-4" />
         <Row>
           <Col
             width="20"
@@ -137,14 +128,13 @@ const ReservationItem = (props) => {
             {moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
           </Col>
         </Row>
-        <hr className="my-4" />
         {/* <Row className="pt-4 mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             운행
           </Col>
           <Col width="80">왕복</Col>
         </Row> */}
-        <Row className="mb-2">
+        <Row className="pt-4 mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             인원
           </Col>
@@ -172,4 +162,4 @@ const ReservationItem = (props) => {
   );
 };
 
-export default ReservationItem;
+export default DriverReservationPage;

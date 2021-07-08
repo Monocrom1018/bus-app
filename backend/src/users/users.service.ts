@@ -1,5 +1,6 @@
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import {
   Injectable,
   NotAcceptableException,
@@ -7,19 +8,23 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
+import { AuthService } from '@auth/auth.service';
 import { Users as User } from './users.entity';
 
-import axios from 'axios';
+const axios = require('axios');
+const qs = require('qs');
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
+    private authService: AuthService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    const user = await this.usersRepository.signUp(userCreateDto);
+    const uuid = await this.authService.sub();
+    const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
     if (!user) {
       throw new NotAcceptableException();
@@ -33,22 +38,14 @@ export class UsersService {
     return users;
   }
 
-  async update(filename, userUpdateDto) {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-    if (!user) {
-      return 'Unauthorized';
-    }
-
-    user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
-    user.save();
-    return;
+  async update(filename: string, userUpdateDto) {
+    const user = await this.authService.currentApiUser();
+    return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
-  async me() {
-    const users = this.usersRepository.me();
-    return users;
+  async me(email) {
+    const user = await this.usersRepository.me(email);
+    return user;
   }
 
   async findByUuid(uuid: string): Promise<User> {
@@ -95,7 +92,6 @@ export class UsersService {
         ) {
           totalCharge = totalCharge + driver.night_charge;
         }
-
         driver['totalCharge'] = totalCharge;
       });
     }
@@ -107,86 +103,70 @@ export class UsersService {
     const { departure, destination, stopovers } = params;
     const depCoord = { x: '', y: '' };
     const destCoord = { x: '', y: '' };
-    let geoData = '';
+    let tmapData = '';
 
     if (stopovers.length > 0) {
-      await Promise.all(
-        stopovers.map(async (stopover) => {
-          if (stopover.stopover === '') {
-            return false;
-          }
+      for (let i = 0; i < stopovers.length; i++) {
+        if (stopovers[i] === '') {
+          return false;
+        }
+        const stopoverData = await this.getGeoData(stopovers[i].stopover);
+        const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
+        tmapData = tmapData + tmapsGeo;
+      }
 
-          const stopoverData = await axios.get(
-            `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-            {
-              headers: {
-                'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-                'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-              },
-              params: {
-                query: stopover.stopover,
-              },
-            },
-          );
-
-          const data = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}|`;
-          geoData = geoData + data;
-        }),
-      );
-
-      geoData = geoData.slice(0, -1);
+      tmapData = tmapData.slice(0, -1);
     }
 
-    const departureData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: departure,
-        },
-      },
-    );
+    const departureData = await this.getGeoData(departure);
+    const destinationData = await this.getGeoData(destination);
 
-    const destinationData = await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: destination,
-        },
-      },
-    );
+    console.log(departureData);
 
-    depCoord.x = departureData.data.addresses[0].x;
-    depCoord.y = departureData.data.addresses[0].y;
+    depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
+    depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;
 
-    destCoord.x = destinationData.data.addresses[0].x;
-    destCoord.y = destinationData.data.addresses[0].y;
+    destCoord.x = destinationData.data.coordinateInfo.coordinate[0].newLon;
+    destCoord.y = destinationData.data.coordinateInfo.coordinate[0].newLat;
 
-    const distanceURL = `https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${depCoord.x},${depCoord.y}&goal=${destCoord.x},${destCoord.y}&waypoints=${geoData}`;
-
-    const distanceData = await axios.get(distanceURL, {
-      headers: {
-        'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-        'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-      },
+    const tmapBody = await qs.stringify({
+      appKey: process.env.TMAP_API_KEY,
+      endX: depCoord.x,
+      endY: depCoord.y,
+      startX: destCoord.x,
+      startY: destCoord.y,
+      passList: tmapData,
+      searchOption: 10,
+      totalValue: 2,
+      trafficInfo: 'N',
     });
 
-    // console.log(
-    //   'distanceData : ',
-    //   distanceData.data.route.traoptimal[0].summary,
-    // );
+    const tmapConfig = {
+      'Accept-Language': 'ko',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    const tmapApi = await axios.post(
+      'https://apis.openapi.sk.com/tmap/routes?version=1',
+      tmapBody,
+      tmapConfig,
+    );
 
     const kmData = Math.round(
-      distanceData.data.route.traoptimal[0].summary.distance / 1000,
+      tmapApi.data.features[0].properties.totalDistance / 1000,
     );
 
     return kmData;
+  }
+
+  async getGeoData(param) {
+    return await axios.get(`https://apis.openapi.sk.com/tmap/geo/fullAddrGeo`, {
+      params: {
+        addressFlag: 'F00',
+        version: '1',
+        fullAddr: param,
+        appKey: process.env.TMAP_API_KEY,
+      },
+    });
   }
 }

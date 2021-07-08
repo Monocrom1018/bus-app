@@ -7,7 +7,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { ReservationsUsers as ReservationsUser } from '../reservations_users/entities/reservations_users.entity';
+import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
+import { Users } from '@users/users.entity';
 
 @Entity()
 export class Reservations extends DateAudit {
@@ -43,8 +44,11 @@ export class Reservations extends DateAudit {
   @Column()
   departureDate: Date;
 
-  @Column({ nullable: true })
-  stopover: string;
+  @Column('text', {
+    array: true,
+    nullable: true,
+  })
+  stopover: string[];
 
   @Column()
   destination: string;
@@ -63,4 +67,10 @@ export class Reservations extends DateAudit {
 
   @Column()
   status: string;
+
+  @ManyToOne((type) => Users, (user) => user.reservations)
+  user: Users;
+
+  @ManyToOne((type) => Users, (driver) => driver.reservations)
+  driver: Users;
 }

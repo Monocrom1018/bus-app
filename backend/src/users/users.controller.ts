@@ -1,3 +1,5 @@
+import { LoggedInGuard } from './../auth/guards/logged-in.guard';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
@@ -8,13 +10,17 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
   Param,
+  UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { JwtGuard } from '@auth/guards/jwt.guard';
+import { getCurrentApiUser } from '@decorators/current-api-user.decorator';
+import { Users as User } from '@users/users.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -31,40 +37,71 @@ export const storage = {
     },
   }),
 };
-
+@ApiTags('유저')
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @ApiOperation({ summary: '회원가입' })
   @Post('/signup')
+  @ApiResponse({
+    status: 200,
+    description: 'create User success',
+  })
   @UseInterceptors(FileInterceptor('file'))
-  async signUp(@Body('user') userCreateDto: UserCreateDto) {
-    console.log(userCreateDto);
+  async signUp(@Body() userCreateDto: UserCreateDto) {
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
 
+  @ApiOperation({ summary: '유저정보 변경' })
+  // @UseGuards(JwtGuard)
   @Post('update')
+  @ApiResponse({
+    status: 200,
+    description: 'update User success',
+  })
   @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
   async update(
-    @Body('user') userUpdateDto: UserUpdateDto,
+    @Body() userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.usersService.update(file.path, userUpdateDto);
+    const filename = file?.path || '';
+    return this.usersService.update(filename, userUpdateDto);
   }
 
-  @Get('me')
-  async me() {
-    return this.usersService.me();
+  @ApiOperation({ summary: '접속중인 유저정보 가져오기' })
+  @Get('me/:email')
+  @ApiResponse({
+    status: 200,
+    description: 'get current user data success',
+  })
+  @ApiParam({
+    name: 'email',
+    required: true,
+    type: 'string',
+  })
+  async me(@Param('email') param: string) {
+    return this.usersService.me(param);
   }
 
+  @ApiOperation({ summary: '기사 검색' })
   @Post('drivers')
+  @ApiResponse({
+    status: 200,
+    description: 'get an array of matching drivers success',
+  })
   async getDrivers(@Body() userSearchDto: UserSearchDto) {
     return this.usersService.getDrivers(userSearchDto);
   }
 
+  @ApiOperation({ summary: '단일기사 정보 가져오기' })
+  @ApiResponse({
+    status: 200,
+    description: 'get one target driver success',
+  })
   @Get('driver/:id')
-  async getOneDriver(@Param('id') param) {
-    return this.usersService.getOneDriver(param);
+  async getOneDriver(@Param('id') id: number) {
+    return this.usersService.getOneDriver(id);
   }
 }
