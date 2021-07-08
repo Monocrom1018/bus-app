@@ -1,3 +1,4 @@
+import { JwkStrategy } from './../auth/strategies/jwk.strategy';
 import {
   Body,
   Controller,
@@ -7,6 +8,8 @@ import {
   Patch,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { ReservationsService } from './reservations.service';
@@ -45,17 +48,15 @@ export class ReservationsController {
   }
 
   @ApiOperation({ summary: '예약목록 가져오기' })
-  @Get(':email')
+  @Get()
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',
   })
-  @ApiParam({
-    name: 'email',
-    required: true,
-    type: 'string',
-  })
-  async getAllFromUser(@Param('email') param: string) {
-    return this.reservationsService.getAllFromUser(param);
+  async getAllFromUser(
+    @Query('email') email: string,
+    @Query('page') page: number,
+  ) {
+    return this.reservationsService.getAllFromUser(email, page);
   }
 }

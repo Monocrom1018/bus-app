@@ -1,10 +1,5 @@
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiParam,
-  ApiBody,
-} from '@nestjs/swagger';
+import { LoggedInGuard } from './../auth/guards/logged-in.guard';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
@@ -15,13 +10,17 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
   Param,
+  UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { JwtGuard } from '@auth/guards/jwt.guard';
+import { getCurrentApiUser } from '@decorators/current-api-user.decorator';
+import { Users as User } from '@users/users.entity';
 
 export const storage = {
   storage: diskStorage({
@@ -56,6 +55,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
+  // @UseGuards(JwtGuard)
   @Post('update')
   @ApiResponse({
     status: 200,

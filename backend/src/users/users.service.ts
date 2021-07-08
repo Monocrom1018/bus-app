@@ -1,5 +1,6 @@
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import {
   Injectable,
   NotAcceptableException,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
+import { AuthService } from '@auth/auth.service';
 import { Users as User } from './users.entity';
 
 const axios = require('axios');
@@ -17,10 +19,12 @@ export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
+    private authService: AuthService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    const user = await this.usersRepository.signUp(userCreateDto);
+    const uuid = await this.authService.sub();
+    const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
     if (!user) {
       throw new NotAcceptableException();
@@ -34,8 +38,9 @@ export class UsersService {
     return users;
   }
 
-  async update(filename, userUpdateDto) {
-    return this.usersRepository.updateUser(filename, userUpdateDto);
+  async update(filename: string, userUpdateDto) {
+    const user = await this.authService.currentApiUser();
+    return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
   async me(email) {
@@ -106,7 +111,7 @@ export class UsersService {
           return false;
         }
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${stopoverData.data.addresses[0].x},${stopoverData.data.addresses[0].y}_`;
+        const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
         tmapData = tmapData + tmapsGeo;
       }
 
@@ -116,13 +121,15 @@ export class UsersService {
     const departureData = await this.getGeoData(departure);
     const destinationData = await this.getGeoData(destination);
 
-    depCoord.x = departureData.data.addresses[0].x;
-    depCoord.y = departureData.data.addresses[0].y;
+    console.log(departureData);
 
-    destCoord.x = destinationData.data.addresses[0].x;
-    destCoord.y = destinationData.data.addresses[0].y;
+    depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
+    depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;
 
-    const tmapBody = qs.stringify({
+    destCoord.x = destinationData.data.coordinateInfo.coordinate[0].newLon;
+    destCoord.y = destinationData.data.coordinateInfo.coordinate[0].newLat;
+
+    const tmapBody = await qs.stringify({
       appKey: process.env.TMAP_API_KEY,
       endX: depCoord.x,
       endY: depCoord.y,
@@ -153,17 +160,13 @@ export class UsersService {
   }
 
   async getGeoData(param) {
-    return await axios.get(
-      `https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode`,
-      {
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': process.env.X_NCP_APIGW_API_KEY_ID,
-          'X-NCP-APIGW-API-KEY': process.env.X_NCP_APIGW_API_KEY,
-        },
-        params: {
-          query: param,
-        },
+    return await axios.get(`https://apis.openapi.sk.com/tmap/geo/fullAddrGeo`, {
+      params: {
+        addressFlag: 'F00',
+        version: '1',
+        fullAddr: param,
+        appKey: process.env.TMAP_API_KEY,
       },
-    );
+    });
   }
 }
