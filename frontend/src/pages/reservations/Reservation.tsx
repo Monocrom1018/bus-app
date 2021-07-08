@@ -6,7 +6,6 @@ import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
 
 const ReservationItem = (props) => {
-  const a = props;
   const actionsToPopover = useRef(null);
   const [reservation, setReservation] = useRecoilState(reservationState);
   const { id, departure, destination, departureDate, returnDate, people, status, accompany, price, stopover } =
@@ -57,7 +56,7 @@ const ReservationItem = (props) => {
   };
 
   return (
-    <Card className="bg-white mb-5 rounded relative h-auto">
+    <Card className="bg-white mb-5 rounded relative h-auto" key={id}>
       <CardHeader className="no-border">
         <div>
           <p className="font-bold text-lg">{name} 기사님</p>
