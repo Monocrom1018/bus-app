@@ -1,5 +1,6 @@
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
 import {
   Injectable,
   NotAcceptableException,
@@ -7,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersRepository } from './users.repository';
+import { AuthService } from '@auth/auth.service';
 import { Users as User } from './users.entity';
 
 const axios = require('axios');
@@ -17,10 +19,12 @@ export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
+    private authService: AuthService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    const user = await this.usersRepository.signUp(userCreateDto);
+    const uuid = await this.authService.sub();
+    const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
     if (!user) {
       throw new NotAcceptableException();
@@ -34,8 +38,9 @@ export class UsersService {
     return users;
   }
 
-  async update(filename, userUpdateDto) {
-    return this.usersRepository.updateUser(filename, userUpdateDto);
+  async update(filename: string, userUpdateDto) {
+    const user = await this.authService.currentApiUser();
+    return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
   async me(email) {

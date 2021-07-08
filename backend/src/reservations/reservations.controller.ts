@@ -1,3 +1,4 @@
+import { JwkStrategy } from './../auth/strategies/jwk.strategy';
 import {
   Body,
   Controller,
@@ -7,6 +8,7 @@ import {
   Patch,
   UploadedFile,
   UseInterceptors,
+  UseGuards,
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';

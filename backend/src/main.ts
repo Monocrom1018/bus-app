@@ -1,34 +1,42 @@
-import { HttpExceptionFilter } from './shared/filters/http-exception.filter';
+import { HttpExceptionFilter } from '@filters/http-exception.filter';
 import { NestFactory, Reflector } from '@nestjs/core';
 import * as config from 'config';
 import * as csrf from 'csurf';
-import * as cookieParser from 'cookie-parser';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import express from 'express';
+import cookieParser from 'cookie-parser';
+import passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { VersionGuard } from '@guards/version.guard';
 
 declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  // const apiConfig = config.get('api');
-  // app.setGlobalPrefix(apiConfig.version);
-  // app.use(csurf({ cookie: true }));
-  // app.use(csrf({ cookie: true })); // csrf 방어
-  // app.useStaticAssets(join(process.cwd(), 'public'));
-  app.enableCors();
-  app.use(helmet());
+
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+    }),
+  );
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  const port = process.env.PORT || 3000;
+
+  // app.use(helmet());
   app.use(cookieParser());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  // Validate query params and body
-  // app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }));
 
   // Convert exceptions to JSON readable format
-  app.useGlobalFilters(new HttpExceptionFilter());
   // console.log(JSON.parse(process.env.JWKS));
 
   // api setting
@@ -41,11 +49,14 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
-  await app.listen(process.env.PORT);
+  app.use(passport.initialize());
+  app.useGlobalGuards(new VersionGuard());
 
-  // if (module.hot) {
-  //   module.hot.accept();
-  //   module.hot.dispose(() => app.close());
-  // }
+  await app.listen(3000);
+
+  if (module.hot) {
+    module.hot.accept();
+    module.hot.dispose(() => app.close());
+  }
 }
 bootstrap();

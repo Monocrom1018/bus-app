@@ -6,12 +6,10 @@ import {
 import { Brackets, EntityRepository, Repository } from 'typeorm';
 import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
-import { use } from 'passport';
 import { UserUpdateDto } from './dto/user-update.dto';
-
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
-  async signUp(userCreateDto: UserCreateDto): Promise<User> {
+  async signUp(userCreateDto: UserCreateDto, uuid: string): Promise<User> {
     const {
       email,
       password,
@@ -27,6 +25,7 @@ export class UsersRepository extends Repository<User> {
     user.name = name;
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
+    user.uuid = uuid;
 
     if (user_type === 'driver' || user_type === 'company') {
       user.registration_confirmed = false;
@@ -98,7 +97,8 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async updateUser(filename, userUpdateDto) {
+  async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
+    console.log(userUpdateDto);
     const {
       email,
       drivableLegion,
@@ -119,10 +119,12 @@ export class UsersRepository extends Repository<User> {
       serviceCharge,
     } = userUpdateDto.user;
 
-    const user = await this.findOne({
-      email: email,
-    });
+    const user = currentApiUser;
+    // await this.findOne({
+    //   email: email,
+    // });
 
+    console.log(user);
     if (!user) {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
