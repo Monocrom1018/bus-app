@@ -69,7 +69,10 @@ const MyPage = () => {
           </li>
           <li>
             {currentUser.user_type === 'normal' ? (
-              <a href="/users/modify">회원정보 수정</a>
+              <>
+                <a href="/users/modify">회원정보 수정</a>
+                <a href="/users/card">카드목록</a>
+              </>
             ) : (
               <a href="/users/driverModify">회원정보 수정</a>
             )}

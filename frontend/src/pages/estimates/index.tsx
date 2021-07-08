@@ -29,7 +29,7 @@ import { createReservation } from '../../common/api/index';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
 
-const EstimatePage = () => {
+const EstimatePage = ({ f7router }) => {
   const departure = useRecoilValue(departureState);
   const departureDate = useRecoilValue(departureDateState);
   const returnDate = useRecoilValue(returnDateState);
@@ -43,6 +43,12 @@ const EstimatePage = () => {
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
+    // TODO : 현재유저가 카드등록을 했는지 여부를 검사해서
+    // TODO : 있으면 예약성공 go, 없으면 카드등록 페이지로 이동
+    if (currentUser.card_registerd === false) {
+      return f7router.navigate('/users/card');
+    }
+
     const stopoversArray = stopovers.map((stopover) => {
       return stopover.stopover;
     });
@@ -68,7 +74,7 @@ const EstimatePage = () => {
       setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
     } catch (error) {
-      if (typeof error.message === 'string') message = '이미 동일한 예약이 존재합니다';
+      if (typeof error.message === 'string') message = error.message;
       else message = '예상치 못한 오류가 발생하였습니다';
     } finally {
       f7.preloader.hide();

@@ -98,6 +98,9 @@ export interface CurrentUser extends CurrentUserState {
   night_end: string;
   charge_per_day: number;
   service_charge: number;
+  card_registerd: boolean;
+  card_company: string;
+  card_number: string;
 }
 
 export interface Address {

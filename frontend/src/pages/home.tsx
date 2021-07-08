@@ -18,7 +18,7 @@ import {
 } from 'framework7-react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { userLikes, lineItemsCount } from '@atoms';
-import { getLikes, getObjects, API_URL, getLineItems } from '@api';
+import { getLikes, getObjects, API_URL, getLineItems, getBillingKey } from '@api';
 import Categories from '@components/categories/Categories';
 import NewItems from '@components/shared/NewItems';
 import MainBanner from '@components/shared/MainBanner';
@@ -28,9 +28,33 @@ import Footer from '@components/shared/Footer';
 import useAuth from '@hooks/useAuth';
 import Driver from './users/Driver';
 
-const HomePage = () => {
+const HomePage = ({ f7route, f7router }) => {
   const queryClient = useQueryClient();
   // const { isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (f7route.query.hasOwnProperty('result')) {
+      switch (f7route.query['result']) {
+        case 'success':
+          (async () => {
+            // todo : customerKey, authKey 서버로 보내서 빌링키 생성요청하기
+            await getBillingKey(f7route.query);
+            // f7router.navigate(`/payments/success`);
+          })();
+          break;
+
+        case 'fail':
+          (async () => {
+            // todo : 카드등록 실패
+            // f7router.navigate(`/payments/fail`);
+          })();
+          break;
+
+        default:
+          throw new Error('예상치 못한 오류가 발생하였습니다');
+      }
+    }
+  }, []);
 
   return (
     <Page name="home" className="home-page">

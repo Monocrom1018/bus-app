@@ -104,4 +104,16 @@ export class UsersController {
   async getOneDriver(@Param('id') id: number) {
     return this.usersService.getOneDriver(id);
   }
+
+  @ApiOperation({ summary: '빌링키 발급받기' })
+  @ApiResponse({
+    status: 200,
+    description: 'get billingkey success',
+  })
+  @Post('/billing')
+  async getBillingKey(@Body() body: object) {
+    console.log('112121212121212122121');
+    console.log(body);
+    // return this.usersService.getBillingKey(param);
+  }
 }
