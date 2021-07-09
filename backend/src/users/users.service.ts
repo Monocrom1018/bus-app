@@ -1,14 +1,14 @@
-import { UserCreateDto } from './dto/user-create.dto';
-import { UserSearchDto } from './dto/user-search.dto';
-import { UserUpdateDto } from './dto/user-update.dto';
 import {
   Injectable,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsersRepository } from './users.repository';
 import { AuthService } from '@auth/auth.service';
+import { UserCreateDto } from './dto/user-create.dto';
+import { UserSearchDto } from './dto/user-search.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
+import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 
 const axios = require('axios');
@@ -90,9 +90,9 @@ export class UsersService {
           Number(departureTime) >= driver.night_begin ||
           Number(departureTime) <= driver.night_end
         ) {
-          totalCharge = totalCharge + driver.night_charge;
+          totalCharge += driver.night_charge;
         }
-        driver['totalCharge'] = totalCharge;
+        (driver as any).totalCharge = totalCharge;
       });
     }
 
@@ -112,7 +112,7 @@ export class UsersService {
         }
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
         const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
-        tmapData = tmapData + tmapsGeo;
+        tmapData += tmapsGeo;
       }
 
       tmapData = tmapData.slice(0, -1);

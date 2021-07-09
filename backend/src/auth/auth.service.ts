@@ -1,4 +1,3 @@
-import { UsersRepository } from '../users/users.repository';
 import {
   Injectable,
   Inject,
@@ -10,6 +9,8 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import jwksClient from 'jwks-rsa';
 import jwt from 'jsonwebtoken';
+import { UsersRepository } from '../users/users.repository';
+import { ConnectableObservable } from 'rxjs';
 
 @Injectable({ scope: Scope.REQUEST }) // Interceptor 같은 개념
 export class AuthService {
@@ -34,9 +35,8 @@ export class AuthService {
       if (token) {
         const user = this.usersRepository.findByUuid(await this.sub());
         return user;
-      } else {
-        return null;
       }
+      return null;
     } catch (error) {
       throw new UnauthorizedException();
     }
@@ -49,20 +49,19 @@ export class AuthService {
 
       if (token && user) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     } catch (error) {
       throw new UnauthorizedException();
     }
   }
 
   async unAuthorized(): Promise<any> {
-    return await this.sub();
+    return this.sub();
   }
 
   async authorizeAccessRequest(): Promise<any> {
-    return await this.sub();
+    return this.sub();
   }
 
   async jwtToken(): Promise<any> {
@@ -87,9 +86,8 @@ export class AuthService {
         (err, decodedToken) => {
           if (err) {
             return new UnauthorizedException();
-          } else {
-            return decodedToken;
           }
+          return decodedToken;
         },
       );
       return payload;
@@ -111,6 +109,9 @@ export class AuthService {
   }
 
   async jwks(): Promise<any> {
+    if (process.env.NODE_ENV !== 'production') {
+      return `${process.env.JWKS_MOCK_PEM}`;
+    }
     const client = jwksClient({
       jwksUri: `${process.env.JWKS_URI}`,
     });
@@ -120,7 +121,7 @@ export class AuthService {
 
   async kid(): Promise<any> {
     const decodedJwt = await this.claimlessPayload();
-    return decodedJwt.header['kid'];
+    return decodedJwt.header?.kid;
   }
 
   async alg(): Promise<any> {

@@ -28,7 +28,20 @@
     "db:migrate": "ts-node -P tsconfig.build.json ./node_modules/typeorm/cli.js migration:run",
     "db:rollback": "ts-node -P tsconfig.build.json ./node_modules/typeorm/cli.js migration:revert",
     "db:migrations": "yarn db:migrate && nest build && ts-node -P tsconfig.build.json ./node_modules/typeorm/cli.js migration:generate -n",
-    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js"
+    "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
+    "prettier": "prettier --write --config ./prettier.config.js \"{src,apps,libs,test/**/*.ts}\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn lint"
+    }
+  },
+  "lint-staged": {
+    "src": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "dependencies": {
     "@admin-bro/design-system": "^1.7.3",
@@ -60,6 +73,7 @@
     "csrf": "^3.1.0",
     "csurf": "^1.11.0",
     "dotenv": "^9.0.2",
+    "eslint-import-resolver-typescript": "^2.4.0",
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "fs": "^0.0.1-security",
@@ -100,12 +114,17 @@
     "@typescript-eslint/eslint-plugin": "^4.6.1",
     "@typescript-eslint/parser": "^4.6.1",
     "eslint": "^7.12.1",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "7.2.0",
+    "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.6.3",
     "prettier": "^2.1.2",
+    "prettier-eslint": "^12.0.0",
     "run-script-webpack-plugin": "^0.0.11",
     "start-server-webpack-plugin": "^2.2.5",
+    "stylelint-prettier": "^1.2.0",
     "supertest": "^6.0.0",
     "ts-jest": "^26.4.3",
     "ts-loader": "^8.0.8",

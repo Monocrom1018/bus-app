@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { Block, Button, f7, Link, List, ListItem, Navbar, NavLeft, NavTitle, Page } from 'framework7-react';
-import Reservation from './Reservation';
-import DriverReservationPage from './DriverReservation';
 import { useRecoilValue } from 'recoil';
 import { getReservations, userMeApi } from '@api';
 import { reservationState } from '@atoms';
 import useAuth from '@hooks/useAuth';
 import { useInfiniteQuery } from 'react-query';
+import DriverReservationPage from './DriverReservation';
+import Reservation from './Reservation';
 
 const ReservationIndexPage = () => {
   const test = 'test';

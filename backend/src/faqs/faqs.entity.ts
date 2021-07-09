@@ -4,7 +4,7 @@ import { DateAudit } from '../shared/entities/date-audit.entity';
 export class Faqs extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
-
+ 
   @Column()
   question: string;
 
