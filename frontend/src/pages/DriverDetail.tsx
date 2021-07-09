@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { getOneDriver } from '../common/api/index';
 import { Page, Navbar, Button, List, ListItem, AccordionContent } from 'framework7-react';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { totalChargeState, driverState } from '@atoms';
 import useAuth from '@hooks/useAuth';
+import { getOneDriver } from '../common/api/index';
 
 const DriverDetailPage = (props) => {
   const [driver, setDriver] = useRecoilState(driverState);
@@ -15,17 +15,15 @@ const DriverDetailPage = (props) => {
       setDriver(targetDriver);
     }
     getTargetDriver();
-  }, []);
+  }, [props.id, setDriver]);
 
   return (
     <Page noToolbar name="driverdetail">
       {/* Top Navbar */}
-      <Navbar title="기사정보" backLink></Navbar>
+      <Navbar title="기사정보" backLink />
       {/* Page Content */}
       <img
-        src={
-          'https://images.unsplash.com/photo-1592071241777-b1e32bbe3590?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1788&q=80'
-        }
+        src="https://images.unsplash.com/photo-1592071241777-b1e32bbe3590?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1788&q=80"
         alt="logo"
       />
       <div className="py-5 divide-solid">
@@ -170,7 +168,7 @@ const DriverDetailPage = (props) => {
       </List>
 
       {currentUser.isAuthenticated ? (
-        <Button href={'/drivers/:id/esimate'} fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+        <Button href="/drivers/:id/esimate" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
           견적 전달하기
         </Button>
       ) : (

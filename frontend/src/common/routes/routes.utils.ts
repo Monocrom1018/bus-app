@@ -1,4 +1,3 @@
-import { getRecoilRootState } from '@components/RecoilRootPortal';
 import { ResourceRoute, Route, DEFAULT_ACTIONS, ACTIONS, AuthState } from '@constants';
 import { Auth } from 'aws-amplify';
 import IntroPage from '@pages/intro';

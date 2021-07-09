@@ -110,7 +110,6 @@ const NormalSignUpPage: React.FC = () => {
         isSignUpSuccess = true;
         message = '성공적으로 가입 하였습니다';
       } catch (error) {
-        console.log(error);
         message = (error as AxiosError).response?.data?.message;
 
         // TODO: need test amplify 유저 풀 삭제

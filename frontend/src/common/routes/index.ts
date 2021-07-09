@@ -15,11 +15,9 @@ import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/company';
 import EstimatePage from '@pages/estimates';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
-import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 import driverModifyPage from '@pages/users/driverModify';
-import SuccessPage from '@pages/payments/success';
-import FailPage from '@pages/payments/fail';
 import CardPage from '@pages/users/card';
+import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
 /**
  * @resourceRoutes
@@ -95,8 +93,6 @@ const customRoutes = [
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
-  { path: '/payments/success', component: SuccessPage },
-  { path: '/payments/fail', component: FailPage },
 ];
 
 /**

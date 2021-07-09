@@ -12,15 +12,16 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { ReservationsService } from './reservations.service';
-import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ReservationCreateDto } from './dto/create-reservation.dto';
+import { ReservationsService } from './reservations.service';
 
 @ApiTags('예약')
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
+
   @ApiOperation({ summary: '예약 생성' })
   @Post('create')
   @ApiResponse({
@@ -32,7 +33,6 @@ export class ReservationsController {
   @UseInterceptors(FileInterceptor('file'))
   async create(
     @Body('reservation') reservationCreateDto: ReservationCreateDto,
-    @UploadedFile() file: Express.Multer.File,
   ) {
     return this.reservationsService.create(reservationCreateDto);
   }
