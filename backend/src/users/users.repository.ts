@@ -1,12 +1,12 @@
-import { UserCreateDto } from './dto/user-create.dto';
 import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Brackets, EntityRepository, Repository } from 'typeorm';
-import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { UserCreateDto } from './dto/user-create.dto';
+import { Users as User, UserType } from './users.entity';
+
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
   async signUp(userCreateDto: UserCreateDto, uuid: string): Promise<User> {
