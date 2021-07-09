@@ -43,10 +43,11 @@ const EstimatePage = ({ f7router }) => {
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
-    // TODO : 현재유저가 카드등록을 했는지 여부를 검사해서
-    // TODO : 있으면 예약성공 go, 없으면 카드등록 페이지로 이동
     if (currentUser.card_registerd === false) {
-      return f7router.navigate('/users/card');
+      f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => {
+        return f7router.navigate('/users/card');
+      });
+      return;
     }
 
     const stopoversArray = stopovers.map((stopover) => {
@@ -78,12 +79,12 @@ const EstimatePage = ({ f7router }) => {
       else message = '예상치 못한 오류가 발생하였습니다';
     } finally {
       f7.preloader.hide();
-      f7.dialog.alert(message);
+      f7.dialog.alert(message, () => window.location.replace('/'));
     }
   };
 
   return (
-    <Page name="search">
+    <Page name="search" noToolbar>
       <Navbar title="견적확인" backLink></Navbar>
       <List noHairlinesMd>
         <div className="flex flex-col">

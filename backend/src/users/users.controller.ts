@@ -111,9 +111,17 @@ export class UsersController {
     description: 'get billingkey success',
   })
   @Post('/billing')
-  async getBillingKey(@Body() body: object) {
-    console.log('112121212121212122121');
-    console.log(body);
-    // return this.usersService.getBillingKey(param);
+  async getBillingKey(@Body() body) {
+    return this.usersService.getBillingKey(body);
+  }
+
+  @ApiOperation({ summary: '빌링결제 진행' })
+  @ApiResponse({
+    status: 200,
+    description: 'make payment success',
+  })
+  @Post('/payment')
+  async createPayment(@Body() body) {
+    return this.usersService.createPayment(body);
   }
 }

@@ -9,13 +9,13 @@ const CardPage = () => {
   const a = 'test';
   const { currentUser } = useAuth();
   const clientKey = 'test_ck_7XZYkKL4Mrj9XXponbaV0zJwlEWR';
+  const { card_number, card_company, uuid } = currentUser;
 
   const startPayments = async () => {
     const tossPayments = await loadTossPayments(clientKey);
 
-    // TODO : 일단 무조건 홈으로 보내고, 홈에서 query 관찰해서 S/F 로 이동시키자
     tossPayments.requestBillingAuth('카드', {
-      customerKey: '8YeNxailmNH93bmsSbMM-',
+      customerKey: uuid,
       successUrl: window.location.origin + '?result=success',
       failUrl: window.location.origin + '?result=fail',
     });
@@ -25,7 +25,10 @@ const CardPage = () => {
     <Page className="bg-white" noToolbar>
       <Navbar title="카드목록" backLink />
       {currentUser.card_registerd ? (
-        <div>등록한 카드 보여주기</div>
+        <Card className="flex justify-between items-center h-10 px-5">
+          <div className="font-bold">{card_company}</div>
+          <div className="font-bold">{card_number}</div>
+        </Card>
       ) : (
         <div className="flex flex-col items-center">
           <Block className="my-10">

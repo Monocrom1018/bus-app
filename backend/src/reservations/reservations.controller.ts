@@ -31,7 +31,7 @@ export class ReservationsController {
   // 전달받은 데이터의 내용을 인식하지 못합니다.
   @UseInterceptors(FileInterceptor('file'))
   async create(
-    @Body() reservationCreateDto: ReservationCreateDto,
+    @Body('reservation') reservationCreateDto: ReservationCreateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.reservationsService.create(reservationCreateDto);

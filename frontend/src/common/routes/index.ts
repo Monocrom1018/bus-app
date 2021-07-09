@@ -11,7 +11,6 @@ import { ResourceRoute } from '@constants';
 import ItemIndexPage from '@pages/items/index';
 import IntroPage from '@pages/intro';
 import OptionIndexPage from '@pages/options';
-import SignUpPage from '@pages/users/registrations/new';
 import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/company';
 import EstimatePage from '@pages/estimates';
@@ -85,7 +84,6 @@ const customRoutes = [
   { path: '/intro', component: IntroPage },
   { path: '/search', component: SearchPage },
   { path: '/users/sign_in', component: LoginPage },
-  { path: '/users/sign_up/new', component: SignUpPage },
   { path: '/users/sign_up/normal', component: NormalSignUpPage },
   { path: '/users/sign_up/driver', component: DriverSignUpPage },
   { path: '/users/sign_up/company', component: CompanySignUpPage },

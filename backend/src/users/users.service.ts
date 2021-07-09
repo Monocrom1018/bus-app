@@ -43,6 +43,77 @@ export class UsersService {
     return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
+  async getBillingKey(body) {
+    const { authKey, customerKey } = body;
+    // const user = await this.authService.currentApiUser();
+    const user = await this.me('normal@test.com');
+
+    if (!user) {
+      throw new NotFoundException('유저정보가 조회되지 않습니다');
+    }
+
+    const encodedKey = await Buffer.from(
+      'test_sk_LBa5PzR0ArnPYYNK19x3vmYnNeDM:',
+      'utf8',
+    ).toString('base64');
+
+    const tossData = {
+      customerKey: customerKey,
+    };
+
+    const Config = {
+      method: 'post',
+      url: `https://api.tosspayments.com/v1/billing/authorizations/${authKey}`,
+      headers: {
+        Authorization: `Basic ${encodedKey}`,
+        'Content-Type': 'application/json',
+      },
+      data: tossData,
+    };
+
+    const { data: apiResult } = await axios(Config);
+    return this.usersRepository.saveBillingKey(apiResult, user);
+  }
+
+  async createPayment(body) {
+    const { id: reservationId, price } = body;
+    const { card_billing_key, uuid, email, name } = body.user;
+
+    const encodedKey = await Buffer.from(
+      'test_sk_LBa5PzR0ArnPYYNK19x3vmYnNeDM:',
+      'utf8',
+    ).toString('base64');
+
+    const tossData = {
+      customerKey: uuid,
+      amount: price,
+      orderId: reservationId,
+      customerEmail: email,
+      customerName: name,
+      orderName: '배낭버스 운행예약',
+    };
+
+    const Config = {
+      method: 'post',
+      url: `https://api.tosspayments.com/v1/billing/${card_billing_key}`,
+      headers: {
+        Authorization: `Basic ${encodedKey}`,
+        'Content-Type': 'application/json',
+      },
+      data: tossData,
+    };
+
+    try {
+      const { data: apiResult } = await axios(Config);
+    } catch (error) {
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+    }
+
+    return 'okok';
+  }
+
   async me(email) {
     const user = await this.usersRepository.me(email);
     return user;
@@ -54,7 +125,7 @@ export class UsersService {
   }
 
   async getOneDriver(param: number): Promise<User> {
-    const user = this.usersRepository.getOneDriver(param);
+    const user = this.usersRepository.getOneUserById(param);
     return user;
   }
 
@@ -92,7 +163,7 @@ export class UsersService {
         ) {
           totalCharge = totalCharge + driver.night_charge;
         }
-        driver['totalCharge'] = totalCharge;
+        (driver as any).totalCharge = totalCharge;
       });
     }
 
@@ -120,8 +191,6 @@ export class UsersService {
 
     const departureData = await this.getGeoData(departure);
     const destinationData = await this.getGeoData(destination);
-
-    console.log(departureData);
 
     depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
     depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;

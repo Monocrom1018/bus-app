@@ -40,7 +40,7 @@ const SearchPage = () => {
   const handleSearch = async () => {
     if (departure !== '' && destination !== '') {
       f7.dialog.preloader();
-      const searchParam = { departure, departureDate, destination, stopovers };
+      const searchParam = { departure, departureDate, destination, stopovers: stopovers || [] };
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
       setDrivers(foundDrivers);
       setDistance(calculatedDistance);

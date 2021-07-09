@@ -16,20 +16,22 @@ import {
   Button,
   Icon,
 } from 'framework7-react';
-import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { userLikes, lineItemsCount } from '@atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { userLikes, lineItemsCount, currentUserState } from '@atoms';
 import { getLikes, getObjects, API_URL, getLineItems, getBillingKey } from '@api';
+import { useQuery, useQueryClient } from 'react-query';
+import { AuthState } from '@constants';
+import { showToast } from '@js/utils';
 import Categories from '@components/categories/Categories';
 import NewItems from '@components/shared/NewItems';
 import MainBanner from '@components/shared/MainBanner';
-import { useQuery, useQueryClient } from 'react-query';
-import { AuthState } from '@constants';
 import Footer from '@components/shared/Footer';
 import useAuth from '@hooks/useAuth';
 import Driver from './users/Driver';
 
 const HomePage = ({ f7route, f7router }) => {
   const queryClient = useQueryClient();
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   // const { isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -37,16 +39,20 @@ const HomePage = ({ f7route, f7router }) => {
       switch (f7route.query['result']) {
         case 'success':
           (async () => {
-            // todo : customerKey, authKey 서버로 보내서 빌링키 생성요청하기
-            await getBillingKey(f7route.query);
-            // f7router.navigate(`/payments/success`);
+            const updatedUser = await getBillingKey(f7route.query);
+            window.history.replaceState({}, document.title, '/');
+            setCurrentUser({ ...updatedUser, isAuthenticated: true });
+            showToast('카드를 등록하였습니다');
           })();
           break;
 
         case 'fail':
           (async () => {
-            // todo : 카드등록 실패
-            // f7router.navigate(`/payments/fail`);
+            if (f7route.query.code === 'INVALID_CARD_NUMBER') {
+              showToast('신용카드가 아니거나, 카드번호를 잘못 입력하셨습니다');
+            }
+            window.history.replaceState({}, document.title, '/');
+            showToast('카드 등록에 실패했습니다.');
           })();
           break;
 

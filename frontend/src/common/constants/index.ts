@@ -78,6 +78,7 @@ export interface CurrentUser extends CurrentUserState {
   email: string;
   // TODO
   name: string;
+  uuid: string;
   user_type: string;
   profile_img: any;
   password: string;

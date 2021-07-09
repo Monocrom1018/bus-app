@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsArray } from 'class-validator';
 
 export class UserSearchDto {
   @IsString()
@@ -16,7 +16,7 @@ export class UserSearchDto {
   @ApiProperty()
   destination: string;
 
-  @IsString()
+  @IsArray()
   @IsOptional()
   @ApiProperty()
   stopovers: string[];
