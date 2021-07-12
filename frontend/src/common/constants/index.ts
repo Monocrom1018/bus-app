@@ -78,6 +78,7 @@ export interface CurrentUser extends CurrentUserState {
   email: string;
   // TODO
   name: string;
+  uuid: string;
   user_type: string;
   profile_img: any;
   password: string;
@@ -98,6 +99,9 @@ export interface CurrentUser extends CurrentUserState {
   night_end: string;
   charge_per_day: number;
   service_charge: number;
+  card_registerd: boolean;
+  card_company: string;
+  card_number: string;
 }
 
 export interface Address {

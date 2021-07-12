@@ -19,7 +19,7 @@ export class ReservationsRepository extends Repository<Reservation> {
       stopoversArray,
       totalCharge,
       people,
-    } = reservationCreateDto.reservation;
+    } = reservationCreateDto;
 
     const existingCheck = await Reservation.findOne({
       where: {
@@ -53,7 +53,7 @@ export class ReservationsRepository extends Repository<Reservation> {
   async getAllFromUser(myId, page): Promise<Reservation[]> {
     const perPage = 3;
     const reservations = await Reservation.find({
-      relations: ['driver'],
+      relations: ['driver', 'user'],
       where: [
         {
           user: myId,
@@ -94,5 +94,13 @@ export class ReservationsRepository extends Repository<Reservation> {
     Reservation.save(targetReservation);
 
     return targetReservation;
+  }
+
+  async getRevervationUser(param) {
+    const reservation = await this.findOne({
+      where: { id: param },
+    });
+
+    return reservation.user;
   }
 }

@@ -97,8 +97,24 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
+  async saveBillingKey(billingResult, currentApiUser: User) {
+    const { billingKey, cardCompany, cardNumber } = billingResult;
+    const user = currentApiUser;
+
+    try {
+      user.card_registerd = true;
+      user.card_company = cardCompany;
+      user.card_number = cardNumber;
+      user.card_billing_key = billingKey;
+      user.save();
+    } catch (err) {
+      throw new ConflictException(err);
+    }
+
+    return user;
+  }
+
   async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
-    console.log(userUpdateDto);
     const {
       email,
       drivableLegion,
@@ -164,7 +180,7 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async getOneDriver(param: number): Promise<User> {
+  async getOneUserById(param: number): Promise<User> {
     const user = await this.findOne({
       where: {
         id: param,

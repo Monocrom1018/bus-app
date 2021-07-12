@@ -4,6 +4,7 @@ import moment from 'moment';
 import { updateReservation } from '@api';
 import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
+import { showToast } from '@js/utils';
 
 const ReservationItem = (props) => {
   const actionsToPopover = useRef(null);
@@ -13,6 +14,10 @@ const ReservationItem = (props) => {
   const { name, bus_old, bus_type } = props.reservation.driver;
 
   const handleReservationCancel = async (param) => {
+    if (status === '수락') {
+      await showToast('이미 수락되어 취소할 수 없습니다');
+      return;
+    }
     f7.dialog.confirm('예약을 취소하시겠어요?', async () => {
       f7.preloader.show();
       let message: string;
@@ -21,11 +26,12 @@ const ReservationItem = (props) => {
         setReservation(updatedReservation);
         message = '예약이 취소되었습니다';
       } catch (error) {
-        if (typeof error.message === 'string') message = '이미 수락된 예약은 취소할 수 없습니다';
+        if (typeof error.message === 'string') message = error.message;
         else message = '예상치 못한 오류가 발생하였습니다';
       } finally {
         f7.preloader.hide();
         f7.dialog.alert(message);
+        props.refetch();
       }
     });
   };

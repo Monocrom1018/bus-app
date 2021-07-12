@@ -104,4 +104,24 @@ export class UsersController {
   async getOneDriver(@Param('id') id: number) {
     return this.usersService.getOneDriver(id);
   }
+
+  @ApiOperation({ summary: '빌링키 발급받기' })
+  @ApiResponse({
+    status: 200,
+    description: 'get billingkey success',
+  })
+  @Post('/billing')
+  async getBillingKey(@Body() body) {
+    return this.usersService.getBillingKey(body);
+  }
+
+  @ApiOperation({ summary: '빌링결제 진행' })
+  @ApiResponse({
+    status: 200,
+    description: 'make payment success',
+  })
+  @Post('/payment')
+  async createPayment(@Body() body) {
+    return this.usersService.createPayment(body);
+  }
 }

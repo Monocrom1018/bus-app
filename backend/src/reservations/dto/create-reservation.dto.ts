@@ -43,7 +43,7 @@ export class ReservationCreateDto {
   @ApiProperty()
   stopoversArray: string[];
 
-  @IsString()
+  @IsNumber()
   @ApiProperty()
   people: number;
 }

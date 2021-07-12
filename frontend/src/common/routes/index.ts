@@ -16,6 +16,7 @@ import CompanySignUpPage from '@pages/users/registrations/company';
 import EstimatePage from '@pages/estimates';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
 import driverModifyPage from '@pages/users/driverModify';
+import CardPage from '@pages/users/card';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
 /**
@@ -85,6 +86,7 @@ const customRoutes = [
   { path: '/users/sign_up/driver', component: DriverSignUpPage },
   { path: '/users/sign_up/company', component: CompanySignUpPage },
   { path: '/users/sign_up/intro', component: SignUpIntroPage },
+  { path: '/users/card', component: CardPage },
   { path: '/users/modify', component: ModifyPage },
   { path: '/users/driverModify', component: driverModifyPage },
   { path: '/items/:item_id/options', component: OptionIndexPage },

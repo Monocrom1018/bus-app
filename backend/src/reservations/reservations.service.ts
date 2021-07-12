@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ReservationsRepository } from './reservations.repository';
 import { UsersService } from '@users/users.service';
@@ -12,9 +12,8 @@ export class ReservationsService {
   ) {}
 
   async create(reservationCreateDto) {
-    const { userEmail } = reservationCreateDto.reservation;
-    const me = await this.usersService.me(userEmail);
-    const userId = me.id;
+    const { userEmail } = reservationCreateDto;
+    const { id: userId } = await this.usersService.me(userEmail);
     return await this.reservationsRepository.createReservation(
       reservationCreateDto,
       userId,

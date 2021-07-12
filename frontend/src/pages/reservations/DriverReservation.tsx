@@ -4,13 +4,15 @@ import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
 import moment from 'moment';
 import useAuth from '@hooks/useAuth';
-import { updateReservation } from '@api';
+import { createPayment, updateReservation } from '@api';
+import { showToast } from '@js/utils';
 
 const DriverReservationPage = (props) => {
   const [reservation, setReservation] = useRecoilState(reservationState);
   const actionsToPopover = useRef(null);
   const {
     id,
+    user,
     departure,
     destination,
     departureDate,
@@ -24,11 +26,16 @@ const DriverReservationPage = (props) => {
   } = props.reservation;
 
   const handleButton = async (param) => {
-    f7.dialog.confirm(` 요청을 ${param.status}하시겠어요?`, async () => {
+    if (status === '수락') {
+      await showToast('이미 수락한 예약입니다');
+      return;
+    }
+
+    f7.dialog.confirm(`요청을 ${param.status}하시겠어요?`, async () => {
       f7.preloader.show();
       let message: string;
-      param.status === '수락';
       try {
+        await createPayment(props.reservation);
         const updatedReservation = await updateReservation(param);
         setReservation(updatedReservation);
         message = `예약을 ${param.status}하였습니다`;
@@ -38,6 +45,7 @@ const DriverReservationPage = (props) => {
       } finally {
         f7.preloader.hide();
         f7.dialog.alert(message);
+        props.refetch();
       }
     });
   };
@@ -73,12 +81,6 @@ const DriverReservationPage = (props) => {
 
   return (
     <Card className="bg-white mb-5 rounded relative h-auto">
-      {/* <CardHeader className="no-border">
-        <div>
-          <p className="font-bold text-lg">김예시 기사님</p>
-          <p className="text-sm text-gray-600">2018년식 | 미니우등</p>
-        </div>
-      </CardHeader> */}
       <CardContent>
         <Row>
           <Col
@@ -87,20 +89,39 @@ const DriverReservationPage = (props) => {
           >
             출발지
           </Col>
-          <Col width="80" className="text-base text-gray-900">
+          <Col width="80" className="text-base font-bold text-gray-900">
             {departure}
           </Col>
         </Row>
         <Row>
           <Col width="20" className="text-center text-red-400 font-semibold">
-            ↓↑
+            ↓
           </Col>
         </Row>
+        {stopover?.map((name) => {
+          return (
+            <>
+              <Row>
+                <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
+                  경유지
+                </Col>
+                <Col width="80" className="text-base text-gray-900">
+                  {name}
+                </Col>
+              </Row>
+              <Row>
+                <Col width="20" className="text-center text-red-400 font-semibold">
+                  ↓
+                </Col>
+              </Row>
+            </>
+          );
+        })}
         <Row className="mb-5">
           <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
             도착지
           </Col>
-          <Col width="80" className="text-base text-gray-900">
+          <Col width="80" className="text-base font-bold text-gray-900">
             {destination}
           </Col>
         </Row>
@@ -128,12 +149,6 @@ const DriverReservationPage = (props) => {
             {moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
           </Col>
         </Row>
-        {/* <Row className="pt-4 mb-2">
-          <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
-            운행
-          </Col>
-          <Col width="80">왕복</Col>
-        </Row> */}
         <Row className="pt-4 mb-2">
           <Col width="20" className="border-2 rounded-xl border-gray-300 text-center text-gray-700">
             인원
