@@ -4,11 +4,33 @@ import { Notices as Notice } from '../notices/notices.entity';
 import { Faqs as Faq } from '../faqs/faqs.entity';
 import { Reservations as Reservation } from '../reservations/reservations.entity';
 import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
+import { Peaks as Peak } from 'src/peaks/peaks.entity';
 
 export const adminBroOptions = {
   adminBroOptions: {
     rootPath: '/admin',
-    resources: [User, AdminUser, Notice, Faq, Reservation, ReservationsUser],
+    resources: [
+      User,
+      AdminUser,
+      Notice,
+      Faq,
+      Reservation,
+      ReservationsUser,
+      {
+        resource: Peak,
+        options: {
+          listProperties: ['id', 'month', 'peak'],
+          actions: {
+            new: {
+              isVisible: false,
+            },
+            delete: {
+              isVisible: false,
+            },
+          },
+        },
+      },
+    ],
     locale: {
       language: 'ko',
       translations: {
@@ -26,6 +48,8 @@ export const adminBroOptions = {
           body: '내용',
           question: '질문',
           answer: '답변',
+          month: '월',
+          peak: '성수기',
         },
         actions: {
           new: '새로 만들기',
