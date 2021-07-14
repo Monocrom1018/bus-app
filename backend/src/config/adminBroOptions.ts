@@ -15,7 +15,6 @@ export const adminBroOptions = {
       Notice,
       Faq,
       Reservation,
-      ReservationsUser,
       {
         resource: Peak,
         options: {
@@ -34,6 +33,14 @@ export const adminBroOptions = {
     locale: {
       language: 'ko',
       translations: {
+        labels: {
+          Peaks: '성수기',
+          Users: '유저',
+          AdminUsers: '어드민',
+          Notices: '공지사항',
+          Faqs: '자주묻는질문',
+          Reservations: '예약',
+        },
         properties: {
           name: '이름',
           email: '이메일',
