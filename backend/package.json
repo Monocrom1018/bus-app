@@ -34,12 +34,16 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "yarn lint"
+      "pre-push": "npm run lint"
     }
   },
   "lint-staged": {
-    "src": [
+    "src/**/*.{ts,json}": [
       "prettier --write",
+      "git add"
+    ],
+    "src/**/*.{ts,tsx}": [
+      "eslint --fix",
       "git add"
     ]
   },
