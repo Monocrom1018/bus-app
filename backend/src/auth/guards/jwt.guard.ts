@@ -22,7 +22,7 @@ export class JwtGuard implements CanActivate {
     });
     const claimlessTokenHeader = claimlessToken.header;
     const claimlessTokenPayload = claimlessToken.payload;
-    const { kid } = claimlessTokenHeader;
+    const { kid } = claimlessTokenHeader;  
     const { alg } = claimlessTokenHeader;
 
     // jwk는 set Meta data쪽으로?
