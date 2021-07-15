@@ -94,7 +94,7 @@ const NormalSignUpPage: React.FC = () => {
         });
       } catch (error) {
         message = error.message;
-        setSubmitting(false);
+        setSubmitting(false); 
         f7.preloader.hide();
         f7.dialog.alert(message);
       }
