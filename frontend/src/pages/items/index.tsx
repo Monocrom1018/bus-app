@@ -18,7 +18,11 @@ const ItemIndexPage = ({ f7route }) => {
   const ITEM_INF_KEY = ['items/infinite', category_id * 1];
   const cartCount = useRecoilValue(lineItemsCount);
 
-  const { data: category, status, error } = useQuery(
+  const {
+    data: category,
+    status,
+    error,
+  } = useQuery(
     ['category', parseInt(category_id, 10)],
     getObject({
       id: category_id,

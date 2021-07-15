@@ -1,7 +1,14 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Database, Resource } from '@admin-bro/typeorm';
+import AdminBro from 'admin-bro';
+import { ConfigModule } from '@nestjs/config';
+import { MulterModule } from '@nestjs/platform-express';
+import { join } from 'path';
+import { ValidateNested } from 'class-validator';
+import { AdminModule } from '@admin-bro/nestjs';
 import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { PhoneCertificationsModule } from './phone-certifications/phone-certifications.module';
 import { NoticesModule } from './notices/notices.module';
@@ -11,16 +18,9 @@ import { FollowsModule } from './follows/follows.module';
 import { FaqsModule } from './faqs/faqs.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { CommentsModule } from './comments/comments.module';
-import { Database, Resource } from '@admin-bro/typeorm';
-import AdminBro from 'admin-bro';
 import { Users as User } from './users/users.entity';
-import { ConfigModule } from '@nestjs/config';
 import { ReservationsModule } from './reservations/reservations.module';
-import { MulterModule } from '@nestjs/platform-express';
-import { join } from 'path';
-import { ValidateNested } from 'class-validator';
 import { adminBroOptions } from './config/adminBroOptions';
-import { AdminModule } from '@admin-bro/nestjs';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({

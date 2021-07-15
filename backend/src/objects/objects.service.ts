@@ -1,11 +1,11 @@
 import { getRepository } from 'typeorm';
-import { UsersService } from '../users/users.service';
 import { Injectable } from '@nestjs/common';
-import { CreateObjectDto } from './dto/create-object.dto';
-import { UpdateObjectDto } from './dto/update-object.dto';
 import * as _ from 'lodash';
 import * as pluralize from 'pluralize';
 import * as ts from 'typescript';
+import { UpdateObjectDto } from './dto/update-object.dto';
+import { CreateObjectDto } from './dto/create-object.dto';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 // IOC 제어의 역전
@@ -37,8 +37,9 @@ export class ObjectsService {
   async getModel(query: any): Promise<any> {
     let model = {};
     if (query.model_name) {
-      const modelService =
-        pluralize(_.capitalize(query.model_name)) + 'Service';
+      const modelService = `${pluralize(
+        _.capitalize(query.model_name),
+      )}Service`;
       if (modelService === UsersService.name) {
         model = await this.userService.findAll();
       }

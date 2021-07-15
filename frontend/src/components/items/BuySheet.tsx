@@ -11,9 +11,7 @@ const BuySheet = ({ selectedOption, quantity, setQuantity }) => {
     onSuccess: (data, variables, context) => {
       toast.get().setToastText('상품을 담았습니다').setToastIcon('cart_badge_plus').openIconToast();
     },
-    onError: (error, variables, context) => {
-      
-    },
+    onError: (error, variables, context) => {},
   });
   const queryClient = useQueryClient();
   const setLineItemsCount = useSetRecoilState(lineItemsCount);

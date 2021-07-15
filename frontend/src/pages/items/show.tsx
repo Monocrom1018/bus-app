@@ -16,7 +16,11 @@ const ItemShowPage = ({ f7route, f7router }) => {
   const [quantity, setQuantity] = useState<number>(1);
 
   const ITEM_KEY = ['item', parseInt(id)];
-  const { data: item, status, error } = useQuery(ITEM_KEY, getItem({ id }), {
+  const {
+    data: item,
+    status,
+    error,
+  } = useQuery(ITEM_KEY, getItem({ id }), {
     enabled: !!id,
   });
 

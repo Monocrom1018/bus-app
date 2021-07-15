@@ -8,7 +8,11 @@ import ContactForm from './form';
 const ContactEditPage = ({ f7route, f7router }) => {
   const contactId = f7route.params.id;
   const CONTACT_KEY = ['contact', parseInt(contactId)];
-  const { status, data: contact, error } = useQuery(
+  const {
+    status,
+    data: contact,
+    error,
+  } = useQuery(
     CONTACT_KEY,
     getObject({
       id: contactId,

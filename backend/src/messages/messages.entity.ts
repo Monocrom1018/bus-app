@@ -1,7 +1,6 @@
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Users } from '../users/users.entity';
 import { Rooms } from '../rooms/rooms.entity';
-
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 import { DateAudit } from '../shared/entities/date-audit.entity';
 

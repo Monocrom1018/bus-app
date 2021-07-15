@@ -1,7 +1,3 @@
-import { Users } from '../users/users.entity';
-import { Messages } from '../messages/messages.entity';
-import { DateAudit } from '../shared/entities/date-audit.entity';
-
 import {
   Column,
   Entity,
@@ -10,6 +6,9 @@ import {
   JoinTable,
   OneToMany,
 } from 'typeorm';
+import { Users } from '../users/users.entity';
+import { Messages } from '../messages/messages.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 @Entity()
 export class Rooms extends DateAudit {

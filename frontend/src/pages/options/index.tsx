@@ -10,7 +10,11 @@ const OptionIndexPage = ({ f7route, f7router, selectedOption, setSelectedOption 
   const queryClient = useQueryClient();
 
   const OPTIONS_KEY = ['options', parseInt(item_id, 10)];
-  const { data: options, status, error } = useQuery(OPTIONS_KEY, getOptions(item_id), {
+  const {
+    data: options,
+    status,
+    error,
+  } = useQuery(OPTIONS_KEY, getOptions(item_id), {
     enabled: !!item_id,
   });
 

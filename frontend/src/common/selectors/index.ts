@@ -11,8 +11,10 @@ export const authSelector = selector({
 
 export const getLikeIds = selectorFamily({
   key: 'likeIds',
-  get: (model_name: string) => ({ get }) => {
-    const likes = get(userLikes);
-    return likes[model_name] || [];
-  },
+  get:
+    (model_name: string) =>
+    ({ get }) => {
+      const likes = get(userLikes);
+      return likes[model_name] || [];
+    },
 });

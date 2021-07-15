@@ -22,8 +22,8 @@ export class JwtGuard implements CanActivate {
     });
     const claimlessTokenHeader = claimlessToken.header;
     const claimlessTokenPayload = claimlessToken.payload;
-    const kid = claimlessTokenHeader['kid'];
-    const alg = claimlessTokenHeader['alg'];
+    const { kid } = claimlessTokenHeader;
+    const { alg } = claimlessTokenHeader;
 
     // jwk는 set Meta data쪽으로?
     const client = jwksClient({
@@ -40,14 +40,13 @@ export class JwtGuard implements CanActivate {
         if (err) {
           // 모든 요청에서 검증 안되면 거름
           return new UnauthorizedException();
-        } else {
-          return decodedToken;
         }
+        return decodedToken;
       },
     );
 
     try {
-      const sub = payload['payload']['sub'];
+      const { sub } = payload.payload;
       return true;
     } catch (err) {
       throw new UnauthorizedException();

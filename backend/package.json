@@ -15,7 +15,7 @@
     "start:debug": "nest start --debug --watch",
     "prestart:prod": "rimraf dist && npm run build",
     "start:prod": "NODE_ENV=production node dist/src/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint './src/**/*.ts' --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -29,7 +29,7 @@
     "db:rollback": "ts-node -P tsconfig.build.json ./node_modules/typeorm/cli.js migration:revert",
     "db:migrations": "yarn db:migrate && nest build && ts-node -P tsconfig.build.json ./node_modules/typeorm/cli.js migration:generate -n",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
-    "prettier": "prettier --write --config ./prettier.config.js \"{src,apps,libs,test/**/*.ts}\""
+    "prettier": "prettier --write --config ./prettier.config.js './src/**/*.ts'"
   },
   "dependencies": {
     "@admin-bro/design-system": "^1.7.3",
@@ -106,6 +106,8 @@
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-jsx-conditionals": "^2.0.0",
     "eslint-plugin-prettier": "^3.1.4",
     "jest": "^26.6.3",
     "prettier": "^2.1.2",

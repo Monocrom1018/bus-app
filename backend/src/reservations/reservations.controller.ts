@@ -1,4 +1,3 @@
-import { JwkStrategy } from './../auth/strategies/jwk.strategy';
 import {
   Body,
   Controller,
@@ -14,6 +13,7 @@ import {
 import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { request } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { JwkStrategy } from '../auth/strategies/jwk.strategy';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { ReservationsService } from './reservations.service';
 

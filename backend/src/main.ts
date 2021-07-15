@@ -6,12 +6,12 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import * as helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import { AppModule } from './app.module';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { VersionGuard } from '@guards/version.guard';
+import { AppModule } from './app.module';
 
 declare const module: any;
 

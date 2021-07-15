@@ -7,9 +7,9 @@ export default class CreateUsers implements Seeder {
     let userIndex = 1;
     await factory(User)()
       .map(async (user) => {
-        user.email = `test${('0' + userIndex++).slice(-2)}@bus.com`;
+        user.email = `test${`0${userIndex++}`.slice(-2)}@bus.com`;
         user.user_type = userIndex < 11 ? UserType.NORMAL : UserType.DRIVER;
-        user.registration_confirmed = userIndex < 11 ? true : false;
+        user.registration_confirmed = userIndex < 11;
 
         if (userIndex > 10 && userIndex < 14) {
           user.drivable_date = ['Sat', 'Sun'];

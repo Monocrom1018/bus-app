@@ -7,14 +7,14 @@ import {
   getRepository,
   ManyToMany,
 } from 'typeorm';
-import { DateAudit } from '../shared/entities/date-audit.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { Messages } from '../messages/messages.entity';
 import { Rooms as Room } from '@rooms/rooms.entity';
 import { Notices as Notice } from '@notices/notices.entity';
 import { Reservations as Reservation } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
+import { Messages } from '../messages/messages.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 import { ReservationsUsers as ReservatonsUser } from '../reservations_users/reservations_users.entity';
 
 export enum UserType {

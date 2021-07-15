@@ -53,14 +53,13 @@ export class UsersRepository extends Repository<User> {
   }
 
   async validateUserPassword(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password } = userCreateDto['user'];
+    const { email, password } = userCreateDto.user;
 
     const user = await this.findOne({ email });
     if (user && (await user.validateUserPassword(password))) {
       return user;
-    } else {
-      return null;
     }
+    return null;
   }
 
   private async hashPassword(
@@ -82,7 +81,7 @@ export class UsersRepository extends Repository<User> {
   async me(email): Promise<User> {
     const user = await this.findOne({
       where: {
-        email: email,
+        email,
       },
     });
     return user;

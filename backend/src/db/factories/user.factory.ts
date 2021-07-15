@@ -1,10 +1,10 @@
 import Faker from 'faker';
 import { define } from 'typeorm-seeding';
-import { Users as User } from '../../users/users.entity';
 import * as bcrypt from 'bcryptjs';
 import { createWriteStream } from 'fs';
 import { join, parse } from 'path';
 import axios from 'axios';
+import { Users as User } from '../../users/users.entity';
 
 define(User, (faker: typeof Faker) => {
   const saltRounds = 10;
