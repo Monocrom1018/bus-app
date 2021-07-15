@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
-  canActivate(
+  canActivate(  
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     // Add your custom authentication logic here
