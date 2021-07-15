@@ -31,7 +31,9 @@ export class ReservationsController {
   // form-data 형식으로 post 요청할 경우에 FileInterceptor 설정이 없으면
   // 전달받은 데이터의 내용을 인식하지 못합니다.
   @UseInterceptors(FileInterceptor('file'))
-  async create(@Body() reservationCreateDto: ReservationCreateDto) {
+  async create(
+    @Body('reservation') reservationCreateDto: ReservationCreateDto,
+  ) {
     return this.reservationsService.create(reservationCreateDto);
   }
 

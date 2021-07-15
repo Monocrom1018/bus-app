@@ -22,6 +22,9 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      transformOptions: {
+        enableImplicitConversion: true, // 암묵적으로 타입을 dto에 맞게 변환 시켜준다.
+      },
       whitelist: true,
     }),
   );

@@ -15,8 +15,10 @@ const ReservationIndexPage = () => {
   const { data, isError, error, fetchNextPage, isLoading, refetch } = useInfiniteQuery(
     'reservations',
     async ({ pageParam: page = 1 }) => {
-      const response = await getReservations(currentUser.email, page);
-      return response || [];
+      if (currentUser.isAuthenticated) {
+        const response = await getReservations(currentUser.email, page);
+        return response || [];
+      }
     },
     {
       getNextPageParam: (lastPage, pages) => (pages ? pages.length + 1 : 1),
@@ -59,12 +61,16 @@ const ReservationIndexPage = () => {
           ) : isError ? (
             <Block>{error['message']}</Block>
           ) : (
+            // todo : 여기서 유저타입이 기사인 경우와 승객인 경우를 또 분기해야 함
             <>
               {reservations.length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
-                    console.log(reservation.id);
-                    return <Reservation reservation={reservation} />;
+                    if (currentUser.user_type === 'normal') {
+                      return <Reservation reservation={reservation} refetch={refetch} />;
+                    } else {
+                      return <DriverReservationPage reservation={reservation} refetch={refetch} />;
+                    }
                   })}
                 </>
               ) : (

@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from 'moment';
+import { f7 } from 'framework7-react';
 
 export const currency = (data, options) => {
   if (!data) return '';
@@ -82,4 +83,8 @@ export const saleRate = ({ list_price, sale_price }) => {
     result = 100 - resultSaleRate;
   }
   return result;
+};
+
+export const showToast = (text, position = 'center') => {
+  f7.toast.show({ text: text, position: position, closeTimeout: 2000 });
 };

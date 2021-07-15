@@ -115,3 +115,13 @@ export const updateReservation = async (params) => {
   const { data } = await API.post(`reservations/update`, params);
   return data;
 };
+
+export const getBillingKey = async (params) => {
+  const { data } = await API.post(`users/billing`, params);
+  return data;
+};
+
+export const createPayment = async (params) => {
+  const { data } = await API.post(`users/payment`, params);
+  return data;
+};

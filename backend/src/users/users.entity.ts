@@ -118,6 +118,18 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   charge_per_day: string;
 
+  @Column({ nullable: true, default: false })
+  card_registerd: boolean;
+
+  @Column({ nullable: true })
+  card_billing_key: string;
+
+  @Column({ nullable: true })
+  card_number: string;
+
+  @Column({ nullable: true })
+  card_company: string;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
 

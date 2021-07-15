@@ -29,7 +29,7 @@ import { createReservation } from '../../common/api/index';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
 
-const EstimatePage = () => {
+const EstimatePage = ({ f7router }) => {
   const departure = useRecoilValue(departureState);
   const departureDate = useRecoilValue(departureDateState);
   const returnDate = useRecoilValue(returnDateState);
@@ -43,6 +43,13 @@ const EstimatePage = () => {
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
+    if (currentUser.card_registerd === false) {
+      f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => {
+        return f7router.navigate('/users/card');
+      });
+      return;
+    }
+
     const stopoversArray = stopovers.map((stopover) => {
       return stopover.stopover;
     });
@@ -68,16 +75,16 @@ const EstimatePage = () => {
       setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
     } catch (error) {
-      if (typeof error.message === 'string') message = '이미 동일한 예약이 존재합니다';
+      if (typeof error.message === 'string') message = error.message;
       else message = '예상치 못한 오류가 발생하였습니다';
     } finally {
       f7.preloader.hide();
-      f7.dialog.alert(message);
+      f7.dialog.alert(message, () => window.location.replace('/'));
     }
   };
 
   return (
-    <Page name="search">
+    <Page name="search" noToolbar>
       <Navbar title="견적확인" backLink></Navbar>
       <List noHairlinesMd>
         <div className="flex flex-col">
