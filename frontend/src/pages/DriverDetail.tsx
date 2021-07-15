@@ -11,7 +11,7 @@ const DriverDetailPage = (props) => {
 
   useEffect(() => {
     async function getTargetDriver() {
-      const targetDriver = await getOneDriver(props.id);
+      const targetDriver = await getOneDriver(props.id); 
       setDriver(targetDriver);
     }
     getTargetDriver();
