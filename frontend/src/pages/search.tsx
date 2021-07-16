@@ -11,6 +11,7 @@ import {
   NavTitle,
   Page,
   Input,
+  Checkbox,
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
@@ -21,9 +22,12 @@ import {
   destinationState,
   distanceState,
   stopoversState,
+  lastDestinationState,
 } from '@atoms';
 import Driver from './users/Driver';
 import { getDrivers } from '../common/api/index';
+import moment from 'moment';
+import { showToast } from '@js/utils';
 
 const SearchPage = () => {
   const test = 'test';
@@ -31,22 +35,34 @@ const SearchPage = () => {
   const [departureDate, setDepartureDate] = useRecoilState(departureDateState);
   const [returnDate, setReturnDate] = useRecoilState(returnDateState);
   const [destination, setDestination] = useRecoilState(destinationState);
+  const [lastDestination, setLastDestination] = useRecoilState(lastDestinationState);
   const [distance, setDistance] = useRecoilState(distanceState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [stopoverCount, setStopoverCount] = useState(0);
+  const [lastDestinationCheck, setLastDestinationCheck] = useState(false);
+  const [returnStopoverCheck, setReturnStopoverCheck] = useState(false);
   const [drivers, setDrivers] = useState(null);
   const postCodeRef = useRef();
+  let departDay;
 
   const handleSearch = async () => {
-    if (departure !== '' && destination !== '') {
+    if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
       f7.dialog.preloader();
-      const searchParam = { departure, departureDate, destination, stopovers: stopovers || [] };
+      const searchParam = {
+        departure,
+        departureDate,
+        lastDestination,
+        returnDate,
+        destination,
+        stopovers: stopovers.length > 0 ? stopovers : [],
+        returnStopoverCheck,
+      };
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
       setDrivers(foundDrivers);
       setDistance(calculatedDistance);
       f7.dialog.close();
     } else {
-      // 출발지 도착지 입력해달라고 토스트 띄우기
+      showToast('일정을 모두 입력해주세요');
     }
   };
 
@@ -67,6 +83,30 @@ const SearchPage = () => {
     );
   };
 
+  const handleLastDestinationCheck = async () => {
+    if (lastDestinationCheck === true) {
+      setLastDestination('');
+    }
+
+    setLastDestinationCheck(!lastDestinationCheck);
+  };
+
+  const handleDepartureDate = async (param) => {
+    departDay = param;
+    await setDepartureDate(String(param));
+  };
+
+  const handleReturnDate = async (param) => {
+    const format = await moment(param).format('YYYY-MM-DD');
+    const isBefore = moment(format).isBefore(departDay);
+    if (isBefore) {
+      showToast('가는날 이후를 선택해주세요');
+      return;
+    }
+
+    setReturnDate(String(param));
+  };
+
   const handlePostCode = (e, value, id) => {
     new daum.Postcode({
       oncomplete: (data) => {
@@ -76,6 +116,10 @@ const SearchPage = () => {
 
         if (value === 'destination') {
           setDestination(data.address);
+        }
+
+        if (value === 'lastDestination') {
+          setLastDestination(data.address);
         }
 
         if (value === 'stopover') {
@@ -109,7 +153,7 @@ const SearchPage = () => {
       </Block>
       <List noHairlinesMd>
         <div className="flex flex-col">
-          <div className="mx-6 mt-6 -mb-6 font-semibold">일정입력</div>
+          <div className="mx-6 mt-6 -mb-6 font-semibold tracking-wider">일정</div>
           <List className="bg-gray-50">
             <ListInput
               label="가는날 및 탑승시간"
@@ -121,9 +165,12 @@ const SearchPage = () => {
                 openIn: 'customModal',
                 footer: true,
                 dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+                disabled: {
+                  to: new Date(),
+                },
               }}
               className="bg-gray-50"
-              onCalendarChange={(e) => setDepartureDate(String(e[0]))}
+              onCalendarChange={(e) => handleDepartureDate(e[0])}
             />
             <ListInput
               label="오는날 및 탑승시간"
@@ -135,13 +182,24 @@ const SearchPage = () => {
                 openIn: 'customModal',
                 footer: true,
                 dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+                disabled: {
+                  to: new Date(),
+                },
               }}
               className="bg-gray-50"
-              onCalendarChange={(e) => setReturnDate(String(e[0]))}
+              onCalendarChange={(e) => handleReturnDate(e[0])}
             />
           </List>
 
-          <div className="mx-6 mb-2 font-semibold">장소입력</div>
+          <div className="flex justify-between">
+            <div className="mx-6 mb-2 font-semibold tracking-wider">경로</div>
+            {stopovers.length > 0 ? (
+              <div className="mr-4">
+                <Checkbox onChange={() => setReturnStopoverCheck(!returnStopoverCheck)} className="pb-1 text-sm" />
+                <span className="ml-1 text-gray-700 text-sm">귀환시에도 경유</span>
+              </div>
+            ) : null}
+          </div>
 
           <div ref={postCodeRef} className="ml-2"></div>
 
@@ -179,33 +237,29 @@ const SearchPage = () => {
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
             readOnly
             value={destination}
-            placeholder="도착지를 검색해주세요"
+            placeholder="목적지를 검색해주세요"
             onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
           ></input>{' '}
         </div>
-        <Button onClick={handleAddStopover} className="mt-4">
-          경유지 추가
-        </Button>
-        {/* <ListInput
-          type="select"
-          defaultValue="기사님의 동행여부를 선택해주세요"
-          className="mt-8 bg-gray-50"
-          onChange={(e) => setWithDriver(e.target.value)}
-        >
-          <option disabled>기사님의 동행여부를 선택해주세요</option>
-          <option value="전체일정 동행">전체일정 동행</option>
-          <option value="출발, 귀환시에만 동행">출발, 귀환시에만 동행</option>
-        </ListInput> */}
-
-        {/* {withDriver === '전체일정 동행' ? (
-          <Input
-            type="textarea"
-            placeholder="구체적인 동행일정을 상세히 적어주세요"
-            className="m-3 pl-2 border-2 border-gray-200 rounded-lg bg-gray-50"
-          ></Input>
+        {lastDestinationCheck ? (
+          <div className="flex px-4 mt-6">
+            <input
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+              readOnly
+              value={lastDestination}
+              placeholder="귀환지를 검색해주세요"
+              onClick={(e) => handlePostCode(e.currentTarget.value, 'lastDestination', null)}
+            ></input>{' '}
+          </div>
         ) : null}
-        <br /> */}
-
+        <div className="flex justify-between mx-4">
+          <Button onClick={handleAddStopover} className="mt-4" raised>
+            경유지 추가
+          </Button>
+          <Button onClick={handleLastDestinationCheck} className="mt-4" raised>
+            출발지와 귀환지가 다른가요?
+          </Button>
+        </div>
         <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
       </List>
 
@@ -217,7 +271,7 @@ const SearchPage = () => {
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
-            <div className="mx-4 font-medium text-gray-700">거리 : {distance}km</div>
+            <div className="mx-4 font-medium text-gray-700">거리(왕복) : {distance}km</div>
           </div>
           <div>
             {drivers.map((driver) => {

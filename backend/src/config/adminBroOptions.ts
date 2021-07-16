@@ -4,7 +4,7 @@ import { Notices as Notice } from '../notices/notices.entity';
 import { Faqs as Faq } from '../faqs/faqs.entity';
 import { Reservations as Reservation } from '../reservations/reservations.entity';
 import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
-import { Peaks as Peak } from 'src/peaks/peaks.entity';
+import { Months as Month } from '../months/months.entity';
 
 export const adminBroOptions = {
   adminBroOptions: {
@@ -16,7 +16,7 @@ export const adminBroOptions = {
       Faq,
       Reservation,
       {
-        resource: Peak,
+        resource: Month,
         options: {
           listProperties: ['id', 'month', 'peak'],
           actions: {
@@ -40,6 +40,7 @@ export const adminBroOptions = {
           Notices: '공지사항',
           Faqs: '자주묻는질문',
           Reservations: '예약',
+          Months: '시즌',
         },
         properties: {
           name: '이름',

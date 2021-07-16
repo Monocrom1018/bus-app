@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
@@ -21,6 +20,7 @@ import { join } from 'path';
 import { ValidateNested } from 'class-validator';
 import { adminBroOptions } from './config/adminBroOptions';
 import { AdminModule } from '@admin-bro/nestjs';
+import { MonthsModule } from './months/months.module';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -42,7 +42,6 @@ AdminBro.registerAdapter({ Database, Resource });
     MulterModule.register({
       dest: '../uploads',
     }),
-    ObjectsModule,
     AuthModule,
     UsersModule,
     PhoneCertificationsModule,
@@ -54,6 +53,7 @@ AdminBro.registerAdapter({ Database, Resource });
     ContactsModule,
     CommentsModule,
     ReservationsModule,
+    MonthsModule,
   ],
 })
 export class AppModule {}

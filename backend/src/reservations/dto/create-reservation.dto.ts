@@ -34,6 +34,11 @@ export class ReservationCreateDto {
   @ApiProperty()
   destination: string;
 
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  lastDestination: string;
+
   @IsNumber()
   @ApiProperty()
   totalCharge: number;

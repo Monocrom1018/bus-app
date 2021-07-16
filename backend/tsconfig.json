@@ -37,7 +37,8 @@
       "@phone-certifications/*": ["src/phone-certifications/*"],
       "@reservations/*": ["src/reservations/*"],
       "@reservations_users/*": ["src/reservations_users/*"],
-      "@rooms/*": ["src/rooms/*"]
-    },
-  },
+      "@rooms/*": ["src/rooms/*"],
+      "@months/*": ["src/months/*"]
+    }
+  }
 }

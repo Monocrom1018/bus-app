@@ -3,7 +3,7 @@ import { DateAudit } from '../shared/entities/date-audit.entity';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Peaks extends DateAudit {
+export class Months extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
