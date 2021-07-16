@@ -1,4 +1,5 @@
-import { TOKEN_KEY, CSRF_KEY, Token } from '@constants';
+import { TOKEN_KEY, CSRF_KEY } from '@constants';
+import { Token } from '@interfaces';
 
 export const getToken = (): Token => ({
   csrf: window.localStorage.getItem(CSRF_KEY),

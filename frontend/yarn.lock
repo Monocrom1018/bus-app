@@ -2597,6 +2597,18 @@
     lodash.merge "^4.6.2"
     lodash.uniq "^4.5.0"
 
+"@tosspayments/sdk-types@^1.1.4":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@tosspayments/sdk-types/-/sdk-types-1.1.5.tgz#c02adb4ebee963c9ce966c7c0f2b978221d07a15"
+  integrity sha512-KOadkCASWoKilx3piGAyn51012A7/pRt0pTniD3EXVT4N/MTNksdJPavUO7ZIEaxSS1XQutHQ/Xpnxcu13cxZw==
+
+"@tosspayments/sdk@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@tosspayments/sdk/-/sdk-1.2.0.tgz#7c690b3bcff488405b1c0421cd018614815404b1"
+  integrity sha512-Efccxa0FJLF7NduidL+M+7dasf8XIesX3IpcnKr4J53/XkamDb86/hntoHLHlT+W+7QMERPnw3RBKP7rrI9B7w==
+  dependencies:
+    "@tosspayments/sdk-types" "^1.1.4"
+
 "@trysound/sax@0.1.1":
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.1.1.tgz#3348564048e7a2d7398c935d466c0414ebb6a669"
@@ -9935,6 +9947,11 @@ react-input-autosize@^3.0.0:
   integrity sha512-nL9uS7jEs/zu8sqwFE5MAPx6pPkNAriACQ2rGLlqmKr2sPGtN7TXTyDdQt4lbNXVx7Uzadb40x8qotIuru6Rhg==
   dependencies:
     prop-types "^15.5.8"
+
+react-intersection-observer@^8.32.0:
+  version "8.32.0"
+  resolved "https://registry.yarnpkg.com/react-intersection-observer/-/react-intersection-observer-8.32.0.tgz#47249332e12e8bb99ed35a10bb7dd10446445a7b"
+  integrity sha512-RlC6FvS3MFShxTn4FHAy904bVjX5Nn4/eTjUkurW0fHK+M/fyQdXuyCy9+L7yjA+YMGogzzSJNc7M4UtfSKvtw==
 
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"

@@ -10,7 +10,11 @@ const PostShowPage = ({ f7route, f7router }) => {
   const POST_KEY = ['post', parseInt(postId, 10)];
   const queryClient = useQueryClient();
 
-  const { status, data: post, error } = useQuery(
+  const {
+    status,
+    data: post,
+    error,
+  } = useQuery(
     POST_KEY,
     getObject({
       id: postId,

@@ -1,26 +1,16 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UsersRepository } from '../users/users.repository';
-import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { PassportModule } from '@nestjs/passport';
-import { UsersModule } from '../users/users.module';
+import { LocalStrategy } from './strategies/local.strategy';
+import { UsersRepository } from '../users/users.repository';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 
+@Global()
 @Module({
-  imports: [
-    PassportModule,
-    // JwtModule.registerAsync({
-    //   useFactory: async () => ({
-    //     secret: `${process.env.JWKS_MOCK}`,
-    //     signOptions: { expiresIn: '60s' },
-    //   }),
-    // }),
-    TypeOrmModule.forFeature([UsersRepository]),
-  ],
+  imports: [PassportModule, TypeOrmModule.forFeature([UsersRepository])],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService],
+  providers: [AuthService, LocalStrategy],
+  exports: [AuthService, PassportModule],
 })
 export class AuthModule {}

@@ -1,13 +1,4 @@
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiParam,
-  ApiBody,
-} from '@nestjs/swagger';
-import { UserUpdateDto } from './dto/user-update.dto';
-import { UserCreateDto } from './dto/user-create.dto';
-import { UserSearchDto } from './dto/user-search.dto';
+import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
 import {
   Body,
   Post,
@@ -15,17 +6,19 @@ import {
   Controller,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
   Param,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
+import { UsersService } from './users.service';
+import { UserSearchDto } from './dto/user-search.dto';
+import { UserUpdateDto } from './dto/user-update.dto';
+import { UserCreateDto } from './dto/user-create.dto';
 
 export const storage = {
   storage: diskStorage({
-    destination: function (req, file, cb) {
+    destination(req, file, cb) {
       cb(null, './public/images');
     },
     filename: (req, file, cb) => {
@@ -63,7 +56,7 @@ export class UsersController {
   })
   @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
   async update(
-    @Body() userUpdateDto: UserUpdateDto,
+    @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const filename = file?.path || '';
@@ -103,5 +96,25 @@ export class UsersController {
   @Get('driver/:id')
   async getOneDriver(@Param('id') id: number) {
     return this.usersService.getOneDriver(id);
+  }
+
+  @ApiOperation({ summary: '빌링키 발급받기' })
+  @ApiResponse({
+    status: 200,
+    description: 'get billingkey success',
+  })
+  @Post('/billing')
+  async getBillingKey(@Body() body) {
+    return this.usersService.getBillingKey(body);
+  }
+
+  @ApiOperation({ summary: '빌링결제 진행' })
+  @ApiResponse({
+    status: 200,
+    description: 'make payment success',
+  })
+  @Post('/payment')
+  async createPayment(@Body() body) {
+    return this.usersService.createPayment(body);
   }
 }

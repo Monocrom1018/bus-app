@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { modifyAPI } from '../../common/api/index';
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
-import * as fs from 'fs';
+import i18next from 'i18next';
+import { modifyAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -54,12 +54,13 @@ const ModifyPage = () => {
       <Formik
         enableReinitialize
         initialValues={{
-          email: email,
+          email,
           profileImg: currentUser.profile_img || '',
           password: '',
           passwordConfirmation: '',
         }}
         validationSchema={UserInfoSchema}
+        // eslint-disable-next-line consistent-return
         onSubmit={async (values, { setSubmitting }) => {
           if (imgState.file !== '') {
             values.profileImg = imgState.file;
@@ -83,14 +84,14 @@ const ModifyPage = () => {
             f7.dialog.alert(error?.response?.data || error?.message);
           }
         }}
-        validateOnMount={true}
+        validateOnMount
       >
         {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
           <Form encType="multipart/form-data">
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
               <div className="flex flex-col items-center bg-white border-t">
-                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover"></img>
+                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover" alt="user_image" />
                 <Button className="my-2 font-semibold" onClick={handleImgButton}>
                   프로필사진 변경
                 </Button>
@@ -103,30 +104,44 @@ const ModifyPage = () => {
                   className="hidden"
                 />
               </div>
-              <ListInput disabled outline label={i18next.t('login.name')} type="text" name="name" value={name} />
-              <ListInput disabled outline label={i18next.t('login.email')} type="text" name="email" value={email} />
+              <ListInput
+                disabled
+                outline
+                label={i18next.t('login.name') as string}
+                type="text"
+                name="name"
+                value={name}
+              />
+              <ListInput
+                disabled
+                outline
+                label={i18next.t('login.email') as string}
+                type="text"
+                name="email"
+                value={email}
+              />
               <ListInput
                 outline
-                label={i18next.t('login.password')}
+                label={i18next.t('login.password') as string}
                 type="password"
                 name="password"
                 placeholder="새로운 비밀번호를 입력해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 clearButton
-                errorMessageForce={true}
+                errorMessageForce
                 errorMessage={touched.password && errors.password}
               />
               <ListInput
                 outline
-                label={i18next.t('login.password_confirmation')}
+                label={i18next.t('login.password_confirmation') as string}
                 type="password"
                 name="password_confirmation"
                 placeholder="비밀번호를 확인해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 clearButton
-                errorMessageForce={true}
+                errorMessageForce
                 errorMessage={touched.passwordConfirmation && errors.passwordConfirmation}
               />
             </List>

@@ -1,9 +1,4 @@
-import React from 'react';
-import { Router } from 'framework7/types';
-import { CognitoUser } from '@aws-amplify/auth';
-import { CognitoIdToken, CognitoAccessToken, CognitoRefreshToken } from 'amazon-cognito-identity-js';
 import packageJson from '../../../package.json';
-import { fromPairs } from 'lodash';
 
 // export * from './schema';
 export * from './api';
@@ -20,88 +15,8 @@ export const ACTIONS = {
 
 export const DEFAULT_ACTIONS = Object.values(ACTIONS);
 
-// export interface Route {
-//   path: string;
-//   component?: React.FunctionComponent;
-//   async?: any;
-// }
+export type UserType = 'normal' | 'driver' | 'company';
 
-// export interface ResourceRoute {
-//   resource: string;
-//   collection?: string[];
-//   member?: string[];
-//   only?: ('show' | 'edit' | 'new' | 'index')[];
-// }
-
-/** 인터페이스 */
-/* User Auth Interfaces */
-export interface Token {
-  token: null | string;
-  csrf: null | string;
-}
-
-export interface AuthState extends Token {
-  // isLoading: boolean;
-  currentUser: any; // TODO currentUser 인터페이스화
-}
-
-export interface TokenPayload {
-  user: any; // TODO IToknePayload any 타입 변경
-}
-
-export interface Like {
-  id: number;
-  target_type: string;
-  target_id: number;
-}
-
-/* Routes Interfaces */
-
-export interface Route {
-  path: string;
-  component?: React.FunctionComponent;
-  async?: any;
-}
-
-export interface ResourceRoute {
-  resource: string;
-  collection?: string[];
-  member?: string[];
-  only?: ('show' | 'edit' | 'new' | 'index')[];
-}
-
-interface CurrentUserState {
-  isAuthenticated: boolean;
-}
-
-export interface CurrentUser extends CurrentUserState {
-  email: string;
-  // TODO
-  name: string;
-  user_type: string;
-  profile_img: any;
-  password: string;
-  password_confirmation: string;
-  drivable_legion: string[];
-  drivable_date: string[];
-  company: string;
-  bus_number: string;
-  bus_type: string;
-  bus_old: string;
-  people_available: number;
-  introduce: string;
-  basic_charge: number;
-  basic_km: number;
-  night_charge: number;
-  charge_per_km: number;
-  night_begin: string;
-  night_end: string;
-  charge_per_day: number;
-  service_charge: number;
-}
-
-export interface Address {
-  zipcode: string;
-  address1: string;
-  address2?: string;
-}
+export const REACT_QUERY_KEYS = {
+  RESERVATION: 'reservation',
+};

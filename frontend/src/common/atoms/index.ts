@@ -1,8 +1,7 @@
 import { atom } from 'recoil';
-import { CurrentUser, AuthState } from '@constants';
+import { CurrentUser, CurrentUserState } from '@interfaces';
 
 const initialCurrentUser: CurrentUser = {
-  email: '',
   isAuthenticated: false,
 };
 
@@ -38,6 +37,11 @@ export const departureDateState = atom({
 
 export const destinationState = atom({
   key: 'destinationState',
+  default: '',
+});
+
+export const lastDestinationState = atom({
+  key: 'lastDestinationState',
   default: '',
 });
 

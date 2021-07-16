@@ -17,7 +17,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
 Amplify.configure({
   ...awsconfig,
-  // ...(IS_PRODUCTION ? {} : getCognitoMockConfig()),
+  ...(IS_PRODUCTION ? {} : getCognitoMockConfig()),
 });
 
 const globalAny: any = global;

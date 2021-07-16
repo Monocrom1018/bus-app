@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
 import { f7, List, ListInput } from 'framework7-react';
 import { Formik, Form } from 'formik';
@@ -62,7 +63,7 @@ const PostForm = ({ post = null, f7router }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 errorMessageForce
-                errorMessage={touched.title && errors.title}
+                errorMessage={((touched.title && errors.title) as string) || ''}
                 clearButton
               />
               <ListInput
@@ -74,7 +75,7 @@ const PostForm = ({ post = null, f7router }) => {
                 onChange={handleChange}
                 onBlur={handleBlur}
                 errorMessageForce
-                errorMessage={touched.content && errors.content}
+                errorMessage={((touched.content && errors.content) as string) || ''}
                 clearButton
               />
             </ul>

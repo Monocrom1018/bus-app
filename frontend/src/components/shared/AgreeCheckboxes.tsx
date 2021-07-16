@@ -1,6 +1,8 @@
 import React from 'react';
 import { List, ListItem, Row, Col } from 'framework7-react';
 import { useFormikContext } from 'formik';
+import i18next from 'i18next';
+import _ from 'lodash';
 
 interface AgreeCheckBoxProps {
   names: string[];
@@ -31,7 +33,7 @@ const AgreeCheckboxes = ({ names }: AgreeCheckBoxProps) => {
                 <ListItem
                   checkbox
                   className="text-xs"
-                  title={i18next.t('checkdesc')[name]}
+                  title={i18next.t('checkdesc')[name] as string}
                   name={name}
                   onChange={handleChange}
                   value={values[name]}

@@ -8,8 +8,6 @@ import { AxiosError } from 'axios';
 import { Auth } from 'aws-amplify';
 import i18next from 'i18next';
 import * as Yup from 'yup';
-import PhoneCertiication from '@components/shared/PhoneCertification';
-import { convertObjectToFormData, sleep } from '@utils';
 import useAuth from '@hooks/useAuth';
 
 interface NormalSignUpParams {
@@ -110,7 +108,6 @@ const NormalSignUpPage: React.FC = () => {
         isSignUpSuccess = true;
         message = '성공적으로 가입 하였습니다';
       } catch (error) {
-        console.log(error);
         message = (error as AxiosError).response?.data?.message;
 
         // TODO: need test amplify 유저 풀 삭제
@@ -123,7 +120,7 @@ const NormalSignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
-        location.replace('/');
+        window.location.replace('/');
       }
     },
     [authenticateUser],
@@ -195,10 +192,6 @@ const NormalSignUpPage: React.FC = () => {
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
-
-          {/* <div className="bg-white">
-          <PhoneCertiication setCertComplete={setCertComplete} />
-        </div> */}
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />
 
