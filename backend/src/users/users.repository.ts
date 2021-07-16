@@ -33,11 +33,6 @@ export class UsersRepository extends Repository<User> {
       user.registration_confirmed = true;
     }
 
-    // user.password = await this.hashPassword(
-    //   `${password}`,
-    //   user.encrypted_password,
-    // );
-
     try {
       await user.save();
     } catch (error) {
@@ -53,7 +48,7 @@ export class UsersRepository extends Repository<User> {
   }
 
   async validateUserPassword(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password } = userCreateDto.user;
+    const { email, password } = (userCreateDto as any).user;
 
     const user = await this.findOne({ email });
     if (user && (await user.validateUserPassword(password))) {

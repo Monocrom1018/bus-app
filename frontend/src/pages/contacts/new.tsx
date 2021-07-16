@@ -1,5 +1,5 @@
 import React from 'react';
-import { f7, Navbar, Page } from 'framework7-react';
+import { Page } from 'framework7-react';
 import { getObject } from '@api';
 import { useQuery } from 'react-query';
 import ReactQueryState from '../../components/shared/ReactQueryState';
@@ -7,7 +7,7 @@ import ContactForm from './form';
 
 const ContactEditPage = ({ f7route, f7router }) => {
   const contactId = f7route.params.id;
-  const CONTACT_KEY = ['contact', parseInt(contactId)];
+  const CONTACT_KEY = ['contact', parseInt(contactId, 10)];
   const {
     status,
     data: contact,

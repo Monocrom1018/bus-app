@@ -2,14 +2,17 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Users } from '@users/users.entity';
+import { Users as User } from '@users/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { Reservations as Reservation } from './reservations.entity';
 
 @EntityRepository(Reservation)
 export class ReservationsRepository extends Repository<Reservation> {
-  async createReservation(reservationCreateDto, userId): Promise<Reservation> {
+  async createReservation(
+    reservationCreateDto: any,
+    userId: any,
+  ): Promise<Reservation> {
     const {
       driverId,
       departure,
@@ -50,7 +53,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getAllFromUser(myId, page): Promise<Reservation[]> {
+  async getAllFromUser(myId: number, page): Promise<Reservation[]> {
     const perPage = 3;
     const reservations = await Reservation.find({
       relations: ['driver', 'user'],
@@ -72,7 +75,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservations;
   }
 
-  async updateReservation(param) {
+  async updateReservation(param: any) {
     const targetReservation = await Reservation.findOne({
       where: { id: param.reservationId },
     });
@@ -96,7 +99,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     return targetReservation;
   }
 
-  async getRevervationUser(param) {
+  async getRevervationUser(param: number) {
     const reservation = await this.findOne({
       where: { id: param },
     });

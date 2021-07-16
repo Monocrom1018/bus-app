@@ -1,12 +1,7 @@
 import { HttpExceptionFilter } from '@filters/http-exception.filter';
 import { NestFactory, Reflector } from '@nestjs/core';
-import * as config from 'config';
-import * as csrf from 'csurf';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import * as helmet from 'helmet';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
-import express from 'express';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -33,16 +28,9 @@ async function bootstrap() {
     credentials: true,
   });
 
-  const port = process.env.PORT || 3000;
-
-  // app.use(helmet());
   app.use(cookieParser());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
-  // Convert exceptions to JSON readable format
-  // console.log(JSON.parse(process.env.JWKS));
-
-  // api setting
   const config = new DocumentBuilder()
     .setTitle('BackpackBus API')
     .setDescription('BackpackBus 개발을 위한 API 문서')

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Page, Navbar, PageContent, List, ListItem, Panel, Link } from 'framework7-react';
+import { Page, Navbar, PageContent, List, Panel, Link } from 'framework7-react';
 
 export default (props) => {
   const { handleLogout, isLoggedIn } = props;

@@ -1,10 +1,11 @@
-import { ResourceRoute, Route, DEFAULT_ACTIONS, ACTIONS, AuthState } from '@constants';
+import { DEFAULT_ACTIONS, ACTIONS } from '@constants';
+import { ResourceRoute, Route } from '@interfaces';
 import { Auth } from 'aws-amplify';
 import IntroPage from '@pages/intro';
 
 const isActionMember = { index: false, new: false, edit: true, show: true };
 
-const reduceRoute = (resource: string, routeArray: any, member: any): Route[] =>
+const reduceRoute = (resource: string, routeArray: Array<string>, member: boolean): Route[] =>
   routeArray.reduce((routes: Route[], routeName: string) => {
     try {
       const isMember = typeof member === 'boolean' ? member : isActionMember[routeName];
@@ -46,6 +47,7 @@ function buildRoute(resource: string, actionName: string, isMember: boolean): Ro
       path += isMember ? `/:id/${actionName}` : `/${actionName}`;
   }
 
+  // eslint-disable-next-line import/no-dynamic-require
   return { path, component: require(`@pages/${resource}/${actionName}`).default };
 }
 

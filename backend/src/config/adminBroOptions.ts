@@ -1,9 +1,9 @@
-import { Users as User } from '../users/users.entity';
-import { AdminUsers as AdminUser } from '../adminUsers/adminUsers.entity';
-import { Notices as Notice } from '../notices/notices.entity';
-import { Faqs as Faq } from '../faqs/faqs.entity';
-import { Reservations as Reservation } from '../reservations/reservations.entity';
-import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
+import { Users as User } from '@users/users.entity';
+import { AdminUsers as AdminUser } from '@adminUsers/adminUsers.entity';
+import { Notices as Notice } from '@notices/notices.entity';
+import { Faqs as Faq } from '@faqs/faqs.entity';
+import { Reservations as Reservation } from '@reservations/reservations.entity';
+import { ReservationsUsers as ReservationsUser } from '@reservations_users/reservations_users.entity';
 
 export const adminBroOptions = {
   adminBroOptions: {

@@ -1,9 +1,7 @@
 import Auth, { CognitoUser } from '@aws-amplify/auth';
 import { useRecoilState, useResetRecoilState } from 'recoil';
-import { AuthState, Token, CurrentUser } from '@constants';
+import { CurrentUser } from '@interfaces';
 import { useCallback } from 'react';
-import { getCurrentUserFromToken } from '@utils';
-import { destroyToken, saveToken } from '@store';
 import { currentUserState } from '@atoms';
 import { authSelector } from '@selectors';
 import { userMeApi } from '@api';

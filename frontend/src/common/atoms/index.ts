@@ -1,8 +1,7 @@
 import { atom } from 'recoil';
-import { CurrentUser, AuthState } from '@constants';
+import { CurrentUser, CurrentUserState } from '@interfaces';
 
 const initialCurrentUser: CurrentUser = {
-  email: '',
   isAuthenticated: false,
 };
 

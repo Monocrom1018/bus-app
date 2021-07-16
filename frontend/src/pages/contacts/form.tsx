@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
 import { f7, List, ListInput } from 'framework7-react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { createObject, updateObject } from '@api';
-import { toast } from '../../js/utils';
 import { useMutation, useQueryClient } from 'react-query';
+import { toast } from '../../js/utils';
 
 const ContactNewSchema = Yup.object().shape({
   title: Yup.string().required('필수 입력사항입니다'),

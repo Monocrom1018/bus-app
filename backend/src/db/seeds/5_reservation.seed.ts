@@ -1,7 +1,7 @@
 import { Connection, getRepository } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
-import { Reservations as Reservation } from '../../reservations/reservations.entity';
-import { Users as User } from '../../users/users.entity';
+import { Reservations as Reservation } from '@reservations/reservations.entity';
+import { Users as User } from '@users/users.entity';
 
 export default class CreateReservations implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {

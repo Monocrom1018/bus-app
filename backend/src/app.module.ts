@@ -4,13 +4,9 @@ import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
 import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express';
-import { join } from 'path';
-import { ValidateNested } from 'class-validator';
 import { AdminModule } from '@admin-bro/nestjs';
-import { ObjectsModule } from './objects/objects.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { PhoneCertificationsModule } from './phone-certifications/phone-certifications.module';
 import { NoticesModule } from './notices/notices.module';
 import { LikesModule } from './likes/likes.module';
 import { ImagesModule } from './images/images.module';
@@ -18,7 +14,6 @@ import { FollowsModule } from './follows/follows.module';
 import { FaqsModule } from './faqs/faqs.module';
 import { ContactsModule } from './contacts/contacts.module';
 import { CommentsModule } from './comments/comments.module';
-import { Users as User } from './users/users.entity';
 import { ReservationsModule } from './reservations/reservations.module';
 import { adminBroOptions } from './config/adminBroOptions';
 
@@ -42,10 +37,8 @@ AdminBro.registerAdapter({ Database, Resource });
     MulterModule.register({
       dest: '../uploads',
     }),
-    ObjectsModule,
     AuthModule,
     UsersModule,
-    PhoneCertificationsModule,
     NoticesModule,
     LikesModule,
     ImagesModule,

@@ -7,15 +7,10 @@ import {
   UploadedFile,
   UseInterceptors,
   Param,
-  UseGuards,
-  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import path = require('path');
-import { JwtGuard } from '@auth/guards/jwt.guard';
-import { getCurrentApiUser } from '@decorators/current-api-user.decorator';
-import { Users as User } from '@users/users.entity';
 import { UsersService } from './users.service';
 import { UserSearchDto } from './dto/user-search.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
@@ -54,7 +49,6 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
-  // @UseGuards(JwtGuard)
   @Post('update')
   @ApiResponse({
     status: 200,

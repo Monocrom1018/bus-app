@@ -12,7 +12,7 @@ import {
   Page,
   Input,
 } from 'framework7-react';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import {
   returnDateState,
@@ -60,9 +60,10 @@ const SearchPage = () => {
   const handleDeleteStopover = async (param) => {
     setStopovers(
       stopovers.filter((item) => {
-        if (item.id !== param) {
-          return true;
+        if (item.id === param) {
+          return false;
         }
+        return true;
       }),
     );
   };
@@ -79,8 +80,8 @@ const SearchPage = () => {
         }
 
         if (value === 'stopover') {
-          let duplicatedArr = JSON.parse(JSON.stringify(stopovers));
-          let mapped = duplicatedArr.map((item) => {
+          const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
+          const mapped = duplicatedArr.map((item) => {
             if (item.id === id) {
               item.stopover = data.address;
               return item;
@@ -143,7 +144,7 @@ const SearchPage = () => {
 
           <div className="mx-6 mb-2 font-semibold">장소입력</div>
 
-          <div ref={postCodeRef} className="ml-2"></div>
+          <div ref={postCodeRef} className="ml-2" />
 
           <div className="flex px-4 mb-3">
             <input
@@ -152,28 +153,26 @@ const SearchPage = () => {
               value={departure}
               placeholder="출발지를 검색해주세요"
               onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
-            ></input>{' '}
+            />{' '}
           </div>
         </div>
-        {stopovers.map((item) => {
-          return (
-            <div className="flex px-4 py-2" key={item.id}>
-              <button
-                className="f7-icons text-xl text-red-500 outline-none"
-                onClick={() => handleDeleteStopover(item.id)}
-              >
-                minus_circle_fill
-              </button>
-              <input
-                className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-                readOnly
-                value={item.stopover}
-                placeholder="최대 5개까지 추가 가능합니다"
-                onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
-              ></input>{' '}
-            </div>
-          );
-        })}
+        {stopovers.map((item) => (
+          <div className="flex px-4 py-2" key={item.id}>
+            <button
+              className="f7-icons text-xl text-red-500 outline-none"
+              onClick={() => handleDeleteStopover(item.id)}
+            >
+              minus_circle_fill
+            </button>
+            <input
+              className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
+              readOnly
+              value={item.stopover}
+              placeholder="최대 5개까지 추가 가능합니다"
+              onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
+            />{' '}
+          </div>
+        ))}
         <div className="flex px-4 mt-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
@@ -181,7 +180,7 @@ const SearchPage = () => {
             value={destination}
             placeholder="도착지를 검색해주세요"
             onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
-          ></input>{' '}
+          />{' '}
         </div>
         <Button onClick={handleAddStopover} className="mt-4">
           경유지 추가
@@ -220,9 +219,9 @@ const SearchPage = () => {
             <div className="mx-4 font-medium text-gray-700">거리 : {distance}km</div>
           </div>
           <div>
-            {drivers.map((driver) => {
-              return <Driver driver={driver} key={driver.id} />;
-            })}
+            {drivers.map((driver) => (
+              <Driver driver={driver} key={driver.id} />
+            ))}
           </div>
         </div>
       ) : null}

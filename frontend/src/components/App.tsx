@@ -5,12 +5,11 @@ import { f7ready, App } from 'framework7-react';
 import { RecoilRoot } from 'recoil';
 import { getDevice } from '@js/framework7-custom';
 import { IS_PRODUCTION } from '@config';
-import { RecoilRootPortal } from '@components/RecoilRootPortal';
 import { toast } from '@js/utils';
-import capacitorApp from '@js/capacitor-app';
 import routes from '@routes';
 import Views from '@components/Views';
 import Auth from '@aws-amplify/auth';
+import capacitorApp from '../js/capacitor-app';
 import awsconfig from '../aws-exports';
 
 Auth.configure(awsconfig);
@@ -63,7 +62,6 @@ const F7App = () => {
           <Views />
         </App>
         {IS_PRODUCTION ? null : <ReactQueryDevtools position="bottom-right" />}
-        {/* <RecoilRootPortal /> */}
       </RecoilRoot>
     </QueryClientProvider>
   );

@@ -22,7 +22,6 @@
       "@users/*": ["src/users/*"],
       "@adminUsers/*": ["src/adminUsers/*"],
       "@auth/*": ["src/auth/*"],
-      "@categories/*": ["src/categories/*"],
       "@comments/*": ["src/comments/*"],
       "@conatcts/*": ["src/contacts/*"],
       "@db/*": ["src/db/*"],

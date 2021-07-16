@@ -98,25 +98,23 @@ const DriverReservationPage = (props) => {
             ↓
           </Col>
         </Row>
-        {stopover?.map((name) => {
-          return (
-            <>
-              <Row>
-                <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
-                  경유지
-                </Col>
-                <Col width="80" className="text-base text-gray-900">
-                  {name}
-                </Col>
-              </Row>
-              <Row>
-                <Col width="20" className="text-center text-red-400 font-semibold">
-                  ↓
-                </Col>
-              </Row>
-            </>
-          );
-        })}
+        {stopover?.map((name) => (
+          <>
+            <Row>
+              <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
+                경유지
+              </Col>
+              <Col width="80" className="text-base text-gray-900">
+                {name}
+              </Col>
+            </Row>
+            <Row>
+              <Col width="20" className="text-center text-red-400 font-semibold">
+                ↓
+              </Col>
+            </Row>
+          </>
+        ))}
         <Row className="mb-5">
           <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
             도착지

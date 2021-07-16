@@ -1,7 +1,7 @@
 import { Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Users } from '../users/users.entity';
-import { Reservations } from '../reservations/reservations.entity';
-import { DateAudit } from '../shared/entities/date-audit.entity';
+import { Users } from '@users/users.entity';
+import { Reservations } from '@reservations/reservations.entity';
+import { DateAudit } from '@entities/date-audit.entity';
 
 @Entity()
 export class ReservationsUsers extends DateAudit {

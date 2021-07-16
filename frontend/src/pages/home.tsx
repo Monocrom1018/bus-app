@@ -1,33 +1,11 @@
 import React, { useEffect } from 'react';
-import {
-  f7,
-  f7ready,
-  Page,
-  Navbar,
-  NavLeft,
-  NavRight,
-  Link,
-  NavTitle,
-  Searchbar,
-  Block,
-  ListItem,
-  List,
-  BlockTitle,
-  Button,
-  Icon,
-} from 'framework7-react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { userLikes, lineItemsCount, currentUserState } from '@atoms';
-import { getLikes, getObjects, API_URL, getLineItems, getBillingKey } from '@api';
-import { useQuery, useQueryClient } from 'react-query';
-import { AuthState } from '@constants';
+import { f7, Page, Navbar, NavLeft, Link, NavTitle, Block, BlockTitle, Button, Icon } from 'framework7-react';
+import { useRecoilState } from 'recoil';
+import { currentUserState } from '@atoms';
+import { getBillingKey } from '@api';
+import { useQueryClient } from 'react-query';
 import { showToast } from '@js/utils';
-import Categories from '@components/categories/Categories';
-import NewItems from '@components/shared/NewItems';
-import MainBanner from '@components/shared/MainBanner';
 import Footer from '@components/shared/Footer';
-import useAuth from '@hooks/useAuth';
-import Driver from './users/Driver';
 
 const HomePage = ({ f7route, f7router }) => {
   const queryClient = useQueryClient();
@@ -36,7 +14,7 @@ const HomePage = ({ f7route, f7router }) => {
 
   useEffect(() => {
     if (f7route.query.hasOwnProperty('result')) {
-      switch (f7route.query['result']) {
+      switch (f7route.query.result) {
         case 'success':
           (async () => {
             const updatedUser = await getBillingKey(f7route.query);
@@ -60,7 +38,7 @@ const HomePage = ({ f7route, f7router }) => {
           throw new Error('예상치 못한 오류가 발생하였습니다');
       }
     }
-  }, []);
+  }, [f7route.query, setCurrentUser]);
 
   return (
     <Page name="home" className="home-page">

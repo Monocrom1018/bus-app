@@ -1,13 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useState } from 'react';
 import { f7, Navbar, Page, List, ListInput, Button, ListItem, AccordionContent, Chip, Block } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { modifyAPI, get, userMeApi } from '../../common/api/index';
 import { useRecoilState } from 'recoil';
-import useAuth from '@hooks/useAuth';
 import { currentUserState } from '@atoms';
-import * as fs from 'fs';
+import i18next from 'i18next';
+import { modifyAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -63,7 +63,7 @@ const driverModifyPage = () => {
   const daysOfEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const handleArrayChange = (e, arrayName) => {
-    const value = e.target.value;
+    const { value } = e.target;
     const valueIndex = arrayName.indexOf(value);
     const duplicatedArr = JSON.parse(JSON.stringify(arrayName));
     if (valueIndex !== -1) {
@@ -116,7 +116,7 @@ const driverModifyPage = () => {
       <Formik
         enableReinitialize
         initialValues={{
-          email: email,
+          email,
           profileImg: currentUser.profile_img || '',
           password: '',
           passwordConfirmation: '',
@@ -164,14 +164,14 @@ const driverModifyPage = () => {
             f7.dialog.alert(error?.response?.data || error?.message);
           }
         }}
-        validateOnMount={true}
+        validateOnMount
       >
         {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
           <Form encType="multipart/form-data">
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
               <div className="flex flex-col items-center bg-white border-t">
-                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover"></img>
+                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover" alt="user_image" />
                 <Button className="my-2 font-semibold" onClick={handleImgButton}>
                   프로필사진 변경
                 </Button>
@@ -184,30 +184,44 @@ const driverModifyPage = () => {
                   className="hidden"
                 />
               </div>
-              <ListInput disabled outline label={i18next.t('login.name')} type="text" name="name" value={name} />
-              <ListInput disabled outline label={i18next.t('login.email')} type="text" name="email" value={email} />
+              <ListInput
+                disabled
+                outline
+                label={i18next.t('login.name') as string}
+                type="text"
+                name="name"
+                value={name}
+              />
+              <ListInput
+                disabled
+                outline
+                label={i18next.t('login.email') as string}
+                type="text"
+                name="email"
+                value={email}
+              />
               <ListInput
                 outline
-                label={i18next.t('login.password')}
+                label={i18next.t('login.password') as string}
                 type="password"
                 name="password"
                 placeholder="새로운 비밀번호를 입력해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 clearButton
-                errorMessageForce={true}
+                errorMessageForce
                 errorMessage={touched.password && errors.password}
               />
               <ListInput
                 outline
-                label={i18next.t('login.password_confirmation')}
+                label={i18next.t('login.password_confirmation') as string}
                 type="password"
                 name="password_confirmation"
                 placeholder="비밀번호를 확인해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 clearButton
-                errorMessageForce={true}
+                errorMessageForce
                 errorMessage={touched.passwordConfirmation && errors.passwordConfirmation}
               />
             </List>
@@ -217,42 +231,38 @@ const driverModifyPage = () => {
                 <List noHairlinesMd accordionList>
                   <ListItem accordionItem title="출발가능지역 (복수선택 가능)">
                     <AccordionContent>
-                      {legions.map((legion) => {
-                        return (
-                          <ListItem
-                            checkbox
-                            onChange={(e) => handleArrayChange(e, drivableLegion)}
-                            value={legion}
-                            title={legion}
-                            defaultChecked={currentUser.drivable_legion?.includes(legion)}
-                            name="demo-checkbox"
-                          />
-                        );
-                      })}
+                      {legions.map((legion) => (
+                        <ListItem
+                          checkbox
+                          onChange={(e) => handleArrayChange(e, drivableLegion)}
+                          value={legion}
+                          title={legion}
+                          defaultChecked={currentUser.drivable_legion?.includes(legion)}
+                          name="demo-checkbox"
+                        />
+                      ))}
                     </AccordionContent>
                   </ListItem>
                   <Block strong className="ml-3 mt-1">
-                    {drivableLegion.map((legion) => {
-                      return <Chip outline className="mr-1" text={legion} />;
-                    })}
+                    {drivableLegion.map((legion) => (
+                      <Chip outline className="mr-1" text={legion} />
+                    ))}
                   </Block>
                 </List>
 
                 <List noHairlinesMd accordionList>
                   <ListItem accordionItem title="운행가능날짜 (복수선택 가능)">
                     <AccordionContent>
-                      {daysOfWeek.map((day, idx) => {
-                        return (
-                          <ListItem
-                            checkbox
-                            title={day}
-                            value={daysOfEnglish[idx]}
-                            onChange={(e) => handleArrayChange(e, drivableDate)}
-                            defaultChecked={currentUser.drivable_date?.includes(daysOfEnglish[idx])}
-                            name="demo-checkbox"
-                          />
-                        );
-                      })}
+                      {daysOfWeek.map((day, idx) => (
+                        <ListItem
+                          checkbox
+                          title={day}
+                          value={daysOfEnglish[idx]}
+                          onChange={(e) => handleArrayChange(e, drivableDate)}
+                          defaultChecked={currentUser.drivable_date?.includes(daysOfEnglish[idx])}
+                          name="demo-checkbox"
+                        />
+                      ))}
                     </AccordionContent>
                   </ListItem>
                   <Block strong className="ml-3 mt-1">
@@ -265,7 +275,7 @@ const driverModifyPage = () => {
                 <List noHairlinesMd>
                   <div className="p-3 font-semibold bg-white">차량 정보</div>
                   <ListInput
-                    label={i18next.t('차량번호')}
+                    label={i18next.t('차량번호') as string}
                     type="text"
                     name="busNumber"
                     placeholder="예: 서울12가1234"
@@ -277,7 +287,7 @@ const driverModifyPage = () => {
                     errorMessage={touched.busNumber && errors.busNumber}
                   />
                   <ListInput
-                    label={i18next.t('가용승객수')}
+                    label={i18next.t('가용승객수') as string}
                     type="text"
                     name="peopleAvailable"
                     placeholder="가용 승객수를 숫자만 입력해주세요"
@@ -289,7 +299,7 @@ const driverModifyPage = () => {
                     errorMessage={touched.peopleAvailable && errors.peopleAvailable}
                   />
                   <ListInput
-                    label={i18next.t('차량유형')}
+                    label={i18next.t('차량유형') as string}
                     type="select"
                     name="busType"
                     defaultValue="대형"
@@ -309,7 +319,7 @@ const driverModifyPage = () => {
                     <option value="벤">벤</option>
                   </ListInput>
                   <ListInput
-                    label={i18next.t('차량연식')}
+                    label={i18next.t('차량연식') as string}
                     type="select"
                     name="busOld"
                     defaultValue="2011년식"
@@ -336,7 +346,7 @@ const driverModifyPage = () => {
                   <List noHairlinesMd>
                     <div className="p-3 font-semibold bg-white">운행단가 정보</div>
                     <ListInput
-                      label={i18next.t('기본요금')}
+                      label={i18next.t('기본요금') as string}
                       type="text"
                       name="basicCharge"
                       placeholder="숫자만 입력해주세요 (예 : 300000)"
@@ -348,7 +358,7 @@ const driverModifyPage = () => {
                       errorMessage={touched.basicCharge && errors.basicCharge}
                     />
                     <ListInput
-                      label={i18next.t('기본운행거리(km)')}
+                      label={i18next.t('기본운행거리(km)') as string}
                       type="text"
                       name="basicKm"
                       placeholder="숫자만 입력해주세요 (예 : 100)"
@@ -360,7 +370,7 @@ const driverModifyPage = () => {
                       errorMessage={touched.basicKm && errors.basicKm}
                     />
                     <ListInput
-                      label={i18next.t('km당 단가')}
+                      label={i18next.t('km당 단가') as string}
                       type="text"
                       name="chargePerKm"
                       placeholder="숫자만 입력해주세요 (예 : 1000)"
@@ -372,7 +382,7 @@ const driverModifyPage = () => {
                       errorMessage={touched.chargePerKm && errors.chargePerKm}
                     />
                     <ListInput
-                      label={i18next.t('심야시간 추가요금')}
+                      label={i18next.t('심야시간 추가요금') as string}
                       type="text"
                       name="nightCharge"
                       placeholder="숫자만 입력해주세요 (예 : 50000)"
@@ -384,7 +394,7 @@ const driverModifyPage = () => {
                       errorMessage={touched.nightCharge && errors.nightCharge}
                     />
                     <ListInput
-                      label={i18next.t('1박 추가시 추가요금')}
+                      label={i18next.t('1박 추가시 추가요금') as string}
                       type="text"
                       name="chargePerDay"
                       placeholder="숫자만 입력해주세요 (예 : 400000)"
@@ -396,7 +406,7 @@ const driverModifyPage = () => {
                       errorMessage={touched.chargePerDay && errors.chargePerDay}
                     />
                     <ListInput
-                      label={i18next.t('봉사료')}
+                      label={i18next.t('봉사료') as string}
                       type="text"
                       name="serviceCharge"
                       placeholder="숫자만 입력해주세요 (예 : 50000)"
@@ -412,7 +422,7 @@ const driverModifyPage = () => {
                   <List noHairlinesMd>
                     <div className="p-3 font-semibold bg-white">심야운행 정보</div>
                     <ListInput
-                      label={i18next.t('심야시작시간')}
+                      label={i18next.t('심야시작시간') as string}
                       type="select"
                       defaultValue="21시"
                       name="nightBegin"
@@ -431,7 +441,7 @@ const driverModifyPage = () => {
                       <option value="3">03시</option>
                     </ListInput>
                     <ListInput
-                      label={i18next.t('심야종료시간')}
+                      label={i18next.t('심야종료시간') as string}
                       type="select"
                       defaultValue="04시"
                       name="nightEnd"
@@ -466,18 +476,18 @@ const driverModifyPage = () => {
                 </List>
                 <List noHairlinesMd>
                   <div className="p-3 font-semibold bg-white">차량사진</div>
-                  <input className="p-3" type="file" name="busUpload"></input>
+                  <input className="p-3" type="file" name="busUpload" />
                 </List>
 
                 {user_type === 'driver' ? (
                   <>
                     <List noHairlinesMd>
                       <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>
-                      <input className="p-3" type="file" name="certification1Upload"></input>
+                      <input className="p-3" type="file" name="certification1Upload" />
                     </List>
                     <List noHairlinesMd>
                       <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
-                      <input className="p-3" type="file" name="certification2Upload"></input>
+                      <input className="p-3" type="file" name="certification2Upload" />
                     </List>
                   </>
                 ) : null}
@@ -486,14 +496,14 @@ const driverModifyPage = () => {
                   <>
                     <List noHairlinesMd>
                       <div className="p-3 font-semibold bg-white">사업자 등록증 사본 (인증절차에만 사용됩니다)</div>
-                      <input className="p-3" type="file" name="certification1Upload"></input>
+                      <input className="p-3" type="file" name="certification1Upload" />
                     </List>
                     <List noHairlinesMd>
                       <div className="p-3 font-semibold bg-white">
                         여객자동차 운송사업등록증 사본 <br />
                         (인증절차에만 사용됩니다)
                       </div>
-                      <input className="p-3" type="file" name="certification2Upload"></input>
+                      <input className="p-3" type="file" name="certification2Upload" />
                     </List>
                   </>
                 ) : null}
