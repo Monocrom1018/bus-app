@@ -26,9 +26,9 @@ import {
   lastDestinationState,
 } from '@atoms';
 import moment from 'moment';
-import { createReservation } from '../../common/api/index';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
+import { createReservation } from '../../common/api/index';
 
 const EstimatePage = ({ f7router }) => {
   const departure = useRecoilValue(departureState);
@@ -46,15 +46,11 @@ const EstimatePage = ({ f7router }) => {
 
   const handleSubmit = async () => {
     if (currentUser.card_registerd === false) {
-      f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => {
-        return f7router.navigate('/users/card');
-      });
+      f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => f7router.navigate('/users/card'));
       return;
     }
 
-    const stopoversArray = stopovers.map((stopover) => {
-      return stopover.stopover;
-    });
+    const stopoversArray = stopovers.map((stopover) => stopover.stopover);
     const params = {
       userEmail: currentUser.email,
       driverId: driver.id,
@@ -91,7 +87,7 @@ const EstimatePage = ({ f7router }) => {
 
   return (
     <Page name="search" noToolbar>
-      <Navbar title="견적확인" backLink></Navbar>
+      <Navbar title="견적확인" backLink />
       <List noHairlinesMd>
         <div className="flex flex-col">
           <div className="mx-6 mt-6 -mb-6 font-semibold">일정확인</div>
@@ -122,17 +118,15 @@ const EstimatePage = ({ f7router }) => {
               value={departure}
               placeholder="출발지를 검색해주세요"
               disabled
-            ></input>{' '}
+            />{' '}
           </div>
         </div>
-        {stopovers.map((item) => {
-          return (
-            <div className="flex px-4 py-2" key={item.id}>
-              <div className="f7-icons text-base mr-1">placemark</div>
-              <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover}></input>{' '}
-            </div>
-          );
-        })}
+        {stopovers.map((item) => (
+          <div className="flex px-4 py-2" key={item.id}>
+            <div className="f7-icons text-base mr-1">placemark</div>
+            <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover} />{' '}
+          </div>
+        ))}
         <div className="flex px-4 mt-3">
           <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
           <input
@@ -140,7 +134,7 @@ const EstimatePage = ({ f7router }) => {
             value={destination}
             placeholder="도착지를 검색해주세요"
             disabled
-          ></input>{' '}
+          />{' '}
         </div>
 
         <div className="mx-6 mb-2 mt-8 font-semibold">입력사항</div>

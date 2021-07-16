@@ -37,5 +37,3 @@ export const getCognitoMockConfig = (ClientId = Object.keys(Client.Clients)[0]) 
   }
   return {};
 };
-
-// "Should not import the named export 'Clients' (imported as 'Clients') from default-exporting module (only default export is available soon)"

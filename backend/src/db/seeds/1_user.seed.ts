@@ -1,15 +1,15 @@
 import { Factory, Seeder } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
-import { Users as User, UserType } from '../../users/users.entity';
+import { Users as User, UserType } from '@users/users.entity';
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     let userIndex = 1;
     await factory(User)()
       .map(async (user) => {
-        user.email = `test${('0' + userIndex++).slice(-2)}@bus.com`;
+        user.email = `test${`0${userIndex++}`.slice(-2)}@bus.com`;
         user.user_type = userIndex < 11 ? UserType.NORMAL : UserType.DRIVER;
-        user.registration_confirmed = userIndex < 11 ? true : false;
+        user.registration_confirmed = userIndex < 11;
 
         if (userIndex > 10 && userIndex < 14) {
           user.drivable_date = ['Sat', 'Sun'];

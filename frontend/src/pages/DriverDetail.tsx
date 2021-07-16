@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Page, Navbar, Button, List, ListItem, AccordionContent } from 'framework7-react';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { totalChargeState, driverState } from '@atoms';
+import { useRecoilState } from 'recoil';
+import { driverState } from '@atoms';
 import useAuth from '@hooks/useAuth';
 import { getOneDriver } from '../common/api/index';
 
@@ -31,9 +31,7 @@ const DriverDetailPage = (props) => {
           <div className="flex items-center space-x-5">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} />
-                {/* <i className="h-24 w-24 rounded-full las la-user-circle" style={{ fontSize: '96px', color: 'gray' }} /> */}
-                {/* <span className="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span> */}
+                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} alt="ddriver_profile_img" />
               </div>
             </div>
             <div className="w-full">

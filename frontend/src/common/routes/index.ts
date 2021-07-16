@@ -7,10 +7,8 @@ import LoginPage from '@pages/users/sessions/new';
 import NormalSignUpPage from '@pages/users/registrations/normal';
 import DriverSignUpPage from '@pages/users/registrations/driver';
 import SignUpIntroPage from '@pages/users/registrations/intro';
-import { ResourceRoute } from '@constants';
-import ItemIndexPage from '@pages/items/index';
+import { ResourceRoute } from '@interfaces';
 import IntroPage from '@pages/intro';
-import OptionIndexPage from '@pages/options';
 import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/company';
 import EstimatePage from '@pages/estimates';
@@ -89,7 +87,6 @@ const customRoutes = [
   { path: '/users/card', component: CardPage },
   { path: '/users/modify', component: ModifyPage },
   { path: '/users/driverModify', component: driverModifyPage },
-  { path: '/items/:item_id/options', component: OptionIndexPage },
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
@@ -101,7 +98,7 @@ const customRoutes = [
  * @param {React.FC} component (required)
  * asyncRoutes 랑 path 가 중복되면 asyncRoute 를 우선 적용
  */
-const asyncRoutes = [{ path: '/items', component: ItemIndexPage }];
+const asyncRoutes = [];
 
 const mappedResourceRoutes = resourceRoutes
   .map((resource) => mapResourceRoute(resource))

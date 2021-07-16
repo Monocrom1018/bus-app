@@ -1,6 +1,6 @@
 import { signupAPI } from '@api';
 import AgreeCheckboxes from '@components/shared/AgreeCheckboxes';
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { f7, Navbar, Page, List, ListInput } from 'framework7-react';
 import { FormikHelpers, FormikProvider, useFormik } from 'formik';
 import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
@@ -8,8 +8,6 @@ import { AxiosError } from 'axios';
 import { Auth } from 'aws-amplify';
 import i18next from 'i18next';
 import * as Yup from 'yup';
-import PhoneCertiication from '@components/shared/PhoneCertification';
-import { convertObjectToFormData, sleep } from '@utils';
 import useAuth from '@hooks/useAuth';
 
 interface DriverSignUpParams {
@@ -19,8 +17,8 @@ interface DriverSignUpParams {
   email: string;
   password: string;
   password_confirmation: string;
-  driver_license: any;
-  deductible_confirmation: any;
+  driver_license: File;
+  deductible_confirmation: File;
   // phone: string;
   termCheck: boolean;
   privacyCheck: boolean;
@@ -129,7 +127,7 @@ const DriverSignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
-        location.replace('/');
+        window.location.replace('/');
       }
     },
     [authenticateUser],
@@ -213,10 +211,6 @@ const DriverSignUpPage: React.FC = () => {
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
-
-          {/* <div className="bg-white">
-          <PhoneCertiication setCertComplete={setCertComplete} />
-        </div> */}
 
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>

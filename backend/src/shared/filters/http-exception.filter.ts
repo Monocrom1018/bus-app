@@ -27,9 +27,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error.response.message.length > 0 &&
       error.response.message[0].constraints
     ) {
-      const errorsList = error.response.message.map(e => {
-        return { field: e.property, errors: e.constraints };
-      });
+      const errorsList = error.response.message.map((e) => ({
+        field: e.property,
+        errors: e.constraints,
+      }));
 
       error.response.errors = errorsList;
       error.response.message = 'Validation error occured';

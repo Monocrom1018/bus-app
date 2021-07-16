@@ -1,19 +1,20 @@
-import React, { useState, useMemo } from 'react';
-import { Block, Button, f7, Link, List, ListItem, Navbar, NavLeft, NavTitle, Page } from 'framework7-react';
-import { useRecoilValue } from 'recoil';
-import { getReservations, userMeApi } from '@api';
-import { reservationState } from '@atoms';
+/* eslint-disable no-nested-ternary */
+import React, { useMemo } from 'react';
+import { Block, Link, Navbar, NavLeft, NavTitle, Page } from 'framework7-react';
+import { getReservations } from '@api';
 import useAuth from '@hooks/useAuth';
 import { useInfiniteQuery } from 'react-query';
+import { useInView } from 'react-intersection-observer';
+import { REACT_QUERY_KEYS } from '@constants';
 import DriverReservationPage from './DriverReservation';
-import Reservation from './Reservation';
+import ReservationPage from './Reservation';
 
 const ReservationIndexPage = () => {
-  const test = 'test';
   const { currentUser } = useAuth();
 
   const { data, isError, error, fetchNextPage, isLoading, refetch } = useInfiniteQuery(
-    'reservations',
+    REACT_QUERY_KEYS.RESERVATION,
+    // eslint-disable-next-line consistent-return
     async ({ pageParam: page = 1 }) => {
       if (currentUser.isAuthenticated) {
         const response = await getReservations(currentUser.email, page);
@@ -24,6 +25,10 @@ const ReservationIndexPage = () => {
       getNextPageParam: (lastPage, pages) => (pages ? pages.length + 1 : 1),
     },
   );
+
+  const { ref: targetRef, inView: isTargetInView } = useInView({
+    threshold: 1,
+  });
 
   const reservations = useMemo(() => data?.pages?.flat() || [], [data]);
 
@@ -59,16 +64,16 @@ const ReservationIndexPage = () => {
           isLoading ? (
             <div>로딩중입니다</div>
           ) : isError ? (
-            <Block>{error['message']}</Block>
+            <Block>{(error as any).message}</Block>
           ) : (
             <>
               {reservations.length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      return <Reservation reservation={reservation} refetch={refetch} key={reservation.id} />;
+                      <ReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     } else {
-                      return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                      <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     }
                   })}
                 </>

@@ -11,7 +11,7 @@ const ImagesSlide = (props) => {
       });
       setImages(data);
     });
-  }, []);
+  }, [props.imagable_id, props.imagable_type]);
 
   return (
     <Swiper pagination speed={500} slidesPerView={1} spaceBetween={10} observer loop>

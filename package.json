@@ -4,26 +4,29 @@
   "repository": "git@github.com:insomenia/bus-server.git",
   "author": "insomenia-woobyeong <woobyeong@insomenia.com>",
   "license": "MIT",
+  "scripts": {
+    "front-lint": "cd frontend && yarn lint:fix",
+    "front-prettier": "cd frontend && yarn prettier",
+    "back-lint": "cd backend && yarn lint",
+    "back-prettier": "cd backend && yarn prettier" 
+  },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn lint"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
     "backend/src/**/*.{js, ts}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
+      "yarn back-lint",
+      "yarn back-prettier"
     ],
-    "frontend/src/**/*.{js, ts}": [
-      "eslint --fix",
-      "prettier --write",
-      "git add"
+    "frontend/src/**/*.{js, ts, tsx}": [
+      "yarn front-lint",
+      "yarn front-prettier"
     ]
   },
   "dependencies": {
-    "husky": "^6.0.0",
+    "husky": "4.3.8",
     "lint-staged": "^11.0.0"
   }
 }

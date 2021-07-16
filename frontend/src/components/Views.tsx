@@ -1,13 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { f7, Views, View, Toolbar, Link, Popup, Navbar, NavRight, Block, Page, Button } from 'framework7-react';
+import { f7, Views, View, Toolbar, Link, Popup, Navbar, Page, Button } from 'framework7-react';
 import CustomPanel from '@components/shared/CustomPanel';
-import Footer from './shared/Footer';
 import useAuth from '@hooks/useAuth';
 import LandingPage from '@pages/landing';
-import { logoutAPI, refresh } from '@api';
-import { destroyToken, getToken } from '@store';
-import { sleep } from '@utils/index';
 import { Auth } from '@aws-amplify/auth';
+import Footer from './shared/Footer';
 
 const F7Views = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -17,7 +14,7 @@ const F7Views = () => {
   const handleSignout = async () => {
     f7.dialog.confirm('로그아웃 하시겠어요?', async () => {
       await signOutUser();
-      location.replace('/');
+      window.location.replace('/');
     });
   };
 
@@ -26,7 +23,7 @@ const F7Views = () => {
       {currentUser.isAuthenticated ? null : (
         <Popup className="demo-popup" opened={popupOpened} onPopupClosed={() => setPopupOpened(false)}>
           <Page>
-            <Navbar title="배낭버스"></Navbar>
+            <Navbar title="배낭버스" />
 
             <div className="text-center font-bold text-3xl mt-10">버스 대절은 배낭버스</div>
 
@@ -105,7 +102,7 @@ const F7Views = () => {
     return normalViews;
   };
 
-  //? useAuth 에서 로그인, 로그아웃 될때마다 얘는 계속 호출됨
+  // ? useAuth 에서 로그인, 로그아웃 될때마다 얘는 계속 호출됨
   const getCognitoUserSession = useCallback(async () => {
     try {
       const cognitoUser = await Auth.currentAuthenticatedUser();

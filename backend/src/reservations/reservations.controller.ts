@@ -1,18 +1,12 @@
-import { JwkStrategy } from './../auth/strategies/jwk.strategy';
 import {
   Body,
   Controller,
   Get,
   Post,
-  Param,
-  Patch,
-  UploadedFile,
   UseInterceptors,
-  UseGuards,
   Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { request } from 'express';
+import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { ReservationsService } from './reservations.service';
@@ -43,7 +37,7 @@ export class ReservationsController {
     status: 200,
     description: 'confirm or refusal success',
   })
-  async updateReservation(@Body() param) {
+  async updateReservation(@Body() param: any) {
     return this.reservationsService.updateReservation(param);
   }
 

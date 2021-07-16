@@ -10,7 +10,6 @@ import { Request } from 'express';
 import jwksClient from 'jwks-rsa';
 import jwt from 'jsonwebtoken';
 import { UsersRepository } from '../users/users.repository';
-import { ConnectableObservable } from 'rxjs';
 
 @Injectable({ scope: Scope.REQUEST }) // Interceptor 같은 개념
 export class AuthService {

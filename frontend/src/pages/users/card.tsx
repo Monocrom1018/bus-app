@@ -16,8 +16,8 @@ const CardPage = () => {
 
     tossPayments.requestBillingAuth('카드', {
       customerKey: uuid,
-      successUrl: window.location.origin + '?result=success',
-      failUrl: window.location.origin + '?result=fail',
+      successUrl: `${window.location.origin}?result=success`,
+      failUrl: `${window.location.origin}?result=fail`,
     });
   };
 

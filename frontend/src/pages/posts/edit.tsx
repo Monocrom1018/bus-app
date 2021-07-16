@@ -7,8 +7,12 @@ import PostForm from './form';
 
 const PostEditPage = ({ f7route, f7router }) => {
   const postId = f7route.params.id;
-  const POST_KEY = ['post', parseInt(postId)];
-  const { status, data: post, error } = useQuery(
+  const POST_KEY = ['post', parseInt(postId, 10)];
+  const {
+    status,
+    data: post,
+    error,
+  } = useQuery(
     POST_KEY,
     getObject({
       id: postId,

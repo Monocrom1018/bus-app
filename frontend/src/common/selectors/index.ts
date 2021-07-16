@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { selector, selectorFamily } from 'recoil';
-import { CurrentUser } from '@constants';
+import { CurrentUser } from '@interfaces';
 import { userLikes, currentUserState } from '@atoms';
 
 export const authSelector = selector({
@@ -11,8 +11,10 @@ export const authSelector = selector({
 
 export const getLikeIds = selectorFamily({
   key: 'likeIds',
-  get: (model_name: string) => ({ get }) => {
-    const likes = get(userLikes);
-    return likes[model_name] || [];
-  },
+  get:
+    (model_name: string) =>
+    ({ get }) => {
+      const likes = get(userLikes);
+      return likes[model_name] || [];
+    },
 });

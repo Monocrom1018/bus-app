@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
-import { UserUpdateDto } from './dto/user-update.dto';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 import { MonthsService } from '../months/months.service';
@@ -48,7 +47,6 @@ export class UsersService {
 
   async getBillingKey(body) {
     const { authKey, customerKey } = body;
-    // const user = await this.authService.currentApiUser();
     const user = await this.me('normal@test.com');
 
     if (!user) {
@@ -61,7 +59,7 @@ export class UsersService {
     ).toString('base64');
 
     const tossData = {
-      customerKey: customerKey,
+      customerKey,
     };
 
     const Config = {
@@ -169,7 +167,7 @@ export class UsersService {
     }
 
     if (drivers) {
-      drivers.map(async (driver) => {
+      drivers.forEach(async (driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
 
@@ -248,6 +246,7 @@ export class UsersService {
         if (stopovers[i] === '') {
           return;
         }
+        // eslint-disable-next-line no-await-in-loop
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
         const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
         tmapData += tmapsGeo;
@@ -295,14 +294,18 @@ export class UsersService {
     return kmData;
   }
 
-  async getGeoData(param) {
-    return await axios.get(`https://apis.openapi.sk.com/tmap/geo/fullAddrGeo`, {
-      params: {
-        addressFlag: 'F00',
-        version: '1',
-        fullAddr: param,
-        appKey: process.env.TMAP_API_KEY,
+  async getGeoData(param: any) {
+    const data = await axios.get(
+      'https://apis.openapi.sk.com/tmap/geo/fullAddrGeo',
+      {
+        params: {
+          addressFlag: 'F00',
+          version: '1',
+          fullAddr: param,
+          appKey: process.env.TMAP_API_KEY,
+        },
       },
-    });
+    );
+    return data;
   }
 }
