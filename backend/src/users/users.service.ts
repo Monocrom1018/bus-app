@@ -3,12 +3,14 @@ import {
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
+import moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
+import { MonthsService } from '../months/months.service';
 
 const axios = require('axios');
 const qs = require('qs');
@@ -18,6 +20,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
+    private readonly monthsService: MonthsService,
     private authService: AuthService,
   ) {}
 
@@ -51,7 +54,7 @@ export class UsersService {
     }
 
     const encodedKey = await Buffer.from(
-      'test_sk_LBa5PzR0ArnPYYNK19x3vmYnNeDM:',
+      `${process.env.TOSS_SECRET_KEY}:`,
       'utf8',
     ).toString('base64');
 
@@ -78,7 +81,7 @@ export class UsersService {
     const { card_billing_key, uuid, email, name } = body.user;
 
     const encodedKey = await Buffer.from(
-      'test_sk_LBa5PzR0ArnPYYNK19x3vmYnNeDM:',
+      `${process.env.TOSS_SECRET_KEY}:`,
       'utf8',
     ).toString('base64');
 
@@ -136,36 +139,100 @@ export class UsersService {
   }
 
   async getDrivers(params: UserSearchDto) {
+    const {
+      departureDate,
+      returnDate,
+      stopovers,
+      departure,
+      destination,
+      lastDestination,
+      returnStopoverCheck,
+    } = params;
+    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
+    const departMonth = await this.getMonth(departureDate);
+    const returnMonth = await this.getMonth(returnDate);
+    const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
+    const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
+    const drivers = await this.usersRepository.findTargetDrivers(params);
     const distance = await this.getDistance(params);
 
-    if (!distance) {
+    const returnDistance = await this.getDistance({
+      departure: destination,
+      destination: lastDestination === '' ? departure : lastDestination,
+      stopovers: returnStopoverCheck ? stopovers.reverse() : [],
+    });
+
+    if (!distance || !returnDistance) {
       throw new NotFoundException();
     }
 
-    const drivers = await this.usersRepository.findTargetDrivers(params);
-    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
-
     if (drivers) {
-      drivers.forEach((driver) => {
+      drivers.forEach(async (driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
 
-        let totalCharge =
-          restDistance * driver.charge_per_km +
-          driver.basic_charge +
+        const departCharge = isDepartPeak
+          ? driver.peak_charge || driver.basic_charge
+          : driver.basic_charge;
+
+        const departChargePerKm = isDepartPeak
+          ? driver.peak_charge_per_km || driver.charge_per_km
+          : driver.charge_per_km;
+
+        let departTotalCharge =
+          restDistance * departChargePerKm +
+          departCharge +
           driver.service_charge;
 
+        // 야간할증 계산
         if (
           Number(departureTime) >= driver.night_begin ||
           Number(departureTime) <= driver.night_end
         ) {
-          totalCharge += driver.night_charge;
+          departTotalCharge += driver.night_charge;
         }
-        (driver as any).totalCharge = totalCharge;
+
+        // 귀환요금 계산
+        const returnParams = {
+          isReturnPeak,
+          returnDistance,
+          returnDate,
+          driver,
+        };
+        const returnTotalCharge = await this.getReturnTotalCharge(returnParams);
+        const sum = returnTotalCharge + departTotalCharge;
+
+        (driver as any).totalCharge = sum;
       });
     }
 
-    return { foundDrivers: drivers, calculatedDistance: distance };
+    return {
+      foundDrivers: drivers,
+      calculatedDistance: distance + returnDistance,
+    };
+  }
+
+  async getReturnTotalCharge(params) {
+    const { returnDistance, returnDate, driver, isReturnPeak } = params;
+    const returnTime = returnDate.split(' ')[4].split(':')[0];
+
+    const returnChargePerKm = isReturnPeak
+      ? driver.peak_charge_per_km || driver.charge_per_km
+      : driver.charge_per_km;
+
+    let returnTotalCharge = returnDistance * returnChargePerKm;
+
+    if (
+      Number(returnTime) >= driver.night_begin ||
+      Number(returnTime) <= driver.night_end
+    ) {
+      returnTotalCharge += driver.night_charge;
+    }
+    return returnTotalCharge;
+  }
+
+  async getMonth(date) {
+    return moment(date).format('YYYY년 M월 DD일 HH시 MM분').split(' ')[1];
   }
 
   async getDistance(params) {
@@ -174,10 +241,10 @@ export class UsersService {
     const destCoord = { x: '', y: '' };
     let tmapData = '';
 
-    if (stopovers.length > 0) {
+    if (stopovers.length > 0 && stopovers[0].stopover !== '') {
       for (let i = 0; i < stopovers.length; i++) {
         if (stopovers[i] === '') {
-          return false;
+          return;
         }
         // eslint-disable-next-line no-await-in-loop
         const stopoverData = await this.getGeoData(stopovers[i].stopover);

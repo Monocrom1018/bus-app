@@ -91,10 +91,6 @@ const DriverDetailPage = (props) => {
                     <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">미포함</td>
                   </tr>
                   <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">봉사료</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">포함</td>
-                  </tr>
-                  <tr>
                     <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">부가세(10%)</td>
                     <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">미포함</td>
                   </tr>

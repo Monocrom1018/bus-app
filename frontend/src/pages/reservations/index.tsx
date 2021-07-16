@@ -7,7 +7,7 @@ import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';
 import { REACT_QUERY_KEYS } from '@constants';
 import DriverReservationPage from './DriverReservation';
-import ReservationItem from './Reservation';
+import ReservationPage from './Reservation';
 
 const ReservationIndexPage = () => {
   const { currentUser } = useAuth();
@@ -66,15 +66,15 @@ const ReservationIndexPage = () => {
           ) : isError ? (
             <Block>{(error as any).message}</Block>
           ) : (
-            // todo : 여기서 유저타입이 기사인 경우와 승객인 경우를 또 분기해야 함
             <>
               {reservations.length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      return <ReservationItem reservation={reservation} refetch={refetch} />;
+                      <ReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                    } else {
+                      <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     }
-                    return <DriverReservationPage reservation={reservation} refetch={refetch} />;
                   })}
                 </>
               ) : (

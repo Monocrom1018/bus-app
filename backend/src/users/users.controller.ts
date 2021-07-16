@@ -56,7 +56,7 @@ export class UsersController {
   })
   @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
   async update(
-    @Body() userUpdateDto: UserUpdateDto,
+    @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
     const filename = file?.path || '';

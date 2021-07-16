@@ -8,6 +8,7 @@ import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
 import { modifyAPI } from '../../common/api/index';
+import { showToast } from '@js/utils';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -30,15 +31,16 @@ const UserInfoSchema = Yup.object().shape({
   busOld: Yup.string().required('필수 입력사항 입니다'),
   busNumber: Yup.string().required('필수 입력사항 입니다'),
   introduce: Yup.string(),
+  peakCharge: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
+  peakChargePerKm: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
 });
 
-const driverModifyPage = () => {
+const driverModifyPage = ({ f7route, f7router }) => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [drivableLegion, setDrivableLegion] = useState(
     currentUser.drivable_legion ? [...currentUser.drivable_legion] : [],
   );
-  const [drivableDate, setDrivableDate] = useState(currentUser.drivable_date ? [...currentUser.drivable_date] : []);
   const { name, profile_img, email, user_type } = currentUser;
   const legions = [
     '서울',
@@ -59,8 +61,6 @@ const driverModifyPage = () => {
     '울산',
     '제주',
   ];
-  const daysOfWeek = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일'];
-  const daysOfEnglish = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
   const handleArrayChange = (e, arrayName) => {
     const { value } = e.target;
@@ -71,16 +71,10 @@ const driverModifyPage = () => {
       if (arrayName === drivableLegion) {
         setDrivableLegion(duplicatedArr);
       }
-      if (arrayName === drivableDate) {
-        setDrivableDate(duplicatedArr);
-      }
     } else {
       duplicatedArr.push(value);
       if (arrayName === drivableLegion) {
         setDrivableLegion(duplicatedArr);
-      }
-      if (arrayName === drivableDate) {
-        setDrivableDate(duplicatedArr);
       }
     }
   };
@@ -134,6 +128,8 @@ const driverModifyPage = () => {
           nightEnd: currentUser.night_end || 4,
           chargePerDay: currentUser.charge_per_day || '',
           serviceCharge: currentUser.service_charge || '',
+          peakCharge: currentUser.peak_charge || '',
+          peakChargePerKm: currentUser.peak_charge_per_km || '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -152,13 +148,11 @@ const driverModifyPage = () => {
               fd.append('user[drivableLegion]', legion);
             });
 
-            drivableDate.forEach((date) => {
-              fd.append('user[drivableDate]', date);
-            });
-
             const { data: user } = await modifyAPI(fd);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
+            f7router.back();
+            showToast('정보가 변경되었습니다');
           } catch (error) {
             f7.dialog.close();
             f7.dialog.alert(error?.response?.data || error?.message);
@@ -250,28 +244,6 @@ const driverModifyPage = () => {
                   </Block>
                 </List>
 
-                <List noHairlinesMd accordionList>
-                  <ListItem accordionItem title="운행가능날짜 (복수선택 가능)">
-                    <AccordionContent>
-                      {daysOfWeek.map((day, idx) => (
-                        <ListItem
-                          checkbox
-                          title={day}
-                          value={daysOfEnglish[idx]}
-                          onChange={(e) => handleArrayChange(e, drivableDate)}
-                          defaultChecked={currentUser.drivable_date?.includes(daysOfEnglish[idx])}
-                          name="demo-checkbox"
-                        />
-                      ))}
-                    </AccordionContent>
-                  </ListItem>
-                  <Block strong className="ml-3 mt-1">
-                    {drivableDate.map((day) => {
-                      const idx = daysOfEnglish.indexOf(day);
-                      return <Chip outline className="mr-1" text={daysOfWeek[idx]} />;
-                    })}
-                  </Block>
-                </List>
                 <List noHairlinesMd>
                   <div className="p-3 font-semibold bg-white">차량 정보</div>
                   <ListInput
@@ -382,18 +354,6 @@ const driverModifyPage = () => {
                       errorMessage={touched.chargePerKm && errors.chargePerKm}
                     />
                     <ListInput
-                      label={i18next.t('심야시간 추가요금') as string}
-                      type="text"
-                      name="nightCharge"
-                      placeholder="숫자만 입력해주세요 (예 : 50000)"
-                      clearButton
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.nightCharge}
-                      errorMessageForce
-                      errorMessage={touched.nightCharge && errors.nightCharge}
-                    />
-                    <ListInput
                       label={i18next.t('1박 추가시 추가요금') as string}
                       type="text"
                       name="chargePerDay"
@@ -416,6 +376,34 @@ const driverModifyPage = () => {
                       value={values.serviceCharge}
                       errorMessageForce
                       errorMessage={touched.serviceCharge && errors.serviceCharge}
+                    />
+                  </List>
+
+                  <List noHairlinesMd>
+                    <div className="p-3 font-semibold bg-white">성수기운행 정보</div>
+                    <ListInput
+                      label={i18next.t('성수기 기본요금')}
+                      type="text"
+                      name="peakCharge"
+                      placeholder="숫자만 입력해주세요 (예 : 500000)"
+                      clearButton
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.peakCharge}
+                      errorMessageForce
+                      errorMessage={touched.peakCharge && errors.peakCharge}
+                    />
+                    <ListInput
+                      label={i18next.t('성수기 km당 요금')}
+                      type="text"
+                      name="peakChargePerKm"
+                      placeholder="숫자만 입력해주세요 (예 : 2000)"
+                      clearButton
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.peakChargePerKm}
+                      errorMessageForce
+                      errorMessage={touched.peakChargePerKm && errors.peakChargePerKm}
                     />
                   </List>
 
@@ -456,6 +444,18 @@ const driverModifyPage = () => {
                       <option value="6">06시</option>
                       <option value="7">07시</option>
                     </ListInput>
+                    <ListInput
+                      label={i18next.t('심야시간 추가요금')}
+                      type="text"
+                      name="nightCharge"
+                      placeholder="숫자만 입력해주세요 (예 : 50000)"
+                      clearButton
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.nightCharge}
+                      errorMessageForce
+                      errorMessage={touched.nightCharge && errors.nightCharge}
+                    />
                   </List>
 
                   <List noHairlinesMd>

@@ -6,7 +6,7 @@ import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
 import { showToast } from '@js/utils';
 
-const ReservationItem = (props) => {
+const ReservationPage = (props) => {
   const actionsToPopover = useRef(null);
   const [reservation, setReservation] = useRecoilState(reservationState);
   const { id, departure, destination, departureDate, returnDate, people, status, accompany, price, stopover } =
@@ -176,4 +176,4 @@ const ReservationItem = (props) => {
   );
 };
 
-export default ReservationItem;
+export default ReservationPage;

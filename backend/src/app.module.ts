@@ -16,6 +16,7 @@ import { ContactsModule } from './contacts/contacts.module';
 import { CommentsModule } from './comments/comments.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { adminBroOptions } from './config/adminBroOptions';
+import { MonthsModule } from './months/months.module';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -47,6 +48,7 @@ AdminBro.registerAdapter({ Database, Resource });
     ContactsModule,
     CommentsModule,
     ReservationsModule,
+    MonthsModule,
   ],
 })
 export class AppModule {}
