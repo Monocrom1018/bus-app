@@ -102,6 +102,8 @@ export interface CurrentUser extends CurrentUserState {
   card_registerd: boolean;
   card_company: string;
   card_number: string;
+  peak_charge: number;
+  peak_charge_per_km: number;
 }
 
 export interface Address {

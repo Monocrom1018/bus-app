@@ -56,6 +56,9 @@ export class Reservations extends DateAudit {
   @Column()
   returnDate: Date;
 
+  @Column({ nullable: true })
+  lastDestination: string;
+
   @Column()
   people: number;
 

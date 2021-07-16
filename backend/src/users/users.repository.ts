@@ -116,9 +116,7 @@ export class UsersRepository extends Repository<User> {
 
   async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
     const {
-      email,
       drivableLegion,
-      drivableDate,
       company,
       busNumber,
       busType,
@@ -133,14 +131,15 @@ export class UsersRepository extends Repository<User> {
       nightEnd,
       chargePerDay,
       serviceCharge,
-    } = userUpdateDto.user;
+      peakCharge,
+      peakChargePerKm,
+    } = userUpdateDto;
 
     const user = currentApiUser;
     // await this.findOne({
     //   email: email,
     // });
 
-    console.log(user);
     if (!user) {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
@@ -157,7 +156,6 @@ export class UsersRepository extends Repository<User> {
       user.bus_type = busType;
       user.charge_per_km = chargePerKm;
       user.company_name = company;
-      user.drivable_date = drivableDate;
       user.drivable_legion = drivableLegion;
       user.night_begin = nightBegin;
       user.night_end = nightEnd;
@@ -167,6 +165,8 @@ export class UsersRepository extends Repository<User> {
       user.charge_per_day = chargePerDay;
       user.bus_number = busNumber;
       user.introduce = introduce;
+      user.peak_charge = peakCharge;
+      user.peak_charge_per_km = peakChargePerKm;
 
       // if (password !== '') {
       //   user.encrypted_password = await bcrypt.hash(password, 10);
@@ -190,15 +190,9 @@ export class UsersRepository extends Repository<User> {
   }
 
   async findTargetDrivers(params): Promise<User[]> {
-    const { departureDate, departure } = params;
-    const date = departureDate.split(' ')[0];
+    const { departure } = params;
     const legion = departure.split(' ')[0];
 
-    // console.log('몇시야????!!!!!!!!?????!!!!!!', time);
-    // console.log('출발요일 : ', date);
-    // console.log('출발지역 : ', legion);
-
-    // TODO 운행날짜(일 ~ 토) -> [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
     // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
 
     // const entityManager = getManager();
@@ -226,7 +220,6 @@ export class UsersRepository extends Repository<User> {
 
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_legion @> ARRAY['${legion}']`)
-      .andWhere(`drivable_date @> ARRAY['${date}']`)
       .andWhere(
         new Brackets((qb) => {
           qb.where('user_type = :company', { company: 'company' }).orWhere(

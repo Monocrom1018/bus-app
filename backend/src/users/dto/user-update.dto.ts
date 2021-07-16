@@ -33,11 +33,6 @@ export class UserUpdateDto {
   @ApiProperty()
   drivableLegion: string[];
 
-  @IsArray()
-  @IsOptional()
-  @ApiProperty()
-  drivableDate: string[];
-
   @IsString()
   @IsOptional()
   @ApiProperty()
@@ -107,4 +102,14 @@ export class UserUpdateDto {
   @IsOptional()
   @ApiProperty()
   serviceCharge: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  peakCharge: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  peakChargePerKm: number;
 }

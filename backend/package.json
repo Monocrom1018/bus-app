@@ -82,6 +82,7 @@
     "jwk-to-pem": "^2.0.5",
     "jwks-rsa": "^2.0.3",
     "lodash": "^4.17.21",
+    "moment": "^2.29.1",
     "morgan": "^1.10.0",
     "multer": "^1.4.2",
     "nestjs-admin": "^0.4.1",

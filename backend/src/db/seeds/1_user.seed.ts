@@ -25,6 +25,8 @@ export default class CreateUsers implements Seeder {
           user.night_begin = 22;
           user.night_end = 4;
           user.night_charge = 30000;
+          user.peak_charge = 400000;
+          user.peak_charge_per_km = 1500;
         }
 
         if (userIndex >= 14 && userIndex < 17) {
@@ -41,6 +43,8 @@ export default class CreateUsers implements Seeder {
           user.night_begin = 24;
           user.night_end = 5;
           user.night_charge = 50000;
+          user.peak_charge = 450000;
+          user.peak_charge_per_km = 1300;
         }
 
         if (userIndex >= 16) {
@@ -57,6 +61,8 @@ export default class CreateUsers implements Seeder {
           user.night_begin = 23;
           user.night_end = 4;
           user.night_charge = 40000;
+          user.peak_charge = 600000;
+          user.peak_charge_per_km = 1700;
         }
 
         return user;

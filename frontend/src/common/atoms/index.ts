@@ -41,6 +41,11 @@ export const destinationState = atom({
   default: '',
 });
 
+export const lastDestinationState = atom({
+  key: 'lastDestinationState',
+  default: '',
+});
+
 export const stopoversState = atom({
   key: 'stopoversState',
   default: [],

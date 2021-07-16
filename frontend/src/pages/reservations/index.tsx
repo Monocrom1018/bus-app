@@ -61,15 +61,14 @@ const ReservationIndexPage = () => {
           ) : isError ? (
             <Block>{error['message']}</Block>
           ) : (
-            // todo : 여기서 유저타입이 기사인 경우와 승객인 경우를 또 분기해야 함
             <>
               {reservations.length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      return <Reservation reservation={reservation} refetch={refetch} />;
+                      return <Reservation reservation={reservation} refetch={refetch} key={reservation.id} />;
                     } else {
-                      return <DriverReservationPage reservation={reservation} refetch={refetch} />;
+                      return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     }
                   })}
                 </>

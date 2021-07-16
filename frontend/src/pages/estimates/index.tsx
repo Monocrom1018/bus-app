@@ -23,6 +23,7 @@ import {
   totalChargeState,
   driverState,
   reservationState,
+  lastDestinationState,
 } from '@atoms';
 import moment from 'moment';
 import { createReservation } from '../../common/api/index';
@@ -34,6 +35,7 @@ const EstimatePage = ({ f7router }) => {
   const departureDate = useRecoilValue(departureDateState);
   const returnDate = useRecoilValue(returnDateState);
   const destination = useRecoilValue(destinationState);
+  const lastDestination = useRecoilValue(lastDestinationState);
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
@@ -59,10 +61,12 @@ const EstimatePage = ({ f7router }) => {
       departure,
       returnDate,
       departureDate,
+      lastDestination,
       destination,
       totalCharge,
       people,
     };
+    console.log(lastDestination);
     f7.preloader.show();
     let message: string;
     try {
@@ -80,6 +84,8 @@ const EstimatePage = ({ f7router }) => {
     } finally {
       f7.preloader.hide();
       f7.dialog.alert(message, () => window.location.replace('/'));
+      // 아래꺼 쓰면 예약페이지로 가긴 가는데 아래 툴바가 없어짐. 살펴보고 수정해서 적용하기!
+      // f7.dialog.alert(message, () => f7.tab.show('#view-reservations', true));
     }
   };
 
