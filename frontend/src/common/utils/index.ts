@@ -1,5 +1,5 @@
 import jwt_decode from 'jwt-decode';
-import { TokenPayload } from '@constants';
+import { TokenPayload } from '@interfaces';
 
 export const sleep = (time: number) => new Promise((resolve) => setTimeout(resolve, time));
 

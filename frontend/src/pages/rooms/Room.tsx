@@ -6,13 +6,14 @@ const Room = () => {
   const currentDate = new Date();
 
   return (
-    <ListItem link={`/rooms/1`} noChevron>
+    <ListItem link="/rooms/1" noChevron>
       <div className="grid grid-cols-10 grid-flow-col p-1">
         <img
           slot="media"
           src="https://cdn.framework7.io/placeholder/fashion-88x88-3.jpg"
           width="44"
           className="col-span-2 rounded-xl pt-1"
+          alt="user_image"
         />
         <div className="col-span-8 room-body">
           <h4 className=" font-bold text-lg">김예시 기사님</h4>

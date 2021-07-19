@@ -1,7 +1,7 @@
 import { Connection, getRepository } from 'typeorm';
 import { Factory, Seeder } from 'typeorm-seeding';
-import { Reservations as Reservation } from '../../reservations/reservations.entity';
-import { Users as User } from '../../users/users.entity';
+import { Reservations as Reservation } from '@reservations/reservations.entity';
+import { Users as User } from '@users/users.entity';
 
 export default class CreateReservations implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -11,17 +11,17 @@ export default class CreateReservations implements Seeder {
     await factory(Reservation)()
       .map(async (reservation) => {
         try {
-          let normal = await getRepository(User)
+          const normal = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.name = :name', { name: '김승객' })
             .getOne();
 
-          let driver = await getRepository(User)
+          const driver = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.name = :name', { name: '김기사' })
             .getOne();
 
-          let company = await getRepository(User)
+          const company = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.name = :name', { name: '김회사' })
             .getOne();
@@ -47,17 +47,17 @@ export default class CreateReservations implements Seeder {
         } catch (error) {
           console.log(error);
 
-          let normal = await getRepository(User)
+          const normal = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.user_type = :user_type', { user_type: 'normal' })
             .getOne();
 
-          let driver = await getRepository(User)
+          const driver = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.user_type = :user_type', { user_type: 'driver' })
             .getOne();
 
-          let company = await getRepository(User)
+          const company = await getRepository(User)
             .createQueryBuilder('user')
             .where('user.user_type = :user_type', { user_type: 'company' })
             .getOne();

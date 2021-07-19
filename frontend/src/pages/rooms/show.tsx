@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import {
   Navbar,
   Page,
@@ -83,12 +84,8 @@ const RoomShowPage = () => {
   const responseInProgress = useRef(false);
   const messagebar = useRef(null);
 
-  const attachmentsVisible = () => {
-    return attachments.length > 0;
-  };
-  const placeholder = () => {
-    return attachments.length > 0 ? 'Add comment or Send' : 'Message';
-  };
+  const attachmentsVisible = () => attachments.length > 0;
+  const placeholder = () => (attachments.length > 0 ? 'Add comment or Send' : 'Message');
   useEffect(() => {
     f7ready(() => {
       messagebar.current = f7.messagebar.get('.messagebar');
@@ -234,7 +231,7 @@ const RoomShowPage = () => {
           <Message
             key={index}
             type={message.type}
-            image={message.image}
+            // image={message.image}
             name={message.name}
             avatar={message.avatar}
             first={isFirstMessage(message, index)}
@@ -247,10 +244,10 @@ const RoomShowPage = () => {
         {typingMessage && (
           <Message
             type="received"
-            typing={true}
-            first={true}
-            last={true}
-            tail={true}
+            typing
+            first
+            last
+            tail
             header={`${typingMessage.name} is typing`}
             avatar={typingMessage.avatar}
           />

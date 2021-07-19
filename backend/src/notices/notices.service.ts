@@ -1,7 +1,8 @@
-import { NoticesRepository } from './notices.repository';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NoticesRepository } from './notices.repository';
 import { Notices as Notice } from './notices.entity';
+
 @Injectable()
 export class NoticesService {
   constructor(

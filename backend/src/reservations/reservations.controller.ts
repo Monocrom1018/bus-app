@@ -3,21 +3,19 @@ import {
   Controller,
   Get,
   Post,
-  Param,
-  Patch,
-  UploadedFile,
   UseInterceptors,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiTags, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { ReservationsService } from './reservations.service';
-import { ReservationCreateDto } from './dto/create-reservation.dto';
-import { request } from 'express';
+import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ReservationCreateDto } from './dto/create-reservation.dto';
+import { ReservationsService } from './reservations.service';
 
 @ApiTags('예약')
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
+
   @ApiOperation({ summary: '예약 생성' })
   @Post('create')
   @ApiResponse({
@@ -28,8 +26,7 @@ export class ReservationsController {
   // 전달받은 데이터의 내용을 인식하지 못합니다.
   @UseInterceptors(FileInterceptor('file'))
   async create(
-    @Body() reservationCreateDto: ReservationCreateDto,
-    @UploadedFile() file: Express.Multer.File,
+    @Body('reservation') reservationCreateDto: ReservationCreateDto,
   ) {
     return this.reservationsService.create(reservationCreateDto);
   }
@@ -40,22 +37,20 @@ export class ReservationsController {
     status: 200,
     description: 'confirm or refusal success',
   })
-  async updateReservation(@Body() param) {
+  async updateReservation(@Body() param: any) {
     return this.reservationsService.updateReservation(param);
   }
 
   @ApiOperation({ summary: '예약목록 가져오기' })
-  @Get(':email')
+  @Get()
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',
   })
-  @ApiParam({
-    name: 'email',
-    required: true,
-    type: 'string',
-  })
-  async getAllFromUser(@Param('email') param: string) {
-    return this.reservationsService.getAllFromUser(param);
+  async getAllFromUser(
+    @Query('email') email: string,
+    @Query('page') page: number,
+  ) {
+    return this.reservationsService.getAllFromUser(email, page);
   }
 }

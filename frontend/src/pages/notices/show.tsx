@@ -2,9 +2,9 @@ import React from 'react';
 import { Navbar, Page } from 'framework7-react';
 import { getNotice } from '@api';
 import { useQuery, useQueryClient } from 'react-query';
+import { dateFormat } from '@js/utils';
 import ReactQueryState from '../../components/shared/ReactQueryState';
 import sanitizeHtml from '../../js/utils/sanitizeHtml';
-import { dateFormat } from '@js/utils';
 
 const NoticeShowPage = ({ f7route }) => {
   const noticeId = f7route.params.id;

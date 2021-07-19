@@ -8,8 +8,6 @@ import { AxiosError } from 'axios';
 import { Auth } from 'aws-amplify';
 import i18next from 'i18next';
 import * as Yup from 'yup';
-import PhoneCertiication from '@components/shared/PhoneCertification';
-import { convertObjectToFormData, sleep } from '@utils';
 import useAuth from '@hooks/useAuth';
 
 interface CompanySignUpParams {
@@ -129,7 +127,7 @@ const CompanySignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
-        location.replace('/');
+        window.location.replace('/');
       }
     },
     [authenticateUser],
@@ -201,10 +199,6 @@ const CompanySignUpPage: React.FC = () => {
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
-
-          {/* <div className="bg-white">
-          <PhoneCertiication setCertComplete={setCertComplete} />
-        </div> */}
 
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">사업자등록증 (인증절차에만 사용됩니다)</div>

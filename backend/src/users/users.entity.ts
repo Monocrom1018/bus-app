@@ -7,15 +7,15 @@ import {
   getRepository,
   ManyToMany,
 } from 'typeorm';
-import { DateAudit } from '../shared/entities/date-audit.entity';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { Messages } from '../messages/messages.entity';
 import { Rooms as Room } from '@rooms/rooms.entity';
 import { Notices as Notice } from '@notices/notices.entity';
 import { Reservations as Reservation } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { ReservationsUsers as ReservatonsUser } from '../reservations_users/reservations_users.entity';
+import { Messages } from '@messages/messages.entity';
+import { ReservationsUsers as ReservatonsUser } from '@reservations_users/reservations_users.entity';
+import { DateAudit } from '../shared/entities/date-audit.entity';
 
 export enum UserType {
   NORMAL = 'normal',
@@ -117,6 +117,24 @@ export class Users extends DateAudit {
 
   @Column({ nullable: true })
   charge_per_day: string;
+
+  @Column({ nullable: true, default: false })
+  card_registerd: boolean;
+
+  @Column({ nullable: true })
+  card_billing_key: string;
+
+  @Column({ nullable: true })
+  card_number: string;
+
+  @Column({ nullable: true })
+  card_company: string;
+
+  @Column({ nullable: true })
+  peak_charge: number;
+
+  @Column({ nullable: true })
+  peak_charge_per_km: number;
 
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];

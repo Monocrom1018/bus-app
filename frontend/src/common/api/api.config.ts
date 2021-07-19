@@ -1,8 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import Qs from 'qs';
 import { configs } from '@config';
-import { getToken } from '@store';
-import { authenticateUserThroughPortal, unAuthenticateUserThroughPortal } from '@components/RecoilRootPortal';
 import { Auth } from 'aws-amplify';
 
 const { API_URL, VERSION } = configs;

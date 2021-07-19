@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { getOneDriver } from '../common/api/index';
+import React, { useEffect } from 'react';
 import { Page, Navbar, Button, List, ListItem, AccordionContent } from 'framework7-react';
-import { useRecoilValue, useRecoilState } from 'recoil';
-import { totalChargeState, driverState } from '@atoms';
+import { useRecoilState } from 'recoil';
+import { driverState } from '@atoms';
 import useAuth from '@hooks/useAuth';
+import { getOneDriver } from '../common/api/index';
 
 const DriverDetailPage = (props) => {
   const [driver, setDriver] = useRecoilState(driverState);
@@ -15,17 +15,15 @@ const DriverDetailPage = (props) => {
       setDriver(targetDriver);
     }
     getTargetDriver();
-  }, []);
+  }, [props.id, setDriver]);
 
   return (
     <Page noToolbar name="driverdetail">
       {/* Top Navbar */}
-      <Navbar title="기사정보" backLink></Navbar>
+      <Navbar title="기사정보" backLink />
       {/* Page Content */}
       <img
-        src={
-          'https://images.unsplash.com/photo-1592071241777-b1e32bbe3590?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1788&q=80'
-        }
+        src="https://images.unsplash.com/photo-1592071241777-b1e32bbe3590?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1788&q=80"
         alt="logo"
       />
       <div className="py-5 divide-solid">
@@ -33,9 +31,7 @@ const DriverDetailPage = (props) => {
           <div className="flex items-center space-x-5">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} />
-                {/* <i className="h-24 w-24 rounded-full las la-user-circle" style={{ fontSize: '96px', color: 'gray' }} /> */}
-                {/* <span className="absolute inset-0 shadow-inner rounded-full" aria-hidden="true"></span> */}
+                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} alt="ddriver_profile_img" />
               </div>
             </div>
             <div className="w-full">
@@ -93,10 +89,6 @@ const DriverDetailPage = (props) => {
                   <tr>
                     <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">숙박비</td>
                     <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">미포함</td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">봉사료</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">포함</td>
                   </tr>
                   <tr>
                     <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">부가세(10%)</td>
@@ -170,7 +162,7 @@ const DriverDetailPage = (props) => {
       </List>
 
       {currentUser.isAuthenticated ? (
-        <Button href={'/drivers/:id/esimate'} fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+        <Button href="/drivers/:id/esimate" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
           견적 전달하기
         </Button>
       ) : (

@@ -2,24 +2,28 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Users } from '@users/users.entity';
+import { Users as User } from '@users/users.entity';
 import { EntityRepository, Repository } from 'typeorm';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { Reservations as Reservation } from './reservations.entity';
 
 @EntityRepository(Reservation)
 export class ReservationsRepository extends Repository<Reservation> {
-  async createReservation(reservationCreateDto, userId): Promise<Reservation> {
+  async createReservation(
+    reservationCreateDto: any,
+    userId: any,
+  ): Promise<Reservation> {
     const {
       driverId,
       departure,
       returnDate,
       departureDate,
       destination,
+      lastDestination,
       stopoversArray,
       totalCharge,
       people,
-    } = reservationCreateDto.reservation;
+    } = reservationCreateDto;
 
     const existingCheck = await Reservation.findOne({
       where: {
@@ -33,15 +37,20 @@ export class ReservationsRepository extends Repository<Reservation> {
       throw new ConflictException('reservation already exists');
     }
 
+    console.log('lastDestination');
+    console.log(lastDestination);
+
     const reservation = new Reservation();
     reservation.departure = departure;
     reservation.departureDate = departureDate;
     reservation.returnDate = returnDate;
     reservation.destination = destination;
+    reservation.lastDestination =
+      lastDestination === '' ? destination : lastDestination;
     reservation.stopover = stopoversArray;
     reservation.price = totalCharge;
     reservation.people = people;
-    reservation.accompany = '출발, 복귀 시 동행';
+    reservation.accompany = '모듬일정 동행';
     reservation.status = '수락대기중';
     reservation.user = userId;
     reservation.driver = driverId;
@@ -50,9 +59,10 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getAllFromUser(myId): Promise<Reservation[]> {
+  async getAllFromUser(myId: number, page): Promise<Reservation[]> {
+    const perPage = 3;
     const reservations = await Reservation.find({
-      relations: ['driver'],
+      relations: ['driver', 'user'],
       where: [
         {
           user: myId,
@@ -64,12 +74,14 @@ export class ReservationsRepository extends Repository<Reservation> {
       order: {
         createdAt: 'DESC',
       },
+      take: perPage,
+      skip: perPage * (page - 1),
     });
 
     return reservations;
   }
 
-  async updateReservation(param) {
+  async updateReservation(param: any) {
     const targetReservation = await Reservation.findOne({
       where: { id: param.reservationId },
     });
@@ -91,5 +103,13 @@ export class ReservationsRepository extends Repository<Reservation> {
     Reservation.save(targetReservation);
 
     return targetReservation;
+  }
+
+  async getRevervationUser(param: number) {
+    const reservation = await this.findOne({
+      where: { id: param },
+    });
+
+    return reservation.user;
   }
 }

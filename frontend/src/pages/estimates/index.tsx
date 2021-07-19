@@ -23,17 +23,19 @@ import {
   totalChargeState,
   driverState,
   reservationState,
+  lastDestinationState,
 } from '@atoms';
 import moment from 'moment';
-import { createReservation } from '../../common/api/index';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
+import { createReservation } from '../../common/api/index';
 
-const EstimatePage = () => {
+const EstimatePage = ({ f7router }) => {
   const departure = useRecoilValue(departureState);
   const departureDate = useRecoilValue(departureDateState);
   const returnDate = useRecoilValue(returnDateState);
   const destination = useRecoilValue(destinationState);
+  const lastDestination = useRecoilValue(lastDestinationState);
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
@@ -43,19 +45,24 @@ const EstimatePage = () => {
   const [people, setPeople] = useState(0);
 
   const handleSubmit = async () => {
-    const stopoversArray = stopovers.map((stopover) => {
-      return stopover.stopover;
-    });
+    if (currentUser.card_registerd === false) {
+      f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => f7router.navigate('/users/card'));
+      return;
+    }
+
+    const stopoversArray = stopovers.map((stopover) => stopover.stopover);
     const params = {
       userEmail: currentUser.email,
       driverId: driver.id,
       departure,
       returnDate,
       departureDate,
+      lastDestination,
       destination,
       totalCharge,
       people,
     };
+    console.log(lastDestination);
     f7.preloader.show();
     let message: string;
     try {
@@ -68,17 +75,19 @@ const EstimatePage = () => {
       setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
     } catch (error) {
-      if (typeof error.message === 'string') message = '이미 동일한 예약이 존재합니다';
+      if (typeof error.message === 'string') message = error.message;
       else message = '예상치 못한 오류가 발생하였습니다';
     } finally {
       f7.preloader.hide();
-      f7.dialog.alert(message);
+      f7.dialog.alert(message, () => window.location.replace('/'));
+      // 아래꺼 쓰면 예약페이지로 가긴 가는데 아래 툴바가 없어짐. 살펴보고 수정해서 적용하기!
+      // f7.dialog.alert(message, () => f7.tab.show('#view-reservations', true));
     }
   };
 
   return (
-    <Page name="search">
-      <Navbar title="견적확인" backLink></Navbar>
+    <Page name="search" noToolbar>
+      <Navbar title="견적확인" backLink />
       <List noHairlinesMd>
         <div className="flex flex-col">
           <div className="mx-6 mt-6 -mb-6 font-semibold">일정확인</div>
@@ -109,17 +118,15 @@ const EstimatePage = () => {
               value={departure}
               placeholder="출발지를 검색해주세요"
               disabled
-            ></input>{' '}
+            />{' '}
           </div>
         </div>
-        {stopovers.map((item) => {
-          return (
-            <div className="flex px-4 py-2" key={item.id}>
-              <div className="f7-icons text-base mr-1">placemark</div>
-              <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover}></input>{' '}
-            </div>
-          );
-        })}
+        {stopovers.map((item) => (
+          <div className="flex px-4 py-2" key={item.id}>
+            <div className="f7-icons text-base mr-1">placemark</div>
+            <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover} />{' '}
+          </div>
+        ))}
         <div className="flex px-4 mt-3">
           <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
           <input
@@ -127,7 +134,7 @@ const EstimatePage = () => {
             value={destination}
             placeholder="도착지를 검색해주세요"
             disabled
-          ></input>{' '}
+          />{' '}
         </div>
 
         <div className="mx-6 mb-2 mt-8 font-semibold">입력사항</div>

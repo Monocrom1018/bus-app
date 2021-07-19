@@ -1,9 +1,8 @@
-import axios from 'axios';
-import { Token, CurrentUser, SignUpParams } from '@constants';
+import { SignUpParams } from '@constants';
+import { Token, CurrentUser } from '@interfaces';
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
 import { ApiService } from './api.service';
-import { async } from 'q';
 
 export const refresh = (): Promise<{ data: Token }> =>
   PlainAPI.post(
@@ -19,7 +18,6 @@ export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
 export const modifyAPI = (params: FormData) => API.post('/users/update', params);
 export const signupAPI = (params: SignUpParams) => API.post('/users/signup', params);
-// export const signupAPI = (params: any) => PlainAPI.post('/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
 /* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */
@@ -41,41 +39,6 @@ export const {
 
 export const { infiniteQuery: getInfiniteItems, get: getItem } = ApiService('items');
 export { API_URL, VERSION };
-
-export const createLike = () => async (params) => {
-  const { data } = await API.post('/likes', params);
-  return data;
-};
-
-export const deleteLike = () => async (id) => {
-  const { data } = await API.delete(`/likes/${id}`);
-  return data;
-};
-
-export const getOptions = (itemId) => async () => {
-  const { data } = await API.get(`/items/${itemId}/options`);
-  return data;
-};
-
-export const getLineItems = () => async () => {
-  const { data } = await API.get(`/line_items`);
-  return data;
-};
-
-export const createLineItem = () => async (params) => {
-  const { data } = await API.post('/line_items', params);
-  return data;
-};
-
-export const deleteLineItem = () => async (lineItemId) => {
-  const { data } = await API.delete(`/line_items/${lineItemId}`);
-  return data;
-};
-
-export const changeLineItemQuantity = (lineItemId) => async (params) => {
-  const { data } = await API.post(`/line_items/${lineItemId}/quantity`, params);
-  return data;
-};
 
 export const getNotices = async () => {
   const { data } = await API.get(`/notices`);
@@ -107,12 +70,22 @@ export const createReservation = async (params: FormData) => {
   return data;
 };
 
-export const getReservations = async (params) => {
-  const { data } = await API.get(`reservations/${params}`);
+export const getReservations = async (email, page) => {
+  const { data } = await API.get(`reservations?email=${email}&page=${page}`);
   return data;
 };
 
 export const updateReservation = async (params) => {
   const { data } = await API.post(`reservations/update`, params);
+  return data;
+};
+
+export const getBillingKey = async (params) => {
+  const { data } = await API.post(`users/billing`, params);
+  return data;
+};
+
+export const createPayment = async (params) => {
+  const { data } = await API.post(`users/payment`, params);
   return data;
 };

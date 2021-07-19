@@ -4,9 +4,9 @@ import moment from 'moment';
 import { updateReservation } from '@api';
 import { useRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
+import { showToast } from '@js/utils';
 
-const ReservationItem = (props) => {
-  const a = props;
+const ReservationPage = (props) => {
   const actionsToPopover = useRef(null);
   const [reservation, setReservation] = useRecoilState(reservationState);
   const { id, departure, destination, departureDate, returnDate, people, status, accompany, price, stopover } =
@@ -14,6 +14,10 @@ const ReservationItem = (props) => {
   const { name, bus_old, bus_type } = props.reservation.driver;
 
   const handleReservationCancel = async (param) => {
+    if (status === '수락') {
+      await showToast('이미 수락되어 취소할 수 없습니다');
+      return;
+    }
     f7.dialog.confirm('예약을 취소하시겠어요?', async () => {
       f7.preloader.show();
       let message: string;
@@ -22,11 +26,12 @@ const ReservationItem = (props) => {
         setReservation(updatedReservation);
         message = '예약이 취소되었습니다';
       } catch (error) {
-        if (typeof error.message === 'string') message = '이미 수락된 예약은 취소할 수 없습니다';
+        if (typeof error.message === 'string') message = error.message;
         else message = '예상치 못한 오류가 발생하였습니다';
       } finally {
         f7.preloader.hide();
         f7.dialog.alert(message);
+        props.refetch();
       }
     });
   };
@@ -57,7 +62,7 @@ const ReservationItem = (props) => {
   };
 
   return (
-    <Card className="bg-white mb-5 rounded relative h-auto">
+    <Card className="bg-white mb-5 rounded relative h-auto" key={id}>
       <CardHeader className="no-border">
         <div>
           <p className="font-bold text-lg">{name} 기사님</p>
@@ -83,25 +88,23 @@ const ReservationItem = (props) => {
             ↓
           </Col>
         </Row>
-        {stopover?.map((name) => {
-          return (
-            <>
-              <Row>
-                <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
-                  경유지
-                </Col>
-                <Col width="80" className="text-base text-gray-900">
-                  {name}
-                </Col>
-              </Row>
-              <Row>
-                <Col width="20" className="text-center text-red-400 font-semibold">
-                  ↓
-                </Col>
-              </Row>
-            </>
-          );
-        })}
+        {stopover?.map((stop_name) => (
+          <>
+            <Row>
+              <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
+                경유지
+              </Col>
+              <Col width="80" className="text-base text-gray-900">
+                {stop_name}
+              </Col>
+            </Row>
+            <Row>
+              <Col width="20" className="text-center text-red-400 font-semibold">
+                ↓
+              </Col>
+            </Row>
+          </>
+        ))}
         <Row className="mb-3">
           <Col
             width="20"
@@ -173,4 +176,4 @@ const ReservationItem = (props) => {
   );
 };
 
-export default ReservationItem;
+export default ReservationPage;

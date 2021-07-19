@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import useAuth from '@hooks/useAuth';
 import { logoutAPI } from '@api';
-import { f7, Navbar, Page, NavLeft, NavTitle, Link, Button, List } from 'framework7-react';
+import { f7, Navbar, Page, NavLeft, NavTitle, Link, List } from 'framework7-react';
 import { useRecoilValue } from 'recoil';
 import { currentUserState } from '@atoms';
 
@@ -17,12 +17,12 @@ const MyPage = () => {
     } finally {
       unAuthenticateUser();
     }
-  }, []);
+  }, [unAuthenticateUser]);
 
   const handleSignout = () => {
     f7.dialog.confirm('로그아웃 하시겠어요?', async () => {
       await signOutUser();
-      location.replace('/');
+      window.location.replace('/');
     });
   };
 
@@ -45,6 +45,7 @@ const MyPage = () => {
             width="64"
             height="64"
             className="rounded-full"
+            alt="user_image"
           />
         </div>
         <div className="flex-shrink-1">
@@ -69,7 +70,10 @@ const MyPage = () => {
           </li>
           <li>
             {currentUser.user_type === 'normal' ? (
-              <a href="/users/modify">회원정보 수정</a>
+              <>
+                <a href="/users/modify">회원정보 수정</a>
+                <a href="/users/card">카드목록</a>
+              </>
             ) : (
               <a href="/users/driverModify">회원정보 수정</a>
             )}

@@ -23,7 +23,7 @@ const PostIndexPage = (props) => {
       {data && (
         <List>
           {_.map(data.objects, (post) => (
-            <ListItem key={post.id} title={post.title} after={post.user?.name} link={`/posts/${post.id}`}></ListItem>
+            <ListItem key={post.id} title={post.title} after={post.user?.name} link={`/posts/${post.id}`} />
           ))}
         </List>
       )}

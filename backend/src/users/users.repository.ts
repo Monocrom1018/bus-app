@@ -1,17 +1,15 @@
-import { UserCreateDto } from './dto/user-create.dto';
 import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Brackets, EntityRepository, Repository } from 'typeorm';
-import { Users as User, UserType } from './users.entity';
 import * as bcrypt from 'bcryptjs';
-import { use } from 'passport';
-import { UserUpdateDto } from './dto/user-update.dto';
+import { UserCreateDto } from './dto/user-create.dto';
+import { Users as User, UserType } from './users.entity';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
-  async signUp(userCreateDto: UserCreateDto): Promise<User> {
+  async signUp(userCreateDto: UserCreateDto, uuid: string): Promise<User> {
     const {
       email,
       password,
@@ -27,17 +25,13 @@ export class UsersRepository extends Repository<User> {
     user.name = name;
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
+    user.uuid = uuid;
 
     if (user_type === 'driver' || user_type === 'company') {
       user.registration_confirmed = false;
     } else if (user_type === 'normal') {
       user.registration_confirmed = true;
     }
-
-    // user.password = await this.hashPassword(
-    //   `${password}`,
-    //   user.encrypted_password,
-    // );
 
     try {
       await user.save();
@@ -54,14 +48,13 @@ export class UsersRepository extends Repository<User> {
   }
 
   async validateUserPassword(userCreateDto: UserCreateDto): Promise<User> {
-    const { email, password } = userCreateDto['user'];
+    const { email, password } = (userCreateDto as any).user;
 
     const user = await this.findOne({ email });
     if (user && (await user.validateUserPassword(password))) {
       return user;
-    } else {
-      return null;
     }
+    return null;
   }
 
   private async hashPassword(
@@ -83,7 +76,7 @@ export class UsersRepository extends Repository<User> {
   async me(email): Promise<User> {
     const user = await this.findOne({
       where: {
-        email: email,
+        email,
       },
     });
     return user;
@@ -98,11 +91,26 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async updateUser(filename, userUpdateDto) {
+  async saveBillingKey(billingResult, currentApiUser: User) {
+    const { billingKey, cardCompany, cardNumber } = billingResult;
+    const user = currentApiUser;
+
+    try {
+      user.card_registerd = true;
+      user.card_company = cardCompany;
+      user.card_number = cardNumber;
+      user.card_billing_key = billingKey;
+      user.save();
+    } catch (err) {
+      throw new ConflictException(err);
+    }
+
+    return user;
+  }
+
+  async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
     const {
-      email,
       drivableLegion,
-      drivableDate,
       company,
       busNumber,
       busType,
@@ -117,11 +125,14 @@ export class UsersRepository extends Repository<User> {
       nightEnd,
       chargePerDay,
       serviceCharge,
-    } = userUpdateDto.user;
+      peakCharge,
+      peakChargePerKm,
+    } = userUpdateDto;
 
-    const user = await this.findOne({
-      email: email,
-    });
+    const user = currentApiUser;
+    // await this.findOne({
+    //   email: email,
+    // });
 
     if (!user) {
       throw new ConflictException('유저정보가 조회되지 않습니다');
@@ -139,7 +150,6 @@ export class UsersRepository extends Repository<User> {
       user.bus_type = busType;
       user.charge_per_km = chargePerKm;
       user.company_name = company;
-      user.drivable_date = drivableDate;
       user.drivable_legion = drivableLegion;
       user.night_begin = nightBegin;
       user.night_end = nightEnd;
@@ -149,6 +159,8 @@ export class UsersRepository extends Repository<User> {
       user.charge_per_day = chargePerDay;
       user.bus_number = busNumber;
       user.introduce = introduce;
+      user.peak_charge = peakCharge;
+      user.peak_charge_per_km = peakChargePerKm;
 
       // if (password !== '') {
       //   user.encrypted_password = await bcrypt.hash(password, 10);
@@ -162,7 +174,7 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async getOneDriver(param: number): Promise<User> {
+  async getOneUserById(param: number): Promise<User> {
     const user = await this.findOne({
       where: {
         id: param,
@@ -172,15 +184,9 @@ export class UsersRepository extends Repository<User> {
   }
 
   async findTargetDrivers(params): Promise<User[]> {
-    const { departureDate, departure } = params;
-    const date = departureDate.split(' ')[0];
+    const { departure } = params;
     const legion = departure.split(' ')[0];
 
-    // console.log('몇시야????!!!!!!!!?????!!!!!!', time);
-    // console.log('출발요일 : ', date);
-    // console.log('출발지역 : ', legion);
-
-    // TODO 운행날짜(일 ~ 토) -> [ Sun, Mon, Tue, Wed, Thu, Fri, Sat ]
     // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
 
     // const entityManager = getManager();
@@ -208,7 +214,6 @@ export class UsersRepository extends Repository<User> {
 
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_legion @> ARRAY['${legion}']`)
-      .andWhere(`drivable_date @> ARRAY['${date}']`)
       .andWhere(
         new Brackets((qb) => {
           qb.where('user_type = :company', { company: 'company' }).orWhere(

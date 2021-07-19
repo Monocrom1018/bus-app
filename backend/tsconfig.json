@@ -3,6 +3,7 @@
     "module": "commonjs",
     "declaration": true,
     "removeComments": true,
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
@@ -15,12 +16,12 @@
     "paths": {
       "@decorators/*": ["src/shared/decorators/*"],
       "@entities/*": ["src/shared/entities/*"],
-      "@filters/*": ["src/sgared/filters/*"],
-      "@middlewares/*": ["src/middlewares/*"],
+      "@filters/*": ["src/shared/filters/*"],
+      "@middlewares/*": ["src/shared/middlewares/*"],
+      "@guards/*": ["src/shared/guards/*"],
       "@users/*": ["src/users/*"],
       "@adminUsers/*": ["src/adminUsers/*"],
       "@auth/*": ["src/auth/*"],
-      "@categories/*": ["src/categories/*"],
       "@comments/*": ["src/comments/*"],
       "@conatcts/*": ["src/contacts/*"],
       "@db/*": ["src/db/*"],
@@ -35,7 +36,8 @@
       "@phone-certifications/*": ["src/phone-certifications/*"],
       "@reservations/*": ["src/reservations/*"],
       "@reservations_users/*": ["src/reservations_users/*"],
-      "@rooms/*": ["src/rooms/*"]
-    },
-  },
+      "@rooms/*": ["src/rooms/*"],
+      "@months/*": ["src/months/*"]
+    }
+  }
 }
