@@ -24,10 +24,10 @@ import {
   stopoversState,
   lastDestinationState,
 } from '@atoms';
-import Driver from './users/Driver';
-import { getDrivers } from '../common/api/index';
 import moment from 'moment';
 import { showToast } from '@js/utils';
+import Driver from './users/Driver';
+import { getDrivers } from '../common/api/index';
 
 const SearchPage = () => {
   const test = 'test';
@@ -248,7 +248,7 @@ const SearchPage = () => {
               value={lastDestination}
               placeholder="귀환지를 검색해주세요"
               onClick={(e) => handlePostCode(e.currentTarget.value, 'lastDestination', null)}
-            ></input>{' '}
+            />{' '}
           </div>
         ) : null}
         <div className="flex justify-between mx-4">

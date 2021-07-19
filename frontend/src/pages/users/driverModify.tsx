@@ -7,8 +7,8 @@ import * as Yup from 'yup';
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
-import { modifyAPI } from '../../common/api/index';
 import { showToast } from '@js/utils';
+import { modifyAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
