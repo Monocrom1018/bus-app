@@ -20,7 +20,6 @@ import { DateAudit } from '../shared/entities/date-audit.entity';
 export enum UserType {
   NORMAL = 'normal',
   DRIVER = 'driver',
-  COMPANY = 'company',
 }
 
 @Entity()
@@ -119,7 +118,7 @@ export class Users extends DateAudit {
   charge_per_day: string;
 
   @Column({ nullable: true, default: false })
-  card_registerd: boolean;
+  card_registered: boolean;
 
   @Column({ nullable: true })
   card_billing_key: string;

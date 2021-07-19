@@ -71,9 +71,9 @@ const ReservationIndexPage = () => {
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      <ReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                      return <ReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     } else {
-                      <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                      return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
                     }
                   })}
                 </>

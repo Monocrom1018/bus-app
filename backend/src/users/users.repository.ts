@@ -27,7 +27,7 @@ export class UsersRepository extends Repository<User> {
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
 
-    if (user_type === 'driver' || user_type === 'company') {
+    if (user_type === 'driver') {
       user.registration_confirmed = false;
     } else if (user_type === 'normal') {
       user.registration_confirmed = true;
@@ -96,7 +96,7 @@ export class UsersRepository extends Repository<User> {
     const user = currentApiUser;
 
     try {
-      user.card_registerd = true;
+      user.card_registered = true;
       user.card_company = cardCompany;
       user.card_number = cardNumber;
       user.card_billing_key = billingKey;
@@ -216,10 +216,7 @@ export class UsersRepository extends Repository<User> {
       .where(`drivable_legion @> ARRAY['${legion}']`)
       .andWhere(
         new Brackets((qb) => {
-          qb.where('user_type = :company', { company: 'company' }).orWhere(
-            'user_type = :driver',
-            { driver: 'driver' },
-          );
+          qb.where('user_type = :driver', { driver: 'driver' });
         }),
       )
       .getMany();

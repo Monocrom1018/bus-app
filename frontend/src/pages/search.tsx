@@ -99,9 +99,10 @@ const SearchPage = () => {
 
   const handleReturnDate = async (param) => {
     const format = await moment(param).format('YYYY-MM-DD');
-    const isBefore = moment(format).isBefore(departDay);
+    const yesterday = await moment(departDay).subtract(1, 'day').toDate();
+    const isBefore = moment(format).isBefore(yesterday);
     if (isBefore) {
-      showToast('가는날 이후를 선택해주세요');
+      showToast('가는날보다 이릅니다');
       return;
     }
 
