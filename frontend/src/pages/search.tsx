@@ -10,7 +10,7 @@ const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [tempState, setTempState] = useState({
-    stopoverCount: 0,
+    stopoverCount: 1,
     lastDestinationCheck: false,
     returnStopoverCheck: false,
     drivers: null,
@@ -23,7 +23,6 @@ const SearchPage = () => {
 
   const [distance, setDistance] = useRecoilState(distanceState);
   const [drivers, setDrivers] = useState(null);
-
 
   return (
     <Page name="search">

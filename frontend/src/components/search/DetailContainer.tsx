@@ -1,5 +1,5 @@
 import { f7, List, ListInput, Button, Checkbox } from 'framework7-react';
-import { distanceState, stopoversState, searchingOptionState } from '@atoms';
+import { stopoversState, searchingOptionState } from '@atoms';
 import React, { useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { getDrivers } from '@api';
@@ -10,7 +10,7 @@ const DetailContainer = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [tempState, setTempState] = useState({
-    stopoverCount: 0,
+    stopoverCount: 1,
     lastDestinationCheck: false,
     returnStopoverCheck: false,
     drivers: null,
@@ -19,10 +19,7 @@ const DetailContainer = () => {
 
   const { departure, destination, departureDate, returnDate, lastDestination } = searchingOption;
   const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
-  let departDay;
-  let searchTarget;
-  let itemId;
-
+  let departDay, searchTarget, itemId;
 
   const handleSearch = async () => {
     console.log(searchingOption);
@@ -101,7 +98,7 @@ const DetailContainer = () => {
     if (where === 'stopover') {
       const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
       const mapped = duplicatedArr.map((item) => {
-        if (item.id === itemId) {
+        if (item.id === id) {
           item.stopover = point;
           return item;
         }
@@ -117,7 +114,12 @@ const DetailContainer = () => {
   const placesSearchCallBack = (data, status) => {
     if (status === kakao.maps.services.Status.OK) {
       const cutData = data.slice(0, 5);
-      setTempState({ ...tempState, pointList: { [searchTarget]: cutData } });
+
+      if (searchTarget === 'stopover') {
+        setTempState({ ...tempState, pointList: { [itemId]: cutData } });
+      } else {
+        setTempState({ ...tempState, pointList: { [searchTarget]: cutData } });
+      }
     } else {
       setTempState({ ...tempState, pointList: {} });
     }
@@ -146,7 +148,6 @@ const DetailContainer = () => {
       setSearchingOption({ ...searchingOption, lastDestination: e });
     }
 
-    //? 여기서 setStopover 한번 저장해줘야 인풋에 글씨가 써짐
     if (value === 'stopover') {
       const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
       const mapped = duplicatedArr.map((item) => {
@@ -165,10 +166,28 @@ const DetailContainer = () => {
     searchPlaces(e);
   };
 
+  const searchResult = (where, id = null) => {
+    return (
+      <div className="z-50 absolute left-0 buttom-0 right-0 top-7 bg-white w-auto mx-4 rounded-lg">
+        {tempState.pointList[id || where] &&
+          tempState.pointList[id || where].map((point) => {
+            return (
+              <div className="mt-3">
+                <a className="font-medium pl-3" onClick={(e) => handleDepartureSelect(e.target.innerText, where, id)}>
+                  {point.road_address_name || point.place_name}
+                </a>
+                <div className="text-gray-500 text-sm pl-3">{point.address_name}</div>
+              </div>
+            );
+          })}
+      </div>
+    );
+  };
+
   return (
     <List noHairlinesMd>
       <div className="flex flex-col">
-        <div className="mx-6 font-semibold tracking-wider">일정</div>
+        <div className="mx-6 mt-6 -mb-6 font-semibold tracking-wider">일정</div>
         <List className="bg-gray-50">
           <ListInput
             label="가는날 및 탑승시간"
@@ -211,7 +230,7 @@ const DetailContainer = () => {
           {stopovers.length > 0 ? (
             <div className="mr-4">
               <Checkbox
-                onChange={() => setTempState({ ...tempState, returnStopoverCheck: !returnStopoverCheck })}
+                onChange={() => setTempState({ ...tempState, returnStopoverCheck: !tempState.returnStopoverCheck })}
                 className="pb-1 text-sm"
               />
               <span className="ml-1 text-gray-700 text-sm">귀환시에도 경유</span>
@@ -220,49 +239,59 @@ const DetailContainer = () => {
         </div>
 
         {/* <div ref={postCodeRef} className="ml-2" /> */}
-
-        <div className="flex px-4 mb-3">
-          <input
-            className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            readOnly
-            value={searchingOption.departure}
-            placeholder="출발지를 검색해주세요"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
-          />{' '}
+        <div className="relative">
+          <div className="flex px-4 mb-3">
+            <input
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+              value={searchingOption.departure}
+              placeholder="출발지를 검색해주세요"
+              onChange={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
+            />{' '}
+          </div>
+          {searchResult('departure')}
         </div>
       </div>
       {stopovers.map((item) => (
-        <div className="flex px-4 py-2" key={item.id}>
-          <button className="f7-icons text-xl text-red-500 outline-none" onClick={() => handleDeleteStopover(item.id)}>
-            minus_circle_fill
-          </button>
-          <input
-            className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-            readOnly
-            value={item.stopover}
-            placeholder="최대 5개까지 추가 가능합니다"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
-          />{' '}
+        <div className="relative" key={item.id}>
+          <div className="flex px-4 py-2">
+            <button
+              className="f7-icons text-xl text-red-500 outline-none"
+              onClick={() => handleDeleteStopover(item.id)}
+            >
+              minus_circle_fill
+            </button>
+            <input
+              className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
+              value={item.stopover}
+              placeholder="최대 5개까지 추가 가능합니다"
+              onChange={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
+            />{' '}
+          </div>
+          {searchResult('stopover', item.id)}
         </div>
       ))}
-      <div className="flex px-4 mt-3">
-        <input
-          className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          readOnly
-          value={searchingOption.destination}
-          placeholder="목적지를 검색해주세요"
-          onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
-        />{' '}
-      </div>
-      {lastDestinationCheck ? (
-        <div className="flex px-4 mt-6">
+      <div className="relative">
+        <div className="flex px-4 mt-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            readOnly
-            value={lastDestination}
-            placeholder="귀환지를 검색해주세요"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'lastDestination', null)}
+            value={searchingOption.destination}
+            placeholder="목적지를 검색해주세요"
+            onChange={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
           />{' '}
+        </div>
+        {searchResult('destination')}
+      </div>
+      {tempState.lastDestinationCheck ? (
+        <div className="relative">
+          <div className="flex px-4 mt-6">
+            <input
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+              value={searchingOption.lastDestination}
+              placeholder="귀환지를 검색해주세요"
+              onChange={(e) => handlePostCode(e.currentTarget.value, 'lastDestination', null)}
+            ></input>{' '}
+          </div>
+          {searchResult('lastDestination')}
         </div>
       ) : null}
       <div className="flex justify-between mx-4">
