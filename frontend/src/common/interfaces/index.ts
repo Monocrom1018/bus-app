@@ -45,6 +45,7 @@ export interface CurrentUserState {
 export interface CurrentUser extends CurrentUserState {
   name: string;
   email: string;
+  registration_confirmed: boolean;
   uuid: string;
   user_type: UserType;
   profile_img: any;
@@ -52,7 +53,7 @@ export interface CurrentUser extends CurrentUserState {
   password_confirmation: string;
   drivable_legion: string[];
   drivable_date: string[];
-  company: string;
+  company_name: string;
   bus_number: string;
   bus_type: string;
   bus_old: string;
@@ -69,6 +70,14 @@ export interface CurrentUser extends CurrentUserState {
   card_registerd: boolean;
   card_company: string;
   card_number: string;
+  peak_charge: number;
+  peak_charge_per_km: number;
+  wifi: boolean;
+  sanitizer: boolean;
+  fridge: boolean;
+  usb: boolean;
+  movie: boolean;
+  audio: boolean;
 }
 
 export interface Address {

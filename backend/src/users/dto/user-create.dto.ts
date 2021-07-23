@@ -4,6 +4,7 @@ import {
   MaxLength,
   IsOptional,
   IsBoolean,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -31,7 +32,27 @@ export class UserCreateDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
+  company: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
   company_name: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  director_name: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  director_email: string;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty()
+  director_phone: number;
 
   @IsBoolean()
   @ApiProperty()
