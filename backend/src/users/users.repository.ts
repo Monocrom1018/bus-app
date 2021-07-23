@@ -15,6 +15,10 @@ export class UsersRepository extends Repository<User> {
       password,
       name,
       user_type,
+      company,
+      director_name,
+      director_email,
+      director_phone,
       termCheck,
       privacyCheck,
       marketingCheck,
@@ -27,9 +31,13 @@ export class UsersRepository extends Repository<User> {
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
 
-    if (user_type === 'driver') {
+    if (user_type === 'DRIVER') {
+      user.director_name = director_name || null;
+      user.company_name = company || null;
+      user.director_email = director_email || null;
+      user.director_phone = director_phone || null;
       user.registration_confirmed = false;
-    } else if (user_type === 'normal') {
+    } else if (user_type === 'NORMAL') {
       user.registration_confirmed = true;
     }
 
@@ -127,6 +135,12 @@ export class UsersRepository extends Repository<User> {
       serviceCharge,
       peakCharge,
       peakChargePerKm,
+      sanitizer,
+      wifi,
+      fridge,
+      usb,
+      movie,
+      audio,
     } = userUpdateDto;
 
     const user = currentApiUser;
@@ -161,6 +175,12 @@ export class UsersRepository extends Repository<User> {
       user.introduce = introduce;
       user.peak_charge = peakCharge;
       user.peak_charge_per_km = peakChargePerKm;
+      user.sanitizer = sanitizer === 'true' ? true : false;
+      user.wifi = wifi === 'true' ? true : false;
+      user.movie = movie === 'true' ? true : false;
+      user.audio = audio === 'true' ? true : false;
+      user.usb = usb === 'true' ? true : false;
+      user.fridge = fridge === 'true' ? true : false;
 
       // if (password !== '') {
       //   user.encrypted_password = await bcrypt.hash(password, 10);

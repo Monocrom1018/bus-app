@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 import { CurrentUser, CurrentUserState } from '@interfaces';
+import { string } from 'prop-types';
 
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
@@ -20,29 +21,16 @@ export const lineItemsCount = atom({
   default: 0,
 });
 
-export const departureState = atom({
-  key: 'departureState',
-  default: '',
-});
-
-export const returnDateState = atom({
-  key: 'returnDateState',
-  default: '',
-});
-
-export const departureDateState = atom({
-  key: 'departureDateState',
-  default: '',
-});
-
-export const destinationState = atom({
-  key: 'destinationState',
-  default: '',
-});
-
-export const lastDestinationState = atom({
-  key: 'lastDestinationState',
-  default: '',
+export const searchingOptionState = atom({
+  key: 'searchingOption',
+  default: {
+    departure: '',
+    destination: '',
+    lastDestination: '',
+    departureDate: '',
+    returnDate: '',
+    distance: 0,
+  },
 });
 
 export const stopoversState = atom({
@@ -70,6 +58,12 @@ export const driverState = atom({
     company_name: '',
     people_available: 0,
     profile_img: '',
+    sanitizer: false,
+    movie: false,
+    wifi: false,
+    audio: false,
+    fridge: false,
+    usb: false,
     introduce: null,
   },
 });

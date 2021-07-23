@@ -72,6 +72,12 @@ export interface CurrentUser extends CurrentUserState {
   card_number: string;
   peak_charge: number;
   peak_charge_per_km: number;
+  wifi: boolean;
+  sanitizer: boolean;
+  fridge: boolean;
+  usb: boolean;
+  movie: boolean;
+  audio: boolean;
 }
 
 export interface Address {

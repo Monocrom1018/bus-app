@@ -1,6 +1,18 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from 'react';
-import { f7, Navbar, Page, List, ListInput, Button, ListItem, AccordionContent, Chip, Block } from 'framework7-react';
+import {
+  f7,
+  Navbar,
+  Page,
+  List,
+  ListInput,
+  Button,
+  ListItem,
+  AccordionContent,
+  Chip,
+  Block,
+  Toggle,
+} from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -33,6 +45,12 @@ const UserInfoSchema = Yup.object().shape({
   introduce: Yup.string(),
   peakCharge: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
   peakChargePerKm: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
+  wifi: Yup.boolean(),
+  sanitizer: Yup.boolean(),
+  fridge: Yup.boolean(),
+  usb: Yup.boolean(),
+  movie: Yup.boolean(),
+  audio: Yup.boolean(),
 });
 
 const driverModifyPage = ({ f7route, f7router }) => {
@@ -130,6 +148,12 @@ const driverModifyPage = ({ f7route, f7router }) => {
           serviceCharge: currentUser.service_charge || '',
           peakCharge: currentUser.peak_charge || '',
           peakChargePerKm: currentUser.peak_charge_per_km || '',
+          wifi: currentUser.wifi || false,
+          sanitizer: currentUser.sanitizer || false,
+          fridge: currentUser.fridge || false,
+          usb: currentUser.usb || false,
+          movie: currentUser.movie || false,
+          audio: currentUser.audio || false,
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -462,6 +486,38 @@ const driverModifyPage = ({ f7route, f7router }) => {
                   errorMessageForce
                   errorMessage={touched.nightCharge && errors.nightCharge}
                 />
+              </List>
+
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">편의시설</div>
+                <ListItem title="손소독제">
+                  <Toggle
+                    slot="after"
+                    name="sanitizer"
+                    onChange={handleChange}
+                    defaultChecked={values.sanitizer === true ? true : false}
+                  ></Toggle>
+                </ListItem>
+                <ListItem title="냉장고">
+                  <Toggle
+                    slot="after"
+                    name="fridge"
+                    onChange={handleChange}
+                    defaultChecked={values.fridge === true ? true : false}
+                  ></Toggle>
+                </ListItem>
+                <ListItem title="음향시설">
+                  <Toggle slot="after" name="audio" onChange={handleChange} defaultChecked={values.audio}></Toggle>
+                </ListItem>
+                <ListItem title="와이파이">
+                  <Toggle slot="after" name="wifi" onChange={handleChange} defaultChecked={values.wifi}></Toggle>
+                </ListItem>
+                <ListItem title="usb포트">
+                  <Toggle slot="after" name="usb" onChange={handleChange} defaultChecked={values.usb}></Toggle>
+                </ListItem>
+                <ListItem title="영화관람">
+                  <Toggle slot="after" name="movie" onChange={handleChange} defaultChecked={values.movie}></Toggle>
+                </ListItem>
               </List>
 
               <List noHairlinesMd>
