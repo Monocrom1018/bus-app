@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { f7, Input, ListInput } from 'framework7-react';
+import { searchingOptionState } from '@atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 const TimePicker = (props) => {
   const { el } = props;
-  const { Times, setTimes } = props;
+  // const { Times, setTimes } = props;
+  // const searchingOption = useRecoilValue(searchingOptionState);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
 
   useEffect(() => {
     f7.picker.create({
@@ -21,10 +25,8 @@ const TimePicker = (props) => {
       ],
       on: {
         change(p, v: Array<string>, d) {
-          setTimes((prev) => ({
-            ...prev,
-            [el]: v,
-          }));
+          console.log(v);
+          setSearchingOption({ ...searchingOption, time: { ...searchingOption.time, [el]: v } });
         },
       },
     });

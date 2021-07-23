@@ -27,10 +27,16 @@ export const searchingOptionState = atom({
     departure: '',
     destination: '',
     lastDestination: '',
-    departureDate: '',
     returnDate: '',
     distance: 0,
     drivers: [],
+    departureTime: '',
+    returnTime: '',
+    date: [],
+    time: {
+      departureTime: '',
+      returnTiem: '',
+    },
   },
 });
 
