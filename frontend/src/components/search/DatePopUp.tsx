@@ -24,7 +24,7 @@ const DatePopUp = () => {
   const [popupOpened, setPopupOpened] = useState(false);
   const [Dates, setDates] = useState([]);
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { departureTime, returnTime } = searchingOption;
+  const { departureTime, returnTime, date } = searchingOption;
 
   return (
     <>
@@ -56,7 +56,7 @@ const DatePopUp = () => {
                     placeholder="가는날을 선택해주세요"
                     readonly
                     className="bg-gray-50 mb-4 h-20 border rounded-lg ml-3 p-3"
-                    value={moment(Dates[0]).format('YYYY년 MM월 DD일')}
+                    value={moment(date[0]).format('YYYY년 MM월 DD일')}
                     wrap={false}
                   />
                 </Col>
@@ -70,7 +70,7 @@ const DatePopUp = () => {
                     placeholder="오는날을 선택해주세요"
                     readonly
                     className="bg-gray-50 h-20 border rounded-lg ml-3 p-3"
-                    value={Dates[1] ? moment(Dates[1]).format('YYYY년 MM월 DD일') : ''}
+                    value={date[1] ? moment(date[1]).format('YYYY년 MM월 DD일') : ''}
                     wrap={false}
                   />
                 </Col>
