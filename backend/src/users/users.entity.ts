@@ -20,7 +20,6 @@ import { DateAudit } from '../shared/entities/date-audit.entity';
 export enum UserType {
   NORMAL = 'normal',
   DRIVER = 'driver',
-  COMPANY = 'company',
 }
 
 @Entity()
@@ -119,7 +118,7 @@ export class Users extends DateAudit {
   charge_per_day: string;
 
   @Column({ nullable: true, default: false })
-  card_registerd: boolean;
+  card_registered: boolean;
 
   @Column({ nullable: true })
   card_billing_key: string;
@@ -135,6 +134,33 @@ export class Users extends DateAudit {
 
   @Column({ nullable: true })
   peak_charge_per_km: number;
+
+  @Column({ nullable: true })
+  sanitizer: boolean;
+
+  @Column({ nullable: true })
+  wifi: boolean;
+
+  @Column({ nullable: true })
+  usb: boolean;
+
+  @Column({ nullable: true })
+  fridge: boolean;
+
+  @Column({ nullable: true })
+  movie: boolean;
+
+  @Column({ nullable: true })
+  audio: boolean;
+
+  @Column({ nullable: true })
+  director_name: string;
+
+  @Column({ nullable: true })
+  director_email: string;
+
+  @Column({ nullable: true })
+  director_phone: number;
 
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];

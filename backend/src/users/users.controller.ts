@@ -7,6 +7,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Param,
+  Req,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -15,6 +16,7 @@ import { UsersService } from './users.service';
 import { UserSearchDto } from './dto/user-search.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
+import { request } from 'express';
 
 export const storage = {
   storage: diskStorage({

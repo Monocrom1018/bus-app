@@ -89,3 +89,8 @@ export const createPayment = async (params) => {
   const { data } = await API.post(`users/payment`, params);
   return data;
 };
+
+// export const getRegistrationConfirmed = async (email) => {
+//   const { data } = await API.get(`users?email=${email}`);
+//   return data;
+// };
