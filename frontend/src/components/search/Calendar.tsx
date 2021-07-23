@@ -46,6 +46,7 @@ const Calendar = (props) => {
         },
         change(c, v: Array<string>) {
           setSearchingOption({ ...searchingOption, date: [...v] });
+          setDates([...v]);
         },
       },
     });
