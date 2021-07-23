@@ -14,18 +14,15 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { stopoversState, totalChargeState, driverState, reservationState } from '@atoms';
+import { stopoversState, totalChargeState, driverState, reservationState, searchingOptionState } from '@atoms';
 import moment from 'moment';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
 import { createReservation } from '../../common/api/index';
 
 const EstimatePage = ({ f7router }) => {
-  const departure = useRecoilValue(departureState);
-  const departureDate = useRecoilValue(departureDateState);
-  const returnDate = useRecoilValue(returnDateState);
-  const destination = useRecoilValue(destinationState);
-  const lastDestination = useRecoilValue(lastDestinationState);
+  const searchingOption = useRecoilValue(searchingOptionState);
+  const { departure, departureDate, returnDate, destination, lastDestination } = searchingOption;
   const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);

@@ -1,29 +1,22 @@
 import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input } from 'framework7-react';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { stopoversState, searchingOptionState, distanceState } from '@atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { stopoversState, searchingOptionState, driverState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const drivers = useRecoilValue(driverState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [tempState, setTempState] = useState({
-    stopoverCount: 0,
+    stopoverCount: 1,
     lastDestinationCheck: false,
     returnStopoverCheck: false,
     drivers: null,
     pointList: {},
   });
-
-  let departDay;
-  let searchTarget;
-  let itemId;
-
-  const [distance, setDistance] = useRecoilState(distanceState);
-  const [drivers, setDrivers] = useState(null);
-
 
   return (
     <Page name="search">

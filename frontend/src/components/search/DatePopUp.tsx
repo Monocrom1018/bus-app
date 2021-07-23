@@ -16,6 +16,7 @@ import {
 } from 'framework7-react';
 import Calendar from '@components/search/Calendar';
 import TimePicker from '@components/search/TimePicker';
+import moment from 'moment';
 
 const DatePopUp = () => {
   const [popupOpened, setPopupOpened] = useState(false);
@@ -27,7 +28,7 @@ const DatePopUp = () => {
 
   return (
     <>
-      <Button fill popupOpen=".demo-popup">
+      <Button fill popupOpen=".demo-popup" className="bg-red-500 text-white mt-8 mx-4 h-8 text-base">
         날짜
       </Button>
       <Popup
@@ -52,10 +53,10 @@ const DatePopUp = () => {
                   <ListInput
                     label="가는날"
                     type="text"
-                    placeholder="가는날과 탑승시간을 선택해주세요"
+                    placeholder="가는날을 선택해주세요"
                     readonly
-                    className="bg-gray-50"
-                    value={Dates[0]}
+                    className="bg-gray-50 mb-4 h-20 border rounded-lg ml-3 p-3"
+                    value={moment(Dates[0]).format('YYYY년 MM월 DD일')}
                     wrap={false}
                   />
                 </Col>
@@ -66,10 +67,10 @@ const DatePopUp = () => {
                   <ListInput
                     label="오는날"
                     type="text"
-                    placeholder="오는날과 탑승시간을 선택해주세요"
+                    placeholder="오는날을 선택해주세요"
                     readonly
-                    className="bg-gray-50"
-                    value={Dates[1] ? Dates[1] : ''}
+                    className="bg-gray-50 h-20 border rounded-lg ml-3 p-3"
+                    value={Dates[1] ? moment(Dates[1]).format('YYYY년 MM월 DD일') : ''}
                     wrap={false}
                   />
                 </Col>
@@ -81,8 +82,8 @@ const DatePopUp = () => {
             <Calendar Dates={Dates} setDates={setDates} />
           </Block>
           <Toolbar position="bottom" className="mb-20 justify-end">
-            <Link popupClose>
-              <Button text="완료" className="bg-green-400 text-xl text-white px-20 py-4" />
+            <Link popupClose className="w-full">
+              <Button text="완료" className="w-60 text-xl py-4" fill />
             </Link>
           </Toolbar>
         </Page>

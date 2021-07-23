@@ -248,7 +248,13 @@ export class UsersService {
         }
         // eslint-disable-next-line no-await-in-loop
         const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
+        const tmapsGeo = `${
+          stopoverData.data.coordinateInfo.coordinate[0].lon ||
+          stopoverData.data.coordinateInfo.coordinate[0].newLon
+        },${
+          stopoverData.data.coordinateInfo.coordinate[0].lat ||
+          stopoverData.data.coordinateInfo.coordinate[0].newLat
+        }_`;
         tmapData += tmapsGeo;
       }
 
@@ -258,11 +264,19 @@ export class UsersService {
     const departureData = await this.getGeoData(departure);
     const destinationData = await this.getGeoData(destination);
 
-    depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
-    depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;
+    depCoord.x =
+      departureData.data.coordinateInfo.coordinate[0].lon ||
+      departureData.data.coordinateInfo.coordinate[0].newLon;
+    depCoord.y =
+      departureData.data.coordinateInfo.coordinate[0].lat ||
+      departureData.data.coordinateInfo.coordinate[0].newLat;
 
-    destCoord.x = destinationData.data.coordinateInfo.coordinate[0].newLon;
-    destCoord.y = destinationData.data.coordinateInfo.coordinate[0].newLat;
+    destCoord.x =
+      destinationData.data.coordinateInfo.coordinate[0].lon ||
+      destinationData.data.coordinateInfo.coordinate[0].newLon;
+    destCoord.y =
+      destinationData.data.coordinateInfo.coordinate[0].lat ||
+      destinationData.data.coordinateInfo.coordinate[0].newLat;
 
     const tmapBody = await qs.stringify({
       appKey: process.env.TMAP_API_KEY,
