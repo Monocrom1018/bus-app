@@ -17,7 +17,7 @@ const DetailContainer = () => {
     pointList: {},
   });
 
-  const { departure, destination, departureDate, returnDate, lastDestination } = searchingOption;
+  const { departure, destination, departureDate, returnDate, lastDestination, drivers } = searchingOption;
   const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
   let departDay, searchTarget, itemId;
 
@@ -36,8 +36,7 @@ const DetailContainer = () => {
       };
       console.log(searchParam);
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
-      setTempState({ ...tempState, drivers: foundDrivers });
-      setSearchingOption({ ...searchingOption, distance: calculatedDistance });
+      setSearchingOption({ ...searchingOption, drivers: foundDrivers, distance: calculatedDistance });
       f7.dialog.close();
     } else {
       showToast('일정을 모두 입력해주세요');
@@ -173,7 +172,16 @@ const DetailContainer = () => {
           tempState.pointList[id || where].map((point) => {
             return (
               <div className="mt-3">
-                <a className="font-medium pl-3" onClick={(e) => handleDepartureSelect(e.target.innerText, where, id)}>
+                <a
+                  className="font-medium pl-3"
+                  onClick={(e) =>
+                    handleDepartureSelect(
+                      point.road_address_name ? point.road_address_name : point.address_name + ' ' + point.place_name,
+                      where,
+                      id,
+                    )
+                  }
+                >
                   {point.road_address_name || point.place_name}
                 </a>
                 <div className="text-gray-500 text-sm pl-3">{point.address_name}</div>
