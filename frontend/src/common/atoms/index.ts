@@ -35,7 +35,7 @@ export const searchingOptionState = atom({
     date: [],
     time: {
       departureTime: '',
-      returnTiem: '',
+      returnTime: '',
     },
   },
 });
