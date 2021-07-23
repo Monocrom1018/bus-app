@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { distanceState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
-import CalendarPopUp from '@components/search/DatePopUp';
+import DatePopup from '@components/search/DatePopUp';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
@@ -22,7 +22,7 @@ const SearchPage = () => {
         <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
 
-      <CalendarPopUp />
+      <DatePopup />
       <DetailContainer />
 
       {drivers ? (
