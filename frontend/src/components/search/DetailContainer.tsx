@@ -1,31 +1,28 @@
-import { f7, List, ListInput, Button, Checkbox } from 'framework7-react';
-import { distanceState, stopoversState, searchingOptionState } from '@atoms';
-import React, { useState, useRef } from 'react';
+import { f7, List, Button, Checkbox } from 'framework7-react';
+import { stopoversState, searchingOptionState } from '@atoms';
+import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { getDrivers } from '@api';
 import { showToast } from '@js/utils';
-import moment from 'moment';
 
 const DetailContainer = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
   const [tempState, setTempState] = useState({
-    stopoverCount: 0,
-    lastDestinationCheck: false,
+    stopoverCount: 1,
+    lastDestinationState: false,
     returnStopoverCheck: false,
     drivers: null,
     pointList: {},
   });
 
   const { departure, destination, departureDate, returnDate, lastDestination } = searchingOption;
-  const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
+  const { stopoverCount, lastDestinationState, returnStopoverCheck, pointList } = tempState;
   let departDay;
   let searchTarget;
   let itemId;
 
-
   const handleSearch = async () => {
-    console.log(searchingOption);
     if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
       f7.dialog.preloader();
       const searchParam = {
@@ -37,24 +34,22 @@ const DetailContainer = () => {
         stopovers: stopovers.length > 0 ? stopovers : [],
         returnStopoverCheck,
       };
-      console.log(searchParam);
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
-      setTempState({ ...tempState, drivers: foundDrivers });
-      setSearchingOption({ ...searchingOption, distance: calculatedDistance });
+      setSearchingOption({ ...searchingOption, drivers: foundDrivers, distance: calculatedDistance });
       f7.dialog.close();
     } else {
       showToast('일정을 모두 입력해주세요');
     }
   };
 
-  const handleAddStopover = async () => {
+  const addStopover = async () => {
     if (stopovers.length < 5) {
       setStopovers(stopovers.concat({ id: stopoverCount, stopover: '' }));
       setTempState({ ...tempState, stopoverCount: stopoverCount + 1 });
     }
   };
 
-  const handleDeleteStopover = async (param) => {
+  const deleteStopover = async (param) => {
     setStopovers(
       stopovers.filter((item) => {
         if (item.id === param) {
@@ -65,30 +60,37 @@ const DetailContainer = () => {
     );
   };
 
-  const handleLastDestinationCheck = async () => {
-    if (tempState.lastDestinationCheck === true) {
+  const lastDestinationCheck = async () => {
+    if (tempState.lastDestinationState === true) {
       setSearchingOption({ ...searchingOption, lastDestination: '' });
     }
-    setTempState({ ...tempState, lastDestinationCheck: !lastDestinationCheck });
+    setTempState({ ...tempState, lastDestinationState: !lastDestinationState });
   };
 
-  const handleDepartureDate = async (param) => {
-    departDay = param;
-    await setSearchingOption({ ...searchingOption, departureDate: String(param) });
-  };
-
-  const handleReturnDate = async (param) => {
-    const format = await moment(param).format('YYYY-MM-DD');
-    const yesterday = await moment(departDay).subtract(1, 'day').toDate();
-    const isBefore = moment(format).isBefore(yesterday);
-    if (isBefore) {
-      showToast('가는날보다 이릅니다');
-      return;
+  const placesSearchCallBack = (data: string, status: any) => {
+    const cutData = data.slice(0, 5);
+    const kakaoCompleteStatus = kakao.maps.services.Status.OK;
+    // 이중 중첩문은 최대한 지양 하는게 어떠할까 합니다.
+    if (status === kakaoCompleteStatus && searchTarget === 'stopover') {
+      setTempState({ ...tempState, pointList: { [itemId]: cutData } });
+    } else if (status === kakaoCompleteStatus) {
+      setTempState({ ...tempState, pointList: { [searchTarget]: cutData } });
+    } else {
+      setTempState({ ...tempState, pointList: {} });
     }
-    await setSearchingOption({ ...searchingOption, departureDate: String(departDay), returnDate: String(param) });
   };
 
-  const handleDepartureSelect = async (point, where, id = null) => {
+  const searchPlaces = async (keyword: string) => {
+    // false를 return 하는 문이 중간에 있는 이유가 있을지 알고싶어요
+    if (!keyword.replace(/^\s+|\s+$/g, '')) {
+      return false;
+    }
+
+    const ps = new kakao.maps.services.Places();
+    return ps.keywordSearch(keyword, placesSearchCallBack);
+  };
+
+  const departureSelect = async (point, where, id = null) => {
     if (where === 'departure') {
       setSearchingOption({ ...searchingOption, departure: point });
     }
@@ -101,7 +103,7 @@ const DetailContainer = () => {
     if (where === 'stopover') {
       const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
       const mapped = duplicatedArr.map((item) => {
-        if (item.id === itemId) {
+        if (item.id === id) {
           item.stopover = point;
           return item;
         }
@@ -114,56 +116,54 @@ const DetailContainer = () => {
     setTempState({ ...tempState, pointList: {} });
   };
 
-  const placesSearchCallBack = (data, status) => {
-    if (status === kakao.maps.services.Status.OK) {
-      const cutData = data.slice(0, 5);
-      setTempState({ ...tempState, pointList: { [searchTarget]: cutData } });
-    } else {
-      setTempState({ ...tempState, pointList: {} });
-    }
-  };
-
-  const searchPlaces = async (keyword) => {
-    const ps = new kakao.maps.services.Places();
-
-    if (!keyword.replace(/^\s+|\s+$/g, '')) {
-      return false;
-    }
-
-    ps.keywordSearch(keyword, placesSearchCallBack);
-  };
-
-  const handlePostCode = (e, value, id) => {
-    if (value === 'departure') {
-      setSearchingOption({ ...searchingOption, departure: e });
-    }
-
-    if (value === 'destination') {
-      setSearchingOption({ ...searchingOption, destination: e });
-    }
-
-    if (value === 'lastDestination') {
-      setSearchingOption({ ...searchingOption, lastDestination: e });
-    }
-
-    //? 여기서 setStopover 한번 저장해줘야 인풋에 글씨가 써짐
-    if (value === 'stopover') {
+  const setPostCode = (value: string, type: string, id: number | null) => {
+    if (type === 'stopover') {
       const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
-      const mapped = duplicatedArr.map((item) => {
+      const mapped = duplicatedArr.map((item: { id: number; stopover: string }) => {
         if (item.id === id) {
-          item.stopover = e;
+          item.stopover = value;
           return item;
         }
         return item;
       });
-
       setStopovers(mapped);
+    } else {
+      setSearchingOption({ ...searchingOption, [`${type}`]: value });
     }
 
-    searchTarget = value;
+    searchTarget = type;
     itemId = id;
-    searchPlaces(e);
+    searchPlaces(value);
   };
+
+  const searchResult = (where: string, id = null) => (
+    <div className="z-50 absolute left-0 buttom-0 right-0 top-7 bg-white w-auto mx-4 rounded-lg">
+      {pointList[id || where] &&
+        pointList[id || where].map(
+          (point: {
+            road_address_name: any;
+            address_name: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal;
+            place_name: any;
+          }) => (
+            <div className="mt-3">
+              <a
+                className="font-medium pl-3"
+                onClick={() =>
+                  departureSelect(
+                    point.road_address_name ? point.road_address_name : `${point.address_name} ${point.place_name}`,
+                    where,
+                    id,
+                  )
+                }
+              >
+                {point.road_address_name || point.place_name}
+              </a>
+              <div className="text-gray-500 text-sm pl-3">{point.address_name}</div>
+            </div>
+          ),
+        )}
+    </div>
+  );
 
   return (
     <List noHairlinesMd>
@@ -180,55 +180,66 @@ const DetailContainer = () => {
             </div>
           ) : null}
         </div>
-
-        {/* <div ref={postCodeRef} className="ml-2" /> */}
-
+      </div>
+      <div className="relative">
         <div className="flex px-4 mb-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            value={searchingOption.departure}
+            value={departure}
             placeholder="출발지를 검색해주세요"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
-          />{' '}
+            onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
+          />
         </div>
+        {searchResult('departure')}
       </div>
       {stopovers.map((item) => (
-        <div className="flex px-4 py-2" key={item.id}>
-          <button className="f7-icons text-xl text-red-500 outline-none" onClick={() => handleDeleteStopover(item.id)}>
-            minus_circle_fill
-          </button>
-          <input
-            className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-            value={item.stopover}
-            placeholder="최대 5개까지 추가 가능합니다"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
-          />{' '}
+        <div className="relative" key={item.id}>
+          <div className="flex px-4 py-2">
+            <button
+              className="f7-icons text-xl text-red-500 outline-none"
+              onClick={() => deleteStopover(item.id)}
+            >
+              minus_circle_fill
+            </button>
+            <input
+              className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
+              value={item.stopover}
+              placeholder="최대 5개까지 추가 가능합니다"
+              onChange={(e) => setPostCode(e.currentTarget.value, 'stopover', item.id)}
+            />
+          </div>
+          {searchResult('stopover', item.id)}
         </div>
       ))}
-      <div className="flex px-4 mt-3">
-        <input
-          className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          value={searchingOption.destination}
-          placeholder="목적지를 검색해주세요"
-          onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
-        />{' '}
-      </div>
-      {lastDestinationCheck ? (
-        <div className="flex px-4 mt-6">
+      <div className="relative">
+        <div className="flex px-4 mt-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            readOnly
-            value={lastDestination}
-            placeholder="귀환지를 검색해주세요"
-            onClick={(e) => handlePostCode(e.currentTarget.value, 'lastDestination', null)}
-          />{' '}
+            value={destination}
+            placeholder="목적지를 검색해주세요"
+            onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
+          />
+        </div>
+        {searchResult('destination')}
+      </div>
+      {lastDestinationState ? (
+        <div className="relative">
+          <div className="flex px-4 mt-6">
+            <input
+              className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+              value={lastDestination}
+              placeholder="귀환지를 검색해주세요"
+              onChange={(e) => setPostCode(e.currentTarget.value, 'lastDestination', null)}
+            />
+          </div>
+          {searchResult('lastDestination')}
         </div>
       ) : null}
       <div className="flex justify-between mx-4">
-        <Button onClick={handleAddStopover} className="mt-4" raised>
+        <Button onClick={addStopover} className="mt-4" raised>
           경유지 추가
         </Button>
-        <Button onClick={handleLastDestinationCheck} className="mt-4" raised>
+        <Button onClick={lastDestinationCheck} className="mt-4" raised>
           출발지와 귀환지가 다른가요?
         </Button>
       </div>

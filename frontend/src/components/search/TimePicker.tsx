@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { f7, Input } from 'framework7-react';
+import { f7, Input, ListInput } from 'framework7-react';
 
 const TimePicker = (props) => {
   const { el } = props;
@@ -32,7 +32,15 @@ const TimePicker = (props) => {
 
   return (
     <div className="">
-      <Input wrap={false} type="text" placeholder="select time" readonly inputId={`${el}_picker`} />
+      <ListInput
+        label="탑승시간"
+        wrap={false}
+        type="text"
+        placeholder="탑승시간을 선택해주세요"
+        readonly
+        inputId={`${el}_picker`}
+        className="bg-gray-50 mb-4 h-20 border rounded-lg mr-3 p-3"
+      />
     </div>
   );
 };

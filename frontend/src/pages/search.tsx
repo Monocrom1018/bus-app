@@ -1,14 +1,22 @@
 import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input } from 'framework7-react';
 import React, { useState } from 'react';
-import { useRecoilState } from 'recoil';
-import { distanceState } from '@atoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { stopoversState, searchingOptionState, driverState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import CalendarPopUp from '@components/search/DatePopUp';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
-  const [distance, setDistance] = useRecoilState(distanceState);
-  const [drivers, setDrivers] = useState(null);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { distance, drivers } = searchingOption;
+  const [stopovers, setStopovers] = useRecoilState(stopoversState);
+  const [tempState, setTempState] = useState({
+    stopoverCount: 1,
+    lastDestinationCheck: false,
+    returnStopoverCheck: false,
+    drivers: null,
+    pointList: {},
+  });
 
   return (
     <Page name="search">
@@ -25,7 +33,7 @@ const SearchPage = () => {
       <CalendarPopUp />
       <DetailContainer />
 
-      {drivers ? (
+      {drivers?.length > 0 ? (
         <div>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
