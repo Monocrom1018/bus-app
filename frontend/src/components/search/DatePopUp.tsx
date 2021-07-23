@@ -17,14 +17,14 @@ import {
 import Calendar from '@components/search/Calendar';
 import TimePicker from '@components/search/TimePicker';
 import moment from 'moment';
+import { useRecoilState } from 'recoil';
+import { searchingOptionState } from '@atoms';
 
 const DatePopUp = () => {
   const [popupOpened, setPopupOpened] = useState(false);
   const [Dates, setDates] = useState([]);
-  const [Times, setTimes] = useState({
-    departure_time: '',
-    arrival_time: '',
-  });
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { departureTime, returnTime } = searchingOption;
 
   return (
     <>
@@ -61,7 +61,7 @@ const DatePopUp = () => {
                   />
                 </Col>
                 <Col width="50">
-                  <TimePicker el="departure_time" times={Times} setTimes={setTimes} />
+                  <TimePicker el="departureTime" times={departureTime} setTimes={setSearchingOption} />
                 </Col>
                 <Col width="50">
                   <ListInput
@@ -75,7 +75,7 @@ const DatePopUp = () => {
                   />
                 </Col>
                 <Col width="50">
-                  <TimePicker el="arrival_time" times={Times} setTimes={setTimes} />
+                  <TimePicker el="returnTime" times={returnTime} setTimes={setSearchingOption} />
                 </Col>
               </Row>
             </div>

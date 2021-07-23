@@ -17,24 +17,22 @@ const DetailContainer = () => {
     pointList: {},
   });
 
-  const { departure, destination, departureDate, returnDate, lastDestination, drivers } = searchingOption;
+  const { departure, destination, date, returnDate, lastDestination, drivers } = searchingOption;
   const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
   let departDay, searchTarget, itemId;
 
   const handleSearch = async () => {
-    console.log(searchingOption);
-    if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
+    if (departure !== '' && destination !== '' && date[0] !== '' && date[1] !== '') {
       f7.dialog.preloader();
       const searchParam = {
         departure,
         lastDestination,
         destination,
-        departureDate,
-        returnDate,
+        departureDate: date[0],
+        returnDate: date[1],
         stopovers: stopovers.length > 0 ? stopovers : [],
         returnStopoverCheck,
       };
-      console.log(searchParam);
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
       setSearchingOption({ ...searchingOption, drivers: foundDrivers, distance: calculatedDistance });
       f7.dialog.close();
@@ -68,21 +66,21 @@ const DetailContainer = () => {
     setTempState({ ...tempState, lastDestinationCheck: !lastDestinationCheck });
   };
 
-  const handleDepartureDate = async (param) => {
-    departDay = param;
-    await setSearchingOption({ ...searchingOption, departureDate: String(param) });
-  };
+  // const handleDepartureDate = async (param) => {
+  //   departDay = param;
+  //   await setSearchingOption({ ...searchingOption, departureDate: String(param) });
+  // };
 
-  const handleReturnDate = async (param) => {
-    const format = await moment(param).format('YYYY-MM-DD');
-    const yesterday = await moment(departDay).subtract(1, 'day').toDate();
-    const isBefore = moment(format).isBefore(yesterday);
-    if (isBefore) {
-      showToast('가는날보다 이릅니다');
-      return;
-    }
-    await setSearchingOption({ ...searchingOption, departureDate: String(departDay), returnDate: String(param) });
-  };
+  // const handleReturnDate = async (param) => {
+  //   const format = await moment(param).format('YYYY-MM-DD');
+  //   const yesterday = await moment(departDay).subtract(1, 'day').toDate();
+  //   const isBefore = moment(format).isBefore(yesterday);
+  //   if (isBefore) {
+  //     showToast('가는날보다 이릅니다');
+  //     return;
+  //   }
+  //   await setSearchingOption({ ...searchingOption, departureDate: String(departDay), returnDate: String(param) });
+  // };
 
   const handleDepartureSelect = async (point, where, id = null) => {
     if (where === 'departure') {
@@ -212,7 +210,7 @@ const DetailContainer = () => {
               },
             }}
             className="bg-gray-50"
-            onCalendarChange={(e) => handleDepartureDate(e[0])}
+            // onCalendarChange={(e) => handleDepartureDate(e[0])}
           />
           <ListInput
             label="오는날 및 탑승시간"
@@ -229,7 +227,7 @@ const DetailContainer = () => {
               },
             }}
             className="bg-gray-50"
-            onCalendarChange={(e) => handleReturnDate(e[0])}
+            // onCalendarChange={(e) => handleReturnDate(e[0])}
           />
         </List>
 

@@ -1,22 +1,14 @@
-import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input } from 'framework7-react';
+import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input, Row, Col, ListInput } from 'framework7-react';
 import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { stopoversState, searchingOptionState, driverState } from '@atoms';
+import { stopoversState, searchingOptionState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
 import Driver from './users/Driver';
+import TimeDisplay from '@components/search/timeDisplay';
 
 const SearchPage = () => {
-  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const drivers = useRecoilValue(driverState);
-  const [stopovers, setStopovers] = useRecoilState(stopoversState);
-  const [tempState, setTempState] = useState({
-    stopoverCount: 1,
-    lastDestinationCheck: false,
-    returnStopoverCheck: false,
-    drivers: null,
-    pointList: {},
-  });
+  const { drivers, distance } = useRecoilValue(searchingOptionState);
 
   return (
     <Page name="search">
@@ -30,10 +22,11 @@ const SearchPage = () => {
         <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
 
+      <TimeDisplay />
       <DatePopup />
       <DetailContainer />
 
-      {tempState.drivers ? (
+      {drivers.length > 0 ? (
         <div>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
@@ -41,10 +34,10 @@ const SearchPage = () => {
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
-            <div className="mx-4 font-medium text-gray-700">거리(왕복) : {searchingOption.distance}km</div>
+            <div className="mx-4 font-medium text-gray-700">거리(왕복) : {distance}km</div>
           </div>
           <div>
-            {tempState.drivers.map((driver) => (
+            {drivers.map((driver) => (
               <Driver driver={driver} key={driver.id} />
             ))}
           </div>
