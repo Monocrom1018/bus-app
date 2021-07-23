@@ -168,44 +168,6 @@ const DetailContainer = () => {
   return (
     <List noHairlinesMd>
       <div className="flex flex-col">
-        <div className="mx-6 font-semibold tracking-wider">일정</div>
-        <List className="bg-gray-50">
-          <ListInput
-            label="가는날 및 탑승시간"
-            type="datepicker"
-            placeholder="가는날과 탑승시간을 선택해주세요"
-            readonly
-            calendarParams={{
-              timePicker: true,
-              openIn: 'customModal',
-              footer: true,
-              dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
-              disabled: {
-                to: new Date(),
-              },
-            }}
-            className="bg-gray-50"
-            onCalendarChange={(e) => handleDepartureDate(e[0])}
-          />
-          <ListInput
-            label="오는날 및 탑승시간"
-            type="datepicker"
-            placeholder="오는날과 탑승시간을 선택해주세요"
-            readonly
-            calendarParams={{
-              timePicker: true,
-              openIn: 'customModal',
-              footer: true,
-              dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
-              disabled: {
-                to: new Date(),
-              },
-            }}
-            className="bg-gray-50"
-            onCalendarChange={(e) => handleReturnDate(e[0])}
-          />
-        </List>
-
         <div className="flex justify-between">
           <div className="mx-6 mb-2 font-semibold tracking-wider">경로</div>
           {stopovers.length > 0 ? (
@@ -224,7 +186,6 @@ const DetailContainer = () => {
         <div className="flex px-4 mb-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            readOnly
             value={searchingOption.departure}
             placeholder="출발지를 검색해주세요"
             onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
@@ -238,7 +199,6 @@ const DetailContainer = () => {
           </button>
           <input
             className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-            readOnly
             value={item.stopover}
             placeholder="최대 5개까지 추가 가능합니다"
             onClick={(e) => handlePostCode(e.currentTarget.value, 'stopover', item.id)}
@@ -248,7 +208,6 @@ const DetailContainer = () => {
       <div className="flex px-4 mt-3">
         <input
           className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          readOnly
           value={searchingOption.destination}
           placeholder="목적지를 검색해주세요"
           onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
