@@ -43,7 +43,7 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.useGlobalGuards(new VersionGuard());
 
-  await app.listen(8080);
+  await app.listen(3000);
 
   if (module.hot) {
     module.hot.accept();
