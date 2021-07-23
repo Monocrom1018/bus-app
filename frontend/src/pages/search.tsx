@@ -1,25 +1,11 @@
-import {
-  f7,
-  Block,
-  BlockTitle,
-  Button,
-  Link,
-  List,
-  ListInput,
-  Navbar,
-  NavLeft,
-  NavTitle,
-  Page,
-  Input,
-  Checkbox,
-} from 'framework7-react';
-import React, { useState, useRef } from 'react';
+import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input } from 'framework7-react';
+import React, { useState } from 'react';
 import { useRecoilState } from 'recoil';
 import { stopoversState, searchingOptionState } from '@atoms';
+import { distanceState } from '@atoms';
+import DetailContainer from '@components/search/DetailContainer';
+import CalendarPopUp from '@components/search/DatePopUp';
 import Driver from './users/Driver';
-import { getDrivers } from '../common/api/index';
-import moment from 'moment';
-import { showToast } from '@js/utils';
 
 const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
@@ -197,6 +183,9 @@ const SearchPage = () => {
       </div>
     );
   };
+  const [distance, setDistance] = useRecoilState(distanceState);
+  const [drivers, setDrivers] = useState(null);
+
 
   return (
     <Page name="search">
@@ -206,7 +195,7 @@ const SearchPage = () => {
         </NavLeft>
         <NavTitle>검색</NavTitle>
       </Navbar>
-      <Block className="my-10">
+      <Block className="my-5">
         <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
       <List noHairlinesMd>
@@ -328,6 +317,9 @@ const SearchPage = () => {
         </div>
         <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
       </List>
+
+      <CalendarPopUp />
+      <DetailContainer />
 
       {tempState.drivers ? (
         <div>

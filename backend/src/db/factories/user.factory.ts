@@ -9,10 +9,12 @@ define(User, (faker: typeof Faker) => {
   const firstName = faker.name.firstName(gender);
   const lastName = faker.name.lastName(gender);
   const imgUrl = faker.image.imageUrl(400, 400, 'people');
+  const uuid = faker.random.uuid();
 
   const user = new User();
   user.profile_img = imgUrl;
   user.name = `${firstName} ${lastName}`;
   user.encrypted_password = bcrypt.hash('123qwe!', saltRounds);
+  user.uuid = uuid;
   return user;
 });

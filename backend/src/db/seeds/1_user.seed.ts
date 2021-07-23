@@ -1,9 +1,17 @@
 import { Factory, Seeder } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
 import { Users as User, UserType } from '@users/users.entity';
+import * as AWS from 'aws-sdk';
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
+    const client = new AWS.CognitoIdentityServiceProvider({
+      region: 'local',
+      accessKeyId: 'local',
+      secretAccessKey: 'local',
+      endpoint: 'http://localhost:9229',
+    });
+
     let userIndex = 1;
     await factory(User)()
       .map(async (user) => {
@@ -64,6 +72,28 @@ export default class CreateUsers implements Seeder {
           user.peak_charge = 600000;
           user.peak_charge_per_km = 1700;
         }
+
+        // map
+        const userSub = await Promise.resolve().then(() => {
+          let uuid = '123';
+          client.signUp(
+            {
+              ClientId: 'dnylzvu9n5i1d7kxrroybibv0',
+              Username: `${user.email}`,
+              Password: '123qwe!',
+              UserAttributes: [{ Name: 'email', Value: `${user.email}` }],
+            },
+            (err, data) => {
+              if (err) {
+                console.log(err);
+              } else {
+                console.log(data);
+                uuid = data.UserSub;
+              }
+            },
+          );
+          return uuid;
+        });
 
         return user;
       })
