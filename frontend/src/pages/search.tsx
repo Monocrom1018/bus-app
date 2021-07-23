@@ -1,12 +1,14 @@
-import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input } from 'framework7-react';
+import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input, Row, Col, ListInput } from 'framework7-react';
 import React, { useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { stopoversState, searchingOptionState, driverState } from '@atoms';
+import { stopoversState, searchingOptionState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import CalendarPopUp from '@components/search/DatePopUp';
 import Driver from './users/Driver';
+import TimeDisplay from '@components/search/timeDisplay';
 
 const SearchPage = () => {
+<<<<<<< HEAD
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const { distance, drivers } = searchingOption;
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
@@ -17,6 +19,9 @@ const SearchPage = () => {
     drivers: null,
     pointList: {},
   });
+=======
+  const { drivers, distance } = useRecoilValue(searchingOptionState);
+>>>>>>> 49698b8fe2efd03afad60ae57e7817d48c9c555b
 
   return (
     <Page name="search">
@@ -30,10 +35,18 @@ const SearchPage = () => {
         <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
       </Block>
 
+<<<<<<< HEAD
       <CalendarPopUp />
       <DetailContainer />
 
       {drivers?.length > 0 ? (
+=======
+      <TimeDisplay />
+      <DatePopup />
+      <DetailContainer />
+
+      {drivers.length > 0 ? (
+>>>>>>> 49698b8fe2efd03afad60ae57e7817d48c9c555b
         <div>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">

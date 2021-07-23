@@ -1,9 +1,12 @@
 import { f7 } from 'framework7-react';
 import React, { useEffect } from 'react';
 import jQuery from 'jquery';
+import { searchingOptionState } from '@atoms';
+import { useRecoilState } from 'recoil';
 
 const Calendar = (props) => {
   const { Dates, setDates } = props;
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
   useEffect(() => {
@@ -42,7 +45,7 @@ const Calendar = (props) => {
           jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
         },
         change(c, v: Array<string>) {
-          setDates([...v]);
+          setSearchingOption({ ...searchingOption, date: [...v] });
         },
       },
     });

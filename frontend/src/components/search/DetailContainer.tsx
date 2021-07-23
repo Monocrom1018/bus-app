@@ -16,21 +16,19 @@ const DetailContainer = () => {
     pointList: {},
   });
 
-  const { departure, destination, departureDate, returnDate, lastDestination } = searchingOption;
-  const { stopoverCount, lastDestinationState, returnStopoverCheck, pointList } = tempState;
-  let departDay;
-  let searchTarget;
-  let itemId;
+  const { departure, destination, date, returnDate, lastDestination, drivers } = searchingOption;
+  const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
+  let departDay, searchTarget, itemId;
 
   const handleSearch = async () => {
-    if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
+    if (departure !== '' && destination !== '' && date[0] !== '' && date[1] !== '') {
       f7.dialog.preloader();
       const searchParam = {
         departure,
         lastDestination,
         destination,
-        departureDate,
-        returnDate,
+        departureDate: date[0],
+        returnDate: date[1],
         stopovers: stopovers.length > 0 ? stopovers : [],
         returnStopoverCheck,
       };
@@ -67,6 +65,7 @@ const DetailContainer = () => {
     setTempState({ ...tempState, lastDestinationState: !lastDestinationState });
   };
 
+<<<<<<< HEAD
   const placesSearchCallBack = (data: string, status: any) => {
     const cutData = data.slice(0, 5);
     const kakaoCompleteStatus = kakao.maps.services.Status.OK;
@@ -89,6 +88,23 @@ const DetailContainer = () => {
     const ps = new kakao.maps.services.Places();
     return ps.keywordSearch(keyword, placesSearchCallBack);
   };
+=======
+  // const handleDepartureDate = async (param) => {
+  //   departDay = param;
+  //   await setSearchingOption({ ...searchingOption, departureDate: String(param) });
+  // };
+
+  // const handleReturnDate = async (param) => {
+  //   const format = await moment(param).format('YYYY-MM-DD');
+  //   const yesterday = await moment(departDay).subtract(1, 'day').toDate();
+  //   const isBefore = moment(format).isBefore(yesterday);
+  //   if (isBefore) {
+  //     showToast('가는날보다 이릅니다');
+  //     return;
+  //   }
+  //   await setSearchingOption({ ...searchingOption, departureDate: String(departDay), returnDate: String(param) });
+  // };
+>>>>>>> 49698b8fe2efd03afad60ae57e7817d48c9c555b
 
   const departureSelect = async (point, where, id = null) => {
     if (where === 'departure') {
@@ -168,6 +184,47 @@ const DetailContainer = () => {
   return (
     <List noHairlinesMd>
       <div className="flex flex-col">
+<<<<<<< HEAD
+=======
+        <div className="mx-6 mt-6 -mb-6 font-semibold tracking-wider">일정</div>
+        <List className="bg-gray-50">
+          <ListInput
+            label="가는날 및 탑승시간"
+            type="datepicker"
+            placeholder="가는날과 탑승시간을 선택해주세요"
+            readonly
+            calendarParams={{
+              timePicker: true,
+              openIn: 'customModal',
+              footer: true,
+              dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+              disabled: {
+                to: new Date(),
+              },
+            }}
+            className="bg-gray-50"
+            // onCalendarChange={(e) => handleDepartureDate(e[0])}
+          />
+          <ListInput
+            label="오는날 및 탑승시간"
+            type="datepicker"
+            placeholder="오는날과 탑승시간을 선택해주세요"
+            readonly
+            calendarParams={{
+              timePicker: true,
+              openIn: 'customModal',
+              footer: true,
+              dateFormat: 'yyyy년 mm월 dd일 hh시 :mm분',
+              disabled: {
+                to: new Date(),
+              },
+            }}
+            className="bg-gray-50"
+            // onCalendarChange={(e) => handleReturnDate(e[0])}
+          />
+        </List>
+
+>>>>>>> 49698b8fe2efd03afad60ae57e7817d48c9c555b
         <div className="flex justify-between">
           <div className="mx-6 mb-2 font-semibold tracking-wider">경로</div>
           {stopovers.length > 0 ? (
