@@ -25,7 +25,6 @@ const DatePopUp = () => {
     arrival_time: '',
   });
 
-  console.log(Times);
   return (
     <>
       <Button fill popupOpen=".demo-popup">

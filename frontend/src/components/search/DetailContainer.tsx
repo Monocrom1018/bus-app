@@ -1,13 +1,5 @@
 import { f7, List, ListInput, Button, Checkbox } from 'framework7-react';
-import {
-  returnDateState,
-  departureDateState,
-  departureState,
-  destinationState,
-  distanceState,
-  stopoversState,
-  lastDestinationState,
-} from '@atoms';
+import { distanceState, stopoversState, searchingOptionState } from '@atoms';
 import React, { useState, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 import { getDrivers } from '@api';
@@ -15,35 +7,40 @@ import { showToast } from '@js/utils';
 import moment from 'moment';
 
 const DetailContainer = () => {
-  const [departure, setDeparture] = useRecoilState(departureState);
-  const [departureDate, setDepartureDate] = useRecoilState(departureDateState);
-  const [returnDate, setReturnDate] = useRecoilState(returnDateState);
-  const [destination, setDestination] = useRecoilState(destinationState);
-  const [lastDestination, setLastDestination] = useRecoilState(lastDestinationState);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const [stopovers, setStopovers] = useRecoilState(stopoversState);
-  const [distance, setDistance] = useRecoilState(distanceState);
-  const [stopoverCount, setStopoverCount] = useState(0);
-  const [lastDestinationCheck, setLastDestinationCheck] = useState(false);
-  const [returnStopoverCheck, setReturnStopoverCheck] = useState(false);
-  const [drivers, setDrivers] = useState(null);
-  const postCodeRef = useRef();
+  const [tempState, setTempState] = useState({
+    stopoverCount: 0,
+    lastDestinationCheck: false,
+    returnStopoverCheck: false,
+    drivers: null,
+    pointList: {},
+  });
+
+  const { departure, destination, departureDate, returnDate, lastDestination } = searchingOption;
+  const { stopoverCount, lastDestinationCheck, returnStopoverCheck, pointList } = tempState;
   let departDay;
+  let searchTarget;
+  let itemId;
+
 
   const handleSearch = async () => {
+    console.log(searchingOption);
     if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
       f7.dialog.preloader();
       const searchParam = {
         departure,
-        departureDate,
         lastDestination,
-        returnDate,
         destination,
+        departureDate,
+        returnDate,
         stopovers: stopovers.length > 0 ? stopovers : [],
         returnStopoverCheck,
       };
+      console.log(searchParam);
       const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
-      setDrivers(foundDrivers);
-      setDistance(calculatedDistance);
+      setTempState({ ...tempState, drivers: foundDrivers });
+      setSearchingOption({ ...searchingOption, distance: calculatedDistance });
       f7.dialog.close();
     } else {
       showToast('일정을 모두 입력해주세요');
@@ -53,7 +50,7 @@ const DetailContainer = () => {
   const handleAddStopover = async () => {
     if (stopovers.length < 5) {
       setStopovers(stopovers.concat({ id: stopoverCount, stopover: '' }));
-      setStopoverCount(stopoverCount + 1);
+      setTempState({ ...tempState, stopoverCount: stopoverCount + 1 });
     }
   };
 
@@ -69,60 +66,103 @@ const DetailContainer = () => {
   };
 
   const handleLastDestinationCheck = async () => {
-    if (lastDestinationCheck === true) {
-      setLastDestination('');
+    if (tempState.lastDestinationCheck === true) {
+      setSearchingOption({ ...searchingOption, lastDestination: '' });
     }
-
-    setLastDestinationCheck(!lastDestinationCheck);
+    setTempState({ ...tempState, lastDestinationCheck: !lastDestinationCheck });
   };
 
   const handleDepartureDate = async (param) => {
     departDay = param;
-    await setDepartureDate(String(param));
+    await setSearchingOption({ ...searchingOption, departureDate: String(param) });
   };
 
   const handleReturnDate = async (param) => {
     const format = await moment(param).format('YYYY-MM-DD');
-    const isBefore = moment(format).isBefore(departDay);
+    const yesterday = await moment(departDay).subtract(1, 'day').toDate();
+    const isBefore = moment(format).isBefore(yesterday);
     if (isBefore) {
-      showToast('가는날 이후를 선택해주세요');
+      showToast('가는날보다 이릅니다');
       return;
     }
+    await setSearchingOption({ ...searchingOption, departureDate: String(departDay), returnDate: String(param) });
+  };
 
-    setReturnDate(String(param));
+  const handleDepartureSelect = async (point, where, id = null) => {
+    if (where === 'departure') {
+      setSearchingOption({ ...searchingOption, departure: point });
+    }
+    if (where === 'destination') {
+      setSearchingOption({ ...searchingOption, destination: point });
+    }
+    if (where === 'lastDestination') {
+      setSearchingOption({ ...searchingOption, lastDestination: point });
+    }
+    if (where === 'stopover') {
+      const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
+      const mapped = duplicatedArr.map((item) => {
+        if (item.id === itemId) {
+          item.stopover = point;
+          return item;
+        }
+        return item;
+      });
+
+      setStopovers(mapped);
+    }
+
+    setTempState({ ...tempState, pointList: {} });
+  };
+
+  const placesSearchCallBack = (data, status) => {
+    if (status === kakao.maps.services.Status.OK) {
+      const cutData = data.slice(0, 5);
+      setTempState({ ...tempState, pointList: { [searchTarget]: cutData } });
+    } else {
+      setTempState({ ...tempState, pointList: {} });
+    }
+  };
+
+  const searchPlaces = async (keyword) => {
+    const ps = new kakao.maps.services.Places();
+
+    if (!keyword.replace(/^\s+|\s+$/g, '')) {
+      return false;
+    }
+
+    ps.keywordSearch(keyword, placesSearchCallBack);
   };
 
   const handlePostCode = (e, value, id) => {
-    new daum.Postcode({
-      oncomplete: (data) => {
-        if (value === 'departure') {
-          setDeparture(data.address);
-        }
+    if (value === 'departure') {
+      setSearchingOption({ ...searchingOption, departure: e });
+    }
 
-        if (value === 'destination') {
-          setDestination(data.address);
-        }
+    if (value === 'destination') {
+      setSearchingOption({ ...searchingOption, destination: e });
+    }
 
-        if (value === 'lastDestination') {
-          setLastDestination(data.address);
-        }
+    if (value === 'lastDestination') {
+      setSearchingOption({ ...searchingOption, lastDestination: e });
+    }
 
-        if (value === 'stopover') {
-          const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
-          const mapped = duplicatedArr.map((item) => {
-            if (item.id === id) {
-              item.stopover = data.address;
-              return item;
-            }
-            return item;
-          });
-
-          setStopovers(mapped);
+    //? 여기서 setStopover 한번 저장해줘야 인풋에 글씨가 써짐
+    if (value === 'stopover') {
+      const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
+      const mapped = duplicatedArr.map((item) => {
+        if (item.id === id) {
+          item.stopover = e;
+          return item;
         }
-      },
-      width: 360,
-      height: 466,
-    }).embed(postCodeRef.current);
+        return item;
+      });
+
+      setStopovers(mapped);
+    }
+
+    searchTarget = value;
+    itemId = id;
+    searchPlaces(e);
   };
 
   return (
@@ -170,19 +210,22 @@ const DetailContainer = () => {
           <div className="mx-6 mb-2 font-semibold tracking-wider">경로</div>
           {stopovers.length > 0 ? (
             <div className="mr-4">
-              <Checkbox onChange={() => setReturnStopoverCheck(!returnStopoverCheck)} className="pb-1 text-sm" />
+              <Checkbox
+                onChange={() => setTempState({ ...tempState, returnStopoverCheck: !returnStopoverCheck })}
+                className="pb-1 text-sm"
+              />
               <span className="ml-1 text-gray-700 text-sm">귀환시에도 경유</span>
             </div>
           ) : null}
         </div>
 
-        <div ref={postCodeRef} className="ml-2" />
+        {/* <div ref={postCodeRef} className="ml-2" /> */}
 
         <div className="flex px-4 mb-3">
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
             readOnly
-            value={departure}
+            value={searchingOption.departure}
             placeholder="출발지를 검색해주세요"
             onClick={(e) => handlePostCode(e.currentTarget.value, 'departure', null)}
           />{' '}
@@ -206,7 +249,7 @@ const DetailContainer = () => {
         <input
           className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
           readOnly
-          value={destination}
+          value={searchingOption.destination}
           placeholder="목적지를 검색해주세요"
           onClick={(e) => handlePostCode(e.currentTarget.value, 'destination', null)}
         />{' '}

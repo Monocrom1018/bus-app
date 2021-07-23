@@ -14,17 +14,7 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import {
-  returnDateState,
-  departureDateState,
-  departureState,
-  destinationState,
-  stopoversState,
-  totalChargeState,
-  driverState,
-  reservationState,
-  lastDestinationState,
-} from '@atoms';
+import { stopoversState, totalChargeState, driverState, reservationState } from '@atoms';
 import moment from 'moment';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
