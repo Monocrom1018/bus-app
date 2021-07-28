@@ -1,6 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MonthsRepository } from '@months/months.repogitory';
+import { MonthsRepository } from '@months/months.repository';
 
 @Injectable()
 export class MonthsService {

@@ -3,10 +3,15 @@ import { Module } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
-import { MonthsModule } from '../months/months.module';
+import { MonthsModule } from '@months/months.module';
+import { SchedulesModule } from '@schedules/schedules.module';
 
 @Module({
-  imports: [MonthsModule, TypeOrmModule.forFeature([UsersRepository])],
+  imports: [
+    SchedulesModule,
+    MonthsModule,
+    TypeOrmModule.forFeature([UsersRepository]),
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

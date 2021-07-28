@@ -11,7 +11,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { ReservationsService } from './reservations.service';
 
-@ApiTags('예약')
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
@@ -41,16 +40,27 @@ export class ReservationsController {
     return this.reservationsService.updateReservation(param);
   }
 
-  @ApiOperation({ summary: '예약목록 가져오기' })
+  @ApiOperation({ summary: '예약id로 예약목록 가져오기' })
+  @Get('getList')
+  @ApiResponse({
+    status: 200,
+    description: 'get all Reservations success',
+  })
+  async getListByReservationId(@Query('id') id: number) {
+    const data = await this.reservationsService.getListById(id);
+    return data;
+  }
+
+  @ApiOperation({ summary: '유저 이메일로 예약목록 가져오기' })
   @Get()
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',
   })
-  async getAllFromUser(
+  async getListByEmail(
     @Query('email') email: string,
     @Query('page') page: number,
   ) {
-    return this.reservationsService.getAllFromUser(email, page);
+    return this.reservationsService.getListByEmail(email, page);
   }
 }
