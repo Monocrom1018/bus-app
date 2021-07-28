@@ -33,10 +33,21 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getLists(myId: number, page): Promise<Reservation[]> {
+  async getListById(id: number): Promise<Reservation[]> {
+    const reservations = await Reservation.find({
+      relations: ['schedules', 'driver', 'user'],
+      where: {
+        reservation: id,
+      },
+    });
+
+    return reservations;
+  }
+
+  async getListByEmail(myId: number, page): Promise<Reservation[]> {
     const perPage = 3;
     const reservations = await Reservation.find({
-      relations: ['driver', 'user'],
+      relations: ['schedules', 'driver', 'user'],
       where: [
         {
           user: myId,

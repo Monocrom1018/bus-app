@@ -17,7 +17,7 @@ export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @ApiOperation({ summary: '예약 생성' })
-  @Post('create')
+  @Post()
   @ApiResponse({
     status: 200,
     description: 'create Reservation success',
@@ -40,7 +40,13 @@ export class SchedulesController {
     @Query('departure') departure: string,
     @Query('stopovers') stopovers: string[],
     @Query('destination') destination: string,
+    @Query('lastDestination') lastDestination: string,
   ) {
-    return this.schedulesService.getDistance(departure, stopovers, destination);
+    return this.schedulesService.getDistance(
+      departure,
+      stopovers,
+      destination,
+      lastDestination,
+    );
   }
 }

@@ -21,10 +21,15 @@ export class ReservationsService {
     return data;
   }
 
-  async getLists(email, page) {
+  async getListById(id: number) {
+    const data = await this.reservationsRepository.getListById(id);
+    return data;
+  }
+
+  async getListByEmail(email, page) {
     const me = await this.usersService.me(email);
     const myId = me.id;
-    const data = await this.reservationsRepository.getLists(myId, page);
+    const data = await this.reservationsRepository.getListByEmail(myId, page);
     return data;
   }
 

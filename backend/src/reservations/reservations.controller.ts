@@ -40,13 +40,27 @@ export class ReservationsController {
     return this.reservationsService.updateReservation(param);
   }
 
-  @ApiOperation({ summary: '예약목록 가져오기' })
+  @ApiOperation({ summary: '예약id로 예약목록 가져오기' })
+  @Get('getList')
+  @ApiResponse({
+    status: 200,
+    description: 'get all Reservations success',
+  })
+  async getListByReservationId(@Query('id') id: number) {
+    const data = await this.reservationsService.getListById(id);
+    return data;
+  }
+
+  @ApiOperation({ summary: '유저 이메일로 예약목록 가져오기' })
   @Get()
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',
   })
-  async getLists(@Query('email') email: string, @Query('page') page: number) {
-    return this.reservationsService.getLists(email, page);
+  async getListByEmail(
+    @Query('email') email: string,
+    @Query('page') page: number,
+  ) {
+    return this.reservationsService.getListByEmail(email, page);
   }
 }

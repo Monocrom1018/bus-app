@@ -9,21 +9,9 @@ import { Schedules as Schedule } from './schedules.entity';
 
 @EntityRepository(Schedule)
 export class SchedulesRepository extends Repository<Schedule> {
-  async createSchedule(scheduleCreateDto: any, userId: any): Promise<Schedule> {
-    const { driverId, departure, returnDate, departureDate, destination } =
+  async createSchedule(scheduleCreateDto: any): Promise<Schedule> {
+    const { departure, returnDate, departureDate, destination, stopover } =
       scheduleCreateDto;
-
-    const existingCheck = await Schedule.findOne({
-      where: {
-        user: userId,
-        driver: driverId,
-        status: '수락대기중',
-      },
-    });
-
-    if (existingCheck) {
-      throw new ConflictException('reservation already exists');
-    }
 
     const schedule = new Schedule();
     // schedule.departureDate = departureDate;
