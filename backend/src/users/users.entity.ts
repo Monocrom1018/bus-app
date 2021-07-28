@@ -14,7 +14,6 @@ import { Notices as Notice } from '@notices/notices.entity';
 import { Reservations as Reservation } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { Messages } from '@messages/messages.entity';
-import { ReservationsUsers as ReservatonsUser } from '@reservations_users/reservations_users.entity';
 import { DateAudit } from '../shared/entities/date-audit.entity';
 
 export enum UserType {
@@ -162,14 +161,14 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   director_phone: number;
 
+  @Column({ nullable: true })
+  bank: string;
+
+  @Column({ nullable: true })
+  account_number: string;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
-
-  @OneToMany(
-    (type) => ReservatonsUser,
-    (reservationsUsers) => reservationsUsers.user,
-  )
-  reservationsUsers: ReservatonsUser[];
 
   @OneToMany((type) => Reservation, (reservations) => reservations.user)
   reservations: Reservation[];

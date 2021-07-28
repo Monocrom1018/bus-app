@@ -16,6 +16,7 @@ import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 import { MonthsService } from '../months/months.service';
 import { UserUpdateDto } from './dto/user-update.dto';
+import { SchedulesService } from '@schedules/schedules.service';
 // const axios = require('axios');
 // const qs = require('qs');
 
@@ -23,7 +24,8 @@ import { UserUpdateDto } from './dto/user-update.dto';
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
-    private readonly usersRepository: UsersRepository,
+    private usersRepository: UsersRepository,
+    private schedulesService: SchedulesService,
     private readonly monthsService: MonthsService,
     private readonly authService: AuthService,
   ) {}
@@ -157,9 +159,9 @@ export class UsersService {
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
     const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
     const drivers = await this.usersRepository.findTargetDrivers(params);
-    const distance = await this.getDistance(params);
+    const distance = await this.schedulesService.getDistanceAPI(params);
 
-    const returnDistance = await this.getDistance({
+    const returnDistance = await this.schedulesService.getDistanceAPI({
       departure: destination,
       destination: lastDestination === '' ? departure : lastDestination,
       stopovers: returnStopoverCheck ? stopovers.reverse() : [],
@@ -236,98 +238,5 @@ export class UsersService {
 
   async getMonth(date: string) {
     return moment(date).format('YYYY년 M월 DD일 HH시 MM분').split(' ')[1];
-  }
-
-  async getDistance(params: UserSearchDto) {
-    const { departure, destination, stopovers } = params;
-    const departureCoord = { x: '', y: '' };
-    const destinationCoord = { x: '', y: '' };
-    let tmapData = '';
-
-    if (stopovers.length > 0 && stopovers[0].stopover !== '') {
-      for (let i = 0; i < stopovers.length; i++) {
-        if (stopovers[i].stopover === '') {
-          throw new InternalServerErrorException();
-        }
-        // eslint-disable-next-line no-await-in-loop
-        const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${
-          stopoverData.data.coordinateInfo.coordinate[0].lon ||
-          stopoverData.data.coordinateInfo.coordinate[0].newLon
-        },${
-          stopoverData.data.coordinateInfo.coordinate[0].lat ||
-          stopoverData.data.coordinateInfo.coordinate[0].newLat
-        }_`;
-        tmapData += tmapsGeo;
-      }
-
-      tmapData = tmapData.slice(0, -1);
-    }
-
-    const departureData = await this.getGeoData(departure);
-    const destinationData = await this.getGeoData(destination);
-
-    departureCoord.x =
-      departureData.data.coordinateInfo.coordinate[0].lon ||
-      departureData.data.coordinateInfo.coordinate[0].newLon;
-    departureCoord.y =
-      departureData.data.coordinateInfo.coordinate[0].lat ||
-      departureData.data.coordinateInfo.coordinate[0].newLat;
-
-    destinationCoord.x =
-      destinationData.data.coordinateInfo.coordinate[0].lon ||
-      destinationData.data.coordinateInfo.coordinate[0].newLon;
-    destinationCoord.y =
-      destinationData.data.coordinateInfo.coordinate[0].lat ||
-      destinationData.data.coordinateInfo.coordinate[0].newLat;
-
-    const tmapBody = qs.stringify({
-      appKey: process.env.TMAP_API_KEY,
-      endX: departureCoord.x,
-      endY: departureCoord.y,
-      startX: destinationCoord.x,
-      startY: destinationCoord.y,
-      passList: tmapData,
-      searchOption: 10,
-      totalValue: 2,
-      trafficInfo: 'N',
-    });
-
-    const tmapApiConfig: AxiosRequestConfig = {
-      method: 'POST',
-      url: 'https://apis.openapi.sk.com/tmap/routes?version=1',
-      headers: {
-        'Accept-Language': 'ko',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      params: { tmapBody },
-    };
-    const tmapApi = await axios(tmapApiConfig);
-    // const tmapApi = await axios.post(
-    //   'https://apis.openapi.sk.com/tmap/routes?version=1',
-    //   tmapBody,
-    //   tmapConfig,
-    // );
-
-    const kmData = Math.round(
-      tmapApi.data.features[0].properties.totalDistance / 1000,
-    );
-
-    return kmData;
-  }
-
-  async getGeoData(param: string) {
-    const data = await axios.get(
-      'https://apis.openapi.sk.com/tmap/geo/fullAddrGeo',
-      {
-        params: {
-          addressFlag: 'F00',
-          version: '1',
-          fullAddr: param,
-          appKey: process.env.TMAP_API_KEY,
-        },
-      },
-    );
-    return data;
   }
 }

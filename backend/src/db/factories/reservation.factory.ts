@@ -5,15 +5,14 @@ import { Reservations as Reservation } from '@reservations/reservations.entity';
 define(Reservation, (faker: typeof Faker) => {
   const reservation = new Reservation();
 
-  reservation.departure = faker.address.city();
-  reservation.destination = faker.address.city();
+  // reservation.departure = faker.address.city();
+  // reservation.destination = faker.address.city();
 
-  reservation.departureDate = faker.date.recent();
-  reservation.returnDate = faker.date.recent();
+  // reservation.departureDate = faker.date.recent();
+  // reservation.returnDate = faker.date.recent();
 
   reservation.people = faker.random.number({ min: 10, max: 30 });
-  reservation.accompany = '출발, 복귀만';
-  reservation.price = Number(faker.commerce.price());
+  // reservation.price = Number(faker.commerce.price());
 
   return reservation;
 });
