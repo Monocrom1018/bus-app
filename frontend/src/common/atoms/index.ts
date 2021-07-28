@@ -1,6 +1,5 @@
-import { atom } from 'recoil';
-import { CurrentUser, CurrentUserState } from '@interfaces';
-import { string } from 'prop-types';
+import { atom, selector } from 'recoil';
+import { CurrentUser } from '@interfaces';
 
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
@@ -33,16 +32,29 @@ export const searchingOptionState = atom({
     departureTime: '',
     returnTime: '',
     date: [],
-    time: {
-      departureTime: '',
-      returnTime: '',
-    },
   },
 });
 
-export const stopoversState = atom({
-  key: 'stopoversState',
-  default: [],
+export const searchingOptionDateSelector = selector({
+  key: 'searchingOptionDateSelector',
+  get: ({ get }) => {
+    const searchingOption = get(searchingOptionState);
+    return {
+      departureDate: searchingOption.date[0] && searchingOption.date[0],
+      returnDate: searchingOption.date[1] && searchingOption.date[1],
+    };
+  },
+});
+
+export const searchingOptionTimeSelector = selector({
+  key: 'searchingOptionTimeSelector',
+  get: ({ get }) => {
+    const searchingOption = get(searchingOptionState);
+    return {
+      departureTime: searchingOption.departureTime,
+      returnTime: searchingOption.returnTime,
+    };
+  },
 });
 
 export const distanceState = atom({

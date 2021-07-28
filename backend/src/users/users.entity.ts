@@ -186,10 +186,8 @@ export class Users extends DateAudit {
   notices: Notice[];
 
   async validateUserPassword(password: string): Promise<boolean> {
-    // const hash = await bcrypt.hash(password, this.encrypted_password);
     const compareValue = bcrypt.compare(password, this.encrypted_password);
     return compareValue;
-    // return hash === this.password;
   }
 
   static async sample(): Promise<Users> {

@@ -1,20 +1,24 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
+import axios, { AxiosRequestConfig } from 'axios';
+import qs from 'qs';
+import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UserSearchDto } from './dto/user-search.dto';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
-import { MonthsService } from '@months/months.service';
+import { MonthsService } from '../months/months.service';
+import { UserUpdateDto } from './dto/user-update.dto';
 import { SchedulesService } from '@schedules/schedules.service';
-
-const axios = require('axios');
-const qs = require('qs');
+// const axios = require('axios');
+// const qs = require('qs');
 
 @Injectable()
 export class UsersService {
@@ -23,7 +27,7 @@ export class UsersService {
     private usersRepository: UsersRepository,
     private schedulesService: SchedulesService,
     private readonly monthsService: MonthsService,
-    private authService: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
@@ -42,12 +46,12 @@ export class UsersService {
     return users;
   }
 
-  async update(filename: string, userUpdateDto) {
+  async update(filename: string, userUpdateDto: UserUpdateDto) {
     const user = await this.authService.currentApiUser();
     return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
-  async getBillingKey(body) {
+  async getBillingKey(body: BillingKeyProps) {
     const { authKey, customerKey } = body;
     const user = await this.me('normal@test.com');
 
@@ -55,17 +59,15 @@ export class UsersService {
       throw new NotFoundException('유저정보가 조회되지 않습니다');
     }
 
-    const encodedKey = await Buffer.from(
+    const encodedKey = Buffer.from(
       `${process.env.TOSS_SECRET_KEY}:`,
       'utf8',
     ).toString('base64');
 
-    const tossData = {
-      customerKey,
-    };
+    const tossData = { customerKey };
 
-    const Config = {
-      method: 'post',
+    const config: AxiosRequestConfig = {
+      method: 'POST',
       url: `https://api.tosspayments.com/v1/billing/authorizations/${authKey}`,
       headers: {
         Authorization: `Basic ${encodedKey}`,
@@ -74,7 +76,7 @@ export class UsersService {
       data: tossData,
     };
 
-    const { data: apiResult } = await axios(Config);
+    const { data: apiResult } = await axios(config);
     return this.usersRepository.saveBillingKey(apiResult, user);
   }
 
@@ -96,8 +98,8 @@ export class UsersService {
       orderName: '배낭버스 운행예약',
     };
 
-    const Config = {
-      method: 'post',
+    const config: AxiosRequestConfig = {
+      method: 'POST',
       url: `https://api.tosspayments.com/v1/billing/${card_billing_key}`,
       headers: {
         Authorization: `Basic ${encodedKey}`,
@@ -107,17 +109,18 @@ export class UsersService {
     };
 
     try {
-      const { data: apiResult } = await axios(Config);
+      const { data: apiResult } = await axios(config);
     } catch (error) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
+      const { data, status, headers } = error.response;
+      console.log(data);
+      console.log(status);
+      console.log(headers);
     }
 
-    return 'okok';
+    return 'ok';
   }
 
-  async me(email) {
+  async me(email: string): Promise<User> {
     const user = await this.usersRepository.me(email);
     return user;
   }
@@ -132,7 +135,7 @@ export class UsersService {
     return user;
   }
 
-  async getInformation() {
+  async getInformation(): Promise<User> {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
@@ -150,7 +153,7 @@ export class UsersService {
       lastDestination,
       returnStopoverCheck,
     } = params;
-    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
+    const departureTime = departureDate.split(' ')[4].split(':')[0];
     const departMonth = await this.getMonth(departureDate);
     const returnMonth = await this.getMonth(returnDate);
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
@@ -214,7 +217,7 @@ export class UsersService {
     };
   }
 
-  async getReturnTotalCharge(params) {
+  async getReturnTotalCharge(params: TotalChargeProps) {
     const { returnDistance, returnDate, driver, isReturnPeak } = params;
     const returnTime = returnDate.split(' ')[4].split(':')[0];
 
@@ -233,7 +236,7 @@ export class UsersService {
     return returnTotalCharge;
   }
 
-  async getMonth(date) {
+  async getMonth(date: string) {
     return moment(date).format('YYYY년 M월 DD일 HH시 MM분').split(' ')[1];
   }
 }

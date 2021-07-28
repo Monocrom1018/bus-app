@@ -17,6 +17,7 @@
       "@decorators/*": ["src/shared/decorators/*"],
       "@entities/*": ["src/shared/entities/*"],
       "@filters/*": ["src/shared/filters/*"],
+      "@interfaces/*": ["src/shared/interfaces/*"],
       "@middlewares/*": ["src/shared/middlewares/*"],
       "@guards/*": ["src/shared/guards/*"],
       "@users/*": ["src/users/*"],

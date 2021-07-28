@@ -1,8 +1,4 @@
-import {
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { Users as User } from '@users/users.entity';
+import { ConflictException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
 // import { ScheduleCreateDto } from './dto/create-schedule.dto';
 import { Reservations as Reservation } from './reservations.entity';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Row,
   Col,
@@ -11,26 +11,19 @@ import {
   Block,
   Icon,
   Toolbar,
-  List,
   ListInput,
 } from 'framework7-react';
 import Calendar from '@components/search/Calendar';
 import TimePicker from '@components/search/TimePicker';
 import moment from 'moment';
-import { useRecoilState } from 'recoil';
-import { searchingOptionState } from '@atoms';
+import { useRecoilValue } from 'recoil';
+import { searchingOptionDateSelector } from '@atoms';
 
-const DatePopUp = () => {
-  const [popupOpened, setPopupOpened] = useState(false);
-  const [Dates, setDates] = useState([]);
-  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { departureTime, returnTime, date } = searchingOption;
+const DatePopUp = ({ popupOpened, setPopupOpened }) => {
+  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
 
   return (
     <>
-      <Button fill popupOpen=".demo-popup" className="bg-red-500 text-white mt-8 mx-4 h-8 text-base">
-        날짜
-      </Button>
       <Popup
         className="demo-popup mt-20"
         swipeToClose
@@ -56,12 +49,12 @@ const DatePopUp = () => {
                     placeholder="가는날을 선택해주세요"
                     readonly
                     className="bg-gray-50 mb-4 h-20 border rounded-lg ml-3 p-3"
-                    value={moment(date[0]).format('YYYY년 MM월 DD일')}
+                    value={moment(departureDate).format('YYYY년 MM월 DD일')}
                     wrap={false}
                   />
                 </Col>
                 <Col width="50">
-                  <TimePicker el="departureTime" times={departureTime} setTimes={setSearchingOption} />
+                  <TimePicker el="departureTime" />
                 </Col>
                 <Col width="50">
                   <ListInput
@@ -70,16 +63,16 @@ const DatePopUp = () => {
                     placeholder="오는날을 선택해주세요"
                     readonly
                     className="bg-gray-50 h-20 border rounded-lg ml-3 p-3"
-                    value={date[1] ? moment(date[1]).format('YYYY년 MM월 DD일') : ''}
+                    value={returnDate ? moment(returnDate).format('YYYY년 MM월 DD일') : ''}
                     wrap={false}
                   />
                 </Col>
                 <Col width="50">
-                  <TimePicker el="returnTime" times={returnTime} setTimes={setSearchingOption} />
+                  <TimePicker el="returnTime" />
                 </Col>
               </Row>
             </div>
-            <Calendar Dates={Dates} setDates={setDates} />
+            <Calendar />
           </Block>
           <Toolbar position="bottom" className="mb-20 justify-end">
             <Link popupClose className="w-full">

@@ -11,12 +11,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import path = require('path');
+import path from 'path';
+import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
 import { UsersService } from './users.service';
 import { UserSearchDto } from './dto/user-search.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
-import { request } from 'express';
 
 export const storage = {
   storage: diskStorage({
@@ -106,7 +106,7 @@ export class UsersController {
     description: 'get billingkey success',
   })
   @Post('/billing')
-  async getBillingKey(@Body() body) {
+  async getBillingKey(@Body() body: BillingKeyProps) {
     return this.usersService.getBillingKey(body);
   }
 
@@ -116,7 +116,7 @@ export class UsersController {
     description: 'make payment success',
   })
   @Post('/payment')
-  async createPayment(@Body() body) {
+  async createPayment(@Body() body: TotalChargeProps) {
     return this.usersService.createPayment(body);
   }
 }

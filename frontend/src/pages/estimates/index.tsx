@@ -14,7 +14,7 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { stopoversState, totalChargeState, driverState, reservationState, searchingOptionState } from '@atoms';
+import { totalChargeState, driverState, reservationState, searchingOptionState } from '@atoms';
 import moment from 'moment';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
@@ -22,8 +22,8 @@ import { createReservation } from '../../common/api/index';
 
 const EstimatePage = ({ f7router }) => {
   const searchingOption = useRecoilValue(searchingOptionState);
-  const { departure, departureDate, returnDate, destination, lastDestination } = searchingOption;
-  const stopovers = useRecoilValue(stopoversState);
+  const { departure, returnDate, destination, lastDestination } = searchingOption;
+  // const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
   const [reservation, setReservation] = useRecoilState(reservationState);
@@ -37,18 +37,18 @@ const EstimatePage = ({ f7router }) => {
       return;
     }
 
-    const stopoversArray = stopovers.map((stopover) => stopover.stopover);
-    const params = {
-      userEmail: currentUser.email,
-      driverId: driver.id,
-      departure,
-      returnDate,
-      departureDate,
-      lastDestination,
-      destination,
-      totalCharge,
-      people,
-    };
+    // const stopoversArray = stopovers.map((stopover) => stopover.stopover);
+    // const params = {
+    //   userEmail: currentUser.email,
+    //   driverId: driver.id,
+    //   departure,
+    //   returnDate,
+    //   departureDate,
+    //   lastDestination,
+    //   destination,
+    //   totalCharge,
+    //   people,
+    // };
     console.log(lastDestination);
     f7.preloader.show();
     let message: string;
@@ -84,7 +84,7 @@ const EstimatePage = ({ f7router }) => {
               placeholder="가는날과 탑승시간을 선택해주세요"
               className="bg-gray-50"
               disabled
-              value={moment(departureDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+              // value={moment(departureDate).format('YYYY년 MM월 DD일 HH시 MM분')}
             />
             <ListInput
               label="오는날 및 탑승시간"
@@ -108,12 +108,12 @@ const EstimatePage = ({ f7router }) => {
             />{' '}
           </div>
         </div>
-        {stopovers.map((item) => (
+        {/* {stopovers.map((item) => (
           <div className="flex px-4 py-2" key={item.id}>
             <div className="f7-icons text-base mr-1">placemark</div>
             <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={item.stopover} />{' '}
           </div>
-        ))}
+        ))} */}
         <div className="flex px-4 mt-3">
           <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
           <input

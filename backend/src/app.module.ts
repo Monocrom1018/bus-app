@@ -31,7 +31,6 @@ AdminBro.registerAdapter({ Database, Resource });
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
       logging: true,
-      // entities: [join(__dirname, '..', 'src', '**', '*.entity{.ts,.js}')],
       entities: [`${__dirname}/**/*.entity.{js, ts}`],
       synchronize: false,
     }),

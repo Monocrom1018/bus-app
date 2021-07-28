@@ -1,14 +1,71 @@
-import { Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input, Row, Col, ListInput } from 'framework7-react';
-import React, { useState } from 'react';
+/* global kakao */
+import { f7, Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, List } from 'framework7-react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { stopoversState, searchingOptionState } from '@atoms';
+import { searchingOptionState, searchingOptionDateSelector } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
+import TimeDisplay from '@components/search/TimeDisplay';
+import moment from 'moment';
+import { getDrivers } from '@api';
+import { showToast } from '@js/utils';
 import Driver from './users/Driver';
-import TimeDisplay from '@components/search/timeDisplay';
 
 const SearchPage = () => {
-  const { drivers, distance } = useRecoilValue(searchingOptionState);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const [popupOpened, setPopupOpened] = useState(false);
+  const { distance, drivers, departure, destination, lastDestination } = searchingOption;
+  const [tempState, setTempState] = useState({
+    stopoverCount: 1,
+    lastDestinationState: false,
+    returnStopoverCheck: false,
+    drivers: null,
+    pointList: {},
+  });
+  const KakaoPlaceRef = useRef(null);
+  const { returnStopoverCheck } = tempState;
+  const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
+
+  useEffect(() => {
+    KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
+  }, []);
+
+  const getDayList = () => {
+    const days = [];
+    [...Array(dayDiff)].forEach((day, index) => {
+      days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
+    });
+    return days;
+  };
+
+  const handleSearch = async () => {
+    if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
+      f7.dialog.preloader();
+      const searchParam = {
+        departure,
+        lastDestination,
+        destination,
+        departureDate,
+        returnDate,
+        // stopovers: stopovers.length > 0 ? stopovers : [],
+        returnStopoverCheck,
+      };
+      const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
+      setSearchingOption((prev) => ({ ...prev, ...{ drivers: foundDrivers, distance: calculatedDistance } }));
+      f7.dialog.close();
+    } else {
+      showToast('일정을 모두 입력해주세요');
+    }
+  };
+
+  const searchPlaces = async (keyword: string, callback: any) => {
+    if (!keyword.replace(/^\s+|\s+$/g, '')) {
+      return false;
+    }
+
+    return KakaoPlaceRef.current.keywordSearch(keyword, callback);
+  };
 
   return (
     <Page name="search">
@@ -18,14 +75,12 @@ const SearchPage = () => {
         </NavLeft>
         <NavTitle>검색</NavTitle>
       </Navbar>
-      <Block className="my-5">
-        <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
-      </Block>
-
-      <TimeDisplay />
-      <DatePopup />
-      <DetailContainer />
-
+      <TimeDisplay setPopupOpened={setPopupOpened} />
+      <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
+      {getDayList().map((day, index) => (
+        <DetailContainer searchPlaces={searchPlaces} day={day} />
+      ))}
+      <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
       {drivers.length > 0 ? (
         <div>
           <div className="flex justify-between">
