@@ -5,42 +5,35 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Users } from '@users/users.entity';
+import { Users as User } from '@users/users.entity';
 import { DateAudit } from '@entities/date-audit.entity';
-import { Schedules } from '@schedules/schedules.entity';
+import { Schedules as Schedule } from '@schedules/schedules.entity';
 
 @Entity()
 export class Reservations extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  departure: string;
-
-  @Column()
-  departureDate: Date;
-
-  @Column()
-  destination: string;
-
-  @Column()
-  returnDate: Date;
-
-  @Column()
+  @Column({ nullable: true })
   people: number;
-
-  @Column()
-  price: number;
 
   @Column()
   status: string;
 
-  @OneToMany((type) => Schedules, (Schedules) => Schedules.reservation)
-  schedules: Schedules[];
+  @Column({ nullable: true })
+  total_price: number;
 
-  @ManyToOne((type) => Users, (user) => user.reservations)
-  user: Users;
+  @Column({ nullable: true })
+  total_distance: number;
 
-  @ManyToOne((type) => Users, (driver) => driver.reservations)
-  driver: Users;
+  @ManyToOne((type) => User, (user) => user.reservations)
+  user: User;
+
+  @ManyToOne((type) => User, (driver) => driver.reservations)
+  driver: User;
+
+  @OneToMany((type) => Schedule, (schedules) => schedules.reservation, {
+    nullable: true,
+  })
+  schedules: Schedule[];
 }

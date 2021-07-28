@@ -11,7 +11,6 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { ReservationsService } from './reservations.service';
 
-@ApiTags('예약')
 @Controller('reservations')
 export class ReservationsController {
   constructor(private readonly reservationsService: ReservationsService) {}
@@ -47,10 +46,7 @@ export class ReservationsController {
     status: 200,
     description: 'get all Reservations success',
   })
-  async getAllFromUser(
-    @Query('email') email: string,
-    @Query('page') page: number,
-  ) {
-    return this.reservationsService.getAllFromUser(email, page);
+  async getLists(@Query('email') email: string, @Query('page') page: number) {
+    return this.reservationsService.getLists(email, page);
   }
 }

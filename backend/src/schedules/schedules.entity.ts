@@ -7,14 +7,16 @@ export class Schedules extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne((type) => Reservations, (reservation) => reservation.schedules)
+  @ManyToOne((type) => Reservations, (reservation) => reservation.schedules, {
+    onDelete: 'CASCADE',
+  })
   reservation: Reservations;
 
   @Column()
   departure: string;
 
   @Column()
-  departureDate: Date;
+  departure_date: Date;
 
   @Column('text', {
     array: true,
@@ -26,10 +28,10 @@ export class Schedules extends DateAudit {
   destination: string;
 
   @Column()
-  returnDate: Date;
+  return_date: Date;
 
   @Column({ nullable: true })
-  lastDestination: string;
+  last_destination: string;
 
   @Column()
   distance: number;
