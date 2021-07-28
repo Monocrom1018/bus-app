@@ -27,6 +27,10 @@ const SearchPage = () => {
   const { returnStopoverCheck } = tempState;
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
 
+  useEffect(() => {
+    KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
+  }, []);
+
   const getDayList = () => {
     const days = [];
     [...Array(dayDiff)].forEach((day, index) => {
@@ -55,10 +59,6 @@ const SearchPage = () => {
     }
   };
 
-  useEffect(() => {
-    KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
-  }, []);
-
   const searchPlaces = async (keyword: string, callback: any) => {
     if (!keyword.replace(/^\s+|\s+$/g, '')) {
       return false;
@@ -75,9 +75,6 @@ const SearchPage = () => {
         </NavLeft>
         <NavTitle>검색</NavTitle>
       </Navbar>
-      <Block className="my-5">
-        <BlockTitle className="text-center text-xl text-gray-900">내용을 입력하고 예약해보세요</BlockTitle>
-      </Block>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
       {getDayList().map((day, index) => (
