@@ -144,9 +144,6 @@ export class UsersRepository extends Repository<User> {
     } = userUpdateDto;
 
     const user = currentApiUser;
-    // await this.findOne({
-    //   email: email,
-    // });
 
     if (!user) {
       throw new ConflictException('유저정보가 조회되지 않습니다');
@@ -175,16 +172,12 @@ export class UsersRepository extends Repository<User> {
       user.introduce = introduce;
       user.peak_charge = peakCharge;
       user.peak_charge_per_km = peakChargePerKm;
-      user.sanitizer = sanitizer === 'true' ? true : false;
-      user.wifi = wifi === 'true' ? true : false;
-      user.movie = movie === 'true' ? true : false;
-      user.audio = audio === 'true' ? true : false;
-      user.usb = usb === 'true' ? true : false;
-      user.fridge = fridge === 'true' ? true : false;
-
-      // if (password !== '') {
-      //   user.encrypted_password = await bcrypt.hash(password, 10);
-      // }
+      user.sanitizer = sanitizer === 'true';
+      user.wifi = wifi === 'true';
+      user.movie = movie === 'true';
+      user.audio = audio === 'true';
+      user.usb = usb === 'true';
+      user.fridge = fridge === 'true';
 
       user.save();
     } catch (err) {
@@ -206,31 +199,6 @@ export class UsersRepository extends Repository<User> {
   async findTargetDrivers(params): Promise<User[]> {
     const { departure } = params;
     const legion = departure.split(' ')[0];
-
-    // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
-
-    // const entityManager = getManager();
-
-    // let drivers = await entityManager.query(
-    //   `select * from users where
-    //     drivable_legion @> ARRAY['${legion}']
-    //     AND drivable_date @> ARRAY['${date}']
-    //     AND (user_type = 'driver'
-    //     OR user_type = 'company')`,
-    // );
-
-    // const posts = await this.createQueryBuilder('User')
-    //   .where((qb) => {
-    //     const subQuery = qb
-    //       .subQuery()
-    //       .from(User, 'User')
-    // .where('user_type = :company', { company: 'company' })
-    // .orWhere('user_type = :driver', { driver: 'driver' })
-    //       .getQuery();
-
-    //     return subQuery + '.drivable_date @> ARRAY[' + `${date}` + ']';
-    //   })
-    //   .getMany();
 
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_legion @> ARRAY['${legion}']`)

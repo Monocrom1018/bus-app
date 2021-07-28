@@ -16,13 +16,13 @@ export class UserSearchDto {
   @ApiProperty({
     example: 'Sun Jun 06 2021 09:07:00 GMT+0900 (대한민국 표준시)',
   })
-  departureDate: string;
+  departureDate?: string;
 
   @IsString()
   @ApiProperty({
     example: 'Sun Jun 06 2021 09:07:00 GMT+0900 (대한민국 표준시)',
   })
-  returnDate: string;
+  returnDate?: string;
 
   @IsString()
   @ApiProperty()
@@ -31,24 +31,24 @@ export class UserSearchDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  lastDestination: string;
+  lastDestination?: string;
 
   @IsArray()
   @IsOptional()
   @ApiProperty()
-  stopovers: string[];
+  stopovers?: Array<{ [key: string]: string }>;
 
   @IsNumber()
   @IsOptional()
   @ApiProperty()
-  distance: number;
+  distance?: number;
 
   @IsBoolean()
   @IsOptional()
   @ApiProperty()
-  returnStopoverCheck: boolean;
+  returnStopoverCheck?: boolean;
 
   @IsNumber()
   @IsOptional()
-  totalCharge: number;
+  totalCharge?: number;
 }

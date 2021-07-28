@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MonthsRepository } from '@months/months.repogitory';
 
@@ -9,7 +9,8 @@ export class MonthsService {
     private monthsRepository: MonthsRepository,
   ) {}
 
-  async isPeakMonth(month) {
-    return await this.monthsRepository.checkPeak(month);
+  async isPeakMonth(month: string) {
+    const isPeak = await this.monthsRepository.checkPeak(month);
+    return isPeak;
   }
 }

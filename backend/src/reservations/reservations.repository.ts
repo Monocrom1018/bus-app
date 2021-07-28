@@ -1,10 +1,5 @@
-import {
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { Users as User } from '@users/users.entity';
+import { ConflictException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
-import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { Reservations as Reservation } from './reservations.entity';
 
 @EntityRepository(Reservation)
@@ -37,9 +32,6 @@ export class ReservationsRepository extends Repository<Reservation> {
       throw new ConflictException('reservation already exists');
     }
 
-    console.log('lastDestination');
-    console.log(lastDestination);
-
     const reservation = new Reservation();
     reservation.departure = departure;
     reservation.departureDate = departureDate;
@@ -59,7 +51,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     return reservation;
   }
 
-  async getAllFromUser(myId: number, page): Promise<Reservation[]> {
+  async getAllFromUser(myId: number, page: number): Promise<Reservation[]> {
     const perPage = 3;
     const reservations = await Reservation.find({
       relations: ['driver', 'user'],

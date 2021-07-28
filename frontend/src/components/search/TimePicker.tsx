@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { f7, Input, ListInput } from 'framework7-react';
+import React, { useEffect } from 'react';
+import { f7, ListInput } from 'framework7-react';
 import { searchingOptionState } from '@atoms';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
-const TimePicker = (props) => {
+const TimePicker = (props: { el: string }) => {
+  const setSearchingOption = useSetRecoilState(searchingOptionState);
   const { el } = props;
-  // const { Times, setTimes } = props;
-  // const searchingOption = useRecoilValue(searchingOptionState);
-  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
 
   useEffect(() => {
     f7.picker.create({
       inputEl: `#${el}_picker`,
       rotateEffect: true,
       backdrop: true,
+      value: ['0', '00'],
       cols: [
         {
           textAlign: 'left',
@@ -24,9 +23,8 @@ const TimePicker = (props) => {
         },
       ],
       on: {
-        change(p, v: Array<string>, d) {
-          console.log(v);
-          setSearchingOption({ ...searchingOption, time: { ...searchingOption.time, [el]: v } });
+        change(picker, value: Array<string>, displayValues) {
+          setSearchingOption((state) => ({ ...state, ...{ [`${el}`]: value.join(' ') } }));
         },
       },
     });
