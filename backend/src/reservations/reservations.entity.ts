@@ -7,18 +7,12 @@ import {
 } from 'typeorm';
 import { Users } from '@users/users.entity';
 import { DateAudit } from '@entities/date-audit.entity';
-import { ReservationsUsers as ReservationsUser } from '@reservations_users/reservations_users.entity';
+import { Schedules } from '@schedules/schedules.entity';
 
 @Entity()
 export class Reservations extends DateAudit {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @OneToMany(
-    (type) => ReservationsUser,
-    (reservationsUsers) => reservationsUsers.reservation,
-  )
-  reservationsUsers: ReservationsUser[];
 
   @Column()
   departure: string;
@@ -26,32 +20,23 @@ export class Reservations extends DateAudit {
   @Column()
   departureDate: Date;
 
-  @Column('text', {
-    array: true,
-    nullable: true,
-  })
-  stopover: string[];
-
   @Column()
   destination: string;
 
   @Column()
   returnDate: Date;
 
-  @Column({ nullable: true })
-  lastDestination: string;
-
   @Column()
   people: number;
-
-  @Column()
-  accompany: string;
 
   @Column()
   price: number;
 
   @Column()
   status: string;
+
+  @OneToMany((type) => Schedules, (Schedules) => Schedules.reservation)
+  schedules: Schedules[];
 
   @ManyToOne((type) => Users, (user) => user.reservations)
   user: Users;

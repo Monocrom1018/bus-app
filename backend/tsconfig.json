@@ -37,7 +37,8 @@
       "@reservations/*": ["src/reservations/*"],
       "@reservations_users/*": ["src/reservations_users/*"],
       "@rooms/*": ["src/rooms/*"],
-      "@months/*": ["src/months/*"]
+      "@months/*": ["src/months/*"],
+      "@schedules/*": ["src/schedules/*"]
     }
   }
 }
