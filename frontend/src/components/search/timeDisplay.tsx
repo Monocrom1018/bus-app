@@ -1,18 +1,19 @@
 import React from 'react';
 import { Col, ListInput, Row } from 'framework7-react';
-import { searchingOptionDateSelector } from '@atoms';
+import { searchingOptionDateSelector, searchingOptionTimeSelector } from '@atoms';
 import { useRecoilValue } from 'recoil';
 import moment from 'moment';
 
 const TimeDisplay = ({ setPopupOpened }) => {
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const { departureTime, returnTime } = useRecoilValue(searchingOptionTimeSelector);
 
   return (
     <div className="mt-4">
       <Row>
         <Col width="50" onClick={() => setPopupOpened(true)}>
           <ListInput
-            label="가는날"
+            label="출발일자"
             type="text"
             readonly
             className="bg-gray-50 mb-4 h-14 border rounded-lg ml-3 px-3 pt-1"
@@ -20,40 +21,40 @@ const TimeDisplay = ({ setPopupOpened }) => {
             wrap={false}
           />
         </Col>
-        {/* <Col width="50">
+        <Col width="50" onClick={() => setPopupOpened(true)}>
           <div className="">
             <ListInput
-              label="탑승시간"
+              label="출발시간"
               wrap={false}
               type="text"
               readonly
-              value={time.departureTime ? `${time.departureTime[0]}:${time.departureTime[1]}` : ''}
+              value={departureTime || '0시 00분'}
               className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
             />
           </div>
-        </Col> */}
+        </Col>
         <Col width="50" onClick={() => setPopupOpened(true)}>
           <ListInput
-            label="오는날"
+            label="하차일자"
             type="text"
             readonly
-            className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
+            className="bg-gray-50 mb-4 h-14 border rounded-lg ml-3 px-3 pt-1"
             value={returnDate ? moment(returnDate).format('YYYY년 MM월 DD일') : ''}
             wrap={false}
           />
         </Col>
-        {/* <Col width="50">
+        <Col width="50" onClick={() => setPopupOpened(true)}>
           <div className="">
             <ListInput
-              label="탑승시간"
+              label="하차시간"
               wrap={false}
               type="text"
               readonly
-              value={time.returnTime ? `${time.returnTime[0]}:${time.returnTime[1]}` : ''}
+              value={returnTime || '0시 00분'}
               className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
             />
           </div>
-        </Col> */}
+        </Col>
       </Row>
     </div>
   );
