@@ -31,7 +31,7 @@ export class UserSearchDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  lastDestination?: string;
+  landing?: string;
 
   @IsArray()
   @IsOptional()

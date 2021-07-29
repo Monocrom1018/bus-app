@@ -78,6 +78,8 @@ export interface CurrentUser extends CurrentUserState {
   usb: boolean;
   movie: boolean;
   audio: boolean;
+  bank: string;
+  bank_account: string;
 }
 
 export interface Address {

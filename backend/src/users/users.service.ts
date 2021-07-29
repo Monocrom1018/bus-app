@@ -150,7 +150,7 @@ export class UsersService {
       stopovers,
       departure,
       destination,
-      lastDestination,
+      landing,
       returnStopoverCheck,
     } = params;
     const departureTime = departureDate.split(' ')[4].split(':')[0];
@@ -159,11 +159,11 @@ export class UsersService {
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
     const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
     const drivers = await this.usersRepository.findTargetDrivers(params);
-    const distance = await this.schedulesService.getDistanceAPI(params);
+    const distance = await this.schedulesService.getDistance(params);
 
-    const returnDistance = await this.schedulesService.getDistanceAPI({
+    const returnDistance = await this.schedulesService.getDistance({
       departure: destination,
-      destination: lastDestination === '' ? departure : lastDestination,
+      destination: landing === '' ? departure : landing,
       stopovers: returnStopoverCheck ? stopovers.reverse() : [],
     });
 

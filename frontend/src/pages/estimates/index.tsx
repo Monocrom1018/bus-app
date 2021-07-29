@@ -22,7 +22,7 @@ import { createReservation } from '../../common/api/index';
 
 const EstimatePage = ({ f7router }) => {
   const searchingOption = useRecoilValue(searchingOptionState);
-  const { departure, returnDate, destination, lastDestination } = searchingOption;
+  const { departure, returnDate, destination, landing } = searchingOption;
   // const stopovers = useRecoilValue(stopoversState);
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
@@ -49,7 +49,6 @@ const EstimatePage = ({ f7router }) => {
     //   totalCharge,
     //   people,
     // };
-    console.log(lastDestination);
     f7.preloader.show();
     let message: string;
     try {

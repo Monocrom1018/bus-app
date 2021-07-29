@@ -141,6 +141,8 @@ export class UsersRepository extends Repository<User> {
       usb,
       movie,
       audio,
+      bank,
+      bank_account,
     } = userUpdateDto;
 
     const user = currentApiUser;
@@ -178,6 +180,8 @@ export class UsersRepository extends Repository<User> {
       user.audio = audio === 'true';
       user.usb = usb === 'true';
       user.fridge = fridge === 'true';
+      user.bank = bank;
+      user.bank_account = bank_account;
 
       user.save();
     } catch (err) {

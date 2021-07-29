@@ -25,7 +25,7 @@ export class ScheduleCreateDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  lastDestination: string;
+  landing: string;
 
   @IsArray()
   @IsOptional()

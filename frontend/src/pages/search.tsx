@@ -5,7 +5,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
-import TimeDisplay from '@components/search/TimeDisplay';
+import TimeDisplay from '@components/search/timeDisplay';
 import moment from 'moment';
 import { getDrivers } from '@api';
 import { showToast } from '@js/utils';
@@ -15,10 +15,10 @@ const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const [popupOpened, setPopupOpened] = useState(false);
-  const { distance, drivers, departure, destination, lastDestination } = searchingOption;
+  const { distance, drivers, departure, destination, landing } = searchingOption;
   const [tempState, setTempState] = useState({
     stopoverCount: 1,
-    lastDestinationState: false,
+    landingState: false,
     returnStopoverCheck: false,
     drivers: null,
     pointList: {},
@@ -44,7 +44,7 @@ const SearchPage = () => {
       f7.dialog.preloader();
       const searchParam = {
         departure,
-        lastDestination,
+        landing,
         destination,
         departureDate,
         returnDate,

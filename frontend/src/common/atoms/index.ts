@@ -25,7 +25,7 @@ export const searchingOptionState = atom({
   default: {
     departure: '',
     destination: '',
-    lastDestination: '',
+    landing: '',
     returnDate: '',
     distance: 0,
     drivers: [],

@@ -10,16 +10,15 @@ const DetailContainer = ({ searchPlaces, day }) => {
   const [tempState, setTempState] = useState({
     departure: '',
     destination: '',
-    lastDestination: '',
-    lastDestinationState: false,
+    landing: '',
+    landingState: false,
     returnStopOverCheck: false,
     drivers: null,
     pointList: {},
     stopOvers: [],
   });
   const stopOverCount = useRef(1);
-  const { returnStopOverCheck, pointList, lastDestinationState, stopOvers, departure, destination, lastDestination } =
-    tempState;
+  const { returnStopOverCheck, pointList, landingState, stopOvers, departure, destination, landing } = tempState;
   let searchTarget: string;
   let itemId: number;
 
@@ -61,11 +60,11 @@ const DetailContainer = ({ searchPlaces, day }) => {
     }
   };
 
-  const lastDestinationCheck = async () => {
-    if (lastDestinationState === true) {
-      setTempState((prev) => ({ ...prev, ...{ lastDestination: '' } }));
+  const landingCheck = async () => {
+    if (landingState === true) {
+      setTempState((prev) => ({ ...prev, ...{ landing: '' } }));
     }
-    setTempState((prev) => ({ ...prev, ...{ lastDestinationState: !lastDestinationState } }));
+    setTempState((prev) => ({ ...prev, ...{ landingState: !landingState } }));
   };
 
   // const handleDepartureDate = async (param) => {
@@ -91,8 +90,8 @@ const DetailContainer = ({ searchPlaces, day }) => {
     if (where === 'destination') {
       setTempState((prev) => ({ ...prev, ...{ destination: point } }));
     }
-    if (where === 'lastDestination') {
-      setTempState((prev) => ({ ...prev, ...{ lastDestination: point } }));
+    if (where === 'landing') {
+      setTempState((prev) => ({ ...prev, ...{ landing: point } }));
     }
     if (where === 'stopOver') {
       const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
@@ -158,8 +157,9 @@ const DetailContainer = ({ searchPlaces, day }) => {
   return (
     <List accordionList noHairlinesMd>
       <AccordionItem opened>
-        <AccordionToggle className="px-4">
-          <b>{day}</b>
+        <AccordionToggle className="px-4 flex justify-between">
+          <div className="text-xl font-bold">{day}</div>
+          <i className="f7-icons text-gray-400">chevron_down</i>
         </AccordionToggle>
         <AccordionContent>
           <div className="flex flex-col">
@@ -218,24 +218,24 @@ const DetailContainer = ({ searchPlaces, day }) => {
             </div>
             {searchResult('destination')}
           </div>
-          {lastDestinationState ? (
+          {landingState ? (
             <div className="relative">
               <div className="flex px-4 mt-6">
                 <input
                   className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                  value={lastDestination}
+                  value={landing}
                   placeholder="귀환지를 검색해주세요"
-                  onChange={(e) => setPostCode(e.currentTarget.value, 'lastDestination', null)}
+                  onChange={(e) => setPostCode(e.currentTarget.value, 'landing', null)}
                 />
               </div>
-              {searchResult('lastDestination')}
+              {searchResult('landing')}
             </div>
           ) : null}
-          <div className="flex justify-between mx-4">
+          <div className="flex justify-between mx-4 pb-3">
             <Button onClick={addStopOver} className="mt-4" raised>
               경유지 추가
             </Button>
-            <Button onClick={lastDestinationCheck} className="mt-4" raised>
+            <Button onClick={landingCheck} className="mt-4" raised>
               출발지와 귀환지가 다른가요?
             </Button>
           </div>

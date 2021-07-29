@@ -31,7 +31,7 @@ export class Schedules extends DateAudit {
   return_date: Date;
 
   @Column({ nullable: true })
-  last_destination: string;
+  landing: string;
 
   @Column()
   distance: number;
