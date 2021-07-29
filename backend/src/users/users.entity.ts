@@ -165,7 +165,7 @@ export class Users extends DateAudit {
   bank: string;
 
   @Column({ nullable: true })
-  account_number: string;
+  bank_account: string;
 
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];

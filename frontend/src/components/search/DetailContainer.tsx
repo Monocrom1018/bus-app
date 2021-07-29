@@ -1,7 +1,7 @@
 import { List, Button, Checkbox, ListItem, AccordionItem, AccordionContent, AccordionToggle } from 'framework7-react';
 import React, { useRef, useState } from 'react';
 
-interface stopover {
+interface stopOver {
   id: number;
   region: string;
 }
@@ -12,33 +12,33 @@ const DetailContainer = ({ searchPlaces, day }) => {
     destination: '',
     lastDestination: '',
     lastDestinationState: false,
-    returnStopoverCheck: false,
+    returnStopOverCheck: false,
     drivers: null,
     pointList: {},
-    stopovers: [],
+    stopOvers: [],
   });
-  const stopOverCount = useRef(0);
-  const { returnStopoverCheck, pointList, lastDestinationState, stopovers, departure, destination, lastDestination } =
+  const stopOverCount = useRef(1);
+  const { returnStopOverCheck, pointList, lastDestinationState, stopOvers, departure, destination, lastDestination } =
     tempState;
   let searchTarget: string;
   let itemId: number;
 
-  const addStopover = async () => {
-    if (stopovers.length < 5) {
+  const addStopOver = async () => {
+    if (stopOvers.length < 6) {
       setTempState((prev) => ({
         ...prev,
-        ...{ stopovers: stopovers.concat({ id: stopOverCount.current, region: '' }) },
+        ...{ stopOvers: stopOvers.concat({ id: stopOverCount.current, region: '' }) },
       }));
       stopOverCount.current += 1;
     }
   };
 
-  const deleteStopover = async (id: number) => {
+  const deleteStopOver = async (id: number) => {
     setTempState((prev) => ({
       ...prev,
       ...{
-        stopovers: stopovers.filter((stopover) => {
-          if (stopover.id === id) {
+        stopOvers: stopOvers.filter((stopOver) => {
+          if (stopOver.id === id) {
             return false;
           }
           return true;
@@ -52,8 +52,7 @@ const DetailContainer = ({ searchPlaces, day }) => {
   const placesSearchCallBack = (data: string, status: any) => {
     const cutData = data.slice(0, 5);
     const kakaoCompleteStatus = 'OK';
-    console.log(pointList);
-    if (status === kakaoCompleteStatus && searchTarget === 'stopover') {
+    if (status === kakaoCompleteStatus && searchTarget === 'stopOver') {
       setTempState((prev) => ({ ...prev, ...{ pointList: { [itemId]: cutData } } }));
     } else if (status === kakaoCompleteStatus) {
       setTempState((prev) => ({ ...prev, ...{ pointList: { [searchTarget]: cutData } } }));
@@ -95,9 +94,9 @@ const DetailContainer = ({ searchPlaces, day }) => {
     if (where === 'lastDestination') {
       setTempState((prev) => ({ ...prev, ...{ lastDestination: point } }));
     }
-    if (where === 'stopover') {
-      const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
-      const mapped = duplicatedArr.map((item: stopover) => {
+    if (where === 'stopOver') {
+      const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
+      const mapped = duplicatedArr.map((item: stopOver) => {
         if (item.id === id) {
           item.region = point;
           return item;
@@ -105,24 +104,23 @@ const DetailContainer = ({ searchPlaces, day }) => {
         return item;
       });
 
-      setTempState((prev) => ({ ...prev, ...{ stopvers: mapped } }));
+      setTempState((prev) => ({ ...prev, ...{ stopOvers: mapped } }));
     }
 
     setTempState((prev) => ({ ...prev, ...{ pointList: {} } }));
   };
 
   const setPostCode = (value: string, type: string, id: number | null) => {
-    if (type === 'stopover') {
-      const duplicatedArr = JSON.parse(JSON.stringify(stopovers));
-      const mapped = duplicatedArr.map((stopover: stopover) => {
-        if (stopover.id === id) {
-          stopover.region = value;
-          return stopover;
+    if (type === 'stopOver') {
+      const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
+      const mapped = duplicatedArr.map((stopOver: stopOver) => {
+        if (stopOver.id === id) {
+          stopOver.region = value;
+          return stopOver;
         }
-        return stopover;
+        return stopOver;
       });
-      console.log(mapped);
-      setTempState((prev) => ({ ...prev, ...{ stopvers: mapped } }));
+      setTempState((prev) => ({ ...prev, ...{ stopOvers: mapped } }));
     } else {
       setTempState((prev) => ({ ...prev, ...{ [`${type}`]: value } }));
     }
@@ -160,17 +158,17 @@ const DetailContainer = ({ searchPlaces, day }) => {
   return (
     <List accordionList noHairlinesMd>
       <AccordionItem opened>
-        <AccordionToggle>
+        <AccordionToggle className="px-4">
           <b>{day}</b>
         </AccordionToggle>
         <AccordionContent>
           <div className="flex flex-col">
             <div className="flex justify-between">
               <div className="mx-6 mb-2 font-semibold tracking-wider">경로</div>
-              {stopovers.length > 0 ? (
+              {stopOvers.length > 0 ? (
                 <div className="mr-4">
                   <Checkbox
-                    onChange={() => setTempState({ ...tempState, returnStopoverCheck: !returnStopoverCheck })}
+                    onChange={() => setTempState({ ...tempState, returnStopOverCheck: !returnStopOverCheck })}
                     className="pb-1 text-sm"
                   />
                   <span className="ml-1 text-gray-700 text-sm">귀환시에도 경유</span>
@@ -189,24 +187,24 @@ const DetailContainer = ({ searchPlaces, day }) => {
             </div>
             {searchResult('departure')}
           </div>
-          {stopovers &&
-            stopovers.map((stopover) => (
-              <div className="relative" key={stopover.id}>
+          {stopOvers &&
+            stopOvers.map((stopOver) => (
+              <div className="relative" key={stopOver.id}>
                 <div className="flex px-4 py-2">
                   <button
                     className="f7-icons text-xl text-red-500 outline-none"
-                    onClick={() => deleteStopover(stopover.id)}
+                    onClick={() => deleteStopOver(stopOver.id)}
                   >
                     minus_circle_fill
                   </button>
                   <input
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-                    value={stopover.region}
+                    value={stopOver.region}
                     placeholder="최대 5개까지 추가 가능합니다"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'stopover', stopover.id)}
+                    onChange={(e) => setPostCode(e.currentTarget.value, 'stopOver', stopOver.id)}
                   />
                 </div>
-                {searchResult('stopover', stopover.id)}
+                {searchResult('stopOver', stopOver.id)}
               </div>
             ))}
           <div className="relative">
@@ -234,7 +232,7 @@ const DetailContainer = ({ searchPlaces, day }) => {
             </div>
           ) : null}
           <div className="flex justify-between mx-4">
-            <Button onClick={addStopover} className="mt-4" raised>
+            <Button onClick={addStopOver} className="mt-4" raised>
               경유지 추가
             </Button>
             <Button onClick={lastDestinationCheck} className="mt-4" raised>
