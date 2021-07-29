@@ -45,6 +45,8 @@ const UserInfoSchema = Yup.object().shape({
   introduce: Yup.string(),
   peakCharge: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
   peakChargePerKm: Yup.number().typeError('숫자만 입력해주세요').required('필수 입력사항 입니다'),
+  bank: Yup.string().required('필수 입력사항 입니다'),
+  bank_account: Yup.string().required('필수 입력사항 입니다'),
   wifi: Yup.boolean(),
   sanitizer: Yup.boolean(),
   fridge: Yup.boolean(),
@@ -60,6 +62,35 @@ const driverModifyPage = ({ f7route, f7router }) => {
     currentUser.drivable_legion ? [...currentUser.drivable_legion] : [],
   );
   const { name, profile_img, email, user_type, company_name } = currentUser;
+  const banks = [
+    '경남은행',
+    '광주은행',
+    '국민은행',
+    '기업은행',
+    '농협중앙회',
+    '농협회원조합',
+    '대구은행',
+    '도이치은행',
+    '부산은행',
+    '산업은행',
+    '상호저축은행',
+    '새마을금고',
+    '수협중앙회',
+    '신한금융투자',
+    '신한은행',
+    '신협중앙회',
+    '외환은행',
+    '우리은행',
+    '우체국',
+    '전북은행',
+    '제주은행',
+    '카카오뱅크',
+    '케이뱅크',
+    '하나은행',
+    '한국씨티은행',
+    'HSBC은행',
+    'SC제일은행',
+  ];
   const legions = [
     '서울',
     '경기',
@@ -154,6 +185,8 @@ const driverModifyPage = ({ f7route, f7router }) => {
           usb: currentUser.usb || false,
           movie: currentUser.movie || false,
           audio: currentUser.audio || false,
+          bank: currentUser.bank || '',
+          bank_account: currentUser.bank_account || '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -249,6 +282,38 @@ const driverModifyPage = ({ f7route, f7router }) => {
                 clearButton
                 errorMessageForce
                 errorMessage={touched.passwordConfirmation && errors.passwordConfirmation}
+              />
+            </List>
+
+            <List noHairlinesMd>
+              <div className="p-3 font-semibold bg-white">계좌정보</div>
+              <ListInput
+                label={i18next.t('은행') as string}
+                type="select"
+                name="bank"
+                defaultValue=""
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.bank}
+                errorMessageForce
+                errorMessage={touched.bank && errors.bank}
+              >
+                <option value="">은행을 선택해주세요</option>
+                {banks.map((bank) => {
+                  return <option value={bank}>{bank}</option>;
+                })}
+              </ListInput>
+              <ListInput
+                label={i18next.t('계좌변호') as string}
+                type="text"
+                name="bank_account"
+                placeholder="계좌번호를 입력해주세요"
+                clearButton
+                onChange={handleChange}
+                onBlur={handleBlur}
+                value={values.bank_account}
+                errorMessageForce
+                errorMessage={touched.bank_account && errors.bank_account}
               />
             </List>
 

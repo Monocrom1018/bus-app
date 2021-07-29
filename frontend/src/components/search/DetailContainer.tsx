@@ -1,12 +1,15 @@
-import { List, Button, AccordionItem, AccordionContent, AccordionToggle } from 'framework7-react';
+import { f7, List, Button, AccordionItem, AccordionContent, AccordionToggle } from 'framework7-react';
 import React, { useRef, useState } from 'react';
 import { PointDetail, Schedule, StopOver } from '@interfaces';
+import { getDistance } from '@api';
+import { showToast } from '@js/utils';
 
 const DetailContainer = ({ searchPlaces, day }) => {
   const [tempState, setTempState] = useState<Schedule>({
     departure: '',
     destination: '',
     landing: '',
+    distance: 0,
     landingState: false,
     returnStopOverCheck: false,
     pointList: {},
@@ -16,7 +19,7 @@ const DetailContainer = ({ searchPlaces, day }) => {
 
   const preStopOverCount = useRef(1);
   const postStopOverCount = useRef(1);
-  const { pointList, preStopOvers, postStopOvers, departure, destination, landing } = tempState;
+  const { pointList, preStopOvers, postStopOvers, departure, destination, landing, distance } = tempState;
   let searchTarget: string;
   let stopOverId: number;
 
@@ -130,11 +133,25 @@ const DetailContainer = ({ searchPlaces, day }) => {
     </div>
   );
 
+  const setDistance = async () => {
+    f7.dialog.preloader();
+    const distanceData = await getDistance({ departure, destination, landing });
+    setTempState((prev) => ({
+      ...prev,
+      ...{ distance: distanceData },
+    }));
+
+    f7.dialog.close();
+    showToast('일정이 확정되었습니다');
+    return;
+  };
+
   return (
     <List accordionList noHairlinesMd>
       <AccordionItem opened>
-        <AccordionToggle className="px-4">
-          <b>{day}</b>
+        <AccordionToggle className="px-4 flex justify-between">
+          <div className="text-xl font-bold">{day}</div>
+          {distance > 0 ? <div className="text-sm px-4 pt-1 font-semibold">거리 : {distance}km</div> : null}
         </AccordionToggle>
         <AccordionContent>
           <div className="relative mt-2">
@@ -229,6 +246,11 @@ const DetailContainer = ({ searchPlaces, day }) => {
               />
             </div>
             {searchResult('landing')}
+          </div>
+          <div className="flex justify-center my-3 ">
+            <Button className="font-semibold w-20" raised onClick={setDistance}>
+              일정확정
+            </Button>
           </div>
         </AccordionContent>
       </AccordionItem>

@@ -19,76 +19,59 @@ export class SchedulesService {
     return data;
   }
 
-  async getDistance(departure, stopovers, destination, lastDestination) {
-    // 출발지 - 목적지 거리
-    let distance = await this.getDistanceAPI({
-      departure,
-      destination,
-      stopovers,
-    });
+  async getDistance(params) {
+    const { departure, destination, landing } = params;
+    let combinedGeoData = '';
 
-    // 목적지 - 하차지 거리
-    const subDistance = await this.getDistanceAPI({
-      departure: destination,
-      destination: lastDestination || departure,
-      stopovers: [],
-    });
-
-    distance = distance + subDistance;
-
-    return distance;
-  }
-
-  async getDistanceAPI(params) {
-    const { departure, destination, stopovers } = params;
-    const depCoord = { x: '', y: '' };
-    const destCoord = { x: '', y: '' };
-    let tmapData = '';
-
-    if (stopovers.length > 0 && stopovers[0].stopover !== '') {
-      for (let i = 0; i < stopovers.length; i++) {
-        if (stopovers[i] === '') {
-          return;
-        }
-        // eslint-disable-next-line no-await-in-loop
-        const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${
-          stopoverData.data.coordinateInfo.coordinate[0].lon ||
-          stopoverData.data.coordinateInfo.coordinate[0].newLon
-        },${
-          stopoverData.data.coordinateInfo.coordinate[0].lat ||
-          stopoverData.data.coordinateInfo.coordinate[0].newLat
-        }_`;
-        tmapData += tmapsGeo;
+    const combineStopovers = [];
+    combineStopovers.push(destination);
+    for (let i = 0; i < combineStopovers.length; i++) {
+      if (combineStopovers[i] === '') {
+        return;
       }
-
-      tmapData = tmapData.slice(0, -1);
+      // eslint-disable-next-line no-await-in-loop
+      const geoData = await this.getGeoData(combineStopovers[i]);
+      const tmapsGeo = `${
+        geoData.data.coordinateInfo.coordinate[0].lon ||
+        geoData.data.coordinateInfo.coordinate[0].newLon
+      },${
+        geoData.data.coordinateInfo.coordinate[0].lat ||
+        geoData.data.coordinateInfo.coordinate[0].newLat
+      }_`;
+      combinedGeoData += tmapsGeo;
     }
 
-    const departureData = await this.getGeoData(departure);
-    const destinationData = await this.getGeoData(destination);
+    combinedGeoData = combinedGeoData.slice(0, -1);
 
-    depCoord.x =
+    // 출발지, 하차지 좌표정보 수집
+    const departureCoord = { x: '', y: '' };
+    const landingCoord = { x: '', y: '' };
+
+    const departureData = await this.getGeoData(departure);
+    const landingData = await this.getGeoData(landing);
+
+    departureCoord.x =
       departureData.data.coordinateInfo.coordinate[0].lon ||
       departureData.data.coordinateInfo.coordinate[0].newLon;
-    depCoord.y =
+    departureCoord.y =
       departureData.data.coordinateInfo.coordinate[0].lat ||
       departureData.data.coordinateInfo.coordinate[0].newLat;
 
-    destCoord.x =
-      destinationData.data.coordinateInfo.coordinate[0].lon ||
-      destinationData.data.coordinateInfo.coordinate[0].newLon;
-    destCoord.y =
-      destinationData.data.coordinateInfo.coordinate[0].lat ||
-      destinationData.data.coordinateInfo.coordinate[0].newLat;
+    landingCoord.x =
+      landingData.data.coordinateInfo.coordinate[0].lon ||
+      landingData.data.coordinateInfo.coordinate[0].newLon;
+    landingCoord.y =
+      landingData.data.coordinateInfo.coordinate[0].lat ||
+      landingData.data.coordinateInfo.coordinate[0].newLat;
 
+    // 거리정보 요청
     const tmapBody = await qs.stringify({
       appKey: process.env.TMAP_API_KEY,
-      endX: depCoord.x,
-      endY: depCoord.y,
-      startX: destCoord.x,
-      startY: destCoord.y,
-      passList: tmapData,
+      endX: departureCoord.x,
+      endY: departureCoord.y,
+      startX: landingCoord.x,
+      startY: landingCoord.y,
+      passList: combinedGeoData,
       searchOption: 10,
       totalValue: 2,
       trafficInfo: 'N',

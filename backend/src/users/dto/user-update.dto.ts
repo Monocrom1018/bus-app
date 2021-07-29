@@ -30,6 +30,16 @@ export class UserUpdateDto {
   @ApiProperty()
   password_confirmation: string;
 
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  bank: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  bank_account: string;
+
   @IsArray()
   @IsOptional()
   @ApiProperty()

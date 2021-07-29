@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
-import TimeDisplay from '@components/search/TimeDisplay';
+import TimeDisplay from '@components/search/timeDisplay';
 import moment from 'moment';
 import { getDrivers } from '@api';
 import { showToast } from '@js/utils';
@@ -16,7 +16,7 @@ const SearchPage = () => {
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const [tempState, setTempState] = useState({
     stopoverCount: 1,
-    lastDestinationState: false,
+    landingState: false,
     returnStopoverCheck: false,
     pointList: {},
     drivers: [],

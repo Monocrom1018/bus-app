@@ -38,15 +38,15 @@ export class SchedulesController {
   })
   async getDistance(
     @Query('departure') departure: string,
-    @Query('stopovers') stopovers: string[],
     @Query('destination') destination: string,
-    @Query('lastDestination') lastDestination: string,
+    @Query('landing') landing: string,
   ) {
-    return this.schedulesService.getDistance(
+    const data = await this.schedulesService.getDistance({
       departure,
-      stopovers,
       destination,
-      lastDestination,
-    );
+      landing,
+    });
+
+    return data;
   }
 }

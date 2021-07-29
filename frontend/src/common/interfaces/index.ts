@@ -78,6 +78,8 @@ export interface CurrentUser extends CurrentUserState {
   usb: boolean;
   movie: boolean;
   audio: boolean;
+  bank: string;
+  bank_account: string;
 }
 
 export interface Address {
@@ -136,6 +138,7 @@ export interface Schedule {
   landing: string;
   landingState: boolean;
   returnStopOverCheck: boolean;
+  distance: number;
   pointList: any;
   preStopOvers: StopOver[];
   postStopOvers: StopOver[];

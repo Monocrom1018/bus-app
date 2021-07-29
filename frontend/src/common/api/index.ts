@@ -65,6 +65,17 @@ export const getOneDriver = async (params) => {
   return data;
 };
 
+export const getDistance = async (params) => {
+  const { data } = await API.get(`schedules/distance`, {
+    params: {
+      departure: params.departure,
+      destination: params.destination,
+      landing: params.landing,
+    },
+  });
+  return data;
+};
+
 export const createReservation = async (params: FormData) => {
   const { data } = await API.post(`reservations/create`, params);
   return data;
