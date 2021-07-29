@@ -138,6 +138,7 @@ export interface Schedule {
   landing: string;
   landingState: boolean;
   returnStopOverCheck: boolean;
+  distance: number;
   pointList: any;
   preStopOvers: StopOver[];
   postStopOvers: StopOver[];
