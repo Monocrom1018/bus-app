@@ -106,3 +106,37 @@ export interface Reservation {
   // user: Users;
   // driver: User;
 }
+
+export interface PointDetail {
+  address_name: string;
+  category_group_code?: string;
+  category_group_name?: string;
+  category_name?: string;
+  distance?: number;
+  id?: number;
+  phone?: string;
+  place_name: string;
+  place_url?: string;
+  road_address_name: string;
+  x?: number;
+  y?: number;
+}
+
+export type Point = {
+  [name in number | string]: PointDetail[];
+};
+
+export interface StopOver {
+  id: number;
+  region: string;
+}
+export interface Schedule {
+  departure: string;
+  destination: string;
+  landing: string;
+  landingState: boolean;
+  returnStopOverCheck: boolean;
+  pointList: any;
+  preStopOvers: StopOver[];
+  postStopOvers: StopOver[];
+}

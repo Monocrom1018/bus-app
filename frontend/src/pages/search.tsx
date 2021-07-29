@@ -1,5 +1,4 @@
-/* global kakao */
-import { f7, Block, BlockTitle, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, List } from 'framework7-react';
+import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button } from 'framework7-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector } from '@atoms';
@@ -13,18 +12,18 @@ import Driver from './users/Driver';
 
 const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { distance } = searchingOption;
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
-  const [popupOpened, setPopupOpened] = useState(false);
-  const { distance, drivers, departure, destination, lastDestination } = searchingOption;
   const [tempState, setTempState] = useState({
     stopoverCount: 1,
     lastDestinationState: false,
     returnStopoverCheck: false,
-    drivers: null,
     pointList: {},
+    drivers: [],
   });
+  const [popupOpened, setPopupOpened] = useState(false);
   const KakaoPlaceRef = useRef(null);
-  const { returnStopoverCheck } = tempState;
+  const { returnStopoverCheck, drivers } = tempState;
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
 
   useEffect(() => {
@@ -39,13 +38,10 @@ const SearchPage = () => {
     return days;
   };
 
-  const handleSearch = async () => {
-    if (departure !== '' && destination !== '' && departureDate !== '' && returnDate !== '') {
+  const getResult = async () => {
+    if (departureDate !== '' && returnDate !== '') {
       f7.dialog.preloader();
       const searchParam = {
-        departure,
-        lastDestination,
-        destination,
         departureDate,
         returnDate,
         // stopovers: stopovers.length > 0 ? stopovers : [],
@@ -77,10 +73,13 @@ const SearchPage = () => {
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
-      {getDayList().map((day, index) => (
+
+      {getDayList().map((day) => (
         <DetailContainer searchPlaces={searchPlaces} day={day} />
       ))}
-      <Button onClick={handleSearch} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
+
+      <Button onClick={getResult} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
+
       {drivers.length > 0 ? (
         <div>
           <div className="flex justify-between">
