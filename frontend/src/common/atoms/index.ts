@@ -23,15 +23,12 @@ export const lineItemsCount = atom({
 export const searchingOptionState = atom({
   key: 'searchingOption',
   default: {
-    departure: '',
-    destination: '',
-    landing: '',
     returnDate: '',
     distance: 0,
-    drivers: [],
     departureTime: '',
     returnTime: '',
-    date: [],
+    date: [], // 전체 일정
+    schedule: [], // 세부 일정
   },
 });
 
