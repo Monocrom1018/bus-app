@@ -1,54 +1,62 @@
-import { f7, List, Button, AccordionItem, AccordionContent, AccordionToggle } from 'framework7-react';
+import { List, AccordionItem, AccordionContent, AccordionToggle, f7 } from 'framework7-react';
 import React, { useRef, useState } from 'react';
-import { PointDetail, Schedule, StopOver } from '@interfaces';
-import { getDistance } from '@api';
-import { showToast } from '@js/utils';
+import { PointDetail, StopOver } from '@interfaces';
+import { useRecoilState } from 'recoil';
+import { tourScheduleState } from '@atoms';
 
-const DetailContainer = ({ searchPlaces, day }) => {
-  const [tempState, setTempState] = useState<Schedule>({
-    departure: '',
-    destination: '',
-    landing: '',
-    distance: 0,
-    landingState: false,
-    returnStopOverCheck: false,
-    pointList: {},
-    preStopOvers: [],
-    postStopOvers: [],
-  });
-
+const DetailContainer = ({ searchPlaces, day, index }) => {
+  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const { day: previousDate } = tourSchedule[index - 1] || {};
+  const { day: currentDate, departure, preStopOvers, postStopOvers, destination, landing } = tourSchedule[index];
+  const { day: nextDate } = tourSchedule[index + 1] || {};
+  const [pointList, setPointList] = useState({});
+  const [accordionOpened, setAccordionOpened] = useState(true);
   const preStopOverCount = useRef(1);
   const postStopOverCount = useRef(1);
-  const { pointList, preStopOvers, postStopOvers, departure, destination, landing, distance } = tempState;
   let searchTarget: string;
-  let stopOverId: number;
+  let stopOverId: number | string;
 
   const addStopOver = async (type: string) => {
     const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
     const stopOverCount = type === 'preStopOvers' ? preStopOverCount : postStopOverCount;
-    if (stopOvers.length < 2) {
-      setTempState((prev) => ({
-        ...prev,
-        ...{ [`${type}`]: stopOvers.concat({ id: stopOverCount.current, region: '' }) },
-      }));
+    const prefix = type === 'preStopOvers' ? 'pre' : 'post';
+
+    if (stopOvers && stopOvers.length < 2) {
+      setTourSchedule(
+        tourSchedule.map((schedule) =>
+          schedule.day === currentDate
+            ? {
+                ...schedule,
+                ...{ [`${type}`]: stopOvers.concat({ id: `${prefix}${stopOverCount.current}`, region: '' }) },
+              }
+            : schedule,
+        ),
+      );
       stopOverCount.current += 1;
     }
   };
 
-  const deleteStopOver = async (id: number, type: string) => {
+  const deleteStopOver = async (id: number | string, type: string) => {
     const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
     const stopOverCount = type === 'preStopOvers' ? preStopOverCount : postStopOverCount;
-    setTempState((prev) => ({
-      ...prev,
-      ...{
-        [`${type}`]: stopOvers.filter((stopOver) => {
-          if (stopOver.id === id) {
-            return false;
-          }
-          return true;
-        }),
-      },
-    }));
+
+    setTourSchedule(
+      tourSchedule.map((schedule) =>
+        schedule.day === currentDate
+          ? {
+              ...schedule,
+              ...{
+                [`${type}`]: stopOvers.filter((stopOver) => {
+                  if (stopOver.id === `${id}`) {
+                    return false;
+                  }
+                  return true;
+                }),
+              },
+            }
+          : schedule,
+      ),
+    );
     stopOverCount.current -= 1;
   };
 
@@ -56,12 +64,76 @@ const DetailContainer = ({ searchPlaces, day }) => {
     const cutData = data.slice(0, 5);
     const kakaoCompleteStatus = 'OK';
     const isSearchTargetStopOver = searchTarget === 'preStopOvers' || searchTarget === 'postStopOvers';
+
     if (status === kakaoCompleteStatus && isSearchTargetStopOver) {
-      setTempState((prev) => ({ ...prev, ...{ pointList: { [stopOverId]: cutData } } }));
+      setPointList((prev) => ({ ...prev, [stopOverId]: cutData }));
     } else if (status === kakaoCompleteStatus) {
-      setTempState((prev) => ({ ...prev, ...{ pointList: { [searchTarget]: cutData } } }));
+      setPointList((prev) => ({ ...prev, [searchTarget]: cutData }));
     } else {
-      setTempState((prev) => ({ ...prev, ...{ pointList: {} } }));
+      setPointList({});
+    }
+  };
+
+  const setScheduleByType = (type: string, value: string) => {
+    if (type === 'departure') {
+      setTourSchedule(
+        tourSchedule.map((schedule) => {
+          if (schedule.day === currentDate) {
+            return {
+              ...schedule,
+              ...{
+                [`${type}`]: value,
+              },
+            };
+          }
+          if (schedule.day === previousDate) {
+            return {
+              ...schedule,
+              ...{
+                [`landing`]: value,
+              },
+            };
+          }
+          return schedule;
+        }),
+      );
+    }
+    if (type === 'destination') {
+      setTourSchedule(
+        tourSchedule.map((schedule) =>
+          schedule.day === currentDate
+            ? {
+                ...schedule,
+                ...{
+                  [`${type}`]: value,
+                },
+              }
+            : schedule,
+        ),
+      );
+    }
+    if (type === 'landing') {
+      setTourSchedule(
+        tourSchedule.map((schedule) => {
+          if (schedule.day === currentDate) {
+            return {
+              ...schedule,
+              ...{
+                [`${type}`]: value,
+              },
+            };
+          }
+          if (schedule.day === nextDate) {
+            return {
+              ...schedule,
+              ...{
+                [`departure`]: value,
+              },
+            };
+          }
+          return schedule;
+        }),
+      );
     }
   };
 
@@ -79,36 +151,53 @@ const DetailContainer = ({ searchPlaces, day }) => {
         return item;
       });
 
-      setTempState((prev) => ({ ...prev, ...{ [`${type}`]: mapped } }));
+      setTourSchedule(
+        tourSchedule.map((schedule) =>
+          schedule.day === currentDate
+            ? {
+                ...schedule,
+                ...{
+                  [`${type}`]: mapped,
+                },
+              }
+            : schedule,
+        ),
+      );
     }
 
-    if (type === 'departure' || type === 'destination' || type === 'landing') {
-      setTempState((prev) => ({ ...prev, ...{ [`${type}`]: value } }));
-    }
-
-    setTempState((prev) => ({ ...prev, ...{ pointList: {} } }));
+    setScheduleByType(type, value);
+    setPointList({});
   };
 
-  const setPostCode = (value: string, type: string, id: number | null) => {
+  const setPostCode = (value: string, type: string, id: string | null) => {
     const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
     const isTypeStopOver = type === 'preStopOvers' || type === 'postStopOvers';
 
     if (isTypeStopOver) {
       const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
       const mapped = duplicatedArr.map((stopOver: StopOver) => {
-        if (stopOver.id === id) {
+        if (stopOver.id === `${id}`) {
           stopOver.region = value;
           return stopOver;
         }
         return stopOver;
       });
-      setTempState((prev) => ({ ...prev, ...{ [`${type}`]: mapped } }));
+      setTourSchedule(
+        tourSchedule.map((schedule) =>
+          schedule.day === currentDate
+            ? {
+                ...schedule,
+                ...{
+                  [`${type}`]: mapped,
+                },
+              }
+            : schedule,
+        ),
+      );
+      setPointList((prev) => ({ ...prev, [`${type}`]: mapped }));
     }
 
-    if (type === 'departure' || type === 'destination' || type === 'landing') {
-      setTempState((prev) => ({ ...prev, ...{ [`${type}`]: value } }));
-    }
-
+    setScheduleByType(type, value);
     searchTarget = type;
     stopOverId = id;
     searchPlaces(value, placesSearchCallBack);
@@ -133,27 +222,22 @@ const DetailContainer = ({ searchPlaces, day }) => {
     </div>
   );
 
-  const setDistance = async () => {
-    f7.dialog.preloader();
-    const distanceData = await getDistance({ departure, destination, landing });
-    setTempState((prev) => ({
-      ...prev,
-      ...{ distance: distanceData },
-    }));
-
-    f7.dialog.close();
-    showToast('일정이 확정되었습니다');
-    return;
-  };
-
   return (
-    <List accordionList noHairlinesMd>
-      <AccordionItem opened>
+    <List accordionList noHairlinesMd style={{ zIndex: 'auto' }}>
+      <AccordionItem
+        opened
+        onAccordionOpen={() => {
+          setAccordionOpened(true);
+        }}
+        onAccordionClose={() => {
+          setAccordionOpened(false);
+        }}
+        id={`accordion-item-${index}`}
+      >
         <AccordionToggle className="px-4 flex justify-between">
           <div className="text-xl font-bold">{day}</div>
-          {distance > 0 ? <div className="text-sm px-4 pt-1 font-semibold">거리 : {distance}km</div> : null}
         </AccordionToggle>
-        <AccordionContent>
+        <AccordionContent style={{ overflow: accordionOpened ? 'visible' : 'hidden' }}>
           <div className="relative mt-2">
             <div className="flex px-4 mb-2">
               <input
@@ -179,13 +263,13 @@ const DetailContainer = ({ searchPlaces, day }) => {
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
                     value={stopOver.region}
                     placeholder="경유지를 입력해주세요"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'preStopOvers', stopOver.id)}
+                    onChange={(e) => setPostCode(e.currentTarget.value, 'preStopOvers', `${stopOver.id}`)}
                   />
                 </div>
                 {searchResult('preStopOvers', stopOver.id)}
               </div>
             ))}
-          {preStopOvers.length < 2 && (
+          {preStopOvers && preStopOvers.length < 2 && (
             <div className="flex-col text-center">
               <button
                 className="f7-icons text-xl text-red-500 outline-none"
@@ -220,13 +304,13 @@ const DetailContainer = ({ searchPlaces, day }) => {
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
                     value={stopOver.region}
                     placeholder="경유지를 입력해주세요"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'postStopOvers', stopOver.id)}
+                    onChange={(e) => setPostCode(e.currentTarget.value, 'postStopOvers', `${stopOver.id}`)}
                   />
                 </div>
                 {searchResult('postStopOvers', stopOver.id)}
               </div>
             ))}
-          {postStopOvers.length < 2 && (
+          {postStopOvers && postStopOvers.length < 2 && (
             <div className="flex-col text-center">
               <button
                 className="f7-icons text-xl text-red-500 outline-none"
@@ -246,11 +330,6 @@ const DetailContainer = ({ searchPlaces, day }) => {
               />
             </div>
             {searchResult('landing')}
-          </div>
-          <div className="flex justify-center my-3 ">
-            <Button className="font-semibold w-20" raised onClick={setDistance}>
-              일정확정
-            </Button>
           </div>
         </AccordionContent>
       </AccordionItem>

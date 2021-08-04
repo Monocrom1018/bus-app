@@ -7,6 +7,7 @@ export class MonthsRepository extends Repository<Month> {
     const targetMonth = await this.findOne({
       where: { month },
     });
+
     return targetMonth.peak;
   }
 }
