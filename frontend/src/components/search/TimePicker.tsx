@@ -28,7 +28,7 @@ const TimePicker = (props: { el: string }) => {
         },
       },
     });
-  }, []);
+  }, [el, setSearchingOption]);
 
   return (
     <div className="">
