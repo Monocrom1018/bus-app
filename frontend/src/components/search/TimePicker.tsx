@@ -28,7 +28,8 @@ const TimePicker = (props: { el: string }) => {
         },
       },
     });
-  }, [el, setSearchingOption]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="">

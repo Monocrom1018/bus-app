@@ -56,7 +56,7 @@ const SearchPage = () => {
   useEffect(() => {
     if (!isTargetInView || !allowInfinite.current) return;
     fetchNextPageAsync();
-  }, [fetchNextPageAsync, isTargetInView]);
+  }, [isTargetInView]);
 
   const getDayList = () => {
     const days = [];

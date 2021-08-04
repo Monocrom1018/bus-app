@@ -70,7 +70,8 @@ const Calendar = () => {
         },
       },
     });
-  }, [Dates, monthNames, setSearchingOption, setTourSchedule]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="block block-strong no-padding">

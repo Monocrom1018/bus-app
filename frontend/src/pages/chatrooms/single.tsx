@@ -48,7 +48,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
         setOpUser(() => user);
       })();
     }
-  }, [chatroom, currentUser.id, user_id]);
+  }, [chatroom]);
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
     InfiniteAppSync<MessageType>,
@@ -101,7 +101,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
 
       messagesRef.current.f7Messages().scroll(0, lastMessageRef.current.el.offsetTop - 16);
     }, 500)();
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage, isTargetInView]);
+  }, [isTargetInView]);
 
   const createRoom = useMutation(createChatroom());
   const createUserRoom = useMutation(createUserChatroom());
@@ -123,7 +123,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [currentUser.introduce, newChat, refetch, room_id]);
+  }, []);
 
   const createUserChatrooms = (cr) =>
     createUserRoom.mutate({
