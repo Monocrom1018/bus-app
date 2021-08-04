@@ -1,5 +1,5 @@
 import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, Preloader } from 'framework7-react';
-import { Dom7 as $$ } from 'framework7/lite-bundle'
+import { Dom7 as $$ } from 'framework7/lite-bundle';
 import { sleep } from '@utils';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
@@ -32,28 +32,20 @@ const SearchPage = () => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
   }, []);
 
-  const {
-    data,
-    isLoading,
-    isError,
-    error,
-    refetch,
-    fetchNextPage,
-    hasNextPage,
-  } = useInfiniteQuery(
+  const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     'drivers',
-    async ({ pageParam: page = 1}) => {
-      const sortBy = 'created_at'
-      const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current}, page, sortBy );
+    async ({ pageParam: page = 1 }) => {
+      const sortBy = 'created_at';
+      const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current }, page, sortBy);
       return response.data || [];
     },
-    { 
+    {
       enabled: isInfinite,
-      getNextPageParam: (lastPage, pages) => pages.length + 1 
+      getNextPageParam: (lastPage, pages) => pages.length + 1,
     },
   );
   const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
-  
+
   const fetchNextPageAsync = useCallback(async () => {
     allowInfinite.current = false;
     await fetchNextPage();
@@ -68,7 +60,7 @@ const SearchPage = () => {
 
   const getDayList = () => {
     const days = [];
-    if(dayDiff >= 0) {
+    if (dayDiff >= 0) {
       [...Array(dayDiff)].forEach((day, index) => {
         days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
       });
@@ -99,12 +91,12 @@ const SearchPage = () => {
       await fetchNextPage();
 
       f7.dialog.close();
-      const accordions = $$('.accordion-item')
+      const accordions = $$('.accordion-item');
       accordions.each((el) => {
-        if([...el.classList].includes("accordion-item-opened")){
+        if ([...el.classList].includes('accordion-item-opened')) {
           f7.accordion.close(`#${el.id}`);
         }
-      })
+      });
     } else {
       showToast('일정을 모두 입력해주세요');
     }
@@ -149,10 +141,10 @@ const SearchPage = () => {
             ))}
           </div>
         </div>
-      ) : <div>검색 가능한 기사가 없습니다.</div>}
-      {hasNextPage && isLoading && (
-        <Preloader size={16} />
+      ) : (
+        <div>검색 가능한 기사가 없습니다.</div>
       )}
+      {hasNextPage && isLoading && <Preloader size={16} />}
     </Page>
   );
 };

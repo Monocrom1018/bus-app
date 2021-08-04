@@ -299,9 +299,9 @@ const driverModifyPage = ({ f7route, f7router }) => {
                 errorMessage={touched.bank && errors.bank}
               >
                 <option value="">은행을 선택해주세요</option>
-                {banks.map((bank) => {
-                  return <option value={bank}>{bank}</option>;
-                })}
+                {banks.map((bank) => (
+                  <option value={bank}>{bank}</option>
+                ))}
               </ListInput>
               <ListInput
                 label={i18next.t('계좌변호') as string}
@@ -560,28 +560,23 @@ const driverModifyPage = ({ f7route, f7router }) => {
                     slot="after"
                     name="sanitizer"
                     onChange={handleChange}
-                    defaultChecked={values.sanitizer === true ? true : false}
-                  ></Toggle>
+                    defaultChecked={values.sanitizer === true}
+                  />
                 </ListItem>
                 <ListItem title="냉장고">
-                  <Toggle
-                    slot="after"
-                    name="fridge"
-                    onChange={handleChange}
-                    defaultChecked={values.fridge === true ? true : false}
-                  ></Toggle>
+                  <Toggle slot="after" name="fridge" onChange={handleChange} defaultChecked={values.fridge === true} />
                 </ListItem>
                 <ListItem title="음향시설">
-                  <Toggle slot="after" name="audio" onChange={handleChange} defaultChecked={values.audio}></Toggle>
+                  <Toggle slot="after" name="audio" onChange={handleChange} defaultChecked={values.audio} />
                 </ListItem>
                 <ListItem title="와이파이">
-                  <Toggle slot="after" name="wifi" onChange={handleChange} defaultChecked={values.wifi}></Toggle>
+                  <Toggle slot="after" name="wifi" onChange={handleChange} defaultChecked={values.wifi} />
                 </ListItem>
                 <ListItem title="usb포트">
-                  <Toggle slot="after" name="usb" onChange={handleChange} defaultChecked={values.usb}></Toggle>
+                  <Toggle slot="after" name="usb" onChange={handleChange} defaultChecked={values.usb} />
                 </ListItem>
                 <ListItem title="영화관람">
-                  <Toggle slot="after" name="movie" onChange={handleChange} defaultChecked={values.movie}></Toggle>
+                  <Toggle slot="after" name="movie" onChange={handleChange} defaultChecked={values.movie} />
                 </ListItem>
               </List>
 

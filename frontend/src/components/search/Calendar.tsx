@@ -56,7 +56,7 @@ const Calendar = () => {
           const set = {};
           const [departureDate, returnDate] = value;
           (set as any).departureDate = departureDate;
-          (set as any).returnDate = "";
+          (set as any).returnDate = '';
           if (value.length !== 1) {
             (set as any).returnDate = returnDate;
             const days = [];
@@ -70,6 +70,7 @@ const Calendar = () => {
         },
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

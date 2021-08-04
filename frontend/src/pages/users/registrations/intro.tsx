@@ -23,7 +23,7 @@ const SignUpIntroPage = () => (
         </div>
         <div className="text-center">
           <a href="/users/sign_up/driver">
-            <div className="fas fa-bus text-6xl"></div>
+            <div className="fas fa-bus text-6xl" />
             <br />
             <span className="text-sm text-gray-600 font-semibold text-base">기사님</span>
           </a>

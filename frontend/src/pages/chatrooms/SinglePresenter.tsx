@@ -63,7 +63,7 @@ const SinglePresenter = ({
       value={messageText}
       onInput={(e) => setMessageText(e.target.value)}
     >
-      <Link 
+      <Link
         iconIos="f7:plus_square_fill"
         iconAurora="f7:add_circle"
         iconMd="material:add_circle"

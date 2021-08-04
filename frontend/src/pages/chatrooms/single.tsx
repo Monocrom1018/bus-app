@@ -198,7 +198,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
   };
 
   return (
-    <SinglePresenter 
+    <SinglePresenter
       {...{
         room_id,
         sheetVisible,

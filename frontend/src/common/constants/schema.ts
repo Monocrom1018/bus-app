@@ -60,4 +60,3 @@ export interface MessageType {
   createdAt?: string;
   isLast?: boolean;
 }
-
