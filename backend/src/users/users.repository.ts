@@ -6,6 +6,7 @@ import { Brackets, EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { UserCreateDto } from './dto/user-create.dto';
 import { Users as User, UserType } from './users.entity';
+import { DriverSearchDto } from './dto/driver-search.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -19,9 +20,6 @@ export class UsersRepository extends Repository<User> {
       director_name,
       director_email,
       director_phone,
-      termCheck,
-      privacyCheck,
-      marketingCheck,
     } = userCreateDto;
 
     const user = new User();
@@ -65,13 +63,6 @@ export class UsersRepository extends Repository<User> {
     return null;
   }
 
-  private async hashPassword(
-    password: string,
-    encrypted_password: string,
-  ): Promise<string> {
-    return bcrypt.hash(password, encrypted_password);
-  }
-
   async findAll(): Promise<User[]> {
     const users = await this.find({
       order: {
@@ -81,7 +72,7 @@ export class UsersRepository extends Repository<User> {
     return users;
   }
 
-  async me(email): Promise<User> {
+  async me(email: string): Promise<User> {
     const user = await this.findOne({
       where: {
         email,
@@ -99,7 +90,10 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async saveBillingKey(billingResult, currentApiUser: User) {
+  async saveBillingKey(
+    billingResult: { [key: string]: string },
+    currentApiUser: User,
+  ) {
     const { billingKey, cardCompany, cardNumber } = billingResult;
     const user = currentApiUser;
 
@@ -200,17 +194,24 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async findTargetDrivers(params): Promise<User[]> {
-    const { departure } = params;
-    const legion = departure.split(' ')[0];
+  async findTargetDrivers(
+    schedule: Array<{ [key: string]: string | number }>,
+    page: number,
+    sortBy: string,
+  ): Promise<User[]> {
+    const { departure } = schedule[0];
+    const region = (departure as string).split(' ')[0];
 
     const drivers = await this.createQueryBuilder('User')
-      .where(`drivable_legion @> ARRAY['${legion}']`)
+      // legion -> region으로 바꿔주십쇼
+      .where(`drivable_legion @> ARRAY['${region}']`)
       .andWhere(
         new Brackets((qb) => {
           qb.where('user_type = :driver', { driver: 'driver' });
         }),
       )
+      .take(3)
+      .skip(3 * (page - 1))
       .getMany();
 
     return drivers;

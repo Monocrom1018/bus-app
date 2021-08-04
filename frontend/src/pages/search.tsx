@@ -1,55 +1,110 @@
-import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button } from 'framework7-react';
-import React, { useEffect, useRef, useState } from 'react';
+import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, Preloader } from 'framework7-react';
+import { Dom7 as $$ } from 'framework7/lite-bundle'
+import { sleep } from '@utils';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { searchingOptionState, searchingOptionDateSelector } from '@atoms';
+import { searchingOptionState, searchingOptionDateSelector, tourScheduleState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
-import TimeDisplay from '@components/search/timeDisplay';
+import TimeDisplay from '@components/search/TimeDisplay';
 import moment from 'moment';
-import { getDrivers } from '@api';
+import { useInView } from 'react-intersection-observer';
+import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
+import { useInfiniteQuery } from 'react-query';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
-  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { distance } = searchingOption;
-  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
-  const [tempState, setTempState] = useState({
-    stopoverCount: 1,
-    landingState: false,
-    returnStopoverCheck: false,
-    pointList: {},
-    drivers: [],
-  });
-  const [popupOpened, setPopupOpened] = useState(false);
   const KakaoPlaceRef = useRef(null);
-  const { returnStopoverCheck, drivers } = tempState;
+  const allowInfinite = useRef(true);
+  const [isInfinite, setIsInfinite] = useState(false);
+  const [popupOpened, setPopupOpened] = useState(false);
+  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const latestTourSchedule = useRef(tourSchedule);
+  const searchingOption = useRecoilValue(searchingOptionState);
+  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
+  const { ref: targetRef, inView: isTargetInView } = useInView({
+    threshold: 1,
+  });
 
   useEffect(() => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
   }, []);
 
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery(
+    'drivers',
+    async ({ pageParam: page = 1}) => {
+      const sortBy = 'created_at'
+      const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current}, page, sortBy );
+      return response.data || [];
+    },
+    { 
+      enabled: isInfinite,
+      getNextPageParam: (lastPage, pages) => pages.length + 1 
+    },
+  );
+  const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
+  
+  const fetchNextPageAsync = useCallback(async () => {
+    allowInfinite.current = false;
+    await fetchNextPage();
+    // await sleep(200);
+    allowInfinite.current = true;
+  }, [fetchNextPage]);
+
+  useEffect(() => {
+    if (!isTargetInView || !allowInfinite.current) return;
+    fetchNextPageAsync();
+  }, [isTargetInView]);
+
   const getDayList = () => {
     const days = [];
-    [...Array(dayDiff)].forEach((day, index) => {
-      days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
-    });
+    if(dayDiff >= 0) {
+      [...Array(dayDiff)].forEach((day, index) => {
+        days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
+      });
+    }
     return days;
   };
 
   const getResult = async () => {
-    if (departureDate !== '' && returnDate !== '') {
+    if (departureDate !== null && returnDate !== '') {
       f7.dialog.preloader();
-      const searchParam = {
-        departureDate,
-        returnDate,
-        // stopovers: stopovers.length > 0 ? stopovers : [],
-        returnStopoverCheck,
-      };
-      const { foundDrivers, calculatedDistance } = await getDrivers(searchParam);
-      setSearchingOption((prev) => ({ ...prev, ...{ drivers: foundDrivers, distance: calculatedDistance } }));
+      const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
+      const schedulePromise = [];
+      copiedTourSchedule.forEach((schedule: any) => {
+        const { departure, preStopOvers, destination, postStopOvers, landing } = schedule;
+        const promise = getDistance({ departure, preStopOvers, destination, postStopOvers, landing }).then(
+          (distance) => {
+            schedule.distance = distance;
+            return schedule;
+          },
+        );
+
+        schedulePromise.push(promise);
+      });
+      const addDistanceSchedules = await Promise.all(schedulePromise);
+      latestTourSchedule.current = addDistanceSchedules;
+      setTourSchedule(addDistanceSchedules);
+      setIsInfinite(true);
+      await fetchNextPage();
+
       f7.dialog.close();
+      const accordions = $$('.accordion-item')
+      accordions.each((el) => {
+        if([...el.classList].includes("accordion-item-opened")){
+          f7.accordion.close(`#${el.id}`);
+        }
+      })
     } else {
       showToast('일정을 모두 입력해주세요');
     }
@@ -74,21 +129,19 @@ const SearchPage = () => {
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
 
-      {getDayList().map((day) => (
-        <DetailContainer searchPlaces={searchPlaces} day={day} />
+      {getDayList().map((day, index) => (
+        <DetailContainer searchPlaces={searchPlaces} day={day} index={index} />
       ))}
 
-      <Button onClick={getResult} text="검색" className="bg-red-500 text-white mt-8 mx-4 h-10 text-lg" />
+      <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
 
-      {drivers.length > 0 ? (
-        <div>
+      {hasNextPage && drivers && drivers.length > 0 ? (
+        <div ref={targetRef}>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
-              <option value="인기순">인기순</option>
               <option value="인승">인승</option>
               <option value="최저가격순">최저가격순</option>
             </Input>
-            <div className="mx-4 font-medium text-gray-700">거리(왕복) : {distance}km</div>
           </div>
           <div>
             {drivers.map((driver) => (
@@ -96,7 +149,10 @@ const SearchPage = () => {
             ))}
           </div>
         </div>
-      ) : null}
+      ) : <div>검색 가능한 기사가 없습니다.</div>}
+      {hasNextPage && isLoading && (
+        <Preloader size={16} />
+      )}
     </Page>
   );
 };

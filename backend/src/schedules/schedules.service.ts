@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UsersService } from '@users/users.service';
-import { SchedulesRepository } from './schedules.repository';
 import axios from 'axios';
 import qs from 'qs';
+import { SchedulesRepository } from './schedules.repository';
 
 @Injectable()
 export class SchedulesService {
@@ -20,15 +19,17 @@ export class SchedulesService {
   }
 
   async getDistance(params) {
-    const { departure, destination, landing } = params;
+    const { departure, destination, landing, pre } = params;
     let combinedGeoData = '';
 
     const combineStopovers = [];
     combineStopovers.push(destination);
     for (let i = 0; i < combineStopovers.length; i++) {
       if (combineStopovers[i] === '') {
-        return;
+        throw new ConflictException();
       }
+
+      // promise all로 변경할수 있을듯
       // eslint-disable-next-line no-await-in-loop
       const geoData = await this.getGeoData(combineStopovers[i]);
       const tmapsGeo = `${

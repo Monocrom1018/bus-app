@@ -1,5 +1,5 @@
-import { atom, selector } from 'recoil';
-import { CurrentUser } from '@interfaces';
+import { atom, selector, selectorFamily } from 'recoil';
+import { CurrentUser, Schedule } from '@interfaces';
 
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
@@ -20,15 +20,19 @@ export const lineItemsCount = atom({
   default: 0,
 });
 
+export const tourScheduleState = atom<Schedule[]>({
+  key: 'tourSchedule',
+  default: [],
+});
+
 export const searchingOptionState = atom({
   key: 'searchingOption',
   default: {
+    totalDistance: 0,
+    departureDate: new Date(),
     returnDate: '',
-    distance: 0,
     departureTime: '',
     returnTime: '',
-    date: [], // 전체 일정
-    schedule: [], // 세부 일정
   },
 });
 
@@ -36,9 +40,10 @@ export const searchingOptionDateSelector = selector({
   key: 'searchingOptionDateSelector',
   get: ({ get }) => {
     const searchingOption = get(searchingOptionState);
+    const { departureDate, returnDate } = searchingOption;
     return {
-      departureDate: searchingOption.date[0] && searchingOption.date[0],
-      returnDate: searchingOption.date[1] && searchingOption.date[1],
+      departureDate,
+      returnDate,
     };
   },
 });
@@ -47,9 +52,10 @@ export const searchingOptionTimeSelector = selector({
   key: 'searchingOptionTimeSelector',
   get: ({ get }) => {
     const searchingOption = get(searchingOptionState);
+    const { departureTime, returnTime } = searchingOption;
     return {
-      departureTime: searchingOption.departureTime,
-      returnTime: searchingOption.returnTime,
+      departureTime,
+      returnTime,
     };
   },
 });

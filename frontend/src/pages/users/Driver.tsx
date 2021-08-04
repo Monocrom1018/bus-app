@@ -15,7 +15,7 @@ const Driver = (props) => {
           title={name}
           subtitle={`${people_available}인승 ${bus_type}`}
           text={`${bus_old}년식 | ${company_name}`}
-          after={`${totalCharge.toLocaleString()}₩`}
+          // after={`${totalCharge.toLocaleString()}₩`}
           onClick={() => setFinalCharge(totalCharge)}
         >
           <img slot="media" src={profile_img} width="80" alt="profile_img" />

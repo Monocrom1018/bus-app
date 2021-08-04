@@ -1,4 +1,4 @@
-import { SignUpParams } from '@constants';
+import { ID, SignUpParams } from '@constants';
 import { Token, CurrentUser } from '@interfaces';
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
@@ -37,7 +37,7 @@ export const {
   destroy: destroyObject,
 } = ApiService('objects');
 
-export const { infiniteQuery: getInfiniteItems, get: getItem } = ApiService('items');
+export const { infiniteQuery: getUser, update: updateUser } = ApiService('users');
 export { API_URL, VERSION };
 
 export const getNotices = async () => {
@@ -55,8 +55,8 @@ export const getFaqs = async () => {
   return data;
 };
 
-export const getDrivers = async (params) => {
-  const { data } = await API.post(`/users/drivers`, params);
+export const getDrivers = async (params, page, sortBy) => {
+  const { data } = await API.post(`/users/drivers?page=${page}&sort_by=${sortBy}`, params);
   return data;
 };
 
@@ -105,3 +105,25 @@ export const createPayment = async (params) => {
 //   const { data } = await API.get(`users?email=${email}`);
 //   return data;
 // };
+
+export const createChatroom = () => async (params: any) => {
+  const { data } = await API.post('/chatrooms', params);
+  return data;
+};
+
+export const getSingleChatroom = (params: any) => async () => {
+  const { data } = await API.get('/chatrooms/single', { params });
+  return data;
+};
+
+export const getChatroom = (id: ID) => async () => {
+  const { data } = await API.get(`/chatrooms/${id}`);
+  return data;
+};
+
+export const createUserChatroom =
+  () =>
+  async ({ chatroom_id, params }: any) => {
+    const { data } = await API.post(`/chatrooms/${chatroom_id}/user_chatrooms`, params);
+    return data;
+  };

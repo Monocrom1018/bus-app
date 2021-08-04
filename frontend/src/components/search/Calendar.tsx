@@ -1,12 +1,15 @@
 import { f7 } from 'framework7-react';
 import React, { useEffect } from 'react';
 import jQuery from 'jquery';
-import { lineItemsCount, searchingOptionState } from '@atoms';
+import { lineItemsCount, searchingOptionState, tourScheduleState } from '@atoms';
 import { useRecoilState } from 'recoil';
+import moment from 'moment';
 
 const Calendar = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { date: Dates } = searchingOption;
+  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const { departureDate: departure, returnDate: arrival } = searchingOption;
+  const Dates = [departure as Date, arrival as unknown as Date];
   const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
   useEffect(() => {
@@ -50,7 +53,20 @@ const Calendar = () => {
           jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
         },
         change(calendar, value: Array<string>) {
-          setSearchingOption({ ...searchingOption, date: [...value] });
+          const set = {};
+          const [departureDate, returnDate] = value;
+          (set as any).departureDate = departureDate;
+          (set as any).returnDate = "";
+          if (value.length !== 1) {
+            (set as any).returnDate = returnDate;
+            const days = [];
+            const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
+            [...Array(dayDiff)].forEach((day, index) => {
+              days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
+            });
+            setTourSchedule(days.map((day) => ({ day, preStopOvers: [], postStopOvers: [] }), []));
+          }
+          setSearchingOption((prev) => ({ ...prev, ...set }));
         },
       },
     });

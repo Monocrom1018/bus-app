@@ -10,13 +10,13 @@ import { AuthService } from '@auth/auth.service';
 import axios, { AxiosRequestConfig } from 'axios';
 import qs from 'qs';
 import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
+import { SchedulesService } from '@schedules/schedules.service';
 import { UserCreateDto } from './dto/user-create.dto';
-import { UserSearchDto } from './dto/user-search.dto';
+import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 import { MonthsService } from '../months/months.service';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { SchedulesService } from '@schedules/schedules.service';
 // const axios = require('axios');
 // const qs = require('qs');
 
@@ -143,38 +143,33 @@ export class UsersService {
     return user;
   }
 
-  async getDrivers(params: UserSearchDto) {
-    const {
-      departureDate,
-      returnDate,
-      stopovers,
-      departure,
-      destination,
-      landing,
-      returnStopoverCheck,
-    } = params;
-    const departureTime = departureDate.split(' ')[4].split(':')[0];
+  async getDrivers(driverSearchDto: DriverSearchDto, page: number, sortBy: string) {
+    const { departureDate, returnDate, departureTime, returnTime, schedule } =
+      driverSearchDto;
     const departMonth = await this.getMonth(departureDate);
     const returnMonth = await this.getMonth(returnDate);
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
     const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
-    const drivers = await this.usersRepository.findTargetDrivers(params);
-    const distance = await this.schedulesService.getDistance(params);
+    const drivers = await this.usersRepository.findTargetDrivers(schedule, page, sortBy);
+    const distance = schedule.reduce(
+      (prev, curr) => prev + (curr as any).distance,
+      0,
+    );
 
-    const returnDistance = await this.schedulesService.getDistance({
-      departure: destination,
-      destination: landing === '' ? departure : landing,
-      stopovers: returnStopoverCheck ? stopovers.reverse() : [],
-    });
+    // const returnDistance = await this.schedulesService.getDistance({
+    //   departure: destination,
+    //   destination: landing === '' ? departure : landing,
+    //   stopovers: returnStopoverCheck ? stopovers.reverse() : [],
+    // });
 
-    if (!distance || !returnDistance) {
-      throw new NotFoundException();
-    }
+    // if (!distance || !returnDistance) {
+    //   throw new NotFoundException();
+    // }
 
     if (drivers) {
       drivers.forEach(async (driver) => {
-        const restDistance =
-          distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
+        // const restDistance =
+        //   distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
 
         const departCharge = isDepartPeak
           ? driver.peak_charge || driver.basic_charge
@@ -184,36 +179,36 @@ export class UsersService {
           ? driver.peak_charge_per_km || driver.charge_per_km
           : driver.charge_per_km;
 
-        let departTotalCharge =
-          restDistance * departChargePerKm +
-          departCharge +
-          driver.service_charge;
+        // let departTotalCharge =
+        //   restDistance * departChargePerKm +
+        //   departCharge +
+        //   driver.service_charge;
 
         // 야간할증 계산
         if (
           Number(departureTime) >= driver.night_begin ||
           Number(departureTime) <= driver.night_end
         ) {
-          departTotalCharge += driver.night_charge;
+          // departTotalCharge += driver.night_charge;
         }
 
         // 귀환요금 계산
         const returnParams = {
           isReturnPeak,
-          returnDistance,
+          // returnDistance,
           returnDate,
           driver,
         };
-        const returnTotalCharge = await this.getReturnTotalCharge(returnParams);
-        const sum = returnTotalCharge + departTotalCharge;
+        // const returnTotalCharge = await this.getReturnTotalCharge(returnParams);
+        // const sum = returnTotalCharge + departTotalCharge;
 
-        (driver as any).totalCharge = sum;
+        // (driver as any).totalCharge = sum;
       });
     }
 
     return {
-      foundDrivers: drivers,
-      calculatedDistance: distance + returnDistance,
+      data: drivers,
+      // calculatedDistance: distance + returnDistance,
     };
   }
 

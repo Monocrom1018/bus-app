@@ -43,6 +43,7 @@ export interface CurrentUserState {
 }
 
 export interface CurrentUser extends CurrentUserState {
+  id: number;
   name: string;
   email: string;
   registration_confirmed: boolean;
@@ -129,17 +130,18 @@ export type Point = {
 };
 
 export interface StopOver {
-  id: number;
+  id: number | string;
   region: string;
 }
 export interface Schedule {
-  departure: string;
-  destination: string;
-  landing: string;
-  landingState: boolean;
-  returnStopOverCheck: boolean;
-  distance: number;
-  pointList: any;
-  preStopOvers: StopOver[];
-  postStopOvers: StopOver[];
+  day: string;
+  departure?: string;
+  destination?: string;
+  landing?: string;
+  landingState?: boolean;
+  returnStopOverCheck?: boolean;
+  distance?: number;
+  pointList?: any;
+  preStopOvers?: StopOver[];
+  postStopOvers?: StopOver[];
 }
