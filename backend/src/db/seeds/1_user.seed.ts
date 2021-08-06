@@ -40,9 +40,9 @@ export default class CreateUsers implements Seeder {
       .map(async (user) => {
         user.email =
           userIndex < 100
-            ? `test${`0${userIndex++}`.slice(-2)}@bus.com`
-            : `test${`${userIndex++}`}@bus.com`;
-        user.user_type = UserType.DRIVER;
+            ? `backPack${`0${userIndex++}`.slice(-2)}@bus.com`
+            : `backPack${`${userIndex++}`}@bus.com`;
+        user.user_type = userIndex < 11 ? UserType.NORMAL : UserType.DRIVER;
         user.registration_confirmed = false;
         user.drivable_region = []
           .concat(regions1[Math.floor(Math.random() * 8)])
