@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector, tourScheduleState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
-import TimeDisplay from '@components/search/TimeDisplay';
+import TimeDisplay from '@components/search/timeDisplay';
 import moment from 'moment';
 import { useInView } from 'react-intersection-observer';
 import { getDistance, getDrivers } from '@api';
@@ -45,6 +45,7 @@ const SearchPage = () => {
     },
   );
   const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
+  const isDriverPresence: boolean = hasNextPage && !isLoading && data && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
     allowInfinite.current = false;
@@ -127,7 +128,7 @@ const SearchPage = () => {
 
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
 
-      {hasNextPage && drivers && drivers.length > 0 ? (
+      {isDriverPresence && (
         <div ref={targetRef}>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
@@ -141,8 +142,12 @@ const SearchPage = () => {
             ))}
           </div>
         </div>
-      ) : (
-        <div>검색 가능한 기사가 없습니다.</div>
+      )}
+      {allowInfinite.current && isDriverPresence === false && (
+        <div className="text-center">
+          <i className="f7-icons text-6xl text-gray-400 -mt-10">exclamationmark_bubble</i>
+          <div className="text-xl text-gray-400 mt-4 tracking-wide">검색 결과가 없습니다</div>
+        </div>
       )}
       {hasNextPage && isLoading && <Preloader size={16} />}
     </Page>

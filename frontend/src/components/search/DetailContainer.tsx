@@ -236,6 +236,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
       >
         <AccordionToggle className="px-4 flex justify-between">
           <div className="text-xl font-bold">{day}</div>
+          <div className="f7-icons text-lg">{accordionOpened ? 'chevron_compact_up' : 'chevron_compact_down'}</div>
         </AccordionToggle>
         <AccordionContent style={{ overflow: accordionOpened ? 'visible' : 'hidden' }}>
           <div className="relative mt-2">

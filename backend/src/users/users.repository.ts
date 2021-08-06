@@ -112,7 +112,7 @@ export class UsersRepository extends Repository<User> {
 
   async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
     const {
-      drivableLegion,
+      drivableRegion,
       company,
       busNumber,
       busType,
@@ -157,7 +157,7 @@ export class UsersRepository extends Repository<User> {
       user.bus_type = busType;
       user.charge_per_km = chargePerKm;
       user.company_name = company;
-      user.drivable_legion = drivableLegion;
+      user.drivable_region = drivableRegion;
       user.night_begin = nightBegin;
       user.night_end = nightEnd;
       user.night_charge = nightCharge;
@@ -203,8 +203,7 @@ export class UsersRepository extends Repository<User> {
     const region = (departure as string).split(' ')[0];
 
     const drivers = await this.createQueryBuilder('User')
-      // legion -> region으로 바꿔주십쇼
-      .where(`drivable_legion @> ARRAY['${region}']`)
+      .where(`drivable_region @> ARRAY['${region}']`)
       .andWhere(
         new Brackets((qb) => {
           qb.where('user_type = :driver', { driver: 'driver' });

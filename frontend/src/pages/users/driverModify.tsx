@@ -58,8 +58,8 @@ const UserInfoSchema = Yup.object().shape({
 const driverModifyPage = ({ f7route, f7router }) => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const [drivableLegion, setDrivableLegion] = useState(
-    currentUser.drivable_legion ? [...currentUser.drivable_legion] : [],
+  const [drivableRegion, setDrivableRegion] = useState(
+    currentUser.drivable_region ? [...currentUser.drivable_region] : [],
   );
   const { name, profile_img, email, user_type, company_name } = currentUser;
   const banks = [
@@ -91,7 +91,7 @@ const driverModifyPage = ({ f7route, f7router }) => {
     'HSBC은행',
     'SC제일은행',
   ];
-  const legions = [
+  const regions = [
     '서울',
     '경기',
     '인천',
@@ -117,13 +117,13 @@ const driverModifyPage = ({ f7route, f7router }) => {
     const duplicatedArr = JSON.parse(JSON.stringify(arrayName));
     if (valueIndex !== -1) {
       duplicatedArr.splice(valueIndex, 1);
-      if (arrayName === drivableLegion) {
-        setDrivableLegion(duplicatedArr);
+      if (arrayName === drivableRegion) {
+        setDrivableRegion(duplicatedArr);
       }
     } else {
       duplicatedArr.push(value);
-      if (arrayName === drivableLegion) {
-        setDrivableLegion(duplicatedArr);
+      if (arrayName === drivableRegion) {
+        setDrivableRegion(duplicatedArr);
       }
     }
   };
@@ -201,8 +201,8 @@ const driverModifyPage = ({ f7route, f7router }) => {
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
             fd.append('user[profile_img]', values.profileImg);
 
-            drivableLegion.forEach((legion) => {
-              fd.append('user[drivableLegion]', legion);
+            drivableRegion.forEach((region) => {
+              fd.append('user[drivableRegion]', region);
             });
 
             const { data: user } = await modifyAPI(fd);
@@ -320,21 +320,21 @@ const driverModifyPage = ({ f7route, f7router }) => {
             <List noHairlinesMd accordionList>
               <ListItem accordionItem title="출발가능지역 (복수선택 가능)">
                 <AccordionContent>
-                  {legions.map((legion) => (
+                  {regions.map((region) => (
                     <ListItem
                       checkbox
-                      onChange={(e) => handleArrayChange(e, drivableLegion)}
-                      value={legion}
-                      title={legion}
-                      defaultChecked={currentUser.drivable_legion?.includes(legion)}
+                      onChange={(e) => handleArrayChange(e, drivableRegion)}
+                      value={region}
+                      title={region}
+                      defaultChecked={currentUser.drivable_region?.includes(region)}
                       name="demo-checkbox"
                     />
                   ))}
                 </AccordionContent>
               </ListItem>
               <Block strong className="ml-3 mt-1">
-                {drivableLegion.map((legion) => (
-                  <Chip outline className="mr-1" text={legion} />
+                {drivableRegion.map((region) => (
+                  <Chip outline className="mr-1" text={region} />
                 ))}
               </Block>
             </List>

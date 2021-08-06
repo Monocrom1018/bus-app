@@ -43,7 +43,7 @@ export class UserUpdateDto {
   @IsArray()
   @IsOptional()
   @ApiProperty()
-  drivableLegion: string[];
+  drivableRegion: string[];
 
   @IsString()
   @IsOptional()

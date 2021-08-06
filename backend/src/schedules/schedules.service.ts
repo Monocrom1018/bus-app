@@ -19,19 +19,26 @@ export class SchedulesService {
   }
 
   async getDistance(params) {
-    const { departure, destination, landing, pre } = params;
+    const { departure, preStopOvers, destination, postStopOvers, landing } =
+      params;
     let combinedGeoData = '';
 
-    const combineStopovers = [];
-    combineStopovers.push(destination);
-    for (let i = 0; i < combineStopovers.length; i++) {
-      if (combineStopovers[i] === '') {
+    let combinedStopOvers = preStopOvers
+      ? [].concat(preStopOvers[0].region).concat(destination)
+      : [destination];
+    combinedStopOvers = postStopOvers
+      ? combinedStopOvers.concat(postStopOvers[0].region)
+      : combinedStopOvers;
+
+    for (let i = 0; i < combinedStopOvers.length; i++) {
+      if (combinedStopOvers[i] === '') {
+        console.log('ConflictException');
         throw new ConflictException();
       }
 
       // promise all로 변경할수 있을듯
       // eslint-disable-next-line no-await-in-loop
-      const geoData = await this.getGeoData(combineStopovers[i]);
+      const geoData = await this.getGeoData(combinedStopOvers[i]);
       const tmapsGeo = `${
         geoData.data.coordinateInfo.coordinate[0].lon ||
         geoData.data.coordinateInfo.coordinate[0].newLon
@@ -67,7 +74,6 @@ export class SchedulesService {
 
     // 거리정보 요청
     const tmapBody = await qs.stringify({
-      appKey: process.env.TMAP_API_KEY,
       endX: departureCoord.x,
       endY: departureCoord.y,
       startX: landingCoord.x,
@@ -79,6 +85,7 @@ export class SchedulesService {
     });
 
     const tmapConfig = {
+      appKey: process.env.TMAP_API_KEY,
       'Accept-Language': 'ko',
       'Content-Type': 'application/x-www-form-urlencoded',
     };
@@ -92,6 +99,8 @@ export class SchedulesService {
     const kmData = Math.round(
       tmapApi.data.features[0].properties.totalDistance / 1000,
     );
+
+    console.log('kmData', kmData);
 
     return kmData;
   }
