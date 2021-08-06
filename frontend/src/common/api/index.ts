@@ -69,7 +69,9 @@ export const getDistance = async (params) => {
   const { data } = await API.get(`schedules/distance`, {
     params: {
       departure: params.departure,
+      preStopOvers: params.preStopOvers,
       destination: params.destination,
+      postStopOvers: params.postStopOvers,
       landing: params.landing,
     },
   });

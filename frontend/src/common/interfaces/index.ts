@@ -52,7 +52,7 @@ export interface CurrentUser extends CurrentUserState {
   profile_img: any;
   password: string;
   password_confirmation: string;
-  drivable_legion: string[];
+  drivable_region: string[];
   drivable_date: string[];
   company_name: string;
   bus_number: string;

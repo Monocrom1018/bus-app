@@ -72,7 +72,7 @@ export class Users extends DateAudit {
     array: true,
     nullable: true,
   })
-  drivable_legion: string[];
+  drivable_region: string[];
 
   @Column({ nullable: true })
   basic_km: number;

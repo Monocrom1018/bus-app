@@ -143,72 +143,56 @@ export class UsersService {
     return user;
   }
 
-  async getDrivers(driverSearchDto: DriverSearchDto, page: number, sortBy: string) {
+  async getDrivers(
+    driverSearchDto: DriverSearchDto,
+    page: number,
+    sortBy: string,
+  ) {
     const { departureDate, returnDate, departureTime, returnTime, schedule } =
       driverSearchDto;
     const departMonth = await this.getMonth(departureDate);
-    const returnMonth = await this.getMonth(returnDate);
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
-    const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
-    const drivers = await this.usersRepository.findTargetDrivers(schedule, page, sortBy);
+    const drivers = await this.usersRepository.findTargetDrivers(
+      schedule,
+      page,
+      sortBy,
+    );
+
     const distance = schedule.reduce(
       (prev, curr) => prev + (curr as any).distance,
       0,
     );
 
-    // const returnDistance = await this.schedulesService.getDistance({
-    //   departure: destination,
-    //   destination: landing === '' ? departure : landing,
-    //   stopovers: returnStopoverCheck ? stopovers.reverse() : [],
-    // });
-
-    // if (!distance || !returnDistance) {
-    //   throw new NotFoundException();
-    // }
-
     if (drivers) {
       drivers.forEach(async (driver) => {
-        // const restDistance =
-        //   distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
+        const restDistance =
+          distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
 
-        const departCharge = isDepartPeak
+        const baseCharge = isDepartPeak
           ? driver.peak_charge || driver.basic_charge
           : driver.basic_charge;
 
-        const departChargePerKm = isDepartPeak
+        const baseChargePerKm = isDepartPeak
           ? driver.peak_charge_per_km || driver.charge_per_km
           : driver.charge_per_km;
 
-        // let departTotalCharge =
-        //   restDistance * departChargePerKm +
-        //   departCharge +
-        //   driver.service_charge;
+        let totalCharge =
+          restDistance * baseChargePerKm + baseCharge + driver.service_charge;
 
         // 야간할증 계산
         if (
           Number(departureTime) >= driver.night_begin ||
           Number(departureTime) <= driver.night_end
         ) {
-          // departTotalCharge += driver.night_charge;
+          totalCharge += driver.night_charge;
         }
 
-        // 귀환요금 계산
-        const returnParams = {
-          isReturnPeak,
-          // returnDistance,
-          returnDate,
-          driver,
-        };
-        // const returnTotalCharge = await this.getReturnTotalCharge(returnParams);
-        // const sum = returnTotalCharge + departTotalCharge;
-
-        // (driver as any).totalCharge = sum;
+        (driver as any).totalCharge = totalCharge;
       });
     }
 
     return {
       data: drivers,
-      // calculatedDistance: distance + returnDistance,
     };
   }
 
@@ -232,6 +216,9 @@ export class UsersService {
   }
 
   async getMonth(date: string) {
-    return moment(date).format('YYYY년 M월 DD일 HH시 MM분').split(' ')[1];
+    const month = moment(date)
+      .format('YYYY년 M월 DD일 HH시 MM분')
+      .split(' ')[1];
+    return month;
   }
 }
