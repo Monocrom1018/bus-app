@@ -13,7 +13,7 @@ const SignUpIntroPage = () => (
       이용하실 수 있습니다
     </div>
     <div>
-      <div className="grid grid-flow-col auto-cols-max grid-cols-3 gap-4 text-center px-4">
+      <div className="flex justify-between text-center mx-20">
         <div className="text-center">
           <a href="/users/sign_up/normal">
             <div className="f7-icons text-6xl text-red-400">person</div>
@@ -23,16 +23,9 @@ const SignUpIntroPage = () => (
         </div>
         <div className="text-center">
           <a href="/users/sign_up/driver">
-            <div className="f7-icons text-6xl">car_fill</div>
+            <div className="fas fa-bus text-6xl" />
             <br />
             <span className="text-sm text-gray-600 font-semibold text-base">기사님</span>
-          </a>
-        </div>
-        <div className="text-center">
-          <a href="/users/sign_up/company" className="text-sm text-gray-600">
-            <div className="f7-icons text-6xl">building_2_fill</div>
-            <br />
-            <span className="text-sm text-gray-600 font-semibold text-base">버스회사</span>
           </a>
         </div>
       </div>

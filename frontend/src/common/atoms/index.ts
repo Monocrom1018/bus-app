@@ -1,5 +1,5 @@
-import { atom } from 'recoil';
-import { CurrentUser, CurrentUserState } from '@interfaces';
+import { atom, selector, selectorFamily } from 'recoil';
+import { CurrentUser, Schedule } from '@interfaces';
 
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
@@ -20,34 +20,44 @@ export const lineItemsCount = atom({
   default: 0,
 });
 
-export const departureState = atom({
-  key: 'departureState',
-  default: '',
-});
-
-export const returnDateState = atom({
-  key: 'returnDateState',
-  default: '',
-});
-
-export const departureDateState = atom({
-  key: 'departureDateState',
-  default: '',
-});
-
-export const destinationState = atom({
-  key: 'destinationState',
-  default: '',
-});
-
-export const lastDestinationState = atom({
-  key: 'lastDestinationState',
-  default: '',
-});
-
-export const stopoversState = atom({
-  key: 'stopoversState',
+export const tourScheduleState = atom<Schedule[]>({
+  key: 'tourSchedule',
   default: [],
+});
+
+export const searchingOptionState = atom({
+  key: 'searchingOption',
+  default: {
+    totalDistance: 0,
+    departureDate: new Date(),
+    returnDate: '',
+    departureTime: '',
+    returnTime: '',
+  },
+});
+
+export const searchingOptionDateSelector = selector({
+  key: 'searchingOptionDateSelector',
+  get: ({ get }) => {
+    const searchingOption = get(searchingOptionState);
+    const { departureDate, returnDate } = searchingOption;
+    return {
+      departureDate,
+      returnDate,
+    };
+  },
+});
+
+export const searchingOptionTimeSelector = selector({
+  key: 'searchingOptionTimeSelector',
+  get: ({ get }) => {
+    const searchingOption = get(searchingOptionState);
+    const { departureTime, returnTime } = searchingOption;
+    return {
+      departureTime,
+      returnTime,
+    };
+  },
 });
 
 export const distanceState = atom({
@@ -70,6 +80,12 @@ export const driverState = atom({
     company_name: '',
     people_available: 0,
     profile_img: '',
+    sanitizer: false,
+    movie: false,
+    wifi: false,
+    audio: false,
+    fridge: false,
+    usb: false,
     introduce: null,
   },
 });

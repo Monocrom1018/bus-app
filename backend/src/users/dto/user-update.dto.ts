@@ -5,6 +5,8 @@ import {
   IsOptional,
   IsArray,
   IsNumber,
+  IsBoolean,
+  IsBooleanString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -28,10 +30,20 @@ export class UserUpdateDto {
   @ApiProperty()
   password_confirmation: string;
 
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  bank: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  bank_account: string;
+
   @IsArray()
   @IsOptional()
   @ApiProperty()
-  drivableLegion: string[];
+  drivableRegion: string[];
 
   @IsString()
   @IsOptional()
@@ -112,4 +124,34 @@ export class UserUpdateDto {
   @IsOptional()
   @ApiProperty()
   peakChargePerKm: number;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  sanitizer: string;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  wifi: string;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  fridge: string;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  usb: string;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  movie: string;
+
+  @IsBooleanString()
+  @IsOptional()
+  @ApiProperty()
+  audio: string;
 }

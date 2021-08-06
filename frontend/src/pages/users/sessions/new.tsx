@@ -5,8 +5,9 @@ import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import i18next from 'i18next';
 import useAuth from '@hooks/useAuth';
-import { loginAPI } from '@api';
+import { loginAPI, userMeApi } from '@api';
 import { convertObjectToFormData } from '@utils';
+import { showToast } from '@js/utils';
 
 type AmplifySignIn = (param: UserSignInParams) => Promise<CognitoUser>;
 
@@ -48,6 +49,17 @@ const SessionNewPage: React.FC = () => {
 
       let user: null | CognitoUser = null;
       let message: string;
+
+      //! 아래 주석 해제하면 가입승인 안된 경우 로그인 막습니다.
+      // const {
+      //   data: { registration_confirmed },
+      // } = await userMeApi(signInParams.email);
+      // if (!registration_confirmed) {
+      //   setSubmitting(false);
+      //   f7.preloader.hide();
+      //   await showToast('아직 가입승인 대기중입니다');
+      //   return;
+      // }
 
       try {
         user = await amplifySignIn(signInParams);

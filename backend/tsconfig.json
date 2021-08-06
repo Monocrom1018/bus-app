@@ -17,6 +17,7 @@
       "@decorators/*": ["src/shared/decorators/*"],
       "@entities/*": ["src/shared/entities/*"],
       "@filters/*": ["src/shared/filters/*"],
+      "@interfaces/*": ["src/shared/interfaces/*"],
       "@middlewares/*": ["src/shared/middlewares/*"],
       "@guards/*": ["src/shared/guards/*"],
       "@users/*": ["src/users/*"],
@@ -37,7 +38,8 @@
       "@reservations/*": ["src/reservations/*"],
       "@reservations_users/*": ["src/reservations_users/*"],
       "@rooms/*": ["src/rooms/*"],
-      "@months/*": ["src/months/*"]
+      "@months/*": ["src/months/*"],
+      "@schedules/*": ["src/schedules/*"]
     }
   }
 }

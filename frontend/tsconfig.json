@@ -16,6 +16,7 @@
     "noEmit": true,
     "jsx": "react",
     "paths": {
+      "@assets/": ["src/assets/*"],
       "@utils/*": ["src/common/utils/*"],
       "@utils": ["src/common/utils/index"],
       "@components/*": ["src/components/*"],
@@ -23,6 +24,8 @@
       "@hooks/*": ["src/common/hooks/*"],
       "@atoms": ["src/common/atoms/index"],
       "@api": ["src/common/api/index"],
+      "@appsync": ["src/common/appsync/index"],
+      "@graphql/*": ["src/graphql/*"],
       "@config": ["src/common/config/index"],
       "@routes": ["src/common/routes/index"],
       "@pages/*": ["src/pages/*"],

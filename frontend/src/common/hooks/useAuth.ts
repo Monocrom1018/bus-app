@@ -22,12 +22,12 @@ const useAuth: UseAuthHooks = () => {
   const resetCurrentUser = useResetRecoilState(currentUserState);
 
   const authenticateUser = useCallback(
-    async (cognitoUser: CognitoUser) => {
+    async (cognitoUser: CognitoUser & { attributes: any }) => {
       const isCognitoUser = cognitoUser instanceof CognitoUser;
       const userEmail = cognitoUser.attributes.email;
       if (!isCognitoUser) return;
       const { data: user } = await userMeApi(userEmail);
-      setCurrentUser({ ...user, isAuthenticated: true });
+      setCurrentUser({ ...user, ...cognitoUser.attributes, isAuthenticated: true });
     },
     [setCurrentUser],
   );
