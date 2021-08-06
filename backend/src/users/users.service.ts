@@ -1,27 +1,33 @@
 import {
   Injectable,
+  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
 import moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
+import axios, { AxiosRequestConfig } from 'axios';
+import qs from 'qs';
+import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
+import { SchedulesService } from '@schedules/schedules.service';
 import { UserCreateDto } from './dto/user-create.dto';
-import { UserSearchDto } from './dto/user-search.dto';
+import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
 import { Users as User } from './users.entity';
 import { MonthsService } from '../months/months.service';
-
-const axios = require('axios');
-const qs = require('qs');
+import { UserUpdateDto } from './dto/user-update.dto';
+// const axios = require('axios');
+// const qs = require('qs');
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
+    private schedulesService: SchedulesService,
     private readonly monthsService: MonthsService,
-    private authService: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
@@ -40,12 +46,12 @@ export class UsersService {
     return users;
   }
 
-  async update(filename: string, userUpdateDto) {
+  async update(filename: string, userUpdateDto: UserUpdateDto) {
     const user = await this.authService.currentApiUser();
     return this.usersRepository.updateUser(user, filename, userUpdateDto);
   }
 
-  async getBillingKey(body) {
+  async getBillingKey(body: BillingKeyProps) {
     const { authKey, customerKey } = body;
     const user = await this.me('normal@test.com');
 
@@ -53,17 +59,15 @@ export class UsersService {
       throw new NotFoundException('유저정보가 조회되지 않습니다');
     }
 
-    const encodedKey = await Buffer.from(
+    const encodedKey = Buffer.from(
       `${process.env.TOSS_SECRET_KEY}:`,
       'utf8',
     ).toString('base64');
 
-    const tossData = {
-      customerKey,
-    };
+    const tossData = { customerKey };
 
-    const Config = {
-      method: 'post',
+    const config: AxiosRequestConfig = {
+      method: 'POST',
       url: `https://api.tosspayments.com/v1/billing/authorizations/${authKey}`,
       headers: {
         Authorization: `Basic ${encodedKey}`,
@@ -72,7 +76,7 @@ export class UsersService {
       data: tossData,
     };
 
-    const { data: apiResult } = await axios(Config);
+    const { data: apiResult } = await axios(config);
     return this.usersRepository.saveBillingKey(apiResult, user);
   }
 
@@ -94,8 +98,8 @@ export class UsersService {
       orderName: '배낭버스 운행예약',
     };
 
-    const Config = {
-      method: 'post',
+    const config: AxiosRequestConfig = {
+      method: 'POST',
       url: `https://api.tosspayments.com/v1/billing/${card_billing_key}`,
       headers: {
         Authorization: `Basic ${encodedKey}`,
@@ -105,17 +109,18 @@ export class UsersService {
     };
 
     try {
-      const { data: apiResult } = await axios(Config);
+      const { data: apiResult } = await axios(config);
     } catch (error) {
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
+      const { data, status, headers } = error.response;
+      console.log(data);
+      console.log(status);
+      console.log(headers);
     }
 
-    return 'okok';
+    return 'ok';
   }
 
-  async me(email) {
+  async me(email: string): Promise<User> {
     const user = await this.usersRepository.me(email);
     return user;
   }
@@ -130,7 +135,7 @@ export class UsersService {
     return user;
   }
 
-  async getInformation() {
+  async getInformation(): Promise<User> {
     const user = await this.usersRepository.findOne({
       email: 'test01@bus.com',
     });
@@ -138,81 +143,60 @@ export class UsersService {
     return user;
   }
 
-  async getDrivers(params: UserSearchDto) {
-    const {
-      departureDate,
-      returnDate,
-      stopovers,
-      departure,
-      destination,
-      lastDestination,
-      returnStopoverCheck,
-    } = params;
-    const departureTime = params.departureDate.split(' ')[4].split(':')[0];
+  async getDrivers(
+    driverSearchDto: DriverSearchDto,
+    page: number,
+    sortBy: string,
+  ) {
+    const { departureDate, returnDate, departureTime, returnTime, schedule } =
+      driverSearchDto;
     const departMonth = await this.getMonth(departureDate);
-    const returnMonth = await this.getMonth(returnDate);
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
-    const isReturnPeak = await this.monthsService.isPeakMonth(returnMonth);
-    const drivers = await this.usersRepository.findTargetDrivers(params);
-    const distance = await this.getDistance(params);
+    const drivers = await this.usersRepository.findTargetDrivers(
+      schedule,
+      page,
+      sortBy,
+    );
 
-    const returnDistance = await this.getDistance({
-      departure: destination,
-      destination: lastDestination === '' ? departure : lastDestination,
-      stopovers: returnStopoverCheck ? stopovers.reverse() : [],
-    });
-
-    if (!distance || !returnDistance) {
-      throw new NotFoundException();
-    }
+    const distance = schedule.reduce(
+      (prev, curr) => prev + (curr as any).distance,
+      0,
+    );
 
     if (drivers) {
       drivers.forEach(async (driver) => {
         const restDistance =
           distance - driver.basic_km > 0 ? distance - driver.basic_km : 0;
 
-        const departCharge = isDepartPeak
+        const baseCharge = isDepartPeak
           ? driver.peak_charge || driver.basic_charge
           : driver.basic_charge;
 
-        const departChargePerKm = isDepartPeak
+        const baseChargePerKm = isDepartPeak
           ? driver.peak_charge_per_km || driver.charge_per_km
           : driver.charge_per_km;
 
-        let departTotalCharge =
-          restDistance * departChargePerKm +
-          departCharge +
-          driver.service_charge;
+        let totalCharge =
+          restDistance * baseChargePerKm + baseCharge + driver.service_charge;
 
         // 야간할증 계산
         if (
           Number(departureTime) >= driver.night_begin ||
           Number(departureTime) <= driver.night_end
         ) {
-          departTotalCharge += driver.night_charge;
+          totalCharge += driver.night_charge;
         }
 
-        // 귀환요금 계산
-        const returnParams = {
-          isReturnPeak,
-          returnDistance,
-          returnDate,
-          driver,
-        };
-        const returnTotalCharge = await this.getReturnTotalCharge(returnParams);
-        const sum = returnTotalCharge + departTotalCharge;
-
-        (driver as any).totalCharge = sum;
+        (driver as any).totalCharge = totalCharge;
       });
     }
 
     return {
-      foundDrivers: drivers,
-      calculatedDistance: distance + returnDistance,
+      data: drivers,
     };
   }
 
-  async getReturnTotalCharge(params) {
+  async getReturnTotalCharge(params: TotalChargeProps) {
     const { returnDistance, returnDate, driver, isReturnPeak } = params;
     const returnTime = returnDate.split(' ')[4].split(':')[0];
 
@@ -231,81 +215,10 @@ export class UsersService {
     return returnTotalCharge;
   }
 
-  async getMonth(date) {
-    return moment(date).format('YYYY년 M월 DD일 HH시 MM분').split(' ')[1];
-  }
-
-  async getDistance(params) {
-    const { departure, destination, stopovers } = params;
-    const depCoord = { x: '', y: '' };
-    const destCoord = { x: '', y: '' };
-    let tmapData = '';
-
-    if (stopovers.length > 0 && stopovers[0].stopover !== '') {
-      for (let i = 0; i < stopovers.length; i++) {
-        if (stopovers[i] === '') {
-          return;
-        }
-        // eslint-disable-next-line no-await-in-loop
-        const stopoverData = await this.getGeoData(stopovers[i].stopover);
-        const tmapsGeo = `${stopoverData.data.coordinateInfo.coordinate[0].newLon},${stopoverData.data.coordinateInfo.coordinate[0].newLat}_`;
-        tmapData += tmapsGeo;
-      }
-
-      tmapData = tmapData.slice(0, -1);
-    }
-
-    const departureData = await this.getGeoData(departure);
-    const destinationData = await this.getGeoData(destination);
-
-    depCoord.x = departureData.data.coordinateInfo.coordinate[0].newLon;
-    depCoord.y = departureData.data.coordinateInfo.coordinate[0].newLat;
-
-    destCoord.x = destinationData.data.coordinateInfo.coordinate[0].newLon;
-    destCoord.y = destinationData.data.coordinateInfo.coordinate[0].newLat;
-
-    const tmapBody = await qs.stringify({
-      appKey: process.env.TMAP_API_KEY,
-      endX: depCoord.x,
-      endY: depCoord.y,
-      startX: destCoord.x,
-      startY: destCoord.y,
-      passList: tmapData,
-      searchOption: 10,
-      totalValue: 2,
-      trafficInfo: 'N',
-    });
-
-    const tmapConfig = {
-      'Accept-Language': 'ko',
-      'Content-Type': 'application/x-www-form-urlencoded',
-    };
-
-    const tmapApi = await axios.post(
-      'https://apis.openapi.sk.com/tmap/routes?version=1',
-      tmapBody,
-      tmapConfig,
-    );
-
-    const kmData = Math.round(
-      tmapApi.data.features[0].properties.totalDistance / 1000,
-    );
-
-    return kmData;
-  }
-
-  async getGeoData(param: any) {
-    const data = await axios.get(
-      'https://apis.openapi.sk.com/tmap/geo/fullAddrGeo',
-      {
-        params: {
-          addressFlag: 'F00',
-          version: '1',
-          fullAddr: param,
-          appKey: process.env.TMAP_API_KEY,
-        },
-      },
-    );
-    return data;
+  async getMonth(date: string) {
+    const month = moment(date)
+      .format('YYYY년 M월 DD일 HH시 MM분')
+      .split(' ')[1];
+    return month;
   }
 }

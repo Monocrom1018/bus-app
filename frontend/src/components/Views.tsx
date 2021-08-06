@@ -37,7 +37,7 @@ const F7Views = () => {
             </div>
 
             <div className="flex flex-col items-center text-center my-16">
-              <div className="f7-icons text-6xl">car_fill</div>
+              <i className="fas fa-bus text-6xl" />
               <div className="font-bold text-2xl mt-3">기사님/운수회사 이신가요?</div>
               <div className="m-3 italic text-gray-700">
                 배낭버스의 파트너가 되어주세요.
@@ -92,10 +92,6 @@ const F7Views = () => {
     }
 
     if (currentUser.isAuthenticated && currentUser.user_type === 'driver') {
-      return driverViews;
-    }
-
-    if (currentUser.isAuthenticated && currentUser.user_type === 'company') {
       return driverViews;
     }
 

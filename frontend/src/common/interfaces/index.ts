@@ -43,16 +43,18 @@ export interface CurrentUserState {
 }
 
 export interface CurrentUser extends CurrentUserState {
+  id: number;
   name: string;
   email: string;
+  registration_confirmed: boolean;
   uuid: string;
   user_type: UserType;
   profile_img: any;
   password: string;
   password_confirmation: string;
-  drivable_legion: string[];
+  drivable_region: string[];
   drivable_date: string[];
-  company: string;
+  company_name: string;
   bus_number: string;
   bus_type: string;
   bus_old: string;
@@ -69,6 +71,16 @@ export interface CurrentUser extends CurrentUserState {
   card_registerd: boolean;
   card_company: string;
   card_number: string;
+  peak_charge: number;
+  peak_charge_per_km: number;
+  wifi: boolean;
+  sanitizer: boolean;
+  fridge: boolean;
+  usb: boolean;
+  movie: boolean;
+  audio: boolean;
+  bank: string;
+  bank_account: string;
 }
 
 export interface Address {
@@ -96,4 +108,40 @@ export interface Reservation {
   status: string;
   // user: Users;
   // driver: User;
+}
+
+export interface PointDetail {
+  address_name: string;
+  category_group_code?: string;
+  category_group_name?: string;
+  category_name?: string;
+  distance?: number;
+  id?: number;
+  phone?: string;
+  place_name: string;
+  place_url?: string;
+  road_address_name: string;
+  x?: number;
+  y?: number;
+}
+
+export type Point = {
+  [name in number | string]: PointDetail[];
+};
+
+export interface StopOver {
+  id: number | string;
+  region: string;
+}
+export interface Schedule {
+  day: string;
+  departure?: string;
+  destination?: string;
+  landing?: string;
+  landingState?: boolean;
+  returnStopOverCheck?: boolean;
+  distance?: number;
+  pointList?: any;
+  preStopOvers?: StopOver[];
+  postStopOvers?: StopOver[];
 }

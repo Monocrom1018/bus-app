@@ -8,7 +8,8 @@
     "front-lint": "cd frontend && yarn lint:fix",
     "front-prettier": "cd frontend && yarn prettier",
     "back-lint": "cd backend && yarn lint",
-    "back-prettier": "cd backend && yarn prettier" 
+    "back-prettier": "cd backend && yarn prettier" ,
+    "back-debug": "cd backend && yarn start:development"
   },
   "husky": {
     "hooks": {
@@ -25,8 +26,9 @@
       "yarn front-prettier"
     ]
   },
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
     "husky": "4.3.8",
-    "lint-staged": "^11.0.0"
+    "lint-staged": "^11.0.1"
   }
 }

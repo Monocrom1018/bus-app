@@ -6,6 +6,7 @@ import { Brackets, EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { UserCreateDto } from './dto/user-create.dto';
 import { Users as User, UserType } from './users.entity';
+import { DriverSearchDto } from './dto/driver-search.dto';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
@@ -15,9 +16,10 @@ export class UsersRepository extends Repository<User> {
       password,
       name,
       user_type,
-      termCheck,
-      privacyCheck,
-      marketingCheck,
+      company,
+      director_name,
+      director_email,
+      director_phone,
     } = userCreateDto;
 
     const user = new User();
@@ -27,9 +29,13 @@ export class UsersRepository extends Repository<User> {
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
 
-    if (user_type === 'driver' || user_type === 'company') {
+    if (user_type === 'DRIVER') {
+      user.director_name = director_name || null;
+      user.company_name = company || null;
+      user.director_email = director_email || null;
+      user.director_phone = director_phone || null;
       user.registration_confirmed = false;
-    } else if (user_type === 'normal') {
+    } else if (user_type === 'NORMAL') {
       user.registration_confirmed = true;
     }
 
@@ -57,13 +63,6 @@ export class UsersRepository extends Repository<User> {
     return null;
   }
 
-  private async hashPassword(
-    password: string,
-    encrypted_password: string,
-  ): Promise<string> {
-    return bcrypt.hash(password, encrypted_password);
-  }
-
   async findAll(): Promise<User[]> {
     const users = await this.find({
       order: {
@@ -73,7 +72,7 @@ export class UsersRepository extends Repository<User> {
     return users;
   }
 
-  async me(email): Promise<User> {
+  async me(email: string): Promise<User> {
     const user = await this.findOne({
       where: {
         email,
@@ -91,12 +90,15 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async saveBillingKey(billingResult, currentApiUser: User) {
+  async saveBillingKey(
+    billingResult: { [key: string]: string },
+    currentApiUser: User,
+  ) {
     const { billingKey, cardCompany, cardNumber } = billingResult;
     const user = currentApiUser;
 
     try {
-      user.card_registerd = true;
+      user.card_registered = true;
       user.card_company = cardCompany;
       user.card_number = cardNumber;
       user.card_billing_key = billingKey;
@@ -110,7 +112,7 @@ export class UsersRepository extends Repository<User> {
 
   async updateUser(currentApiUser: User, filename: string, userUpdateDto) {
     const {
-      drivableLegion,
+      drivableRegion,
       company,
       busNumber,
       busType,
@@ -127,12 +129,17 @@ export class UsersRepository extends Repository<User> {
       serviceCharge,
       peakCharge,
       peakChargePerKm,
+      sanitizer,
+      wifi,
+      fridge,
+      usb,
+      movie,
+      audio,
+      bank,
+      bank_account,
     } = userUpdateDto;
 
     const user = currentApiUser;
-    // await this.findOne({
-    //   email: email,
-    // });
 
     if (!user) {
       throw new ConflictException('유저정보가 조회되지 않습니다');
@@ -150,7 +157,7 @@ export class UsersRepository extends Repository<User> {
       user.bus_type = busType;
       user.charge_per_km = chargePerKm;
       user.company_name = company;
-      user.drivable_legion = drivableLegion;
+      user.drivable_region = drivableRegion;
       user.night_begin = nightBegin;
       user.night_end = nightEnd;
       user.night_charge = nightCharge;
@@ -161,10 +168,14 @@ export class UsersRepository extends Repository<User> {
       user.introduce = introduce;
       user.peak_charge = peakCharge;
       user.peak_charge_per_km = peakChargePerKm;
-
-      // if (password !== '') {
-      //   user.encrypted_password = await bcrypt.hash(password, 10);
-      // }
+      user.sanitizer = sanitizer === 'true';
+      user.wifi = wifi === 'true';
+      user.movie = movie === 'true';
+      user.audio = audio === 'true';
+      user.usb = usb === 'true';
+      user.fridge = fridge === 'true';
+      user.bank = bank;
+      user.bank_account = bank_account;
 
       user.save();
     } catch (err) {
@@ -183,45 +194,23 @@ export class UsersRepository extends Repository<User> {
     return user;
   }
 
-  async findTargetDrivers(params): Promise<User[]> {
-    const { departure } = params;
-    const legion = departure.split(' ')[0];
-
-    // TODO 운행지역(17개 지자체) -> [ 서울, 경기, 인천, 강원, 충남, 충북, 전북, 전남, 경북, 경남, 대전, 대구, 세종, 울안, 광주, 제주, 부산 ]
-
-    // const entityManager = getManager();
-
-    // let drivers = await entityManager.query(
-    //   `select * from users where
-    //     drivable_legion @> ARRAY['${legion}']
-    //     AND drivable_date @> ARRAY['${date}']
-    //     AND (user_type = 'driver'
-    //     OR user_type = 'company')`,
-    // );
-
-    // const posts = await this.createQueryBuilder('User')
-    //   .where((qb) => {
-    //     const subQuery = qb
-    //       .subQuery()
-    //       .from(User, 'User')
-    // .where('user_type = :company', { company: 'company' })
-    // .orWhere('user_type = :driver', { driver: 'driver' })
-    //       .getQuery();
-
-    //     return subQuery + '.drivable_date @> ARRAY[' + `${date}` + ']';
-    //   })
-    //   .getMany();
+  async findTargetDrivers(
+    schedule: Array<{ [key: string]: string | number }>,
+    page: number,
+    sortBy: string,
+  ): Promise<User[]> {
+    const { departure } = schedule[0];
+    const region = (departure as string).split(' ')[0];
 
     const drivers = await this.createQueryBuilder('User')
-      .where(`drivable_legion @> ARRAY['${legion}']`)
+      .where(`drivable_region @> ARRAY['${region}']`)
       .andWhere(
         new Brackets((qb) => {
-          qb.where('user_type = :company', { company: 'company' }).orWhere(
-            'user_type = :driver',
-            { driver: 'driver' },
-          );
+          qb.where('user_type = :driver', { driver: 'driver' });
         }),
       )
+      .take(3)
+      .skip(3 * (page - 1))
       .getMany();
 
     return drivers;

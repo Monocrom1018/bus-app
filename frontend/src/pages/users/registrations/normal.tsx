@@ -57,7 +57,7 @@ const INITIAL_SIGN_UP_PARAMS: NormalSignUpParams = {
 type AmplifySignUp = (param: NormalSignUpParams) => Promise<ISignUpResult>;
 
 const amplifySignUp: AmplifySignUp = async (params: NormalSignUpParams) => {
-  // attributs 에는 whitelist 된 attributes 만 올 수 있음
+  // attributes 에는 whitelist 된 attributes 만 올 수 있음
   delete params.password_confirmation;
 
   const { email: username, password, ...attributes } = params;

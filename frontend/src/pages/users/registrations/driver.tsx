@@ -1,7 +1,7 @@
 import { signupAPI } from '@api';
 import AgreeCheckboxes from '@components/shared/AgreeCheckboxes';
-import React, { useCallback } from 'react';
-import { f7, Navbar, Page, List, ListInput } from 'framework7-react';
+import React, { useCallback, useState } from 'react';
+import { f7, Navbar, Page, List, ListInput, Checkbox } from 'framework7-react';
 import { FormikHelpers, FormikProvider, useFormik } from 'formik';
 import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
 import { AxiosError } from 'axios';
@@ -14,6 +14,9 @@ interface DriverSignUpParams {
   user_type: string;
   name: string;
   company_name: string;
+  director_name: string;
+  director_email: string;
+  director_phone: number;
   email: string;
   password: string;
   password_confirmation: string;
@@ -28,6 +31,9 @@ interface DriverSignUpParams {
 const SignUpSchema = Yup.object().shape({
   name: Yup.string().required('필수 입력사항 입니다'),
   company_name: Yup.string().required('필수 입력사항 입니다'),
+  director_name: Yup.string(),
+  director_email: Yup.string(),
+  director_phone: Yup.number().typeError('숫자만 입력해주세요'),
   email: Yup.string().email().required('필수 입력사항 입니다'),
   password: Yup.string().min(8, '길이가 너무 짧습니다').max(50, '길이가 너무 깁니다').required('필수 입력사항 입니다'),
   password_confirmation: Yup.string()
@@ -49,6 +55,9 @@ const INITIAL_SIGN_UP_PARAMS: DriverSignUpParams = {
   user_type: 'DRIVER',
   name: '',
   company_name: '',
+  director_name: '',
+  director_email: '',
+  director_phone: undefined,
   email: '',
   password: '',
   password_confirmation: '',
@@ -78,6 +87,7 @@ const amplifySignUp: AmplifySignUp = async (params: DriverSignUpParams) => {
 };
 
 const DriverSignUpPage: React.FC = () => {
+  const [isCompany, setIsCompany] = useState(false);
   const { authenticateUser } = useAuth();
   // const [certComplete, setCertComplete] = useStat
 
@@ -149,7 +159,11 @@ const DriverSignUpPage: React.FC = () => {
       <FormikProvider value={value}>
         <form encType="multipart/form-data">
           <List noHairlinesMd>
-            <div className="p-3 font-semibold bg-white">기본 정보</div>
+            <div className="mr-4 flex justify-end pb-1">
+              <Checkbox onChange={() => setIsCompany(!isCompany)} />
+              <span className="ml-1 text-gray-700 text-base font-semibold">회사 담당자님이신가요?</span>
+            </div>
+            <div className="p-3 font-semibold bg-white">기사 정보</div>
             <ListInput
               label={i18next.t('login.name') as string}
               type="text"
@@ -211,6 +225,61 @@ const DriverSignUpPage: React.FC = () => {
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
+          {isCompany ? (
+            <>
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">회사 정보</div>
+                <ListInput
+                  label={i18next.t('담당자 이름') as string}
+                  type="text"
+                  name="director_name"
+                  placeholder="담당자 이름을 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.director_name}
+                  errorMessageForce
+                  errorMessage={touched.director_name && errors.director_name}
+                />
+                <ListInput
+                  label={i18next.t('담당자 이메일') as string}
+                  type="text"
+                  name="director_email"
+                  placeholder="담당자 이메일을 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.director_email}
+                  errorMessageForce
+                  errorMessage={touched.director_email && errors.director_email}
+                />
+                <ListInput
+                  label={i18next.t('담당자 연락처') as string}
+                  type="text"
+                  name="director_phone"
+                  placeholder="담당자 연락처를 숫자만 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.director_phone}
+                  errorMessageForce
+                  errorMessage={touched.director_phone && errors.director_phone}
+                />
+              </List>
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">사업자 등록증(인증절차에만 사용됩니다)</div>
+                <input className="p-3" type="file" name="certification1Upload" />
+              </List>
+              <List noHairlinesMd>
+                <div className="p-3 font-semibold bg-white">
+                  여객자동차 운송사업등록증
+                  <br />
+                  (인증절차에만 사용됩니다)
+                </div>
+                <input className="p-3" type="file" name="certification2Upload" />
+              </List>
+            </>
+          ) : null}
 
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>

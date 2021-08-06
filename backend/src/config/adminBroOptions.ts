@@ -3,7 +3,6 @@ import { AdminUsers as AdminUser } from '../adminUsers/adminUsers.entity';
 import { Notices as Notice } from '../notices/notices.entity';
 import { Faqs as Faq } from '../faqs/faqs.entity';
 import { Reservations as Reservation } from '../reservations/reservations.entity';
-import { ReservationsUsers as ReservationsUser } from '../reservations_users/reservations_users.entity';
 import { Months as Month } from '../months/months.entity';
 
 export const adminBroOptions = {

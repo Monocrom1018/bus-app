@@ -7,14 +7,17 @@ import {
   UploadedFile,
   UseInterceptors,
   Param,
+  Req,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import path = require('path');
+import path from 'path';
+import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
 import { UsersService } from './users.service';
-import { UserSearchDto } from './dto/user-search.dto';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
+import { DriverSearchDto } from './dto/driver-search.dto';
 
 export const storage = {
   storage: diskStorage({
@@ -84,8 +87,13 @@ export class UsersController {
     status: 200,
     description: 'get an array of matching drivers success',
   })
-  async getDrivers(@Body() userSearchDto: UserSearchDto) {
-    return this.usersService.getDrivers(userSearchDto);
+  async getDrivers(
+    @Body() driverSearchDto: DriverSearchDto,
+    @Query('page') page: number,
+    @Query('sort_by') sortBy: string,
+  ) {
+    console.log(`page ${page}`);
+    return this.usersService.getDrivers(driverSearchDto, page, sortBy);
   }
 
   @ApiOperation({ summary: '단일기사 정보 가져오기' })
@@ -104,7 +112,7 @@ export class UsersController {
     description: 'get billingkey success',
   })
   @Post('/billing')
-  async getBillingKey(@Body() body) {
+  async getBillingKey(@Body() body: BillingKeyProps) {
     return this.usersService.getBillingKey(body);
   }
 
@@ -114,7 +122,7 @@ export class UsersController {
     description: 'make payment success',
   })
   @Post('/payment')
-  async createPayment(@Body() body) {
+  async createPayment(@Body() body: TotalChargeProps) {
     return this.usersService.createPayment(body);
   }
 }

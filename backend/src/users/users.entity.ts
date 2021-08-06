@@ -14,13 +14,11 @@ import { Notices as Notice } from '@notices/notices.entity';
 import { Reservations as Reservation } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { Messages } from '@messages/messages.entity';
-import { ReservationsUsers as ReservatonsUser } from '@reservations_users/reservations_users.entity';
 import { DateAudit } from '../shared/entities/date-audit.entity';
 
 export enum UserType {
   NORMAL = 'normal',
   DRIVER = 'driver',
-  COMPANY = 'company',
 }
 
 @Entity()
@@ -74,7 +72,7 @@ export class Users extends DateAudit {
     array: true,
     nullable: true,
   })
-  drivable_legion: string[];
+  drivable_region: string[];
 
   @Column({ nullable: true })
   basic_km: number;
@@ -119,7 +117,7 @@ export class Users extends DateAudit {
   charge_per_day: string;
 
   @Column({ nullable: true, default: false })
-  card_registerd: boolean;
+  card_registered: boolean;
 
   @Column({ nullable: true })
   card_billing_key: string;
@@ -136,14 +134,41 @@ export class Users extends DateAudit {
   @Column({ nullable: true })
   peak_charge_per_km: number;
 
+  @Column({ nullable: true })
+  sanitizer: boolean;
+
+  @Column({ nullable: true })
+  wifi: boolean;
+
+  @Column({ nullable: true })
+  usb: boolean;
+
+  @Column({ nullable: true })
+  fridge: boolean;
+
+  @Column({ nullable: true })
+  movie: boolean;
+
+  @Column({ nullable: true })
+  audio: boolean;
+
+  @Column({ nullable: true })
+  director_name: string;
+
+  @Column({ nullable: true })
+  director_email: string;
+
+  @Column({ nullable: true })
+  director_phone: number;
+
+  @Column({ nullable: true })
+  bank: string;
+
+  @Column({ nullable: true })
+  bank_account: string;
+
   @OneToMany((type) => Messages, (message) => message.user)
   messages: Messages[];
-
-  @OneToMany(
-    (type) => ReservatonsUser,
-    (reservationsUsers) => reservationsUsers.user,
-  )
-  reservationsUsers: ReservatonsUser[];
 
   @OneToMany((type) => Reservation, (reservations) => reservations.user)
   reservations: Reservation[];
@@ -161,10 +186,8 @@ export class Users extends DateAudit {
   notices: Notice[];
 
   async validateUserPassword(password: string): Promise<boolean> {
-    // const hash = await bcrypt.hash(password, this.encrypted_password);
     const compareValue = bcrypt.compare(password, this.encrypted_password);
     return compareValue;
-    // return hash === this.password;
   }
 
   static async sample(): Promise<Users> {

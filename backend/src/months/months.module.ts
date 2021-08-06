@@ -1,5 +1,5 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MonthsRepository } from '@months/months.repogitory';
+import { MonthsRepository } from '@months/months.repository';
 import { Module } from '@nestjs/common';
 import { MonthsService } from '@months/months.service';
 import { MonthsController } from '@months/months.controller';
