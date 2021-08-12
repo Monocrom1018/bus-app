@@ -74,7 +74,7 @@ const Calendar = () => {
   }, []);
 
   return (
-    <div className="block block-strong no-padding">
+    <div className="block block-strong no-padding -mt-10">
       <div id="demo-calendar-inline-container" />
     </div>
   );
