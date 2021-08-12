@@ -8,14 +8,16 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const { day: previousDate } = tourSchedule[index - 1] || {};
   const { day: currentDate, departure, stopOvers, destination } = tourSchedule[index];
+  const { day: nextDate } = tourSchedule[index + 1] || {};
   const [pointList, setPointList] = useState({});
   const [accordionOpened, setAccordionOpened] = useState(true);
   const stopOverCount = useRef(1);
+  const maxStopOverLength = 5;
   let searchTarget: string;
   let stopOverId: number | string;
 
   const addStopOver = async (type: string) => {
-    if (stopOvers && stopOvers.length < 2) {
+    if (stopOvers && stopOvers.length < maxStopOverLength) {
       setTourSchedule(
         tourSchedule.map((schedule) =>
           schedule.day === currentDate
@@ -81,7 +83,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
             return {
               ...schedule,
               ...{
-                [`landing`]: value,
+                [`destination`]: value,
               },
             };
           }
@@ -91,16 +93,25 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
     }
     if (type === 'destination') {
       setTourSchedule(
-        tourSchedule.map((schedule) =>
-          schedule.day === currentDate
-            ? {
-                ...schedule,
-                ...{
-                  [`${type}`]: value,
-                },
-              }
-            : schedule,
-        ),
+        tourSchedule.map((schedule) => {
+          if (schedule.day === currentDate) {
+            return {
+              ...schedule,
+              ...{
+                [`${type}`]: value,
+              },
+            };
+          }
+          if (schedule.day === nextDate) {
+            return {
+              ...schedule,
+              ...{
+                [`departure`]: value,
+              },
+            };
+          }
+          return schedule;
+        }),
       );
     }
   };
@@ -244,10 +255,10 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
                     onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
                   />
                 </div>
-                {searchResult('postStopOvers', stopOver.id)}
+                {searchResult('stopOvers', stopOver.id)}
               </div>
             ))}
-          {stopOvers && stopOvers.length < 2 && (
+          {stopOvers && stopOvers.length < maxStopOverLength && (
             <div className="flex-col text-center">
               <button className="f7-icons text-xl text-red-500 outline-none" onClick={() => addStopOver('stopOvers')}>
                 plus_circle_fill
