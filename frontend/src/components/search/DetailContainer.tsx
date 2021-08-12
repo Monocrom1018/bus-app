@@ -261,8 +261,8 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
                     minus_circle_fill
                   </button>
                   <input
-                    className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-                    value={stopOver.region}
+                    className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+                    value={stopOver.region || ''}
                     placeholder="경유지를 입력해주세요"
                     onChange={(e) => setPostCode(e.currentTarget.value, 'preStopOvers', `${stopOver.id}`)}
                   />

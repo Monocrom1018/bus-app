@@ -31,6 +31,8 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
+  const port = process.env.PORT || 3000;
+
   const config = new DocumentBuilder()
     .setTitle('BackpackBus API')
     .setDescription('BackpackBus 개발을 위한 API 문서')
@@ -43,7 +45,8 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.useGlobalGuards(new VersionGuard());
 
-  await app.listen(3000);
+  // 실서버에서는 8080 이여야 함
+  await app.listen(port);
 
   if (module.hot) {
     module.hot.accept();

@@ -37,7 +37,7 @@ export class AuthService {
       }
       return null;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('currenApiError');
     }
   }
 
@@ -51,7 +51,7 @@ export class AuthService {
       }
       return false;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('isSignInError');
     }
   }
 
@@ -69,7 +69,7 @@ export class AuthService {
       const token = authorization.split(' ').slice(-1)[0];
       return token;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('jwtTokenError');
     }
   }
 
@@ -84,14 +84,14 @@ export class AuthService {
         { algorithms: [alg], complete: true },
         (err, decodedToken) => {
           if (err) {
-            return new UnauthorizedException();
+            return new UnauthorizedException('payloadDecodeError');
           }
           return decodedToken;
         },
       );
       return payload;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('payloadError');
     }
   }
 
@@ -103,7 +103,7 @@ export class AuthService {
       });
       return claimlessToken;
     } catch (error) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('claimlessPayloadError');
     }
   }
 
