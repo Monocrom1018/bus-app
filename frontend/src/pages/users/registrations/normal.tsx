@@ -120,7 +120,7 @@ const NormalSignUpPage: React.FC = () => {
         f7.preloader.hide();
         f7.dialog.alert(message);
         if (isSignUpSuccess) authenticateUser(cognitoUserSession);
-        // window.location.replace('/');
+        window.location.replace('/');
       }
     },
     [authenticateUser],

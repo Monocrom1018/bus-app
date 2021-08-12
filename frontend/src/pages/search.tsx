@@ -76,13 +76,11 @@ const SearchPage = () => {
       const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
       const schedulePromise = [];
       copiedTourSchedule.forEach((schedule: any) => {
-        const { departure, preStopOvers, destination, postStopOvers, landing } = schedule;
-        const promise = getDistance({ departure, preStopOvers, destination, postStopOvers, landing }).then(
-          (distance) => {
-            schedule.distance = distance;
-            return schedule;
-          },
-        );
+        const { departure, destination, stopOvers } = schedule;
+        const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
+          schedule.distance = distance;
+          return schedule;
+        });
 
         schedulePromise.push(promise);
       });
