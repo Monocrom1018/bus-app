@@ -64,7 +64,7 @@ const Calendar = () => {
             [...Array(dayDiff)].forEach((day, index) => {
               days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
             });
-            setTourSchedule(days.map((day) => ({ day, preStopOvers: [], postStopOvers: [] }), []));
+            setTourSchedule(days.map((day) => ({ day, stopOvers: [] }), []));
           }
           setSearchingOption((prev) => ({ ...prev, ...set }));
         },

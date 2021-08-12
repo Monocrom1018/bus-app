@@ -7,27 +7,21 @@ import { tourScheduleState } from '@atoms';
 const DetailContainer = ({ searchPlaces, day, index }) => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const { day: previousDate } = tourSchedule[index - 1] || {};
-  const { day: currentDate, departure, preStopOvers, postStopOvers, destination, landing } = tourSchedule[index];
-  const { day: nextDate } = tourSchedule[index + 1] || {};
+  const { day: currentDate, departure, stopOvers, destination } = tourSchedule[index];
   const [pointList, setPointList] = useState({});
   const [accordionOpened, setAccordionOpened] = useState(true);
-  const preStopOverCount = useRef(1);
-  const postStopOverCount = useRef(1);
+  const stopOverCount = useRef(1);
   let searchTarget: string;
   let stopOverId: number | string;
 
   const addStopOver = async (type: string) => {
-    const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
-    const stopOverCount = type === 'preStopOvers' ? preStopOverCount : postStopOverCount;
-    const prefix = type === 'preStopOvers' ? 'pre' : 'post';
-
     if (stopOvers && stopOvers.length < 2) {
       setTourSchedule(
         tourSchedule.map((schedule) =>
           schedule.day === currentDate
             ? {
                 ...schedule,
-                ...{ [`${type}`]: stopOvers.concat({ id: `${prefix}${stopOverCount.current}`, region: '' }) },
+                ...{ [`${type}`]: stopOvers.concat({ id: `${stopOverCount.current}`, region: '' }) },
               }
             : schedule,
         ),
@@ -37,9 +31,6 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
   };
 
   const deleteStopOver = async (id: number | string, type: string) => {
-    const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
-    const stopOverCount = type === 'preStopOvers' ? preStopOverCount : postStopOverCount;
-
     setTourSchedule(
       tourSchedule.map((schedule) =>
         schedule.day === currentDate
@@ -63,7 +54,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
   const placesSearchCallBack = (data: string, status: any) => {
     const cutData = data.slice(0, 5);
     const kakaoCompleteStatus = 'OK';
-    const isSearchTargetStopOver = searchTarget === 'preStopOvers' || searchTarget === 'postStopOvers';
+    const isSearchTargetStopOver = searchTarget === 'stopOvers';
 
     if (status === kakaoCompleteStatus && isSearchTargetStopOver) {
       setPointList((prev) => ({ ...prev, [stopOverId]: cutData }));
@@ -112,34 +103,10 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
         ),
       );
     }
-    if (type === 'landing') {
-      setTourSchedule(
-        tourSchedule.map((schedule) => {
-          if (schedule.day === currentDate) {
-            return {
-              ...schedule,
-              ...{
-                [`${type}`]: value,
-              },
-            };
-          }
-          if (schedule.day === nextDate) {
-            return {
-              ...schedule,
-              ...{
-                [`departure`]: value,
-              },
-            };
-          }
-          return schedule;
-        }),
-      );
-    }
   };
 
   const departureSelect = async (value: string, type: string, id = null) => {
-    const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
-    const isTypeStopOver = type === 'preStopOvers' || type === 'postStopOvers';
+    const isTypeStopOver = type === 'stopOvers';
 
     if (isTypeStopOver) {
       const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
@@ -170,8 +137,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
   };
 
   const setPostCode = (value: string, type: string, id: string | null) => {
-    const stopOvers = type === 'preStopOvers' ? preStopOvers : postStopOvers;
-    const isTypeStopOver = type === 'preStopOvers' || type === 'postStopOvers';
+    const isTypeStopOver = type === 'stopOvers';
 
     if (isTypeStopOver) {
       const duplicatedArr = JSON.parse(JSON.stringify(stopOvers));
@@ -250,36 +216,6 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
             </div>
             {searchResult('departure')}
           </div>
-          {preStopOvers &&
-            preStopOvers.map((stopOver) => (
-              <div className="relative" key={stopOver.id}>
-                <div className="flex px-4 py-2">
-                  <button
-                    className="f7-icons text-xl text-red-500 outline-none"
-                    onClick={() => deleteStopOver(stopOver.id, 'preStopOvers')}
-                  >
-                    minus_circle_fill
-                  </button>
-                  <input
-                    className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                    value={stopOver.region || ''}
-                    placeholder="경유지를 입력해주세요"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'preStopOvers', `${stopOver.id}`)}
-                  />
-                </div>
-                {searchResult('preStopOvers', stopOver.id)}
-              </div>
-            ))}
-          {preStopOvers && preStopOvers.length < 2 && (
-            <div className="flex-col text-center">
-              <button
-                className="f7-icons text-xl text-red-500 outline-none"
-                onClick={() => addStopOver('preStopOvers')}
-              >
-                plus_circle_fill
-              </button>
-            </div>
-          )}
           <div className="relative">
             <div className="flex px-4 my-2">
               <input
@@ -291,13 +227,13 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
             </div>
             {searchResult('destination')}
           </div>
-          {postStopOvers &&
-            postStopOvers.map((stopOver) => (
+          {stopOvers &&
+            stopOvers.map((stopOver) => (
               <div className="relative" key={stopOver.id}>
                 <div className="flex px-4 py-2">
                   <button
                     className="f7-icons text-xl text-red-500 outline-none"
-                    onClick={() => deleteStopOver(stopOver.id, 'postStopOvers')}
+                    onClick={() => deleteStopOver(stopOver.id, 'stopOvers')}
                   >
                     minus_circle_fill
                   </button>
@@ -305,33 +241,19 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
                     value={stopOver.region}
                     placeholder="경유지를 입력해주세요"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'postStopOvers', `${stopOver.id}`)}
+                    onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
                   />
                 </div>
                 {searchResult('postStopOvers', stopOver.id)}
               </div>
             ))}
-          {postStopOvers && postStopOvers.length < 2 && (
+          {stopOvers && stopOvers.length < 2 && (
             <div className="flex-col text-center">
-              <button
-                className="f7-icons text-xl text-red-500 outline-none"
-                onClick={() => addStopOver('postStopOvers')}
-              >
+              <button className="f7-icons text-xl text-red-500 outline-none" onClick={() => addStopOver('stopOvers')}>
                 plus_circle_fill
               </button>
             </div>
           )}
-          <div className="relative">
-            <div className="flex px-4 mt-3">
-              <input
-                className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                value={landing}
-                placeholder="하차지를 검색해주세요"
-                onChange={(e) => setPostCode(e.currentTarget.value, 'landing', null)}
-              />
-            </div>
-            {searchResult('landing')}
-          </div>
         </AccordionContent>
       </AccordionItem>
     </List>

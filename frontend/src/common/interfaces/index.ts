@@ -137,11 +137,8 @@ export interface Schedule {
   day: string;
   departure?: string;
   destination?: string;
-  landing?: string;
-  landingState?: boolean;
   returnStopOverCheck?: boolean;
   distance?: number;
   pointList?: any;
-  preStopOvers?: StopOver[];
-  postStopOvers?: StopOver[];
+  stopOvers?: StopOver[];
 }
