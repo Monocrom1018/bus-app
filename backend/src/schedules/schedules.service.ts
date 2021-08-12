@@ -19,16 +19,10 @@ export class SchedulesService {
   }
 
   async getDistance(params) {
-    const { departure, preStopOvers, destination, postStopOvers, landing } =
-      params;
+    const { departure, destination, stopOvers } = params;
     let combinedGeoData = '';
 
-    let combinedStopOvers = preStopOvers
-      ? [].concat(preStopOvers[0].region).concat(destination)
-      : [destination];
-    combinedStopOvers = postStopOvers
-      ? combinedStopOvers.concat(postStopOvers[0].region)
-      : combinedStopOvers;
+    const combinedStopOvers = stopOvers[0].region;
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {
@@ -56,7 +50,7 @@ export class SchedulesService {
     const landingCoord = { x: '', y: '' };
 
     const departureData = await this.getGeoData(departure);
-    const landingData = await this.getGeoData(landing);
+    const landingData = await this.getGeoData(destination);
 
     departureCoord.x =
       departureData.data.coordinateInfo.coordinate[0].lon ||

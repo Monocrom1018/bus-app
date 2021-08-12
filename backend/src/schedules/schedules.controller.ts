@@ -38,16 +38,14 @@ export class SchedulesController {
   })
   async getDistance(
     @Query('departure') departure: string,
-    @Query('preStopOvers') preStopOvers: { id?: string; region?: string }[],
     @Query('destination') destination: string,
-    @Query('postStopOvers') postStopOvers: { id?: string; region?: string }[],
+    @Query('stopOvers') stopOvers: { id?: string; region?: string }[],
     @Query('landing') landing: string,
   ) {
     const data = await this.schedulesService.getDistance({
       departure,
-      preStopOvers,
       destination,
-      postStopOvers,
+      stopOvers,
       landing,
     });
 
