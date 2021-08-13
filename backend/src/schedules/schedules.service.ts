@@ -1,4 +1,8 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import qs from 'qs';
@@ -20,6 +24,11 @@ export class SchedulesService {
 
   async getDistance(params) {
     const { departure, destination, stopOvers } = params;
+
+    if (departure === '' || destination === '') {
+      throw new BadRequestException();
+    }
+
     let combinedGeoData = '';
 
     const combinedStopOvers = stopOvers[0].region;

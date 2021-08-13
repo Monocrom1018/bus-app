@@ -75,22 +75,29 @@ const SearchPage = () => {
       data?.pages.length > 0 && (data.pages = []);
       const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
       const schedulePromise = [];
-      copiedTourSchedule.forEach((schedule: any) => {
-        const { departure, destination, stopOvers } = schedule;
-        const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
-          schedule.distance = distance;
-          return schedule;
+      try {
+        copiedTourSchedule.forEach((schedule: any) => {
+          const { departure, destination, stopOvers } = schedule;
+          const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
+            schedule.distance = distance;
+            return schedule;
+          });
+          schedulePromise.push(promise);
         });
-
-        schedulePromise.push(promise);
-      });
-      const addDistanceSchedules = await Promise.all(schedulePromise);
-      latestTourSchedule.current = addDistanceSchedules;
-      setTourSchedule(addDistanceSchedules);
-      setIsInfinite(true);
-      await fetchNextPage();
-
-      f7.dialog.close();
+        const addDistanceSchedules = await Promise.all(schedulePromise);
+        latestTourSchedule.current = addDistanceSchedules;
+        setTourSchedule(addDistanceSchedules);
+        setIsInfinite(true);
+        await fetchNextPage();
+        f7.dialog.close();
+      } catch (error) {
+        console.log(error);
+        if (error.statusCode === 400) {
+          f7.dialog.close();
+          showToast('경로를 빠짐없이 입력해주세요');
+          return;
+        }
+      }
       const accordions = $$('.accordion-item');
       accordions.each((el) => {
         if ([...el.classList].includes('accordion-item-opened')) {

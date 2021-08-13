@@ -14,22 +14,33 @@ import {
 } from 'framework7-react';
 import React, { useEffect, useState, useRef } from 'react';
 import { useRecoilValue, useRecoilState } from 'recoil';
-import { totalChargeState, driverState, reservationState, searchingOptionState } from '@atoms';
+import {
+  totalChargeState,
+  driverState,
+  reservationState,
+  searchingOptionState,
+  tourScheduleState,
+  searchingOptionDateSelector,
+} from '@atoms';
 import moment from 'moment';
 import useAuth from '@hooks/useAuth';
 import { convertObjectToFormData } from '@utils';
 import { createReservation } from '../../common/api/index';
 
+// recoilValue 에서 일자, 스케줄 가져와서 보기좋게 뿌려주기
+// date, schedule 정보 필요
 const EstimatePage = ({ f7router }) => {
+  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const searchingOption = useRecoilValue(searchingOptionState);
-  // const { departure, returnDate, destination, landing } = searchingOption;
-  // const stopovers = useRecoilValue(stopoversState);
+
+  // totalCharge, driver, people 문제없음
   const totalCharge = useRecoilValue(totalChargeState);
   const driver = useRecoilValue(driverState);
-  const [reservation, setReservation] = useRecoilState(reservationState);
-
-  const { currentUser } = useAuth();
   const [people, setPeople] = useState(0);
+
+  const [reservation, setReservation] = useRecoilState(reservationState);
+  const { currentUser } = useAuth();
 
   const handleSubmit = async () => {
     if (currentUser.card_registerd === false) {
@@ -37,18 +48,6 @@ const EstimatePage = ({ f7router }) => {
       return;
     }
 
-    // const stopoversArray = stopovers.map((stopover) => stopover.stopover);
-    // const params = {
-    //   userEmail: currentUser.email,
-    //   driverId: driver.id,
-    //   departure,
-    //   returnDate,
-    //   departureDate,
-    //   landing,
-    //   destination,
-    //   totalCharge,
-    //   people,
-    // };
     f7.preloader.show();
     let message: string;
     try {
@@ -101,7 +100,7 @@ const EstimatePage = ({ f7router }) => {
             <input
               className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
               readOnly
-              value={departure}
+              value={'departure'}
               placeholder="출발지를 검색해주세요"
               disabled
             />{' '}
@@ -117,7 +116,7 @@ const EstimatePage = ({ f7router }) => {
           <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            value={destination}
+            value={'destination'}
             placeholder="도착지를 검색해주세요"
             disabled
           />{' '}
@@ -139,7 +138,7 @@ const EstimatePage = ({ f7router }) => {
           <Button
             text="견적 전달하기"
             className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg"
-            onClick={handleSubmit}
+            // onClick={handleSubmit}
           />
         </div>
       </List>

@@ -40,13 +40,11 @@ export class SchedulesController {
     @Query('departure') departure: string,
     @Query('destination') destination: string,
     @Query('stopOvers') stopOvers: { id?: string; region?: string }[],
-    @Query('landing') landing: string,
   ) {
     const data = await this.schedulesService.getDistance({
       departure,
       destination,
       stopOvers,
-      landing,
     });
 
     return data;
