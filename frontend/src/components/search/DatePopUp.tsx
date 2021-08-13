@@ -75,9 +75,9 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
             <Calendar />
           </Block>
           <Toolbar position="bottom" className="mb-20 justify-end">
-            <Link popupClose className="w-full">
-              <Button text="완료" className="w-60 text-xl py-4" fill />
-            </Link>
+            <div className="w-full">
+              <Button popupClose text="완료" className="w-60 text-xl py-4" fill style={{ margin: '0 auto' }} />
+            </div>
           </Toolbar>
         </Page>
       </Popup>

@@ -1,6 +1,6 @@
 {
     "identityPoolName": "backpackbusdevfe582237_identitypool_fe582237",
-    "allowUnauthenticatedIdentities": false,
+    "allowUnauthenticatedIdentities": true,
     "resourceNameTruncated": "backpafe582237",
     "userPoolName": "backpackbusdevfe582237_userpool_fe582237",
     "autoVerifiedAttributes": [
