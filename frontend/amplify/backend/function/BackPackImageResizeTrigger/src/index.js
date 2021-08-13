@@ -8,17 +8,11 @@ const fs = require('fs');
   2. linux & node 환경에 맞는 sharp 설치도 잊지 말아주세요
 */
 
-const isMock = false;
+let isMock = false;
 const cwd = process.cwd();
 
-const S3 = new AWS.S3({
+let S3 = new AWS.S3({
   signatureVersion: 'v4',
-  ...(isMock
-    ? {
-        s3ForcePathStyle: true,
-        endpoint: new AWS.Endpoint('http://localhost:20005'),
-      }
-    : {}),
 });
 
 const THUMBNAIL_WIDTH = 800;
@@ -105,8 +99,16 @@ async function processRecord(record) {
 }
 
 exports.handler = async (event, context, callback) => {
+  if (context.functionName === 'mock-function-name') isMock = true;
   try {
     if (isMock) {
+      // handler 내부에서 업데이트
+      S3 = new AWS.S3({
+        signatureVersion: 'v4',
+        s3ForcePathStyle: true,
+        endpoint: new AWS.Endpoint('http://localhost:20005'),
+      });
+
       await processRecord(event.Records[0]);
       callback(null, { status: 'Photo Processed' });
       return;

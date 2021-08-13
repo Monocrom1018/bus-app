@@ -9,7 +9,6 @@ import { toast } from '@js/utils';
 import routes from '@routes';
 import Views from '@components/Views';
 import Auth from '@aws-amplify/auth';
-import capacitorApp from '../js/capacitor-app';
 import awsconfig from '../aws-exports';
 
 Auth.configure(awsconfig);
@@ -46,9 +45,6 @@ const F7App = () => {
 
   useEffect(() => {
     f7ready((f7) => {
-      if (f7.device.capacitor) {
-        capacitorApp.init(f7);
-      }
       toast.set(f7);
     });
   }, []);

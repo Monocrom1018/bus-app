@@ -79,7 +79,7 @@ export const driverState = atom({
     bus_type: '',
     company_name: '',
     people_available: 0,
-    profile_img: '',
+    profile: '',
     sanitizer: false,
     movie: false,
     wifi: false,

@@ -1,5 +1,5 @@
-import { ID, SignUpParams, S3Image } from '@constants';
-import { Token, CurrentUser } from '@interfaces';
+import { ID, SignUpParams, S3Image, Token, CurrentUser } from '@interfaces';
+
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
 import { ApiService } from './api.service';
@@ -20,7 +20,7 @@ export const userMeApi = (params) => API.get<CurrentUser>(`/users/me/${params}`)
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
-export const modifyAPI = (params: FormData) => API.post('/users/update', params);
+export const updateAPI = (params: FormData) => API.post('/users/update', params);
 export const signupAPI = (params: SignUpParams) => API.post('/users/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
@@ -144,3 +144,7 @@ export const createUserChatroom =
     const { data } = await API.post(`/chatrooms/${chatroom_id}/user_chatrooms`, params);
     return data;
   };
+
+export const createImageAPI = (params: FormData) => API.post('/images', params);
+
+export const destroyImageAPI = (params: FormData) => API.delete('/images', { data: params });

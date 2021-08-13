@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import HomePage from '@pages/home';
 import MyPage from '@pages/mypage';
-import ModifyPage from '@pages/users/modify';
+import EditPage from '@pages/users/edit';
 import SearchPage from '@pages/search';
 import LoginPage from '@pages/users/sessions/new';
 import NormalSignUpPage from '@pages/users/registrations/normal';
@@ -13,7 +13,7 @@ import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/company';
 import EstimatePage from '@pages/estimates';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
-import driverModifyPage from '@pages/users/driverModify';
+import driverEditPage from '@pages/users/driverEdit';
 import CardPage from '@pages/users/card';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
@@ -85,8 +85,8 @@ const customRoutes = [
   { path: '/users/sign_up/company', component: CompanySignUpPage },
   { path: '/users/sign_up/intro', component: SignUpIntroPage },
   { path: '/users/card', component: CardPage },
-  { path: '/users/modify', component: ModifyPage },
-  { path: '/users/driverModify', component: driverModifyPage },
+  { path: '/users/modify', component: EditPage },
+  { path: '/users/driverModify', component: driverEditPage },
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
