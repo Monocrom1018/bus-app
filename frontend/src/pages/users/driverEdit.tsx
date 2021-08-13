@@ -20,7 +20,7 @@ import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
 import { showToast } from '@js/utils';
-import { modifyAPI } from '../../common/api/index';
+import { updateAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -55,13 +55,13 @@ const UserInfoSchema = Yup.object().shape({
   audio: Yup.boolean(),
 });
 
-const driverModifyPage = ({ f7route, f7router }) => {
+const driverEditPage = ({ f7route, f7router }) => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [drivableRegion, setDrivableRegion] = useState(
     currentUser.drivable_region ? [...currentUser.drivable_region] : [],
   );
-  const { name, profile_img, email, user_type, company_name } = currentUser;
+  const { name, profile, email, user_type, company_name } = currentUser;
   const banks = [
     '경남은행',
     '광주은행',
@@ -161,7 +161,7 @@ const driverModifyPage = ({ f7route, f7router }) => {
         initialValues={{
           email,
           company_name,
-          profileImg: currentUser.profile_img || '',
+          profileImg: currentUser.profile || '',
           password: '',
           passwordConfirmation: '',
           busNumber: currentUser.bus_number || '',
@@ -199,13 +199,13 @@ const driverModifyPage = ({ f7route, f7router }) => {
             }
 
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            fd.append('user[profile_img]', values.profileImg);
+            fd.append('user[profile]', values.profileImg);
 
             drivableRegion.forEach((region) => {
               fd.append('user[drivableRegion]', region);
             });
 
-            const { data: user } = await modifyAPI(fd);
+            const { data: user } = await updateAPI(fd);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
             f7router.back();
@@ -230,7 +230,7 @@ const driverModifyPage = ({ f7route, f7router }) => {
                   id="imageInput"
                   type="file"
                   accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  name="profile_img"
+                  name="profile"
                   onChange={handleFileOnChange}
                   className="hidden"
                 />
@@ -626,4 +626,4 @@ const driverModifyPage = ({ f7route, f7router }) => {
   );
 };
 
-export default driverModifyPage;
+export default driverEditPage;

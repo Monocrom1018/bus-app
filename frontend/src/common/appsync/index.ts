@@ -1,12 +1,8 @@
 import { API, graphqlOperation } from '@aws-amplify/api';
 import Observable from 'zen-observable-ts';
-// import * as mutations from '@graphql/mutations';
-// import * as queries from '@graphql/queries';
-// import * as subscriptions from '@graphql/subscriptions';
+import * as mutations from '../../graphql/mutations';
 import * as queries from '../../graphql/queries';
 import * as subscriptions from '../../graphql/subscriptions';
-import * as mutations from '../../graphql/mutations';
-import { MessageType } from '../constants/schema';
 
 interface MessagesParams {
   room_id: string;
@@ -57,9 +53,10 @@ export const getMessageInfiniteQuery =
 // Mutations
 
 // Subscriptions
-export const onCreateMessagesSubscription = () => {
+export const onCreateMessageSubscription = () => {
   const subscription = API.graphql({
     query: subscriptions.onCreateMessage,
   }) as Observable<any>;
+
   return subscription;
 };

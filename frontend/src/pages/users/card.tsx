@@ -24,7 +24,7 @@ const CardPage = () => {
   return (
     <Page className="bg-white" noToolbar>
       <Navbar title="카드목록" backLink />
-      {currentUser.card_registerd ? (
+      {currentUser.card_registered ? (
         <Card className="flex justify-between items-center h-10 px-5">
           <div className="font-bold">{card_company}</div>
           <div className="font-bold">{card_number}</div>

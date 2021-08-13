@@ -4,7 +4,7 @@ import { useRecoilState } from 'recoil';
 import { totalChargeState } from '@atoms';
 
 const Driver = (props) => {
-  const { id, name, profile_img, totalCharge, people_available, bus_old, bus_type, company_name } = props.driver;
+  const { id, name, profile, totalCharge, people_available, bus_old, bus_type, company_name } = props.driver;
   const [finalCharge, setFinalCharge] = useRecoilState(totalChargeState);
 
   return (
@@ -18,7 +18,7 @@ const Driver = (props) => {
           after={`${totalCharge.toLocaleString()}₩`}
           onClick={() => setFinalCharge(totalCharge)}
         >
-          <img slot="media" src={profile_img} width="80" alt="profile_img" />
+          <img slot="media" src={profile} width="80" alt="profile" />
         </ListItem>
       </List>
     </Card>

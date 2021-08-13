@@ -1,7 +1,7 @@
 import { f7 } from 'framework7-react';
 import React, { useEffect } from 'react';
 import jQuery from 'jquery';
-import { lineItemsCount, searchingOptionState, tourScheduleState } from '@atoms';
+import { searchingOptionState, tourScheduleState } from '@atoms';
 import { useRecoilState } from 'recoil';
 import moment from 'moment';
 
@@ -52,7 +52,7 @@ const Calendar = () => {
         monthYearChangeStart(c) {
           jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
         },
-        change(calendar, value: Array<string>) {
+        change(_, value: Array<string>) {
           const set = {};
           const [departureDate, returnDate] = value;
           (set as any).departureDate = departureDate;
@@ -64,7 +64,7 @@ const Calendar = () => {
             [...Array(dayDiff)].forEach((day, index) => {
               days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
             });
-            setTourSchedule(days.map((day) => ({ day, preStopOvers: [], postStopOvers: [] }), []));
+            setTourSchedule(days.map((day) => ({ day, stopOvers: [] }), []));
           }
           setSearchingOption((prev) => ({ ...prev, ...set }));
         },
@@ -74,7 +74,7 @@ const Calendar = () => {
   }, []);
 
   return (
-    <div className="block block-strong no-padding">
+    <div className="block block-strong no-padding -mt-10">
       <div id="demo-calendar-inline-container" />
     </div>
   );

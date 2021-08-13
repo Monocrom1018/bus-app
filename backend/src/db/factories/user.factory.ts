@@ -12,7 +12,7 @@ define(User, (faker: typeof Faker) => {
   const uuid = faker.random.uuid();
 
   const user = new User();
-  user.profile_img = imgUrl;
+  user.profile = imgUrl;
   user.name = `${firstName} ${lastName}`;
   user.encrypted_password = bcrypt.hash('123qwe!', saltRounds);
   user.uuid = uuid;

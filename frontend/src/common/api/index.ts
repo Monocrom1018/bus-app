@@ -1,8 +1,12 @@
-import { ID, SignUpParams } from '@constants';
-import { Token, CurrentUser } from '@interfaces';
+import { ID, SignUpParams, S3Image, Token, CurrentUser } from '@interfaces';
+
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
 import { ApiService } from './api.service';
+
+interface DefaultParams {
+  [key: string]: any;
+}
 
 export const refresh = (): Promise<{ data: Token }> =>
   PlainAPI.post(
@@ -16,13 +20,13 @@ export const userMeApi = (params) => API.get<CurrentUser>(`/users/me/${params}`)
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
-export const modifyAPI = (params: FormData) => API.post('/users/update', params);
+export const updateAPI = (params: FormData) => API.post('/users/update', params);
 export const signupAPI = (params: SignUpParams) => API.post('/users/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
 /* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */
 export const getSmsAuth = (params) => API.get('/phone_certifications/sms_auth', { params });
-export const getImages = (params) => API.get(`/images`, { params });
+// export const getImages = (params) => API.get(`/images`, { params });
 export const deleteImage = (id, params) => API.delete(`/images/${id}`, { params });
 export const getLikes = () => API.get('/likes');
 /* TODO */
@@ -36,6 +40,19 @@ export const {
   update: updateObject,
   destroy: destroyObject,
 } = ApiService('objects');
+
+export const {
+  query: getImages,
+  get: getImage,
+  create: createImage,
+  update: updateImage,
+  destroy: destroyImage,
+} = ApiService<S3Image>('images');
+
+export const bulkCreateImages = async (params: DefaultParams) => {
+  const { data } = await API.post<S3Image[]>(`/images/bulk`, params);
+  return data;
+};
 
 export const { infiniteQuery: getUser, update: updateUser } = ApiService('users');
 export { API_URL, VERSION };
@@ -69,16 +86,14 @@ export const getDistance = async (params) => {
   const { data } = await API.get(`schedules/distance`, {
     params: {
       departure: params.departure,
-      preStopOvers: params.preStopOvers,
+      stopOvers: params.stopOvers,
       destination: params.destination,
-      postStopOvers: params.postStopOvers,
-      landing: params.landing,
     },
   });
   return data;
 };
 
-export const createReservation = async (params: FormData) => {
+export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
   return data;
 };
@@ -129,3 +144,7 @@ export const createUserChatroom =
     const { data } = await API.post(`/chatrooms/${chatroom_id}/user_chatrooms`, params);
     return data;
   };
+
+export const createImageAPI = (params: FormData) => API.post('/images', params);
+
+export const destroyImageAPI = (params: FormData) => API.delete('/images', { data: params });

@@ -24,9 +24,12 @@ export interface User extends Model, Address {
   uuid?: string;
 }
 
+export type ImageType = 'normal' | 'main';
+
 export interface S3ImageBase {
   level: S3Level;
   key: string;
+  image_type: ImageType;
 }
 
 export interface Image extends Model {
@@ -34,7 +37,6 @@ export interface Image extends Model {
   imagable_id: number;
   image_type: 'normal' | 'main';
 }
-export type S3Image = S3ImageBase & Image;
 
 export interface Chatroom extends Model<string> {
   name: string;
@@ -59,4 +61,12 @@ export interface MessageType {
   owner?: string;
   createdAt?: string;
   isLast?: boolean;
+}
+
+export interface S3Image extends S3ImageBase {
+  id: number;
+}
+
+export interface S3OldImage extends S3Image {
+  destroy: boolean;
 }

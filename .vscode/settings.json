@@ -1,3 +1,7 @@
 {
-  "workbench.preferredLightColorTheme": "Default Dark+",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  }, 
+  "editor.formatOnSave": false,
 }

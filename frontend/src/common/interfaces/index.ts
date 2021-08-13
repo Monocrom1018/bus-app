@@ -1,5 +1,10 @@
-import { UserType } from '@constants';
+import { UserType, SignUpParams } from '@constants';
 import React from 'react';
+
+export * from './api';
+export * from './schema';
+export * from './utils';
+export * from './cognito';
 
 /** 인터페이스 */
 /* User Auth Interfaces */
@@ -49,7 +54,7 @@ export interface CurrentUser extends CurrentUserState {
   registration_confirmed: boolean;
   uuid: string;
   user_type: UserType;
-  profile_img: any;
+  profile: any;
   password: string;
   password_confirmation: string;
   drivable_region: string[];
@@ -68,7 +73,7 @@ export interface CurrentUser extends CurrentUserState {
   night_end: string;
   charge_per_day: number;
   service_charge: number;
-  card_registerd: boolean;
+  card_registered: boolean;
   card_company: string;
   card_number: string;
   peak_charge: number;
@@ -137,11 +142,15 @@ export interface Schedule {
   day: string;
   departure?: string;
   destination?: string;
-  landing?: string;
-  landingState?: boolean;
   returnStopOverCheck?: boolean;
   distance?: number;
   pointList?: any;
-  preStopOvers?: StopOver[];
-  postStopOvers?: StopOver[];
+  stopOvers?: StopOver[];
+}
+
+export type ImagableModel = 'User' | 'Post' | 'Court';
+
+export interface SignUpParams {
+  email: string;
+  password: string;
 }

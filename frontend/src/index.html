@@ -4,7 +4,7 @@
     <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
     <script
       type="text/javascript"
-      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=b2575a042e46e2f93063f59bf5822f68&libraries=services"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=0faea806a62bbda27eea37ad6537ed4e&libraries=services"
     ></script>
     <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://kit.fontawesome.com/f4b4c6bd06.js" crossorigin="anonymous"></script>
@@ -17,6 +17,7 @@
     * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
       * Enable inline JS: add 'unsafe-inline' to default-src
   -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;" />
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:"

@@ -72,9 +72,13 @@ const SessionNewPage: React.FC = () => {
       } finally {
         setSubmitting(false);
         f7.preloader.hide();
-        if (user) await authenticateUser(user);
-        f7.dialog.alert('정보를 확인 해주세요. ');
-        window.location.replace('/');
+        console.log(user);
+        if (user) {
+          await authenticateUser(user);
+          window.location.replace('/');
+        } else {
+          f7.dialog.alert('정보를 확인 해주세요. ');
+        }
       }
     },
     [authenticateUser],

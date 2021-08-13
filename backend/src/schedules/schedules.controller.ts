@@ -5,6 +5,7 @@ import {
   Post,
   UseInterceptors,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -38,17 +39,17 @@ export class SchedulesController {
   })
   async getDistance(
     @Query('departure') departure: string,
-    @Query('preStopOvers') preStopOvers: { id?: string; region?: string }[],
     @Query('destination') destination: string,
-    @Query('postStopOvers') postStopOvers: { id?: string; region?: string }[],
-    @Query('landing') landing: string,
+    @Query('stopOvers') stopOvers: { id?: string; region?: string }[],
   ) {
+    if (!departure || !destination) {
+      throw new BadRequestException('empty data exist');
+    }
+
     const data = await this.schedulesService.getDistance({
       departure,
-      preStopOvers,
       destination,
-      postStopOvers,
-      landing,
+      stopOvers,
     });
 
     return data;

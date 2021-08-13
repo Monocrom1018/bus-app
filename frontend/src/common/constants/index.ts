@@ -1,9 +1,6 @@
 import { Router } from 'framework7/types';
 import packageJson from '../../../package.json';
 
-export * from './schema';
-export * from './api';
-
 /** 리터럴 혹은 불변 객체 */
 export const TOKEN_KEY = `${packageJson.name}_TOKEN`;
 export const CSRF_KEY = `${packageJson.name}_CSRF`;
@@ -33,7 +30,15 @@ export interface PageRouteProps {
   f7router: Router.Router;
 }
 
+export type AmplifyStorageLevel = 'public' | 'protected' | 'private';
 export interface InfiniteAppSync<T> {
   nextToken: string;
   items: T[];
+}
+
+export interface FileData {
+  fileName: string;
+  key: string;
+  previewSrc: string;
+  isUploaded: boolean;
 }
