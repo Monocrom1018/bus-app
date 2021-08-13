@@ -4,9 +4,9 @@ import { PointDetail, StopOver } from '@interfaces';
 import { useRecoilState } from 'recoil';
 import { tourScheduleState } from '@atoms';
 
-const DetailContainer = ({ searchPlaces, day, index }) => {
+const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
-  const { day: previousDate } = tourSchedule[index - 1] || {};
+  const { day: previousDate } = tourSchedule[index - 1] || tourSchedule[lastIndex] || {};
   const { day: currentDate, departure, stopOvers, destination } = tourSchedule[index];
   const { day: nextDate } = tourSchedule[index + 1] || {};
   const [pointList, setPointList] = useState({});
@@ -184,7 +184,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
     <div className="z-50 absolute left-0 buttom-0 right-0 top-7 bg-white w-auto mx-4 rounded-lg">
       {pointList[id || type] &&
         pointList[id || type].map((point: PointDetail) => (
-          <div className="mt-3">
+          <div className="mt-3" key={point.id}>
             <a
               className="font-medium pl-3"
               onClick={() =>
@@ -220,7 +220,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
             <div className="flex px-4 mb-2">
               <input
                 className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                value={departure}
+                value={departure || ''}
                 placeholder="출발지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
               />
@@ -231,7 +231,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
             <div className="flex px-4 my-2">
               <input
                 className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                value={destination}
+                value={destination || ''}
                 placeholder="목적지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
               />
@@ -250,7 +250,7 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
                   </button>
                   <input
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-                    value={stopOver.region}
+                    value={stopOver?.region || ''}
                     placeholder="경유지를 입력해주세요"
                     onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
                   />
@@ -259,10 +259,13 @@ const DetailContainer = ({ searchPlaces, day, index }) => {
               </div>
             ))}
           {stopOvers && stopOvers.length < maxStopOverLength && (
-            <div className="flex-col text-center">
-              <button className="f7-icons text-xl text-red-500 outline-none" onClick={() => addStopOver('stopOvers')}>
-                plus_circle_fill
-              </button>
+            <div className="flex px-4 py-2">
+              <div
+                className="flex-initial text-white bg-red-500 py-2 px-4 rounded-lg"
+                onClick={() => addStopOver('stopOvers')}
+              >
+                경유지 추가
+              </div>
             </div>
           )}
         </AccordionContent>

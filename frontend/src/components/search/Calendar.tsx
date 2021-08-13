@@ -1,7 +1,7 @@
 import { f7 } from 'framework7-react';
 import React, { useEffect } from 'react';
 import jQuery from 'jquery';
-import { lineItemsCount, searchingOptionState, tourScheduleState } from '@atoms';
+import { searchingOptionState, tourScheduleState } from '@atoms';
 import { useRecoilState } from 'recoil';
 import moment from 'moment';
 
@@ -52,7 +52,7 @@ const Calendar = () => {
         monthYearChangeStart(c) {
           jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
         },
-        change(calendar, value: Array<string>) {
+        change(_, value: Array<string>) {
           const set = {};
           const [departureDate, returnDate] = value;
           (set as any).departureDate = departureDate;

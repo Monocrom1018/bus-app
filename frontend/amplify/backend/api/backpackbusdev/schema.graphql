@@ -1,38 +1,5 @@
-type Message @model
-  @key(name: "messagesByDate", fields: ["room_id", "createdAt"], queryField: "messagesByDate")
-  @auth(rules: [
-    {allow: onwer, ownerField: "owner", provider: userPools, operations: [read, create]},
-    {allow: private, provider: userPools, operations: [read]}
-  ]){
+type Todo @model {
   id: ID!
-  user_id: String!
-  room_id: String!
-  text: String!
-  image: String
-  owner: String
-  view: Int
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-}
-
-type Notification @model
-@auth(rules: [
-  {allow: private, provider: userPools, operations: [read, create]}
-])
-@key(name: "SortByCreatedAt", fields: ["createdAt"], queryField: "NotificationSortedByCreatedAt")
-@aws_cognito_user_pools(
-  id: ID!
-  title: String
-  receiver_id: String!
-  content: String!
-  redirect_to: String
-  target_type: String
-  target_id: String
-  createdAt: AWSDateTime!
-  updatedAt: AWSDateTime!
-)
-
-type Subscription{
-  onNotificationCreateRecevier(receiver_id: String!): Notification
-  @aws_subscribe(mutations: ["createdNotification"])
+  name: String!
+  description: String
 }

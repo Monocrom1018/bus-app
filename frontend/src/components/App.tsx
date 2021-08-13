@@ -53,8 +53,6 @@ const F7App = () => {
     });
   }, []);
 
-  if (!IS_PRODUCTION) console.log(routes);
-
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>

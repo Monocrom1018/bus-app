@@ -22,7 +22,7 @@ export class SchedulesService {
     const { departure, destination, stopOvers } = params;
     let combinedGeoData = '';
 
-    const combinedStopOvers = stopOvers[0].region;
+    const combinedStopOvers = stopOvers ? stopOvers[0]?.region : [];
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {

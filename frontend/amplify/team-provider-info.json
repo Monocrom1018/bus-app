@@ -19,6 +19,10 @@
         "backpackbusdeva2a308af": {
           "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
           "s3Key": "amplify-builds/backpackbusdeva2a308af-692f3669573343436b33-build.zip"
+        },
+        "BackPackImageResizeTrigger": {
+          "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
+          "s3Key": "amplify-builds/BackPackImageResizeTrigger-74564754456b75385043-build.zip"
         }
       }
     }
