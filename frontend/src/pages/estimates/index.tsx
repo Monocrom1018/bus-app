@@ -32,6 +32,7 @@ import { createReservation } from '../../common/api/index';
 const EstimatePage = ({ f7router }) => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  // 여기에서 departuretime, returnTime 꺼내오면 됨
   const searchingOption = useRecoilValue(searchingOptionState);
 
   // totalCharge, driver, people 문제없음
@@ -43,7 +44,7 @@ const EstimatePage = ({ f7router }) => {
   const { currentUser } = useAuth();
 
   const handleSubmit = async () => {
-    if (currentUser.card_registerd === false) {
+    if (currentUser.card_registered === false) {
       f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', async () => f7router.navigate('/users/card'));
       return;
     }
@@ -65,8 +66,6 @@ const EstimatePage = ({ f7router }) => {
     } finally {
       f7.preloader.hide();
       f7.dialog.alert(message, () => window.location.replace('/'));
-      // 아래꺼 쓰면 예약페이지로 가긴 가는데 아래 툴바가 없어짐. 살펴보고 수정해서 적용하기!
-      // f7.dialog.alert(message, () => f7.tab.show('#view-reservations', true));
     }
   };
 
@@ -89,7 +88,7 @@ const EstimatePage = ({ f7router }) => {
               disabled
               placeholder="오는날과 탑승시간을 선택해주세요"
               className="bg-gray-50"
-              value={moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
+              // value={moment(returnDate).format('YYYY년 MM월 DD일 HH시 MM분')}
             />
           </List>
 

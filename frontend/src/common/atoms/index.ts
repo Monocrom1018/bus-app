@@ -33,6 +33,7 @@ export const searchingOptionState = atom({
     returnDate: '',
     departureTime: '',
     returnTime: '',
+    people: null,
   },
 });
 
@@ -40,10 +41,11 @@ export const searchingOptionDateSelector = selector({
   key: 'searchingOptionDateSelector',
   get: ({ get }) => {
     const searchingOption = get(searchingOptionState);
-    const { departureDate, returnDate } = searchingOption;
+    const { departureDate, returnDate, people } = searchingOption;
     return {
       departureDate,
       returnDate,
+      people,
     };
   },
 });

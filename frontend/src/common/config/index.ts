@@ -3,6 +3,7 @@ export const configs = {
   SERVICE_URL: process.env.SERVICE_URL || 'http://0.0.0.0:8080',
   ENV: process.env.NODE_ENV || 'development',
   VERSION: process.env.VERSION || '1',
+  KAKAO_API_KEY: process.env.KAKAO_API_KEY,
 };
 
 export const IS_PRODUCTION = process.env.NODE_ENV === 'production';

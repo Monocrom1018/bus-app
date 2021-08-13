@@ -21,8 +21,8 @@ const SearchPage = () => {
   const [popupOpened, setPopupOpened] = useState(false);
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const latestTourSchedule = useRef(tourSchedule);
-  const searchingOption = useRecoilValue(searchingOptionState);
-  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { departureDate, returnDate, people } = useRecoilValue(searchingOptionDateSelector);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
@@ -91,10 +91,9 @@ const SearchPage = () => {
         await fetchNextPage();
         f7.dialog.close();
       } catch (error) {
-        console.log(error);
-        if (error.statusCode === 400) {
+        if (error.response.data.error.message === 'empty data exist') {
           f7.dialog.close();
-          showToast('경로를 빠짐없이 입력해주세요');
+          showToast('경로를 모두 입력해주세요');
           return;
         }
       }
@@ -127,6 +126,14 @@ const SearchPage = () => {
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
+      <div className="flex px-4 mb-2">
+        <input
+          className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+          value={people}
+          placeholder="탑승인원수를 숫자만 입력해주세요"
+          onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+        />
+      </div>
 
       {getDayList().map((day, index) => (
         <DetailContainer
@@ -137,9 +144,7 @@ const SearchPage = () => {
           lastIndex={dayDiff - 1}
         />
       ))}
-
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
-
       {!!data && isDriverPresent && (
         <div ref={targetRef}>
           <div className="flex justify-between">

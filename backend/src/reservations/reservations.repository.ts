@@ -9,7 +9,8 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservationCreateDto: any,
     userId: any,
   ): Promise<Reservation> {
-    const { driverId, totalCharge, people } = reservationCreateDto;
+    const { driverId, totalCharge, people, totalDistance } =
+      reservationCreateDto;
 
     const existingCheck = await Reservation.findOne({
       where: {
@@ -24,6 +25,11 @@ export class ReservationsRepository extends Repository<Reservation> {
     }
 
     const reservation = new Reservation();
+    reservation.user = userId;
+    reservation.driver = driverId;
+    reservation.total_price = totalCharge;
+    reservation.people = people;
+    reservation.total_distance = totalDistance;
     await Reservation.save(reservation);
 
     return reservation;

@@ -25,10 +25,6 @@ export class SchedulesService {
   async getDistance(params) {
     const { departure, destination, stopOvers } = params;
 
-    if (departure === '' || destination === '') {
-      throw new BadRequestException();
-    }
-
     let combinedGeoData = '';
 
     const combinedStopOvers = stopOvers ? stopOvers[0]?.region : [];
