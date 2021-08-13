@@ -1,8 +1,12 @@
-import { ID, SignUpParams } from '@constants';
+import { ID, SignUpParams, S3Image } from '@constants';
 import { Token, CurrentUser } from '@interfaces';
 import { getToken } from '@store';
 import { PlainAPI, API, VERSION, API_URL } from './api.config';
 import { ApiService } from './api.service';
+
+interface DefaultParams {
+  [key: string]: any;
+}
 
 export const refresh = (): Promise<{ data: Token }> =>
   PlainAPI.post(
@@ -22,7 +26,7 @@ export const logoutAPI = () => API.delete('/logout');
 
 /* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */
 export const getSmsAuth = (params) => API.get('/phone_certifications/sms_auth', { params });
-export const getImages = (params) => API.get(`/images`, { params });
+// export const getImages = (params) => API.get(`/images`, { params });
 export const deleteImage = (id, params) => API.delete(`/images/${id}`, { params });
 export const getLikes = () => API.get('/likes');
 /* TODO */
@@ -36,6 +40,19 @@ export const {
   update: updateObject,
   destroy: destroyObject,
 } = ApiService('objects');
+
+export const {
+  query: getImages,
+  get: getImage,
+  create: createImage,
+  update: updateImage,
+  destroy: destroyImage,
+} = ApiService<S3Image>('images');
+
+export const bulkCreateImages = async (params: DefaultParams) => {
+  const { data } = await API.post<S3Image[]>(`/images/bulk`, params);
+  return data;
+};
 
 export const { infiniteQuery: getUser, update: updateUser } = ApiService('users');
 export { API_URL, VERSION };

@@ -129,7 +129,13 @@ const SearchPage = () => {
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
 
       {getDayList().map((day, index) => (
-        <DetailContainer searchPlaces={searchPlaces} day={day} index={index} />
+        <DetailContainer
+          key={`detail-${day}`}
+          searchPlaces={searchPlaces}
+          day={day}
+          index={index}
+          lastIndex={dayDiff - 1}
+        />
       ))}
 
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
