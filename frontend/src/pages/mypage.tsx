@@ -8,7 +8,7 @@ import { currentUserState } from '@atoms';
 const MyPage = () => {
   const { signOutUser, authenticateUser, unAuthenticateUser, currentUser } = useAuth();
   const user = useRecoilValue(currentUserState);
-  const { email, name, profile_img } = user;
+  const { email, name, profile } = user;
   const a = 'T';
 
   const logoutHandler = useCallback(async () => {
@@ -39,7 +39,7 @@ const MyPage = () => {
         <div className="mr-4">
           <img
             src={
-              profile_img ||
+              profile ||
               'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=wffnP1KziQ&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
             }
             width="64"

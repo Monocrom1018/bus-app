@@ -13,7 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserUpdateDto {
   @IsOptional()
   @ApiProperty()
-  profile_img: any;
+  profile: any;
 
   @IsString()
   @IsOptional()

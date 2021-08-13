@@ -57,7 +57,7 @@ export class UsersController {
     status: 200,
     description: 'update User success',
   })
-  @UseInterceptors(FileInterceptor('user[profile_img]', storage)) // formData의 key값
+  @UseInterceptors(FileInterceptor('user[profile]', storage)) // formData의 key값
   async update(
     @Body('user') userUpdateDto: UserUpdateDto,
     @UploadedFile() file: Express.Multer.File,

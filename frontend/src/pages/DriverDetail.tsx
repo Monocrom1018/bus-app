@@ -75,7 +75,7 @@ const DriverDetailPage = ({ id, f7router }) => {
           <div className="flex items-center space-x-5">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} alt="ddriver_profile_img" />
+                <img className="h-24 w-24 rounded-2xl" src={driver.profile} alt="driver_profile" />
               </div>
             </div>
             <div className="w-full">

@@ -145,9 +145,9 @@ export class UsersRepository extends Repository<User> {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
 
-    // user.profile_img = `${process.env.SERVER_ADDRESS}/images/${filename}`;
+    // user.profile = `${process.env.SERVER_ADDRESS}/images/${filename}`;
     if (filename !== '') {
-      user.profile_img = filename;
+      user.profile = filename;
     }
 
     try {

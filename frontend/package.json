@@ -71,6 +71,7 @@
     "react": "^17.0.1",
     "react-daum-postcode": "^2.0.4",
     "react-dom": "^17.0.1",
+    "react-icons": "^4.2.0",
     "react-intersection-observer": "^8.32.0",
     "react-query": "^3.19.1",
     "react-query-devtools": "^2.6.3",

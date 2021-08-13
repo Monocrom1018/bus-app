@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import { convertObjectToFormData, sleep } from '@utils';
-import { Formik, Form } from 'formik';
+import { S3ImagePickerRef } from '@interfaces';
+import { Formik, Form, useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
-import { modifyAPI } from '../../common/api/index';
+import ImagePicker from '@components/shared/ImagePicker';
+import { IoCameraOutline, IoCloseCircleSharp, IoRibbonOutline } from 'react-icons/io5';
+import { updateAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -18,10 +21,11 @@ const UserInfoSchema = Yup.object().shape({
   }),
 });
 
-const ModifyPage = () => {
+const EditPage = () => {
   const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const { name, profile_img, email, user_type } = currentUser;
+  const { name, profile, email, user_type } = currentUser;
+  const s3ImagePickerRef = useRef<S3ImagePickerRef>(null);
 
   const handleImgButton = () => {
     document.getElementById('imageInput').click();
@@ -55,7 +59,7 @@ const ModifyPage = () => {
         enableReinitialize
         initialValues={{
           email,
-          profileImg: currentUser.profile_img || '',
+          profileImg: currentUser.profile || '',
           password: '',
           passwordConfirmation: '',
         }}
@@ -66,7 +70,7 @@ const ModifyPage = () => {
             values.profileImg = imgState.file;
           }
 
-          if ((values.profileImg === currentUser.profile_img || '') && values.password === '') {
+          if ((values.profileImg === currentUser.profile || '') && values.password === '') {
             return f7.dialog.alert('수정할 사항이 없습니다');
           }
           setSubmitting(false);
@@ -74,9 +78,9 @@ const ModifyPage = () => {
           await sleep(400);
           try {
             const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            fd.append('user[profile_img]', values.profileImg);
+            fd.append('user[profile]', values.profileImg);
 
-            const { data: user } = await modifyAPI(fd);
+            const { data: user } = await updateAPI(fd);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
           } catch (error) {
@@ -86,7 +90,7 @@ const ModifyPage = () => {
         }}
         validateOnMount
       >
-        {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
+        {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid, setFieldValue }) => (
           <Form encType="multipart/form-data">
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
@@ -95,11 +99,21 @@ const ModifyPage = () => {
                 <Button className="my-2 font-semibold" onClick={handleImgButton}>
                   프로필사진 변경
                 </Button>
+                <ImagePicker
+                  isMultiple
+                  maxCount={5}
+                  imagable_type="User"
+                  uuid={currentUser.uuid}
+                  setParentFormFieldValue={setFieldValue}
+                  placeholderComponent={<IoCameraOutline size={40} className="text-white" />}
+                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black-500" />}
+                  ref={s3ImagePickerRef}
+                />
                 <input
                   id="imageInput"
                   type="file"
                   accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  name="profile_img"
+                  name="profile"
                   onChange={handleFileOnChange}
                   className="hidden"
                 />
@@ -162,4 +176,4 @@ const ModifyPage = () => {
   );
 };
 
-export default ModifyPage;
+export default EditPage;

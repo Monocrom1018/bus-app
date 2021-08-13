@@ -47,7 +47,7 @@ export const adminBroOptions = {
           createdAt: '생성일',
           updatedAt: '수정일',
           registration_confirmed: '가입승낙여부',
-          profile_img: '프로필사진 URL',
+          profile: '프로필사진 URL',
           phone: '휴대폰번호',
           user_type: '유저타입',
           password: '비밀번호',
