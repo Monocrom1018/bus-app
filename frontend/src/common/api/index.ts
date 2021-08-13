@@ -93,7 +93,7 @@ export const getDistance = async (params) => {
   return data;
 };
 
-export const createReservation = async (params: FormData) => {
+export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
   return data;
 };

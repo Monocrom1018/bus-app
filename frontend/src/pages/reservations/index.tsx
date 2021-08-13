@@ -67,7 +67,7 @@ const ReservationIndexPage = () => {
             <Block>{(error as any).message}</Block>
           ) : (
             <>
-              {reservations.length > 0 ? (
+              {data && data.pages.flat().length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {

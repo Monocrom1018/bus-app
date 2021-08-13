@@ -17,4 +17,12 @@ export class ReservationCreateDto {
   @IsNumber()
   @ApiProperty()
   people: number;
+
+  @IsNumber()
+  @ApiProperty()
+  totalCharge: number;
+
+  @IsNumber()
+  @ApiProperty()
+  totalDistance: number;
 }

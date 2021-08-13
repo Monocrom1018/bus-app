@@ -21,8 +21,8 @@ const SearchPage = () => {
   const [popupOpened, setPopupOpened] = useState(false);
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const latestTourSchedule = useRef(tourSchedule);
-  const searchingOption = useRecoilValue(searchingOptionState);
-  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { departureDate, returnDate, people } = useRecoilValue(searchingOptionDateSelector);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
@@ -45,7 +45,7 @@ const SearchPage = () => {
     },
   );
   const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
-  const isDriverPresence: boolean = hasNextPage && !isLoading && data && data.pages.flat().length !== 0;
+  const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
     allowInfinite.current = false;
@@ -72,24 +72,31 @@ const SearchPage = () => {
   const getResult = async () => {
     if (departureDate !== null && returnDate !== '') {
       f7.dialog.preloader();
+      data?.pages.length > 0 && (data.pages = []);
       const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
       const schedulePromise = [];
-      copiedTourSchedule.forEach((schedule: any) => {
-        const { departure, destination, stopOvers } = schedule;
-        const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
-          schedule.distance = distance;
-          return schedule;
+      try {
+        copiedTourSchedule.forEach((schedule: any) => {
+          const { departure, destination, stopOvers } = schedule;
+          const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
+            schedule.distance = distance;
+            return schedule;
+          });
+          schedulePromise.push(promise);
         });
-
-        schedulePromise.push(promise);
-      });
-      const addDistanceSchedules = await Promise.all(schedulePromise);
-      latestTourSchedule.current = addDistanceSchedules;
-      setTourSchedule(addDistanceSchedules);
-      setIsInfinite(true);
-      await fetchNextPage();
-
-      f7.dialog.close();
+        const addDistanceSchedules = await Promise.all(schedulePromise);
+        latestTourSchedule.current = addDistanceSchedules;
+        setTourSchedule(addDistanceSchedules);
+        setIsInfinite(true);
+        await fetchNextPage();
+        f7.dialog.close();
+      } catch (error) {
+        if (error.response.data.error.message === 'empty data exist') {
+          f7.dialog.close();
+          showToast('경로를 모두 입력해주세요');
+          return;
+        }
+      }
       const accordions = $$('.accordion-item');
       accordions.each((el) => {
         if ([...el.classList].includes('accordion-item-opened')) {
@@ -119,6 +126,14 @@ const SearchPage = () => {
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
+      <div className="flex px-4 mb-2">
+        <input
+          className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+          value={people}
+          placeholder="탑승인원수를 숫자만 입력해주세요"
+          onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+        />
+      </div>
 
       {getDayList().map((day, index) => (
         <DetailContainer
@@ -129,10 +144,8 @@ const SearchPage = () => {
           lastIndex={dayDiff - 1}
         />
       ))}
-
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
-
-      {isDriverPresence && (
+      {!!data && isDriverPresent && (
         <div ref={targetRef}>
           <div className="flex justify-between">
             <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
@@ -147,7 +160,7 @@ const SearchPage = () => {
           </div>
         </div>
       )}
-      {allowInfinite.current && isDriverPresence === false && (
+      {allowInfinite.current && !!data && !isDriverPresent && (
         <div className="text-center">
           <i className="f7-icons text-6xl text-gray-400 -mt-10">exclamationmark_bubble</i>
           <div className="text-xl text-gray-400 mt-4 tracking-wide">검색 결과가 없습니다</div>
