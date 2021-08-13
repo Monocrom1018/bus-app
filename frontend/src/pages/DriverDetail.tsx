@@ -25,22 +25,17 @@ const DriverDetailPage = ({ id, f7router }) => {
     f7.preloader.show();
     let message: string;
     try {
-      // todo : 파라미터 정리해서 createReservation api요청 보내기
-      const people = 30;
       const params = {
         userEmail: currentUser.email,
-        driverId: driver.id,
+        driverId: Number(id),
         totalDistance: totalDistance,
         totalCharge,
-        people,
+        people: Number(people),
       };
 
       const result = await createReservation(params);
 
-      console.log('result');
-      console.log(result);
-
-      // todo : 예약 생성했으면 스케쥴 생성하는 api요청 보내기
+      // todo : 예약 생성됐으면 result.id랑 같이 스케쥴 생성하는 api요청 보내기
 
       // setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
