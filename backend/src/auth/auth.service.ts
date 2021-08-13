@@ -9,7 +9,7 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import jwksClient from 'jwks-rsa';
 import jwt from 'jsonwebtoken';
-import { UsersRepository } from '../users/users.repository';
+import { UsersRepository } from '@users/users.repository';
 
 @Injectable({ scope: Scope.REQUEST }) // Interceptor 같은 개념
 export class AuthService {

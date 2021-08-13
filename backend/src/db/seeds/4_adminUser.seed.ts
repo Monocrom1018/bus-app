@@ -1,8 +1,8 @@
 import { Factory, Seeder } from 'typeorm-seeding';
-import { AdminUsers as AdminUser } from '@adminUsers/adminUsers.entity';
+import { AdminUsersEntity } from '@admin-users/admin-users.entity';
 
 export default class CreateAdminUsers implements Seeder {
   public async run(factory: Factory): Promise<any> {
-    await factory(AdminUser)().createMany(1);
+    await factory(AdminUsersEntity)().createMany(1);
   }
 }

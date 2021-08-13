@@ -3,9 +3,8 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import { getOneDriver } from '../common/api/index';
 import moment from 'moment';
-import { createReservation } from '../common/api/index';
+import { getOneDriver, createReservation } from '../common/api/index';
 
 const DriverDetailPage = ({ id, f7router }) => {
   const { departureDate, departureTime, returnDate, returnTime, totalDistance, people } =
@@ -26,11 +25,10 @@ const DriverDetailPage = ({ id, f7router }) => {
     let message: string;
     try {
       // todo : 파라미터 정리해서 createReservation api요청 보내기
-      const people = 30;
       const params = {
         userEmail: currentUser.email,
         driverId: driver.id,
-        totalDistance: totalDistance,
+        totalDistance,
         totalCharge,
         people,
       };
@@ -170,8 +168,7 @@ const DriverDetailPage = ({ id, f7router }) => {
             className="bg-gray-50"
             disabled
             value={
-              moment(departureDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+              `${moment(departureDate).format('YYYY년 MM월 DD일')} ` +
               `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`
             }
           />
@@ -180,8 +177,7 @@ const DriverDetailPage = ({ id, f7router }) => {
             disabled
             className="bg-gray-50"
             value={
-              moment(returnDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+              `${moment(returnDate).format('YYYY년 MM월 DD일')} ` +
               `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`
             }
           />
