@@ -3,16 +3,16 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import { getOneDriver } from '../common/api/index';
+import { createSchedules, getOneDriver } from '../common/api/index';
 import moment from 'moment';
 import { createReservation } from '../common/api/index';
+import ScheduleDisplay from '@components/schedule/scheduleDisplay';
 
 const DriverDetailPage = ({ id, f7router }) => {
-  const { departureDate, departureTime, returnDate, returnTime, totalDistance, people } =
-    useRecoilValue(searchingOptionState);
-  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const { totalDistance, people } = useRecoilValue(searchingOptionState);
   const [driver, setDriver] = useRecoilState(driverState);
   const [reservation, setReservation] = useRecoilState(reservationState);
+  const tourSchedule = useRecoilValue(tourScheduleState);
   const totalCharge = useRecoilValue(totalChargeState);
   const { currentUser } = useAuth();
 
@@ -33,9 +33,8 @@ const DriverDetailPage = ({ id, f7router }) => {
         people: Number(people),
       };
 
-      const result = await createReservation(params);
-
-      // todo : 예약 생성됐으면 result.id랑 같이 스케쥴 생성하는 api요청 보내기
+      const reservationData = await createReservation(params);
+      await createSchedules({ reservationId: reservationData.id, tourSchedule });
 
       // setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
@@ -158,56 +157,7 @@ const DriverDetailPage = ({ id, f7router }) => {
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
 
-      <div className="flex flex-col -mt-6">
-        <List className="bg-gray-50">
-          <ListInput
-            label="가는날 및 탑승시간"
-            className="bg-gray-50"
-            disabled
-            value={
-              moment(departureDate).format('YYYY년 MM월 DD일') +
-              ' ' +
-              `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`
-            }
-          />
-          <ListInput
-            label="오는날 및 탑승시간"
-            disabled
-            className="bg-gray-50"
-            value={
-              moment(returnDate).format('YYYY년 MM월 DD일') +
-              ' ' +
-              `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`
-            }
-          />
-        </List>
-
-        {tourSchedule.map((schedule, index) => (
-          <List accordionList key={index} className="-mt-4">
-            <ListItem accordionItem title={schedule.day} accordionItemOpened>
-              <AccordionContent>
-                <div className="mt-2">
-                  <div className="flex px-4 mb-2">
-                    <div className="f7-icons text-base mr-1">arrow_right</div>
-                    <input className="pl-3 h-8 flex-1 rounded-lg bg-gray-50" value={schedule.departure} disabled />
-                  </div>
-                </div>
-                <div className="flex px-4 my-2">
-                  <div className="f7-icons text-base mr-1">arrow_left</div>
-                  <input className="pl-3 h-8 flex-1 rounded-lg bg-gray-50" value={schedule.destination} disabled />
-                </div>
-                {schedule.stopOvers &&
-                  schedule.stopOvers.map((stopOver) => (
-                    <div className="flex px-4 py-2" key={stopOver.id}>
-                      <div className="f7-icons text-base mr-1">placemark</div>
-                      <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={stopOver?.region} disabled />
-                    </div>
-                  ))}
-              </AccordionContent>
-            </ListItem>
-          </List>
-        ))}
-      </div>
+      <ScheduleDisplay />
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
       <List accordionList className="mt-3 pb-10">

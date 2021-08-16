@@ -25,7 +25,6 @@ export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
     private usersRepository: UsersRepository,
-    private schedulesService: SchedulesService,
     private readonly monthsService: MonthsService,
     private readonly authService: AuthService,
   ) {}

@@ -2,22 +2,34 @@ import {
   Injectable,
   ConflictException,
   BadRequestException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import qs from 'qs';
 import { SchedulesRepository } from './schedules.repository';
+import { ReservationsService } from '@reservations/reservations.service';
 
 @Injectable()
 export class SchedulesService {
   constructor(
     @InjectRepository(SchedulesRepository)
     private schedulesRepository: SchedulesRepository,
+
+    @Inject(forwardRef(() => ReservationsService))
+    private reservationsService: ReservationsService,
   ) {}
 
   async create(scheduleCreateDto) {
+    const { reservationId } = scheduleCreateDto;
+    const reservation = await this.reservationsService.getListById(
+      reservationId,
+    );
+
     const data = await this.schedulesRepository.createSchedule(
       scheduleCreateDto,
+      reservation,
     );
     return data;
   }

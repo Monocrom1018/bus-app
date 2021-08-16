@@ -16,7 +16,7 @@ export class Schedules extends DateAudit {
   departure: string;
 
   @Column()
-  departure_date: Date;
+  day: string;
 
   @Column('text', {
     array: true,
@@ -26,12 +26,6 @@ export class Schedules extends DateAudit {
 
   @Column()
   destination: string;
-
-  @Column()
-  return_date: Date;
-
-  @Column({ nullable: true })
-  landing: string;
 
   @Column()
   distance: number;

@@ -162,7 +162,7 @@ const ReservationPage = (props) => {
         </Row>
       </CardContent>
       <CardFooter>
-        <p>가격: {price.toLocaleString()}₩</p>
+        <p>가격: {price?.toLocaleString()}₩</p>
         <p>상태: {status}</p>
       </CardFooter>
       <Button

@@ -9,17 +9,23 @@ import { Schedules as Schedule } from './schedules.entity';
 
 @EntityRepository(Schedule)
 export class SchedulesRepository extends Repository<Schedule> {
-  async createSchedule(scheduleCreateDto: any): Promise<Schedule> {
-    const { departure, returnDate, departureDate, destination, stopover } =
-      scheduleCreateDto;
+  async createSchedule(scheduleCreateDto: any, reservation) {
+    const { tourSchedule } = scheduleCreateDto;
 
-    const schedule = new Schedule();
-    // schedule.departureDate = departureDate;
-    // schedule.returnDate = returnDate;
-    // schedule.departure = departure;
-    // schedule.destination = destination;
-    await Schedule.save(schedule);
+    tourSchedule.forEach((singleSchedule) => {
+      const schedule = new Schedule();
+      const { day, departure, destination, distance, stopOvers } =
+        singleSchedule;
+      schedule.day = day;
+      schedule.departure = departure;
+      schedule.destination = destination;
+      schedule.distance = distance;
+      schedule.reservation = reservation[0];
+      schedule.stopover = stopOvers[0] ? [stopOvers[0].region] : [];
+      stopOvers[1] ? schedule.stopover.push(stopOvers[1].region) : null;
+      Schedule.save(schedule);
+    });
 
-    return schedule;
+    return { message: 'schedule create success' };
   }
 }

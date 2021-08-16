@@ -40,7 +40,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     const reservations = await Reservation.find({
       relations: ['schedules', 'driver', 'user'],
       where: {
-        reservation: id,
+        id: id,
       },
     });
 
