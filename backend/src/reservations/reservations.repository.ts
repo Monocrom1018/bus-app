@@ -30,6 +30,7 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.total_price = totalCharge;
     reservation.people = people;
     reservation.total_distance = totalDistance;
+    reservation.status = '수락대기중';
     await Reservation.save(reservation);
 
     return reservation;
