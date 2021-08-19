@@ -1,5 +1,5 @@
-import React, { useState, useCallback } from 'react';
-import { f7, Navbar, Page } from 'framework7-react';
+import React from 'react';
+import { Navbar, Page } from 'framework7-react';
 import { getObject } from '@api';
 import { useQuery } from 'react-query';
 import ReactQueryState from '../../components/shared/ReactQueryState';

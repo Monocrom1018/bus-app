@@ -415,7 +415,7 @@
 											{
 												"Ref": "S3Bucket"
 											},
-											"/public/origins/*"
+											"/public/*"
 										]
 									]
 								}
@@ -547,7 +547,7 @@
 											{
 												"Ref": "S3Bucket"
 											},
-											"/uploads/*"
+											"/public/origins/*"
 										]
 									]
 								}
