@@ -1,6 +1,17 @@
 import { atom, selector, selectorFamily } from 'recoil';
 import { CurrentUser, Schedule } from '@interfaces';
 
+export const initialFlash = {
+  flashType: null,
+  body: null,
+  isShow: false,
+};
+
+export const flashAtom = atom({
+  key: 'flashAtom',
+  default: initialFlash,
+});
+
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
 };
@@ -41,11 +52,10 @@ export const searchingOptionDateSelector = selector({
   key: 'searchingOptionDateSelector',
   get: ({ get }) => {
     const searchingOption = get(searchingOptionState);
-    const { departureDate, returnDate, people } = searchingOption;
+    const { departureDate, returnDate } = searchingOption;
     return {
       departureDate,
       returnDate,
-      people,
     };
   },
 });

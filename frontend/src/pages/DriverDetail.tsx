@@ -3,9 +3,8 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import { getOneDriver } from '../common/api/index';
 import moment from 'moment';
-import { createReservation } from '../common/api/index';
+import { getOneDriver, createReservation } from '../common/api/index';
 
 const DriverDetailPage = ({ id, f7router }) => {
   const { departureDate, departureTime, returnDate, returnTime, totalDistance, people } =
@@ -26,21 +25,17 @@ const DriverDetailPage = ({ id, f7router }) => {
     let message: string;
     try {
       // todo : 파라미터 정리해서 createReservation api요청 보내기
-      const people = 30;
       const params = {
         userEmail: currentUser.email,
-        driverId: driver.id,
-        totalDistance: totalDistance,
+        driverId: Number(id),
+        totalDistance,
         totalCharge,
-        people,
+        people: Number(people),
       };
 
       const result = await createReservation(params);
 
-      console.log('result');
-      console.log(result);
-
-      // todo : 예약 생성했으면 스케쥴 생성하는 api요청 보내기
+      // todo : 예약 생성됐으면 result.id랑 같이 스케쥴 생성하는 api요청 보내기
 
       // setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
@@ -170,8 +165,7 @@ const DriverDetailPage = ({ id, f7router }) => {
             className="bg-gray-50"
             disabled
             value={
-              moment(departureDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+              `${moment(departureDate).format('YYYY년 MM월 DD일')} ` +
               `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`
             }
           />
@@ -180,15 +174,14 @@ const DriverDetailPage = ({ id, f7router }) => {
             disabled
             className="bg-gray-50"
             value={
-              moment(returnDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+              `${moment(returnDate).format('YYYY년 MM월 DD일')} ` +
               `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`
             }
           />
         </List>
 
         {tourSchedule.map((schedule, index) => (
-          <List accordionList key={index} className="-mt-4">
+          <List accordionList key={`${schedule.day}`} className="-mt-4">
             <ListItem accordionItem title={schedule.day} accordionItemOpened>
               <AccordionContent>
                 <div className="mt-2">

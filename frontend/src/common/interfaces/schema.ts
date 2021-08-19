@@ -8,10 +8,42 @@ export interface Address {
 }
 
 export interface Model<T = number> {
-  id: T;
+  id?: T;
   model_name: string;
   created_at: string;
-  update_at: string;
+  updated_at: string;
+}
+
+export interface S3FileBase {
+  level: S3Level;
+  key: string;
+}
+
+export interface Image extends Model {
+  imagable_type: string;
+  imagable_id: number;
+  image_type: 'normal' | 'main';
+  id?: number;
+}
+
+export interface File extends Model {
+  target_type: string;
+  target_id: number;
+  file_type: 'normal' | 'main';
+  id?: number;
+  key?: string;
+}
+
+export type S3Image = S3FileBase & Image;
+
+export type S3File = S3FileBase & File;
+
+export interface FileData {
+  fileName?: string;
+  key?: string;
+  previewSrc?: string;
+  isUploaded?: boolean;
+  id?: number;
 }
 
 export interface User extends Model, Address {
@@ -30,12 +62,6 @@ export interface S3ImageBase {
   level: S3Level;
   key: string;
   image_type: ImageType;
-}
-
-export interface Image extends Model {
-  imagable_type: string;
-  imagable_id: number;
-  image_type: 'normal' | 'main';
 }
 
 export interface Chatroom extends Model<string> {
@@ -61,10 +87,6 @@ export interface MessageType {
   owner?: string;
   createdAt?: string;
   isLast?: boolean;
-}
-
-export interface S3Image extends S3ImageBase {
-  id: number;
 }
 
 export interface S3OldImage extends S3Image {

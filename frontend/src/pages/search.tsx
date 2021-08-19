@@ -22,7 +22,7 @@ const SearchPage = () => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const latestTourSchedule = useRef(tourSchedule);
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { departureDate, returnDate, people } = useRecoilValue(searchingOptionDateSelector);
+  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
@@ -80,6 +80,7 @@ const SearchPage = () => {
           const { departure, destination, stopOvers } = schedule;
           const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
             schedule.distance = distance;
+            setSearchingOption({ ...searchingOption, totalDistance: searchingOption.totalDistance + distance });
             return schedule;
           });
           schedulePromise.push(promise);
@@ -90,8 +91,8 @@ const SearchPage = () => {
         setIsInfinite(true);
         await fetchNextPage();
         f7.dialog.close();
-      } catch (error) {
-        if (error.response.data.error.message === 'empty data exist') {
+      } catch (err) {
+        if (err.response.data.error.message === 'empty data exist') {
           f7.dialog.close();
           showToast('경로를 모두 입력해주세요');
           return;
@@ -129,9 +130,9 @@ const SearchPage = () => {
       <div className="flex px-4 mb-2">
         <input
           className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          value={people}
+          value={searchingOption.people || 0}
           placeholder="탑승인원수를 숫자만 입력해주세요"
-          onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+          onChange={(e) => setSearchingOption({ ...searchingOption, people: Number(e.target.value) })}
         />
       </div>
 
