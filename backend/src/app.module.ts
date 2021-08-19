@@ -2,37 +2,34 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Database, Resource } from '@admin-bro/typeorm';
 import AdminBro from 'admin-bro';
-import { ConfigModule } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import { MulterModule } from '@nestjs/platform-express';
 import { AdminModule } from '@admin-bro/nestjs';
+import { WinstonModule } from 'nest-winston';
+import { join } from 'path';
+import { STATIC } from '@environments';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { NoticesModule } from './notices/notices.module';
-import { LikesModule } from './likes/likes.module';
-import { ImagesModule } from './images/images.module';
-import { FollowsModule } from './follows/follows.module';
-import { FaqsModule } from './faqs/faqs.module';
-import { ContactsModule } from './contacts/contacts.module';
-import { CommentsModule } from './comments/comments.module';
-import { ReservationsModule } from './reservations/reservations.module';
-import { adminBroOptions } from './config/adminBroOptions';
-import { MonthsModule } from './months/months.module';
+import { UsersModule } from './modules/users/users.module';
+import { NoticesModule } from './modules/notices/notices.module';
+import { LikesModule } from './modules/likes/likes.module';
+import { ImagesModule } from './modules/images/images.module';
+import { FollowsModule } from './modules/follows/follows.module';
+import { FaqsModule } from './modules/faqs/faqs.module';
+import { ContactsModule } from './modules/contacts/contacts.module';
+import { CommentsModule } from './modules/comments/comments.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
+import { MonthsModule } from './modules/months/months.module';
+import { winstonOptions, typeormOptions, adminOptions } from './config';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    AdminModule.createAdmin(adminBroOptions),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: 5432,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_DATABASE,
-      entities: [`${__dirname}/**/*.entity.{js, ts}`],
-      synchronize: false,
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', STATIC),
     }),
+    WinstonModule.forRoot(winstonOptions),
+    AdminModule.createAdmin(adminOptions),
+    TypeOrmModule.forRoot(typeormOptions),
     MulterModule.register({
       dest: '../uploads',
     }),

@@ -1,15 +1,16 @@
-import React, { useState, useRef } from 'react';
-import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
-import { convertObjectToFormData, sleep } from '@utils';
-import { S3ImagePickerRef } from '@interfaces';
-import { Formik, Form, useFormik } from 'formik';
+import React, { useState } from 'react';
+import { f7, Navbar, Page, List, ListInput } from 'framework7-react';
+import { sleep } from '@utils';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
-import ImagePicker from '@components/shared/ImagePicker';
-import { IoCameraOutline, IoCloseCircleSharp, IoRibbonOutline } from 'react-icons/io5';
-import { updateAPI } from '../../common/api/index';
+import S3ImagePicker from '@components/images/S3ImagePicker';
+import { IoCloseCircleSharp } from 'react-icons/io5';
+import { MainPlaceHolder } from '@components/images';
+import { updateAPI } from '@api';
+import { pick } from 'lodash';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -22,43 +23,19 @@ const UserInfoSchema = Yup.object().shape({
 });
 
 const EditPage = () => {
-  const [imgState, setImgState] = useState({ file: '', imageURL: null });
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
-  const { name, profile, email, user_type } = currentUser;
-  const s3ImagePickerRef = useRef<S3ImagePickerRef>(null);
-
-  const handleImgButton = () => {
-    document.getElementById('imageInput').click();
-  };
-
-  const handleFileOnChange = async (event) => {
-    event.preventDefault();
-
-    if (event.target.files[0]) {
-      const reader = new FileReader();
-      const file = event.target.files[0];
-
-      reader.onloadend = () => {
-        setImgState({
-          file,
-          imageURL: reader.result,
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
+  const [removedIds, setRemovedIds] = useState<number[]>([]);
+  const { name, profile, email } = currentUser;
 
   return (
     <Page noToolbar>
-      {/* Top Navbar */}
       <Navbar title="회원정보 수정" backLink sliding={false} />
 
-      {/* Page Contents */}
       <Formik
         enableReinitialize
         initialValues={{
           email,
+          name,
           profileImg: currentUser.profile || '',
           password: '',
           passwordConfirmation: '',
@@ -66,21 +43,12 @@ const EditPage = () => {
         validationSchema={UserInfoSchema}
         // eslint-disable-next-line consistent-return
         onSubmit={async (values, { setSubmitting }) => {
-          if (imgState.file !== '') {
-            values.profileImg = imgState.file;
-          }
-
-          if ((values.profileImg === currentUser.profile || '') && values.password === '') {
-            return f7.dialog.alert('수정할 사항이 없습니다');
-          }
           setSubmitting(false);
           f7.dialog.preloader('잠시만 기다려주세요...');
           await sleep(400);
           try {
-            const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            fd.append('user[profile]', values.profileImg);
-
-            const { data: user } = await updateAPI(fd);
+            values.profileImg = pick(values.profileImg, ['key']);
+            const { data: user } = await updateAPI(values);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
           } catch (error) {
@@ -95,37 +63,21 @@ const EditPage = () => {
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
               <div className="flex flex-col items-center bg-white border-t">
-                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover" alt="user_image" />
-                <Button className="my-2 font-semibold" onClick={handleImgButton}>
-                  프로필사진 변경
-                </Button>
-                <ImagePicker
-                  isMultiple
-                  maxCount={5}
-                  imagable_type="User"
-                  uuid={currentUser.uuid}
-                  setParentFormFieldValue={setFieldValue}
-                  placeholderComponent={<IoCameraOutline size={40} className="text-white" />}
-                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black-500" />}
-                  ref={s3ImagePickerRef}
-                />
-                <input
-                  id="imageInput"
-                  type="file"
-                  accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  name="profile"
-                  onChange={handleFileOnChange}
-                  className="hidden"
+                <S3ImagePicker
+                  isMultiple={false}
+                  initialData={profile ? [profile] : undefined}
+                  placeholderComponent={<MainPlaceHolder maxCount={1} isImage />}
+                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+                  removeImageHandler={(key, removedS3Image) => {
+                    if (removedS3Image) setRemovedIds((prev) => [...prev, removedS3Image.id]);
+                  }}
+                  containerClassName="w-full h-full relative"
+                  addImageHandler={(v: any) => {
+                    setFieldValue('profileImg', v[0]);
+                  }}
                 />
               </div>
-              <ListInput
-                disabled
-                outline
-                label={i18next.t('login.name') as string}
-                type="text"
-                name="name"
-                value={name}
-              />
+              <ListInput outline label={i18next.t('login.name') as string} type="text" name="name" value={name} />
               <ListInput
                 disabled
                 outline

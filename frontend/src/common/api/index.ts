@@ -8,6 +8,11 @@ interface DefaultParams {
   [key: string]: any;
 }
 
+interface UpdatePayloadProps {
+  id?: ID;
+  [key: string]: any;
+}
+
 export const refresh = (): Promise<{ data: Token }> =>
   PlainAPI.post(
     '/token',
@@ -20,16 +25,13 @@ export const userMeApi = (params) => API.get<CurrentUser>(`/users/me/${params}`)
 
 export const get = (url: string, params: any) => PlainAPI.get(url, params);
 export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
-export const updateAPI = (params: FormData) => API.post('/users/update', params);
+export const updateAPI = (params: DefaultParams = {}) => API.post('/users/update', params);
 export const signupAPI = (params: SignUpParams) => API.post('/users/signup', params);
 export const logoutAPI = () => API.delete('/logout');
 
-/* TODO : parameter type 지정 (위에는 샘플로 해두었습니다) */
 export const getSmsAuth = (params) => API.get('/phone_certifications/sms_auth', { params });
-// export const getImages = (params) => API.get(`/images`, { params });
 export const deleteImage = (id, params) => API.delete(`/images/${id}`, { params });
 export const getLikes = () => API.get('/likes');
-/* TODO */
 
 // 일반적인 경우는 Ojbect API 사용하기
 export const {

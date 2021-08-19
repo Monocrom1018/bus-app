@@ -35,10 +35,3 @@ export interface InfiniteAppSync<T> {
   nextToken: string;
   items: T[];
 }
-
-export interface FileData {
-  fileName: string;
-  key: string;
-  previewSrc: string;
-  isUploaded: boolean;
-}
