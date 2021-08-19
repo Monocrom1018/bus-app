@@ -4,10 +4,10 @@ import {
 } from '@nestjs/common';
 import { Brackets, EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { ImagesEntity } from '@images/images.entity';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UsersEntity } from './users.entity';
 import { UserType } from './enum';
-import { DriverSearchDto } from './dto/driver-search.dto';
 
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
@@ -80,6 +80,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
   async me(email: string): Promise<UsersEntity> {
     const user = await this.findOne({
+      relations: ['profile'],
       where: {
         email,
       },
@@ -118,8 +119,8 @@ export class UsersRepository extends Repository<UsersEntity> {
 
   async updateUser(
     currentApiUser: UsersEntity,
-    filename: string,
     userUpdateDto,
+    profile: ImagesEntity,
   ) {
     const {
       drivableRegion,
@@ -155,9 +156,8 @@ export class UsersRepository extends Repository<UsersEntity> {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
 
-    // user.profile = `${process.env.SERVER_ADDRESS}/images/${filename}`;
-    if (filename !== '') {
-      user.profile = filename;
+    if (profile) {
+      user.profile = profile;
     }
 
     try {

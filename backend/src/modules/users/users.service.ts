@@ -1,6 +1,5 @@
 import {
   Injectable,
-  InternalServerErrorException,
   NotAcceptableException,
   NotFoundException,
 } from '@nestjs/common';
@@ -8,24 +7,22 @@ import moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
 import axios, { AxiosRequestConfig } from 'axios';
-import qs from 'qs';
 import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
-import { SchedulesService } from '@schedules/schedules.service';
+import { ImagesEntity } from '@images/images.entity';
+import { ImagesRepository } from '@images/images.repository';
 import { UserCreateDto } from './dto/user-create.dto';
 import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
 import { UsersEntity } from './users.entity';
 import { MonthsService } from '../months/months.service';
 import { UserUpdateDto } from './dto/user-update.dto';
-// const axios = require('axios');
-// const qs = require('qs');
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(UsersRepository)
-    private usersRepository: UsersRepository,
-    private schedulesService: SchedulesService,
+    private readonly usersRepository: UsersRepository,
+    private readonly imagesRepository: ImagesRepository,
     private readonly monthsService: MonthsService,
     private readonly authService: AuthService,
   ) {}
@@ -46,9 +43,40 @@ export class UsersService {
     return users;
   }
 
-  async update(filename: string, userUpdateDto: UserUpdateDto) {
+  async update(userUpdateDto: UserUpdateDto) {
+    const { profileImg, ...userUpdateColumns } = userUpdateDto;
     const user = await this.authService.currentApiUser();
-    return this.usersRepository.updateUser(user, filename, userUpdateDto);
+
+    if (profileImg && user) {
+      const previousProfile = await this.imagesRepository.findOne({
+        user,
+      });
+
+      if (previousProfile) {
+        await this.imagesRepository.update(
+          { key: profileImg.key },
+          {
+            ...profileImg,
+            user,
+            imagable_type: 'user',
+            imagable_id: user.id,
+          },
+        );
+      } else {
+        await this.imagesRepository.save({
+          ...profileImg,
+          user,
+          imagable_type: 'user',
+          imagable_id: user.id,
+        });
+      }
+    }
+
+    const profile: ImagesEntity = await this.imagesRepository.findOne({
+      key: profileImg.key,
+    });
+
+    return this.usersRepository.updateUser(user, userUpdateColumns, profile);
   }
 
   async getBillingKey(body: BillingKeyProps) {

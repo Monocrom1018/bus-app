@@ -13,12 +13,17 @@ import { ApiProperty } from '@nestjs/swagger';
 export class UserUpdateDto {
   @IsOptional()
   @ApiProperty()
-  profile: any;
+  profileImg: any;
 
   @IsString()
   @IsOptional()
   @ApiProperty()
   email: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
+  name: string;
 
   @IsString()
   @IsOptional()

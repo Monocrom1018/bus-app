@@ -184,7 +184,7 @@ const DriverDetailPage = ({ id, f7router }) => {
         </List>
 
         {tourSchedule.map((schedule, index) => (
-          <List accordionList key={index} className="-mt-4">
+          <List accordionList key={`${schedule.day}`} className="-mt-4">
             <ListItem accordionItem title={schedule.day} accordionItemOpened>
               <AccordionContent>
                 <div className="mt-2">

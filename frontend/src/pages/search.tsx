@@ -90,8 +90,8 @@ const SearchPage = () => {
         setIsInfinite(true);
         await fetchNextPage();
         f7.dialog.close();
-      } catch (error) {
-        if (error.response.data.error.message === 'empty data exist') {
+      } catch (err) {
+        if (err.response.data.error.message === 'empty data exist') {
           f7.dialog.close();
           showToast('경로를 모두 입력해주세요');
           return;
@@ -129,7 +129,7 @@ const SearchPage = () => {
       <div className="flex px-4 mb-2">
         <input
           className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          value={people}
+          value={people || 0}
           placeholder="탑승인원수를 숫자만 입력해주세요"
           onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
         />

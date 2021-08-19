@@ -1,6 +1,17 @@
 import { atom, selector, selectorFamily } from 'recoil';
 import { CurrentUser, Schedule } from '@interfaces';
 
+export const initialFlash = {
+  flashType: null,
+  body: null,
+  isShow: false,
+};
+
+export const flashAtom = atom({
+  key: 'flashAtom',
+  default: initialFlash,
+});
+
 const initialCurrentUser: CurrentUser = {
   isAuthenticated: false,
 };

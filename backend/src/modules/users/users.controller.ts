@@ -4,36 +4,17 @@ import {
   Post,
   Get,
   Controller,
-  UploadedFile,
   UseInterceptors,
   Param,
-  Req,
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import path from 'path';
 import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
 import { UsersService } from './users.service';
 import { UserUpdateDto } from './dto/user-update.dto';
 import { UserCreateDto } from './dto/user-create.dto';
 import { DriverSearchDto } from './dto/driver-search.dto';
 
-export const storage = {
-  storage: diskStorage({
-    destination(req, file, cb) {
-      cb(null, './public/images');
-    },
-    filename: (req, file, cb) => {
-      console.log(file);
-      const filename: string = path
-        .parse(file.originalname)
-        .name.replace(/\s/g, '');
-      const extension: string = path.parse(file.originalname).ext;
-      cb(null, `${filename}-${Date.now()}${extension}`);
-    },
-  }),
-};
 @ApiTags('유저')
 @Controller('users')
 export class UsersController {
@@ -57,13 +38,8 @@ export class UsersController {
     status: 200,
     description: 'update User success',
   })
-  @UseInterceptors(FileInterceptor('user[profile]', storage)) // formData의 key값
-  async update(
-    @Body('user') userUpdateDto: UserUpdateDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    const filename = file?.path || '';
-    return this.usersService.update(filename, userUpdateDto);
+  async update(@Body() userUpdateDto: UserUpdateDto) {
+    return this.usersService.update(userUpdateDto);
   }
 
   @ApiOperation({ summary: '접속중인 유저정보 가져오기' })

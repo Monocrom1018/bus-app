@@ -6,6 +6,8 @@ import {
   OneToMany,
   getRepository,
   ManyToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
@@ -15,6 +17,7 @@ import { ReservationsEntity } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { MessagesEntity } from '@messages/messages.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
+import { ImagesEntity } from '@images/images.entity';
 import { UserType } from './enum';
 
 @Entity('users')
@@ -41,9 +44,6 @@ export class UsersEntity extends DateAuditEntity {
     length: 100,
   })
   name: string;
-
-  @Column({ nullable: true })
-  profile: string;
 
   @Column({ nullable: true })
   phone: string;
@@ -162,6 +162,10 @@ export class UsersEntity extends DateAuditEntity {
 
   @Column({ nullable: true })
   bank_account: string;
+
+  @OneToOne((type) => ImagesEntity, (profile) => profile.user)
+  @JoinColumn({ name: 'image_id' })
+  profile: ImagesEntity;
 
   @OneToMany((type) => MessagesEntity, (message) => message.user)
   messages: MessagesEntity[];

@@ -1,14 +1,13 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { f7 } from 'framework7-react';
-import { useInView } from 'react-intersection-observer';
-import placeholderImage from '@assets/images/placeholder.png';
 import { Storage } from 'aws-amplify';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 interface S3ImageViewProps {
   imageKey?: string;
   level?: 'public' | 'private' | 'protected';
   isLazyLoad?: boolean;
   className?: string;
+  placeHolderClassName?: string;
   onClick?: (params: unknown) => void;
 }
 
@@ -18,6 +17,7 @@ const S3ImageView: React.FC<S3ImageViewProps> = ({
   onClick,
   isLazyLoad = false,
   level = 'public',
+  placeHolderClassName = '',
 }) => {
   const [preSignedUrl, setPreSignedUrl] = useState('');
 
@@ -50,15 +50,17 @@ const S3ImageView: React.FC<S3ImageViewProps> = ({
     checkImagePresent();
   }, [checkImagePresent, getStorageImage, imageKey]);
 
-  useEffect(() => {
-    if (!inView || !imageRef.current || !isLazyLoad) return;
-    f7.lazy.loadImage(imageRef.current, () => {});
-  }, [inView, isLazyLoad, preSignedUrl]);
-
   const renderImage = useCallback(() => {
-    if (!imageKey) return <img src={placeholderImage} alt="" />;
+    if (!imageKey)
+      return (
+        <img
+          src="/assets/img/placeholder.png"
+          alt="me"
+          className={`object-fill w-full h-full ${placeHolderClassName}`}
+        />
+      );
     if (isLazyLoad) return <img ref={imageRef} data-src={preSignedUrl} className="lazy lazy-fade-in" alt="" />;
-    return <img src={preSignedUrl} alt="" />;
+    return <img src={preSignedUrl} alt="" className="object-fill w-full h-full" />;
   }, [imageKey, isLazyLoad, preSignedUrl]);
 
   return (

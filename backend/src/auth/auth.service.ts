@@ -84,6 +84,7 @@ export class AuthService {
         { algorithms: [alg], complete: true },
         (err, decodedToken) => {
           if (err) {
+            console.log(err);
             return new UnauthorizedException('payloadDecodeError');
           }
           return decodedToken;
@@ -108,9 +109,9 @@ export class AuthService {
   }
 
   async jwks(): Promise<any> {
-    if (process.env.NODE_ENV !== 'production') {
-      return `${process.env.JWKS_MOCK_PEM}`;
-    }
+    // if (process.env.NODE_ENV !== 'production') {
+    //   return `${process.env.JWKS_MOCK_PEM}`;
+    // }
     const client = jwksClient({
       jwksUri: `${process.env.JWKS_URI}`,
     });

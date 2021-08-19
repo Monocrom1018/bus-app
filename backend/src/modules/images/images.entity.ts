@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UsersEntity } from '@users/users.entity';
@@ -25,6 +26,7 @@ export class ImagesEntity extends DateAuditEntity {
 
   @Column({
     nullable: true,
+    enum: Level,
     default: Level.Public,
   })
   level: Level;
@@ -33,10 +35,11 @@ export class ImagesEntity extends DateAuditEntity {
     nullable: true,
     type: 'enum',
     enum: ImageType,
+    default: ImageType.Main,
   })
   image_type: ImageType;
 
-  @ManyToOne(() => UsersEntity, (user) => user.profile, { nullable: true })
+  @OneToOne(() => UsersEntity, (user) => user.profile, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: UsersEntity;
 }
