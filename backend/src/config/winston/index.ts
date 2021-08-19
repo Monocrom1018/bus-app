@@ -1,7 +1,7 @@
 import { utilities } from 'nest-winston';
 import { Logger as logger, transports, format } from 'winston';
 
-export const winstonOptions = {
+export const winston = {
   format: format.combine(
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
