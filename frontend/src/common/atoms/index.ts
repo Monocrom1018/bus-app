@@ -52,11 +52,10 @@ export const searchingOptionDateSelector = selector({
   key: 'searchingOptionDateSelector',
   get: ({ get }) => {
     const searchingOption = get(searchingOptionState);
-    const { departureDate, returnDate, people } = searchingOption;
+    const { departureDate, returnDate } = searchingOption;
     return {
       departureDate,
       returnDate,
-      people,
     };
   },
 });
