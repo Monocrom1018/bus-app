@@ -26,6 +26,18 @@ export class Reservations extends DateAudit {
   @Column({ nullable: true })
   total_distance: number;
 
+  @Column({ nullable: true })
+  departureDate: string;
+
+  @Column({ nullable: true })
+  departureTime: string;
+
+  @Column({ nullable: true })
+  returnDate: string;
+
+  @Column({ nullable: true })
+  returnTime: string;
+
   @ManyToOne((type) => User, (user) => user.reservations)
   user: User;
 

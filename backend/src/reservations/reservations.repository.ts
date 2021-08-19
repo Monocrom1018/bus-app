@@ -9,8 +9,16 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservationCreateDto: any,
     userId: any,
   ): Promise<Reservation> {
-    const { driverId, totalCharge, people, totalDistance } =
-      reservationCreateDto;
+    const {
+      driverId,
+      totalCharge,
+      people,
+      totalDistance,
+      departureDate,
+      departureTime,
+      returnDate,
+      returnTime,
+    } = reservationCreateDto;
 
     const existingCheck = await Reservation.findOne({
       where: {
@@ -31,6 +39,11 @@ export class ReservationsRepository extends Repository<Reservation> {
     reservation.people = people;
     reservation.total_distance = totalDistance;
     reservation.status = '수락대기중';
+    reservation.departureDate = departureDate;
+    reservation.departureTime = departureTime;
+    reservation.returnDate = returnDate;
+    reservation.returnTime = returnTime;
+
     await Reservation.save(reservation);
 
     return reservation;

@@ -25,4 +25,20 @@ export class ReservationCreateDto {
   @IsNumber()
   @ApiProperty()
   totalDistance: number;
+
+  @IsString()
+  @ApiProperty()
+  departureDate: string;
+
+  @IsString()
+  @ApiProperty()
+  departureTime: string;
+
+  @IsString()
+  @ApiProperty()
+  returnDate: string;
+
+  @IsString()
+  @ApiProperty()
+  returnTime: string;
 }

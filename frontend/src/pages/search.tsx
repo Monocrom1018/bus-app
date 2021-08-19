@@ -19,10 +19,11 @@ const SearchPage = () => {
   const allowInfinite = useRef(true);
   const [isInfinite, setIsInfinite] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
+  const [sortBy, setSortBy] = useState('people_available');
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const latestTourSchedule = useRef(tourSchedule);
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const { totalDistance, people } = useRecoilValue(searchingOptionState);
+  const { totalDistance } = useRecoilValue(searchingOptionState);
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
   const { ref: targetRef, inView: isTargetInView } = useInView({
@@ -36,7 +37,6 @@ const SearchPage = () => {
   const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     'drivers',
     async ({ pageParam: page = 1 }) => {
-      const sortBy = 'created_at';
       const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current }, page, sortBy);
       return response.data || [];
     },
@@ -45,7 +45,13 @@ const SearchPage = () => {
       getNextPageParam: (lastPage, pages) => pages.length + 1,
     },
   );
-  const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
+  const drivers = useMemo(
+    () =>
+      data?.pages?.flat().sort((a, b) => {
+        return a[sortBy] - b[sortBy];
+      }) || [],
+    [sortBy, data],
+  );
   const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
@@ -74,11 +80,17 @@ const SearchPage = () => {
     if (departureDate !== null && returnDate !== '') {
       f7.dialog.preloader();
       data?.pages.length > 0 && (data.pages = []);
-      const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
+      let copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
+      copiedTourSchedule.length === 1 &&
+        copiedTourSchedule.push({
+          day: copiedTourSchedule[0].day,
+          departure: copiedTourSchedule[0].destination,
+          destination: copiedTourSchedule[0].departure,
+          stopOvers: copiedTourSchedule[0].stopOvers,
+        });
       const schedulePromise = [];
       try {
         copiedTourSchedule.forEach((schedule: any) => {
-          // people 도 요청에 포함시켜서 validate 시키기
           const { departure, destination, stopOvers } = schedule;
           const promise = getDistance({ departure, destination, stopOvers }).then((distance) => {
             schedule.distance = distance;
@@ -129,15 +141,6 @@ const SearchPage = () => {
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
-      <div className="flex px-4 mb-2">
-        <input
-          className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-          value={people}
-          placeholder="탑승인원수를 숫자만 입력해주세요"
-          onChange={(e) => setSearchingOption({ ...searchingOption, people: Number(e.target.value) })}
-        />
-      </div>
-
       {getDayList().map((day, index) => (
         <DetailContainer
           key={`detail-${day}`}
@@ -151,9 +154,14 @@ const SearchPage = () => {
       {!!data && isDriverPresent && (
         <div ref={targetRef}>
           <div className="flex justify-between">
-            <Input type="select" defaultValue="인기순" className="w-28 mx-4 px-1 border-b-2 border-red-400">
-              <option value="인승">인승</option>
-              <option value="최저가격순">최저가격순</option>
+            <Input
+              type="select"
+              defaultValue={sortBy}
+              className="w-28 mx-4 px-1 border-b-2 border-red-400"
+              onChange={(e) => setSortBy(e.target.value)}
+            >
+              <option value="people_available">낮은인승순</option>
+              <option value="totalCharge">낮은가격순</option>
             </Input>
           </div>
           <div>

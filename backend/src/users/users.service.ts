@@ -147,8 +147,8 @@ export class UsersService {
     page: number,
     sortBy: string,
   ) {
-    const { departureDate, returnDate, departureTime, returnTime, schedule } =
-      driverSearchDto;
+    const { departureDate, departureTime, schedule } = driverSearchDto;
+    const departureHour = departureTime.split(' ')[0];
     const departMonth = await this.getMonth(departureDate);
     const isDepartPeak = await this.monthsService.isPeakMonth(departMonth);
     const drivers = await this.usersRepository.findTargetDrivers(
@@ -180,8 +180,8 @@ export class UsersService {
 
         // 야간할증 계산
         if (
-          Number(departureTime) >= driver.night_begin ||
-          Number(departureTime) <= driver.night_end
+          Number(departureHour) >= driver.night_begin ||
+          Number(departureHour) <= driver.night_end
         ) {
           totalCharge += driver.night_charge;
         }
@@ -193,25 +193,6 @@ export class UsersService {
     return {
       data: drivers,
     };
-  }
-
-  async getReturnTotalCharge(params: TotalChargeProps) {
-    const { returnDistance, returnDate, driver, isReturnPeak } = params;
-    const returnTime = returnDate.split(' ')[4].split(':')[0];
-
-    const returnChargePerKm = isReturnPeak
-      ? driver.peak_charge_per_km || driver.charge_per_km
-      : driver.charge_per_km;
-
-    let returnTotalCharge = returnDistance * returnChargePerKm;
-
-    if (
-      Number(returnTime) >= driver.night_begin ||
-      Number(returnTime) <= driver.night_end
-    ) {
-      returnTotalCharge += driver.night_charge;
-    }
-    return returnTotalCharge;
   }
 
   async getMonth(date: string) {

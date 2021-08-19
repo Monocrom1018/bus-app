@@ -38,8 +38,13 @@ export class SchedulesService {
     const { departure, destination, stopOvers } = params;
 
     let combinedGeoData = '';
+    let combinedStopOvers = [];
 
-    const combinedStopOvers = stopOvers ? stopOvers[0]?.region : [];
+    if (stopOvers && typeof stopOvers[0]?.region === 'object') {
+      combinedStopOvers = stopOvers[0].region;
+    } else if (stopOvers && typeof stopOvers[0]?.region === 'string') {
+      combinedStopOvers = [stopOvers[0].region];
+    }
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {

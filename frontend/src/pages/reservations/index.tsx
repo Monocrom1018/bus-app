@@ -18,6 +18,7 @@ const ReservationIndexPage = () => {
     async ({ pageParam: page = 1 }) => {
       if (currentUser.isAuthenticated) {
         const response = await getReservations(currentUser.email, page);
+        console.log(response);
         return response || [];
       }
     },

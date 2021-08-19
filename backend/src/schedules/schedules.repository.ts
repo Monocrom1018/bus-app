@@ -12,7 +12,7 @@ export class SchedulesRepository extends Repository<Schedule> {
   async createSchedule(scheduleCreateDto: any, reservation) {
     const { tourSchedule } = scheduleCreateDto;
 
-    tourSchedule.forEach((singleSchedule) => {
+    for (let singleSchedule of tourSchedule) {
       const schedule = new Schedule();
       const { day, departure, destination, distance, stopOvers } =
         singleSchedule;
@@ -24,7 +24,7 @@ export class SchedulesRepository extends Repository<Schedule> {
       schedule.stopover = stopOvers[0] ? [stopOvers[0].region] : [];
       stopOvers[1] ? schedule.stopover.push(stopOvers[1].region) : null;
       Schedule.save(schedule);
-    });
+    }
 
     return { message: 'schedule create success' };
   }
