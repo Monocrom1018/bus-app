@@ -29,12 +29,8 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservation.total_price = totalCharge;
     reservation.people = people;
     reservation.total_distance = totalDistance;
-<<<<<<< HEAD:backend/src/modules/reservations/reservations.repository.ts
-    await ReservationsEntity.save(reservation);
-=======
     reservation.status = '수락대기중';
-    await Reservation.save(reservation);
->>>>>>> dccaea4570f08364d8a9b99a27b95528eaaafe38:backend/src/reservations/reservations.repository.ts
+    await ReservationsEntity.save(reservation);
 
     return reservation;
   }
