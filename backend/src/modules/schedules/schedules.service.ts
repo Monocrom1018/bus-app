@@ -2,22 +2,34 @@ import {
   Injectable,
   ConflictException,
   BadRequestException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import qs from 'qs';
 import { SchedulesRepository } from './schedules.repository';
+import { ReservationsService } from '@reservations/reservations.service';
 
 @Injectable()
 export class SchedulesService {
   constructor(
     @InjectRepository(SchedulesRepository)
     private schedulesRepository: SchedulesRepository,
+
+    @Inject(forwardRef(() => ReservationsService))
+    private reservationsService: ReservationsService,
   ) {}
 
   async create(scheduleCreateDto) {
+    const { reservationId } = scheduleCreateDto;
+    const reservation = await this.reservationsService.getListById(
+      reservationId,
+    );
+
     const data = await this.schedulesRepository.createSchedule(
       scheduleCreateDto,
+      reservation,
     );
     return data;
   }
@@ -26,8 +38,13 @@ export class SchedulesService {
     const { departure, destination, stopOvers } = params;
 
     let combinedGeoData = '';
+    let combinedStopOvers = [];
 
-    const combinedStopOvers = stopOvers ? stopOvers[0]?.region : [];
+    if (stopOvers && typeof stopOvers[0]?.region === 'object') {
+      combinedStopOvers = stopOvers[0].region;
+    } else if (stopOvers && typeof stopOvers[0]?.region === 'string') {
+      combinedStopOvers = [stopOvers[0].region];
+    }
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {

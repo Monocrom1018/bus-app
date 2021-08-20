@@ -8,7 +8,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservationCreateDto: any,
     userId: any,
   ): Promise<ReservationsEntity> {
-    const { driverId, totalCharge, people, totalDistance } =
+    const { driverId, totalCharge, people, totalDistance, departureDate, departureTime, returnDate, returnTime } =
       reservationCreateDto;
 
     const existingCheck = await ReservationsEntity.findOne({
@@ -29,7 +29,11 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservation.total_price = totalCharge;
     reservation.people = people;
     reservation.total_distance = totalDistance;
-    reservation.status = '수락대기중';
+    reservation.departureDate = departureDate
+    reservation.departureTime = departureTime,
+    reservation.returnDate = returnDate,
+    reservation.returnTime = returnTime,
+    reservation.status = '수락대기중'
     await ReservationsEntity.save(reservation);
 
     return reservation;
@@ -39,7 +43,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     const reservations = await ReservationsEntity.find({
       relations: ['schedules', 'driver', 'user'],
       where: {
-        reservation: id,
+        id: id,
       },
     });
 

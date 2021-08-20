@@ -17,7 +17,7 @@
       "@admin-users/*": ["src/modules/admin-users/*"],
       "@auth/*": ["src/auth/*"],
       "@comments/*": ["src/modules/comments/*"],
-      "@conatcts/*": ["src/modules/contacts/*"],
+      "@contacts/*": ["src/modules/contacts/*"],
       "@db/*": ["src/db/*"],
       "@decorators/*": ["src/common/decorators/*"],
       "@entities/*": ["src/common/entities/*"],

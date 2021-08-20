@@ -227,17 +227,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
             </div>
             {searchResult('departure')}
           </div>
-          <div className="relative">
-            <div className="flex px-4 my-2">
-              <input
-                className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-                value={destination || ''}
-                placeholder="목적지를 검색해주세요"
-                onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
-              />
-            </div>
-            {searchResult('destination')}
-          </div>
+
           {stopOvers &&
             stopOvers.map((stopOver) => (
               <div className="relative" key={stopOver.id}>
@@ -258,6 +248,18 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 {searchResult('stopOvers', stopOver.id)}
               </div>
             ))}
+
+          <div className="relative">
+            <div className="flex px-4 my-2">
+              <input
+                className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
+                value={destination || ''}
+                placeholder="목적지를 검색해주세요"
+                onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
+              />
+            </div>
+            {searchResult('destination')}
+          </div>
           {stopOvers && stopOvers.length < maxStopOverLength && (
             <div className="flex px-4 py-2">
               <div

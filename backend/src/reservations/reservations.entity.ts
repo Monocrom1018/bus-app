@@ -5,12 +5,12 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { UsersEntity } from '@users/users.entity';
+import {UsersEntity} from '@users/users.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { SchedulesEntity } from '@schedules/schedules.entity';
 
-@Entity('reservations')
-export class ReservationsEntity extends DateAuditEntity {
+@Entity()
+export class Reservations extends DateAuditEntity {
   @PrimaryGeneratedColumn()
   id: number;
 

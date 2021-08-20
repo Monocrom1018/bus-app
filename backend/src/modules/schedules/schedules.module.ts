@@ -1,12 +1,16 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from '@users/users.module';
 import { SchedulesController } from './schedules.controller';
 import { SchedulesService } from './schedules.service';
 import { SchedulesRepository } from './schedules.repository';
+import { ReservationsModule } from '@reservations/reservations.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SchedulesRepository])],
+  imports: [
+    forwardRef(() => ReservationsModule),
+    TypeOrmModule.forFeature([SchedulesRepository]),
+  ],
   controllers: [SchedulesController],
   providers: [SchedulesService],
   exports: [SchedulesService],

@@ -17,17 +17,17 @@ import { SchedulesService } from './schedules.service';
 export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
-  @ApiOperation({ summary: '예약 생성' })
-  @Post()
+  @ApiOperation({ summary: '일정 생성' })
+  @Post('create')
   @ApiResponse({
     status: 200,
-    description: 'create Reservation success',
+    description: 'create schedules success',
   })
   // form-data 형식으로 post 요청할 경우에 FileInterceptor 설정이 없으면
   // 전달받은 데이터의 내용을 인식하지 못합니다.
   @UseInterceptors(FileInterceptor('file'))
-  async create(@Body('schedule') reservationCreateDto: ScheduleCreateDto) {
-    return this.schedulesService.create(reservationCreateDto);
+  async create(@Body() scheduleCreateDto: any) {
+    return this.schedulesService.create(scheduleCreateDto);
   }
 
   // 거리 보내주는 api 짜기
