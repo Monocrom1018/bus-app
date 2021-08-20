@@ -215,19 +215,22 @@ export class UsersRepository extends Repository<UsersEntity> {
 
     switch (sortBy) {
       case 'createdAtDesc':
-        orderQuery = {'User.created_at': 'DESC'}
+        orderQuery = { 'User.created_at': 'DESC' };
         break;
       case 'chargeAsc':
-        orderQuery = {'User.basic_charge': 'ASC', 'User.charge_per_km': 'ASC'}
+        orderQuery = {
+          'User.basic_charge': 'ASC',
+          'User.charge_per_km': 'ASC',
+        };
         break;
       case 'peopleAsc':
-        orderQuery = {'User.people_available': 'ASC'}
+        orderQuery = { 'User.people_available': 'ASC' };
         break;
       case 'peopleDesc':
-        orderQuery = {'User.people_available': 'DESC'}
+        orderQuery = { 'User.people_available': 'DESC' };
         break;
       default:
-        orderQuery = {'User.created_at': 'DESC'}
+        orderQuery = { 'User.created_at': 'DESC' };
     }
 
     const drivers = await this.createQueryBuilder('User')

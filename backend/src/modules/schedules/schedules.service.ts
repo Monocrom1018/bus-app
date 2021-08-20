@@ -8,8 +8,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import qs from 'qs';
-import { SchedulesRepository } from './schedules.repository';
 import { ReservationsService } from '@reservations/reservations.service';
+import { SchedulesRepository } from './schedules.repository';
 
 @Injectable()
 export class SchedulesService {
@@ -48,8 +48,7 @@ export class SchedulesService {
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {
-        console.log('ConflictException');
-        throw new ConflictException();
+        throw new BadRequestException('empty data exist');
       }
 
       // promise all로 변경할수 있을듯
@@ -106,19 +105,25 @@ export class SchedulesService {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
-    const tmapApi = await axios.post(
-      'https://apis.openapi.sk.com/tmap/routes?version=1',
-      tmapBody,
-      { headers: tmapConfig },
-    );
+    try {
+      const tmapApi = await axios.post(
+        'https://apis.openapi.sk.com/tmap/routes?version=1',
+        tmapBody,
+        {
+          headers: tmapConfig,
+        },
+      );
 
-    const kmData = Math.round(
-      tmapApi.data.features[0].properties.totalDistance / 1000,
-    );
+      const kmData = Math.round(
+        tmapApi.data.features[0].properties.totalDistance / 1000,
+      );
 
-    console.log('kmData', kmData);
+      console.log(kmData);
 
-    return kmData;
+      return kmData;
+    } catch (err) {
+      throw new BadRequestException('over 1000km');
+    }
   }
 
   async getGeoData(param: any) {

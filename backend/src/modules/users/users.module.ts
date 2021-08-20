@@ -9,7 +9,6 @@ import { UsersController } from './users.controller';
 
 @Module({
   imports: [
-    SchedulesModule,
     MonthsModule,
     TypeOrmModule.forFeature([UsersRepository, ImagesRepository]),
   ],
