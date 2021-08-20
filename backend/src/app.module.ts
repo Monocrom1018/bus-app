@@ -5,10 +5,9 @@ import AdminBro from 'admin-bro';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { MulterModule } from '@nestjs/platform-express';
 import { AdminModule } from '@admin-bro/nestjs';
-import { WinstonModule } from 'nest-winston';
 import { join } from 'path';
 import { STATIC } from '@environments';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from '@auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { NoticesModule } from './modules/notices/notices.module';
 import { LikesModule } from './modules/likes/likes.module';
@@ -19,7 +18,8 @@ import { ContactsModule } from './modules/contacts/contacts.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { MonthsModule } from './modules/months/months.module';
-import { winstonOptions, typeormOptions, adminOptions } from './config';
+import { SchedulesModule } from '@schedules/schedules.module';
+import { typeormOptions, adminOptions } from './config';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -27,7 +27,7 @@ AdminBro.registerAdapter({ Database, Resource });
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', STATIC),
     }),
-    WinstonModule.forRoot(winstonOptions),
+    // WinstonModule.forRoot(winston),
     AdminModule.createAdmin(adminOptions),
     TypeOrmModule.forRoot(typeormOptions),
     MulterModule.register({
@@ -44,6 +44,7 @@ AdminBro.registerAdapter({ Database, Resource });
     CommentsModule,
     ReservationsModule,
     MonthsModule,
+    SchedulesModule,
   ],
 })
 export class AppModule {}

@@ -22,7 +22,7 @@
         },
         "BackPackImageResizeTrigger": {
           "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
-          "s3Key": "amplify-builds/BackPackImageResizeTrigger-74564754456b75385043-build.zip"
+          "s3Key": "amplify-builds/BackPackImageResizeTrigger-645537526a6b6d7a762b-build.zip"
         }
       }
     }

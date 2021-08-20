@@ -22,13 +22,12 @@ export class ScheduleCreateDto {
   @ApiProperty()
   destination: string;
 
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
-  landing: string;
-
   @IsArray()
   @IsOptional()
   @ApiProperty()
-  stopoversArray: string[];
+  stopover: string[];
+
+  @IsNumber()
+  @ApiProperty()
+  reservationId: number;
 }
