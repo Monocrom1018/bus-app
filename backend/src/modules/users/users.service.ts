@@ -54,7 +54,7 @@ export class UsersService {
 
       if (previousProfile) {
         await this.imagesRepository.update(
-          { key: profileImg.key },
+          { user },
           {
             ...profileImg,
             user,

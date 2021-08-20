@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import useAuth from '@hooks/useAuth';
-import { logoutAPI } from '@api';
-import { Storage } from 'aws-amplify';
 import { f7, Navbar, Page, NavLeft, NavTitle, Link, List } from 'framework7-react';
 import { useRecoilValue } from 'recoil';
 import { currentUserState } from '@atoms';
@@ -10,8 +8,7 @@ import S3ImageView from '@components/images/S3ImageView';
 const MyPage = () => {
   const { signOutUser, currentUser } = useAuth();
   const user = useRecoilValue(currentUserState);
-  const { email, name, profile } = user;
-  const { key: imageKey, level } = profile;
+  const { email, name, profile = { key: '', level: '' } } = user;
 
   const handleSignout = () => {
     f7.dialog.confirm('로그아웃 하시겠어요?', async () => {
@@ -31,14 +28,7 @@ const MyPage = () => {
 
       <div className="ml-4 mt-6 -mb-3 flex items-center ">
         <div className="mr-4">
-          <S3ImageView imageKey={imageKey} className="w-16 h-16 rounded-full" />
-          <img
-            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=wffnP1KziQ&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-            width="64"
-            height="64"
-            className="rounded-full"
-            alt="user_image"
-          />
+          <S3ImageView imageKey={profile?.key || ''} className="w-16 h-16 rounded-full" />
         </div>
         <div className="flex-shrink-1">
           <h4 className="text-lg font-bold">{name || '비회원'}</h4>

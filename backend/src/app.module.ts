@@ -18,8 +18,12 @@ import { ContactsModule } from './modules/contacts/contacts.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { MonthsModule } from './modules/months/months.module';
+<<<<<<< HEAD
 import { SchedulesModule } from '@schedules/schedules.module';
 import { winstonOptions, typeormOptions, adminOptions } from './config';
+=======
+import { typeormOptions, adminOptions } from './config';
+>>>>>>> f040b2baa2e2c7237bc78827999e83bcbf8dcdd0
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -27,7 +31,11 @@ AdminBro.registerAdapter({ Database, Resource });
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', STATIC),
     }),
+<<<<<<< HEAD
     // WinstonModule.forRoot(winstonOptions),
+=======
+    // WinstonModule.forRoot(winston),
+>>>>>>> f040b2baa2e2c7237bc78827999e83bcbf8dcdd0
     AdminModule.createAdmin(adminOptions),
     TypeOrmModule.forRoot(typeormOptions),
     MulterModule.register({
