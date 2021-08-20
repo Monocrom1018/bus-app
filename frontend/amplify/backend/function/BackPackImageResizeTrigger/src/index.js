@@ -31,8 +31,9 @@ function makeThumbnail(photo) {
 }
 
 async function resize(bucketName, key) {
-  const originalPhoto = (await S3.getObject({ Bucket: bucketName, Key: key }).promise()).Body;
-  const originalPhotoName = key.replace('public/origins/', '');
+  const decodedKey = decodeURIComponent(key);
+  const originalPhoto = (await S3.getObject({ Bucket: bucketName, Key: decodedKey }).promise()).Body;
+  const originalPhotoName = decodedKey.replace('public/origins/', '');
 
   const thumbnail = await makeThumbnail(originalPhoto);
 
@@ -51,7 +52,7 @@ async function resize(bucketName, key) {
   ]).then(async () => {
     await S3.deleteObject({
       Bucket: bucketName,
-      Key: key,
+      Key: decodedKey,
     }).promise();
   });
 }
