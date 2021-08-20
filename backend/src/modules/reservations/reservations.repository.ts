@@ -33,6 +33,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservation.departureTime = departureTime,
     reservation.returnDate = returnDate,
     reservation.returnTime = returnTime,
+    reservation.status = '수락대기중'
     await ReservationsEntity.save(reservation);
 
     return reservation;
