@@ -81,7 +81,7 @@ export class UsersService {
 
   async getBillingKey(body: BillingKeyProps) {
     const { authKey, customerKey } = body;
-    const user = await this.me('normal@test.com');
+    const user = await this.authService.currentApiUser();
 
     if (!user) {
       throw new NotFoundException('유저정보가 조회되지 않습니다');
@@ -160,14 +160,6 @@ export class UsersService {
 
   async getOneDriver(param: number): Promise<UsersEntity> {
     const user = this.usersRepository.getOneUserById(param);
-    return user;
-  }
-
-  async getInformation(): Promise<UsersEntity> {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-
     return user;
   }
 
