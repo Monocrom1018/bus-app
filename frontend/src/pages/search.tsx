@@ -19,7 +19,6 @@ const SearchPage = () => {
   const allowInfinite = useRef(true);
   const [isInfinite, setIsInfinite] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
-  const [sortBy, setSortBy] = useState('people_available');
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
   const latestTourSchedule = useRef(tourSchedule);
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
@@ -29,6 +28,7 @@ const SearchPage = () => {
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
   });
+  let sortBy = 'createdAtDesc';
 
   useEffect(() => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
@@ -45,13 +45,7 @@ const SearchPage = () => {
       getNextPageParam: (lastPage, pages) => pages.length + 1,
     },
   );
-  const drivers = useMemo(
-    () =>
-      data?.pages?.flat().sort((a, b) => {
-        return a[sortBy] - b[sortBy];
-      }) || [],
-    [sortBy, data],
-  );
+  let drivers = useMemo(() => data?.pages?.flat(), [data]);
   const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
@@ -75,6 +69,11 @@ const SearchPage = () => {
     }
     return days;
   };
+
+  const sortDrivers = (value) => {
+    sortBy = value;
+    refetch()
+  }
 
   const getResult = async () => {
     if (departureDate !== null && returnDate !== '') {
@@ -158,15 +157,17 @@ const SearchPage = () => {
               type="select"
               defaultValue={sortBy}
               className="w-28 mx-4 px-1 border-b-2 border-red-400"
-              onChange={(e) => setSortBy(e.target.value)}
+              onChange={(e) => sortDrivers(e.target.value)}
             >
-              <option value="people_available">낮은인승순</option>
-              <option value="totalCharge">낮은가격순</option>
+              <option value="createdAtDesc">최신순</option>
+              <option value="peopleAsc">낮은인승순</option>
+              <option value="peopleDesc">높은인승순</option>
+              <option value="chargeAsc">낮은가격순</option>
             </Input>
           </div>
           <div>
             {drivers.map((driver) => (
-              <Driver driver={driver} key={driver.id} />
+              <Driver driver={driver} key={`driver-${driver.id}`} />
             ))}
           </div>
         </div>

@@ -211,6 +211,24 @@ export class UsersRepository extends Repository<UsersEntity> {
   ): Promise<UsersEntity[]> {
     const { departure } = schedule[0];
     const region = (departure as string).split(' ')[0];
+    let orderQuery = {};
+
+    switch (sortBy) {
+      case 'createdAtDesc':
+        orderQuery = {'User.created_at': 'DESC'}
+        break;
+      case 'chargeAsc':
+        orderQuery = {'User.basic_charge': 'ASC', 'User.charge_per_km': 'ASC'}
+        break;
+      case 'peopleAsc':
+        orderQuery = {'User.people_available': 'ASC'}
+        break;
+      case 'peopleDesc':
+        orderQuery = {'User.people_available': 'DESC'}
+        break;
+      default:
+        orderQuery = {'User.created_at': 'DESC'}
+    }
 
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_region @> ARRAY['${region}']`)
@@ -219,6 +237,7 @@ export class UsersRepository extends Repository<UsersEntity> {
           qb.where('user_type = :driver', { driver: 'driver' });
         }),
       )
+      .orderBy(orderQuery)
       .take(3)
       .skip(3 * (page - 1))
       .getMany();
