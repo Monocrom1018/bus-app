@@ -1,4 +1,4 @@
-import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, Preloader } from 'framework7-react';
+import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button } from 'framework7-react';
 import { Dom7 as $$ } from 'framework7/lite-bundle';
 import { sleep } from '@utils';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -11,12 +11,15 @@ import moment from 'moment';
 import { useInView } from 'react-intersection-observer';
 import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
-import { useInfiniteQuery } from 'react-query';
+import { useInfiniteQuery, useQueryClient } from 'react-query';
+import ListPreloader from '@components/shared/ListPreloader';
+import { CurrentUser, InfiniteObjects } from '@interfaces';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
   const allowInfinite = useRef(true);
+  const queryClient = useQueryClient();
   const [isInfinite, setIsInfinite] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
@@ -34,31 +37,39 @@ const SearchPage = () => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
   }, []);
 
+  // const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<
+  //   InfiniteObjects<CurrentUser>
+  // >(
   const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
-    'drivers',
+    ['drivers'],
     async ({ pageParam: page = 1 }) => {
+      console.log(hasNextPage, isInfinite, page);
       const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current }, page, sortBy);
       return response.data || [];
     },
     {
       enabled: isInfinite,
       getNextPageParam: (lastPage, pages) => pages.length + 1,
+      // getNextPageParam: (lastPage) => lastPage.next_cursor,
     },
   );
-  let drivers = useMemo(() => data?.pages?.flat(), [data]);
+  // let drivers = useMemo(() => data?.pages?.flat(), [data]);
+  const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
+  // data?.pages.flatMap((v) => v.objects) || [];
   const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
     allowInfinite.current = false;
     await fetchNextPage();
-    // await sleep(200);
+    // await sleep(300);
     allowInfinite.current = true;
   }, [fetchNextPage]);
 
   useEffect(() => {
+    console.log(isTargetInView, allowInfinite.current);
     if (!isTargetInView || !allowInfinite.current) return;
     fetchNextPageAsync();
-  }, [isTargetInView]);
+  }, [isTargetInView, fetchNextPageAsync]);
 
   const getDayList = () => {
     const days = [];
@@ -70,16 +81,18 @@ const SearchPage = () => {
     return days;
   };
 
-  const sortDrivers = (value) => {
+  const sortDrivers = async (value) => {
     sortBy = value;
-    refetch()
-  }
+    queryClient.removeQueries(['drivers']);
+    await refetch();
+    allowInfinite.current = true;
+  };
 
   const getResult = async () => {
     if (departureDate !== null && returnDate !== '') {
       f7.dialog.preloader();
       data?.pages.length > 0 && (data.pages = []);
-      let copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
+      const copiedTourSchedule = JSON.parse(JSON.stringify(tourSchedule));
       copiedTourSchedule.length === 1 &&
         copiedTourSchedule.push({
           day: copiedTourSchedule[0].day,
@@ -105,12 +118,21 @@ const SearchPage = () => {
         await fetchNextPage();
         f7.dialog.close();
       } catch (err) {
+        queryClient.resetQueries('drivers', { exact: true });
+        setIsInfinite(false);
+
         if (err.response.data.error.message === 'empty data exist') {
           f7.dialog.close();
           showToast('경로를 모두 입력해주세요');
           return;
         }
+        if (err.response.data.error.message === 'over 1000km') {
+          f7.dialog.close();
+          showToast('하루의 일정중 1000km가 넘어간 일정이 있습니다. <br> 1000km이하의 경로만 요청 가능합니다.');
+          return;
+        }
       }
+
       const accordions = $$('.accordion-item');
       accordions.each((el) => {
         if ([...el.classList].includes('accordion-item-opened')) {
@@ -126,7 +148,6 @@ const SearchPage = () => {
     if (!keyword.replace(/^\s+|\s+$/g, '')) {
       return false;
     }
-
     return KakaoPlaceRef.current.keywordSearch(keyword, callback);
   };
 
@@ -150,7 +171,7 @@ const SearchPage = () => {
         />
       ))}
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
-      {!!data && isDriverPresent && (
+      {!!data && isDriverPresent && isInfinite && (
         <div ref={targetRef}>
           <div className="flex justify-between">
             <Input
@@ -178,7 +199,7 @@ const SearchPage = () => {
           <div className="text-xl text-gray-400 mt-4 tracking-wide">검색 결과가 없습니다</div>
         </div>
       )}
-      {hasNextPage && isLoading && <Preloader size={16} />}
+      {hasNextPage && <ListPreloader ref={targetRef} />}
     </Page>
   );
 };

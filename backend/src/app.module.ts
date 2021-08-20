@@ -8,6 +8,7 @@ import { AdminModule } from '@admin-bro/nestjs';
 import { join } from 'path';
 import { STATIC } from '@environments';
 import { AuthModule } from '@auth/auth.module';
+import { SchedulesModule } from '@schedules/schedules.module';
 import { UsersModule } from './modules/users/users.module';
 import { NoticesModule } from './modules/notices/notices.module';
 import { LikesModule } from './modules/likes/likes.module';
@@ -18,7 +19,6 @@ import { ContactsModule } from './modules/contacts/contacts.module';
 import { CommentsModule } from './modules/comments/comments.module';
 import { ReservationsModule } from './modules/reservations/reservations.module';
 import { MonthsModule } from './modules/months/months.module';
-import { SchedulesModule } from '@schedules/schedules.module';
 import { typeormOptions, adminOptions } from './config';
 
 AdminBro.registerAdapter({ Database, Resource });
@@ -27,7 +27,6 @@ AdminBro.registerAdapter({ Database, Resource });
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', STATIC),
     }),
-    // WinstonModule.forRoot(winston),
     AdminModule.createAdmin(adminOptions),
     TypeOrmModule.forRoot(typeormOptions),
     MulterModule.register({

@@ -45,9 +45,18 @@ namespace :yarn do
       end
     end
   end
+  task :db_migrate do
+    on roles fetch(:yarn_roles) do
+      within fetch(:yarn_target_path, release_path) do
+        with fetch(:yarn_env_variables, {}) do
+          execute :yarn, "db:migrate"
+        end
+      end
+    end
+  end
 end
 
-after "yarn:install", "yarn:build"
+after "yarn:install", "yarn:build", "yarn:db_migrate"
 
 namespace :load do
   task :defaults do
