@@ -58,11 +58,14 @@ export class UsersEntity extends DateAuditEntity {
   @Column({ nullable: true })
   uuid: string;
 
-  @Column('text', {
-    array: true,
-    nullable: true,
-  })
-  drivable_date: string[];
+  @Column({nullable: true})
+  term_check: boolean;
+  
+  @Column({nullable: true})
+  privacy_check: boolean;
+  
+  @Column({nullable: true})
+  marketing_check: boolean;
 
   @Column('text', {
     array: true,
