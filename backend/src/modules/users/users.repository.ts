@@ -24,6 +24,9 @@ export class UsersRepository extends Repository<UsersEntity> {
       director_name,
       director_email,
       director_phone,
+      termCheck,
+      privacyCheck,
+      marketingCheck,
     } = userCreateDto;
 
     const user = new UsersEntity();
@@ -32,6 +35,9 @@ export class UsersRepository extends Repository<UsersEntity> {
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
+    user.term_check = termCheck;
+    user.privacy_check = privacyCheck;
+    user.marketing_check = marketingCheck;
 
     if (user_type === 'DRIVER') {
       user.director_name = director_name || null;
