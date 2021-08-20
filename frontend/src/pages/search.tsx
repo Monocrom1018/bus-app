@@ -37,9 +37,10 @@ const SearchPage = () => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
   }, []);
 
-  const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<
-    InfiniteObjects<CurrentUser>
-  >(
+  // const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<
+  //   InfiniteObjects<CurrentUser>
+  // >(
+  const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['drivers'],
     async ({ pageParam: page = 1 }) => {
       console.log(hasNextPage, isInfinite, page);
@@ -48,8 +49,8 @@ const SearchPage = () => {
     },
     {
       enabled: isInfinite,
-      // getNextPageParam: (lastPage, pages) => pages.length + 1,
-      getNextPageParam: (lastPage) => lastPage.next_cursor,
+      getNextPageParam: (lastPage, pages) => pages.length + 1,
+      // getNextPageParam: (lastPage) => lastPage.next_cursor,
     },
   );
   // let drivers = useMemo(() => data?.pages?.flat(), [data]);
@@ -60,7 +61,7 @@ const SearchPage = () => {
   const fetchNextPageAsync = useCallback(async () => {
     allowInfinite.current = false;
     await fetchNextPage();
-    await sleep(300);
+    // await sleep(300);
     allowInfinite.current = true;
   }, [fetchNextPage]);
 
