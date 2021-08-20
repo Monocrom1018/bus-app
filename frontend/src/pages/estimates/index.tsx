@@ -99,7 +99,7 @@ const EstimatePage = ({ f7router }) => {
             <input
               className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
               readOnly
-              value={'departure'}
+              value="departure"
               placeholder="출발지를 검색해주세요"
               disabled
             />{' '}
@@ -115,7 +115,7 @@ const EstimatePage = ({ f7router }) => {
           <div className="f7-icons text-base mr-1">map_pin_ellipse</div>
           <input
             className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
-            value={'destination'}
+            value="destination"
             placeholder="도착지를 검색해주세요"
             disabled
           />{' '}

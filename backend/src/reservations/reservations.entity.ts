@@ -5,12 +5,12 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { Users as User } from '@users/users.entity';
-import { DateAudit } from '@entities/date-audit.entity';
-import { Schedules as Schedule } from '@schedules/schedules.entity';
+import {UsersEntity} from '@users/users.entity';
+import { DateAuditEntity } from '@entities/date-audit.entity';
+import { SchedulesEntity } from '@schedules/schedules.entity';
 
 @Entity()
-export class Reservations extends DateAudit {
+export class Reservations extends DateAuditEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -38,14 +38,14 @@ export class Reservations extends DateAudit {
   @Column({ nullable: true })
   returnTime: string;
 
-  @ManyToOne((type) => User, (user) => user.reservations)
-  user: User;
+  @ManyToOne((type) => UsersEntity, (user) => user.reservations)
+  user: UsersEntity;
 
-  @ManyToOne((type) => User, (driver) => driver.reservations)
-  driver: User;
+  @ManyToOne((type) => UsersEntity, (driver) => driver.reservations)
+  driver: UsersEntity;
 
-  @OneToMany((type) => Schedule, (schedules) => schedules.reservation, {
+  @OneToMany((type) => SchedulesEntity, (schedules) => schedules.reservation, {
     nullable: true,
   })
-  schedules: Schedule[];
+  schedules: SchedulesEntity[];
 }

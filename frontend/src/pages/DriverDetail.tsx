@@ -35,10 +35,11 @@ const DriverDetailPage = ({ id, f7router }) => {
     f7.preloader.show();
     let message: string;
     try {
+      // todo : 파라미터 정리해서 createReservation api요청 보내기
       const params = {
         userEmail: currentUser.email,
         driverId: Number(id),
-        totalDistance: totalDistance,
+        totalDistance,
         totalCharge,
         people: Number(people),
         departureDate,
@@ -83,7 +84,7 @@ const DriverDetailPage = ({ id, f7router }) => {
           <div className="flex items-center space-x-5">
             <div className="flex-shrink-0">
               <div className="relative">
-                <img className="h-24 w-24 rounded-2xl" src={driver.profile_img} alt="driver_profile_img" />
+                <img className="h-24 w-24 rounded-2xl" src={driver.profile} alt="driver_profile" />
               </div>
             </div>
             <div className="w-full">

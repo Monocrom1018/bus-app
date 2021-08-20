@@ -236,6 +236,17 @@
                                 "Rules": [{ "Name": "prefix", "Value": "public/origins/" }]
                               }
                             }
+                        },
+                        {
+                          "Event": "s3:ObjectCreated:CompleteMultipartUpload",
+                          "Function": {
+                            "Ref": "functionBackPackImageResizeTriggerArn"
+                          },
+                          "Filter": {
+                            "S3Key": {
+                              "Rules": [{ "Name": "prefix", "Value": "public/origins/" }]
+                            }
+                          }
                         }
                     ]
                 },

@@ -31,7 +31,7 @@ const ReservationIndexPage = () => {
     threshold: 1,
   });
 
-  const reservations = useMemo(() => data?.pages?.flat() || [], [data]);
+  const reservations = useMemo(() => data?.pages?.flat() || [], []);
 
   const reload = async (done = null) => {
     await refetch();
@@ -68,13 +68,13 @@ const ReservationIndexPage = () => {
             <Block>{(error as any).message}</Block>
           ) : (
             <>
-              {data && data.pages.flat().length > 0 ? (
+              {reservations && reservations.length !== 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      return <ReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                      return <ReservationPage reservation={reservation} refetch={refetch} key={reservation?.id} />;
                     }
-                    return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation.id} />;
+                    return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation?.id} />;
                   })}
                 </>
               ) : (

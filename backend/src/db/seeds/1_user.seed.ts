@@ -1,6 +1,7 @@
 import { Factory, Seeder } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
-import { Users as User, UserType } from '@users/users.entity';
+import { UsersEntity } from '@users/users.entity';
+import { UserType } from '@users/enum';
 // import * as AWS from 'aws-sdk';
 
 export default class CreateUsers implements Seeder {
@@ -36,7 +37,7 @@ export default class CreateUsers implements Seeder {
       '세종',
       '제주',
     ];
-    await factory(User)()
+    await factory(UsersEntity)()
       .map(async (user) => {
         user.email =
           userIndex < 100

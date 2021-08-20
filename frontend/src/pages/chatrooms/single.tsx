@@ -1,5 +1,6 @@
 import { createChatroom, createUserChatroom, getChatroom, getUser } from '@api';
-import { Chatroom, InfiniteAppSync, MessageType, PageRouteProps, User } from '@constants';
+import { InfiniteAppSync, PageRouteProps } from '@constants';
+import { Chatroom, MessageType, User } from '@interfaces';
 import useAuth from '@hooks/useAuth';
 
 import { API } from 'aws-amplify';
@@ -14,7 +15,7 @@ import { CreateMessageInput, CreateNotificationInput } from 'src/API';
 // import { createNotification } from '@graphql/mutations';
 import { createNotification, createMessage } from '../../graphql/mutations';
 // import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessagesSubscription } from '@appsync';
-import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessagesSubscription } from '../../common/appsync/index';
+import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessageSubscription } from '../../common/appsync/index';
 import SinglePresenter from './SinglePresenter';
 
 const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {

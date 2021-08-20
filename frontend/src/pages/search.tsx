@@ -105,8 +105,8 @@ const SearchPage = () => {
         setIsInfinite(true);
         await fetchNextPage();
         f7.dialog.close();
-      } catch (error) {
-        if (error.response?.data?.error?.message === 'empty data exist') {
+      } catch (err) {
+        if (err.response.data.error.message === 'empty data exist') {
           f7.dialog.close();
           showToast('경로를 모두 입력해주세요');
           return;
