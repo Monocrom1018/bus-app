@@ -47,8 +47,6 @@ const INITIAL_SIGN_UP_PARAMS: NormalSignUpParams = {
   email: '',
   password: '',
   password_confirmation: '',
-
-  // phone: '',
   termCheck: false,
   privacyCheck: false,
   marketingCheck: false,

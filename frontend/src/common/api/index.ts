@@ -100,6 +100,11 @@ export const createReservation = async (params) => {
   return data;
 };
 
+export const createSchedules = async (params) => {
+  const { data } = await API.post(`schedules/create`, params);
+  return data;
+};
+
 export const getReservations = async (email, page) => {
   const { data } = await API.get(`reservations?email=${email}&page=${page}`);
   return data;

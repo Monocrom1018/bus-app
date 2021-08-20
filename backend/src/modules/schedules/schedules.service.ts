@@ -2,10 +2,13 @@ import {
   Injectable,
   ConflictException,
   BadRequestException,
+  forwardRef,
+  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import qs from 'qs';
+import { ReservationsService } from '@reservations/reservations.service';
 import { SchedulesRepository } from './schedules.repository';
 
 @Injectable()
@@ -13,11 +16,20 @@ export class SchedulesService {
   constructor(
     @InjectRepository(SchedulesRepository)
     private schedulesRepository: SchedulesRepository,
+
+    @Inject(forwardRef(() => ReservationsService))
+    private reservationsService: ReservationsService,
   ) {}
 
   async create(scheduleCreateDto) {
+    const { reservationId } = scheduleCreateDto;
+    const reservation = await this.reservationsService.getListById(
+      reservationId,
+    );
+
     const data = await this.schedulesRepository.createSchedule(
       scheduleCreateDto,
+      reservation,
     );
     return data;
   }
@@ -26,13 +38,17 @@ export class SchedulesService {
     const { departure, destination, stopOvers } = params;
 
     let combinedGeoData = '';
+    let combinedStopOvers = [];
 
-    const combinedStopOvers = stopOvers ? stopOvers[0]?.region : [];
+    if (stopOvers && typeof stopOvers[0]?.region === 'object') {
+      combinedStopOvers = stopOvers[0].region;
+    } else if (stopOvers && typeof stopOvers[0]?.region === 'string') {
+      combinedStopOvers = [stopOvers[0].region];
+    }
 
     for (let i = 0; i < combinedStopOvers.length; i++) {
       if (combinedStopOvers[i] === '') {
-        console.log('ConflictException');
-        throw new ConflictException();
+        throw new BadRequestException('empty data exist');
       }
 
       // promise all로 변경할수 있을듯
@@ -89,19 +105,25 @@ export class SchedulesService {
       'Content-Type': 'application/x-www-form-urlencoded',
     };
 
-    const tmapApi = await axios.post(
-      'https://apis.openapi.sk.com/tmap/routes?version=1',
-      tmapBody,
-      { headers: tmapConfig },
-    );
+    try {
+      const tmapApi = await axios.post(
+        'https://apis.openapi.sk.com/tmap/routes?version=1',
+        tmapBody,
+        {
+          headers: tmapConfig,
+        },
+      );
 
-    const kmData = Math.round(
-      tmapApi.data.features[0].properties.totalDistance / 1000,
-    );
+      const kmData = Math.round(
+        tmapApi.data.features[0].properties.totalDistance / 1000,
+      );
 
-    console.log('kmData', kmData);
+      console.log(kmData);
 
-    return kmData;
+      return kmData;
+    } catch (err) {
+      throw new BadRequestException('over 1000km');
+    }
   }
 
   async getGeoData(param: any) {

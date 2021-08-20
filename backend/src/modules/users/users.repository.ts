@@ -24,6 +24,9 @@ export class UsersRepository extends Repository<UsersEntity> {
       director_name,
       director_email,
       director_phone,
+      termCheck,
+      privacyCheck,
+      marketingCheck,
     } = userCreateDto;
 
     const user = new UsersEntity();
@@ -32,6 +35,9 @@ export class UsersRepository extends Repository<UsersEntity> {
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
+    user.term_check = termCheck;
+    user.privacy_check = privacyCheck;
+    user.marketing_check = marketingCheck;
 
     if (user_type === 'DRIVER') {
       user.director_name = director_name || null;
@@ -211,6 +217,27 @@ export class UsersRepository extends Repository<UsersEntity> {
   ): Promise<UsersEntity[]> {
     const { departure } = schedule[0];
     const region = (departure as string).split(' ')[0];
+    let orderQuery = {};
+
+    switch (sortBy) {
+      case 'createdAtDesc':
+        orderQuery = { 'User.created_at': 'DESC' };
+        break;
+      case 'chargeAsc':
+        orderQuery = {
+          'User.basic_charge': 'ASC',
+          'User.charge_per_km': 'ASC',
+        };
+        break;
+      case 'peopleAsc':
+        orderQuery = { 'User.people_available': 'ASC' };
+        break;
+      case 'peopleDesc':
+        orderQuery = { 'User.people_available': 'DESC' };
+        break;
+      default:
+        orderQuery = { 'User.created_at': 'DESC' };
+    }
 
     const drivers = await this.createQueryBuilder('User')
       .where(`drivable_region @> ARRAY['${region}']`)
@@ -219,6 +246,7 @@ export class UsersRepository extends Repository<UsersEntity> {
           qb.where('user_type = :driver', { driver: 'driver' });
         }),
       )
+      .orderBy(orderQuery)
       .take(3)
       .skip(3 * (page - 1))
       .getMany();

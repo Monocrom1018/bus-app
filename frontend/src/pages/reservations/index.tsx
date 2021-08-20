@@ -30,7 +30,7 @@ const ReservationIndexPage = () => {
     threshold: 1,
   });
 
-  const reservations = useMemo(() => data?.pages?.flat() || [], []);
+  const reservations = useMemo(() => data?.pages?.flat() || [], [data]);
 
   const reload = async (done = null) => {
     await refetch();

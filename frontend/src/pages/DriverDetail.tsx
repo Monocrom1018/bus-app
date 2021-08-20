@@ -3,21 +3,32 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
+import { createSchedules, getOneDriver } from '../common/api/index';
 import moment from 'moment';
-import { getOneDriver, createReservation } from '../common/api/index';
+import { createReservation } from '../common/api/index';
+import ScheduleDisplay from '@components/schedule/scheduleDisplay';
+import ScheduleTimeDisplay from '@components/schedule/scheduleTimeDisplay';
+import { showToast } from '@js/utils';
+import Convenience from '@components/driver/convenience';
 
 const DriverDetailPage = ({ id, f7router }) => {
-  const { departureDate, departureTime, returnDate, returnTime, totalDistance, people } =
-    useRecoilValue(searchingOptionState);
-  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
+  const { totalDistance, people } = useRecoilValue(searchingOptionState);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const { departureDate, departureTime, returnDate, returnTime } = useRecoilValue(searchingOptionState);
   const [driver, setDriver] = useRecoilState(driverState);
   const [reservation, setReservation] = useRecoilState(reservationState);
+  const tourSchedule = useRecoilValue(tourScheduleState);
   const totalCharge = useRecoilValue(totalChargeState);
   const { currentUser } = useAuth();
 
   const handleSubmit = async () => {
     if (currentUser.card_registered === false) {
       f7.dialog.confirm('등록된 카드가 없습니다. 등록하시겠어요?', () => f7router.navigate('/users/card'));
+      return;
+    }
+
+    if (people === null) {
+      showToast('탑승인원을 입력해주세요');
       return;
     }
 
@@ -31,11 +42,14 @@ const DriverDetailPage = ({ id, f7router }) => {
         totalDistance,
         totalCharge,
         people: Number(people),
+        departureDate,
+        departureTime,
+        returnDate,
+        returnTime,
       };
 
-      const result = await createReservation(params);
-
-      // todo : 예약 생성됐으면 result.id랑 같이 스케쥴 생성하는 api요청 보내기
+      const reservationData = await createReservation(params);
+      await createSchedules({ reservationId: reservationData.id, tourSchedule });
 
       // setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
@@ -91,121 +105,32 @@ const DriverDetailPage = ({ id, f7router }) => {
 
       <hr />
 
-      {/* 편의시설 컴포넌트  ->  todo : 따로 빼서 import 받아오는걸로 수정 */}
-
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
       <div className="flex flex-col mb-10 mt-3">
-        <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-          <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div className="shadow overflow-hidden sm:rounded-lg">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      옵션
-                    </th>
-                    <th scope="col" className="py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      포함여부
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">손소독제</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.sanitizer === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">Wi-Fi</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.wifi === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">전좌석 USB포트</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.usb === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">냉장고</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.fridge === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">영화관람</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.movie === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="px-6 py-2 whitespace-nowrap text-sm font-medium text-gray-900">음향시설</td>
-                    <td className="text-center py-2 whitespace-nowrap text-sm text-gray-500">
-                      {driver.audio === true ? '포함' : '미포함'}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <Convenience driver={driver} />
       </div>
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
-
       <div className="flex flex-col -mt-6">
-        <List className="bg-gray-50">
-          <ListInput
-            label="가는날 및 탑승시간"
-            className="bg-gray-50"
-            disabled
-            value={
-              `${moment(departureDate).format('YYYY년 MM월 DD일')} ` +
-              `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`
-            }
-          />
-          <ListInput
-            label="오는날 및 탑승시간"
-            disabled
-            className="bg-gray-50"
-            value={
-              `${moment(returnDate).format('YYYY년 MM월 DD일')} ` +
-              `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`
-            }
-          />
-        </List>
-
-        {tourSchedule.map((schedule, index) => (
-          <List accordionList key={`${schedule.day}`} className="-mt-4">
-            <ListItem accordionItem title={schedule.day} accordionItemOpened>
-              <AccordionContent>
-                <div className="mt-2">
-                  <div className="flex px-4 mb-2">
-                    <div className="f7-icons text-base mr-1">arrow_right</div>
-                    <input className="pl-3 h-8 flex-1 rounded-lg bg-gray-50" value={schedule.departure} disabled />
-                  </div>
-                </div>
-                <div className="flex px-4 my-2">
-                  <div className="f7-icons text-base mr-1">arrow_left</div>
-                  <input className="pl-3 h-8 flex-1 rounded-lg bg-gray-50" value={schedule.destination} disabled />
-                </div>
-                {schedule.stopOvers &&
-                  schedule.stopOvers.map((stopOver) => (
-                    <div className="flex px-4 py-2" key={stopOver.id}>
-                      <div className="f7-icons text-base mr-1">placemark</div>
-                      <input className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50" value={stopOver?.region} disabled />
-                    </div>
-                  ))}
-              </AccordionContent>
-            </ListItem>
-          </List>
-        ))}
+        <ScheduleTimeDisplay
+          departureDate={departureDate}
+          departureTime={departureTime}
+          returnDate={returnDate}
+          returnTime={returnTime}
+        />
+        <ScheduleDisplay tourSchedule={tourSchedule} isOpen={true} />
       </div>
+
+      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
+      <List noHairlinesMd className="mt-3 pt-0">
+        <ListInput
+          type="text"
+          placeholder="탑승인원을 숫자만 입력해주세요"
+          clearButton
+          onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+          value={people}
+        />
+      </List>
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
       <List accordionList className="mt-3 pb-10">

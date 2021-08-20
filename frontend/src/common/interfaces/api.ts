@@ -37,3 +37,8 @@ export interface TossPaymentResultQuery {
   result: 'fail' | 'success';
   paymentKey: string;
 }
+export interface InfiniteObjects<T> {
+  next_cursor: number;
+  total_count: number;
+  objects: T[];
+}

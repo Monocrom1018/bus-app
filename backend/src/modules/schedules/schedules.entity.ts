@@ -20,7 +20,7 @@ export class SchedulesEntity extends DateAuditEntity {
   departure: string;
 
   @Column()
-  departure_date: Date;
+  day: string;
 
   @Column('text', {
     array: true,
@@ -30,12 +30,6 @@ export class SchedulesEntity extends DateAuditEntity {
 
   @Column()
   destination: string;
-
-  @Column()
-  return_date: Date;
-
-  @Column({ nullable: true })
-  landing: string;
 
   @Column()
   distance: number;
