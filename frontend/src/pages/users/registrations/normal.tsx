@@ -74,7 +74,7 @@ const NormalSignUpPage: React.FC = () => {
   // const [certComplete, setCertComplete] = useStat
 
   const onSubmitHandler = useCallback(
-    async (signUpParams: NormalSignUpParams, { setSubmitting }: FormikHelpers<NormalSignUpParams>) => {
+    async (signUpParams: NormalSignUpParams, { setSubmitting, setFieldValue}: FormikHelpers<NormalSignUpParams>) => {
       setSubmitting(true);
       f7.preloader.show();
       let cognitoUserSession: null | CognitoUser = null; // cognito 유저 생성 여부 실패 시 null
@@ -90,6 +90,12 @@ const NormalSignUpPage: React.FC = () => {
         });
       } catch (error) {
         message = error.message;
+        if(error.code === 'UsernameExistsException') {
+          setFieldValue('email', '')
+          setFieldValue('password', '')
+          setFieldValue('password_confirmation', '')
+          message = "이미 가입된 이메일 입니다"
+        }
         setSubmitting(false);
         f7.preloader.hide();
         f7.dialog.alert(message);

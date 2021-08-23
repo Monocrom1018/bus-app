@@ -44,6 +44,7 @@ AdminBro.registerAdapter({ Database, Resource });
     ReservationsModule,
     MonthsModule,
     SchedulesModule,
+    ImagesModule
   ],
 })
 export class AppModule {}
