@@ -169,8 +169,6 @@ export class UsersRepository extends Repository<UsersEntity> {
     try {
       user.basic_charge = basicCharge;
       user.basic_km = basicKm;
-      user.bus_old = busOld;
-      user.bus_type = busType;
       user.charge_per_km = chargePerKm;
       user.company_name = company;
       user.drivable_region = drivableRegion;
@@ -178,20 +176,22 @@ export class UsersRepository extends Repository<UsersEntity> {
       user.night_end = nightEnd;
       user.night_charge = nightCharge;
       user.service_charge = serviceCharge;
-      user.people_available = peopleAvailable;
       user.charge_per_day = chargePerDay;
-      user.bus_number = busNumber;
       user.introduce = introduce;
       user.peak_charge = peakCharge;
       user.peak_charge_per_km = peakChargePerKm;
-      user.sanitizer = sanitizer === 'true';
-      user.wifi = wifi === 'true';
-      user.movie = movie === 'true';
-      user.audio = audio === 'true';
-      user.usb = usb === 'true';
-      user.fridge = fridge === 'true';
       user.bank = bank;
       user.bank_account = bank_account;
+      // user.bus_old = busOld;
+      // user.bus_type = busType;
+      // user.people_available = peopleAvailable;
+      // user.bus_number = busNumber;
+      // user.sanitizer = sanitizer === true;
+      // user.wifi = wifi === true;
+      // user.movie = movie === true;
+      // user.audio = audio === true;
+      // user.usb = usb === true;
+      // user.fridge = fridge === true;
 
       user.save();
     } catch (err) {

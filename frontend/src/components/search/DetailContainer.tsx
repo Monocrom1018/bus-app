@@ -224,6 +224,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 placeholder="출발지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
               />
+              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('departure', '')}></span>
             </div>
             {searchResult('departure')}
           </div>
@@ -244,6 +245,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                     placeholder="경유지를 입력해주세요"
                     onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
                   />
+                  <span className="input-clear-button mr-6" onClick={() => setPostCode('', 'stopOvers', `${stopOver.id}`)}></span>
                 </div>
                 {searchResult('stopOvers', stopOver.id)}
               </div>
@@ -257,6 +259,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 placeholder="목적지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
               />
+              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('destination', '')}></span>
             </div>
             {searchResult('destination')}
           </div>
