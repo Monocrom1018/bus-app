@@ -18,6 +18,7 @@ import { PolymorphicChildren } from 'typeorm-polymorphic';
 import { MessagesEntity } from '@messages/messages.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { ImagesEntity } from '@images/images.entity';
+import { FilesEntity } from '@files/files.entity';
 import { UserType } from './enum';
 
 @Entity('users')
@@ -58,13 +59,13 @@ export class UsersEntity extends DateAuditEntity {
   @Column({ nullable: true })
   uuid: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   term_check: boolean;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   privacy_check: boolean;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   marketing_check: boolean;
 
   @Column('text', {
@@ -169,6 +170,10 @@ export class UsersEntity extends DateAuditEntity {
   @OneToOne((type) => ImagesEntity, (profile) => profile.user)
   @JoinColumn({ name: 'image_id' })
   profile: ImagesEntity;
+
+  @OneToMany(() => FilesEntity, (file) => file.user)
+  @JoinColumn({ name: 'file_id' })
+  files: FilesEntity[];
 
   @OneToMany((type) => MessagesEntity, (message) => message.user)
   messages: MessagesEntity[];

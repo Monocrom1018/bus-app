@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsBoolean,
   IsNumber,
+  IsArray,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -65,4 +66,9 @@ export class UserCreateDto {
   @IsBoolean()
   @ApiProperty()
   marketingCheck;
+
+  @IsOptional()
+  @IsArray()
+  @ApiProperty()
+  files: Array<any>;
 }

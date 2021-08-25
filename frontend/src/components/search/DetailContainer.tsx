@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react';
 import { PointDetail, StopOver } from '@interfaces';
 import { useRecoilState } from 'recoil';
 import { tourScheduleState } from '@atoms';
+import { IoCloseCircle } from 'react-icons/io5';
 
 const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
   const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
@@ -12,6 +13,10 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
   const [pointList, setPointList] = useState({});
   const [accordionOpened, setAccordionOpened] = useState(true);
   const stopOverCount = useRef(1);
+  const [focused, setFocused] = useState(false);
+  const onFocus = () => setFocused(true);
+  const onBlur = () => setFocused(false);
+
   const maxStopOverLength = 5;
   let searchTarget: string;
   let stopOverId: number | string;
@@ -68,51 +73,55 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
   };
 
   const setScheduleByType = (type: string, value: string) => {
-    if (type === 'departure') {
-      setTourSchedule(
-        tourSchedule.map((schedule) => {
-          if (schedule.day === currentDate) {
-            return {
-              ...schedule,
-              ...{
-                [`${type}`]: value,
-              },
-            };
-          }
-          if (schedule.day === previousDate) {
-            return {
-              ...schedule,
-              ...{
-                [`destination`]: value,
-              },
-            };
-          }
-          return schedule;
-        }),
-      );
-    }
-    if (type === 'destination') {
-      setTourSchedule(
-        tourSchedule.map((schedule) => {
-          if (schedule.day === currentDate) {
-            return {
-              ...schedule,
-              ...{
-                [`${type}`]: value,
-              },
-            };
-          }
-          if (schedule.day === nextDate) {
-            return {
-              ...schedule,
-              ...{
-                [`departure`]: value,
-              },
-            };
-          }
-          return schedule;
-        }),
-      );
+    switch (type) {
+      case 'departure':
+        setTourSchedule(
+          tourSchedule.map((schedule) => {
+            if (schedule.day === currentDate) {
+              return {
+                ...schedule,
+                ...{
+                  [`${type}`]: value,
+                },
+              };
+            }
+            if (schedule.day === previousDate) {
+              return {
+                ...schedule,
+                ...{
+                  [`destination`]: value,
+                },
+              };
+            }
+            return schedule;
+          }),
+        );
+        break;
+      case 'destination':
+        setTourSchedule(
+          tourSchedule.map((schedule) => {
+            if (schedule.day === currentDate) {
+              return {
+                ...schedule,
+                ...{
+                  [`${type}`]: value,
+                },
+              };
+            }
+            if (schedule.day === nextDate) {
+              return {
+                ...schedule,
+                ...{
+                  [`departure`]: value,
+                },
+              };
+            }
+            return schedule;
+          }),
+        );
+        break;
+      default:
+        break;
     }
   };
 
@@ -177,19 +186,31 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
     setScheduleByType(type, value);
     searchTarget = type;
     stopOverId = id;
-    searchPlaces(value, placesSearchCallBack);
+
+    if (!value) {
+      setTimeout(() => setPointList({}), 300);
+    } else {
+      searchPlaces(value, placesSearchCallBack);
+    }
   };
 
   const searchResult = (type: string, id = null) => (
-    <div className="z-50 absolute left-0 buttom-0 right-0 top-7 bg-white w-auto mx-4 rounded-lg">
-      {pointList[id || type] &&
+    <div className="z-50 absolute left-0 buttom-0 right-0 top-12 bg-white w-auto mx-4 rounded-lg">
+      {focused && pointList[id || type] && (
+        <div className="image-slide-delete-btn absolute top-2 right-4" onClick={() => setFocused(false)}>
+          <IoCloseCircle size="20px" />
+        </div>
+      )}
+      {focused &&
+        pointList[id || type] &&
         pointList[id || type].map((point: PointDetail) => (
           <div className="mt-3" key={point.id}>
             <a
               className="font-medium pl-3"
-              onClick={() =>
-                departureSelect(point.road_address_name || `${point.address_name} ${point.place_name}`, type, id)
-              }
+              onClick={() => {
+                departureSelect(point.road_address_name || `${point.address_name} ${point.place_name}`, type, id);
+                setFocused(true);
+              }}
             >
               {point.road_address_name || point.place_name}
             </a>
@@ -208,6 +229,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
         }}
         onAccordionClose={() => {
           setAccordionOpened(false);
+          setFocused(false);
         }}
         id={`accordion-item-${index}`}
       >
@@ -223,6 +245,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 value={departure || ''}
                 placeholder="출발지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
+                onFocus={onFocus}
               />
             </div>
             {searchResult('departure')}
@@ -243,6 +266,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                     value={stopOver?.region || ''}
                     placeholder="경유지를 입력해주세요"
                     onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
+                    onFocus={onFocus}
                   />
                 </div>
                 {searchResult('stopOvers', stopOver.id)}
@@ -256,6 +280,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 value={destination || ''}
                 placeholder="목적지를 검색해주세요"
                 onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
+                onFocus={onFocus}
               />
             </div>
             {searchResult('destination')}

@@ -12,10 +12,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from 'react-query';
 import { CreateMessageInput, CreateNotificationInput } from 'src/API';
-// import { createNotification } from '@graphql/mutations';
-import { createNotification, createMessage } from '../../graphql/mutations';
-// import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessagesSubscription } from '@appsync';
-import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessageSubscription } from '../../common/appsync/index';
+
+import { createMessage, createNotification } from '@graphql/mutations';
+import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessageSubscription } from '@appsync';
+
 import SinglePresenter from './SinglePresenter';
 
 const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
@@ -33,9 +33,17 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
   const queryClient = useQueryClient();
   const { currentUser } = useAuth();
   const [opUser, setOpUser] = useState<User | null>(null);
-  const { data: chatroom } = useQuery<Chatroom, Error>(`chatroom-${room_id}`, getChatroom(room_id), {
-    enabled: !!room_id && room_id !== 'new',
-  });
+  // const { data: chatroom } = useQuery<Chatroom, Error>(`chatroom-${room_id}`, getChatroom(room_id), {
+  //   enabled: !!room_id && room_id !== 'new',
+  // });
+  const chatroom = {
+    name: 'a',
+    users: [
+      { id: 573, name: '573유저', uuid: '4c50278c-65cd-490c-b83c-0fe33d99564c' },
+      { id: 584, email: 'normal11@bus.com', name: '584유저', uuid: '35ad6959-d7d9-42f8-bb33-4b472dc824fc' },
+    ],
+    room_type: 'single',
+  };
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
   });
@@ -49,7 +57,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
         setOpUser(() => user);
       })();
     }
-  }, [chatroom]);
+  }, []); // ]);
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
     InfiniteAppSync<MessageType>,
@@ -111,10 +119,10 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
       messagebar.current = f7.messagebar.get(`.messagebar-${room_id}`);
       if (newChat) messagebar.current.focus();
     });
-    const subscription = onCreateMessagesSubscription().subscribe({
+    const subscription = onCreateMessageSubscription().subscribe({
       next: ({ value }) => {
         const message: MessageType = value.data.onCreateMessage;
-        if (message.room_id === room_id && currentUser.introduce.toString() !== message.user_id) {
+        if (message.room_id === room_id && currentUser.id.toString() !== message.user_id) {
           refetch();
         }
       },

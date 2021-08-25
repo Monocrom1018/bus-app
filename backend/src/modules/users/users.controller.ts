@@ -26,14 +26,14 @@ export class UsersController {
     status: 200,
     description: 'create User success',
   })
-  @UseInterceptors(FileInterceptor('file'))
   async signUp(@Body() userCreateDto: UserCreateDto) {
+    console.log(userCreateDto);
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
 
   @ApiOperation({ summary: '유저정보 변경' })
-  @Post('update')
+  @Post('/update')
   @ApiResponse({
     status: 200,
     description: 'update User success',

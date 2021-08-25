@@ -2,12 +2,7 @@ import { Router } from 'framework7/types';
 import { User } from './schema';
 
 export interface CurrentUserType {
-  isCoach: boolean;
-  isExpert: boolean;
-  isNormal: boolean;
-  isAdmin: boolean;
-  isNonCurrentUser: boolean;
-  isProUser: boolean;
+  isDriver: boolean;
   isUser: boolean;
 }
 

@@ -9,6 +9,7 @@ import { join } from 'path';
 import { STATIC } from '@environments';
 import { AuthModule } from '@auth/auth.module';
 import { SchedulesModule } from '@schedules/schedules.module';
+import { FilesModule } from '@files/files.module';
 import { UsersModule } from './modules/users/users.module';
 import { NoticesModule } from './modules/notices/notices.module';
 import { LikesModule } from './modules/likes/likes.module';
@@ -44,7 +45,7 @@ AdminBro.registerAdapter({ Database, Resource });
     ReservationsModule,
     MonthsModule,
     SchedulesModule,
-    ImagesModule
+    FilesModule,
   ],
 })
 export class AppModule {}

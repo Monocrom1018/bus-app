@@ -67,6 +67,11 @@ const resourceRoutes: ResourceRoute[] = [
   {
     resource: 'driverlists',
   },
+  {
+    resource: 'chatrooms',
+    only: ['index', 'show'],
+    member: ['single'],
+  },
 ];
 
 /**

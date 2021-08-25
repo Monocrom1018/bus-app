@@ -20,9 +20,9 @@ const reduceRoute = (resource: string, routeArray: Array<string>, member: boolea
 const mapResourceRoute = (_resource: ResourceRoute): Route[] => {
   const { resource, collection = [], member = [], only = DEFAULT_ACTIONS } = _resource;
   const [onlyRoutes, collectionRoutes, memberRoutes] = [
-    reduceRoute(resource, only, null),
     reduceRoute(resource, collection, false),
     reduceRoute(resource, member, true),
+    reduceRoute(resource, only, null),
   ];
 
   return [...onlyRoutes, ...collectionRoutes, ...memberRoutes];
