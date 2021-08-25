@@ -41,7 +41,7 @@ export default class CreateUsers implements Seeder {
 
     const booleanBox = [true, false];
 
-    await factory(UsersEntity)()
+    const users = await factory(UsersEntity)()
       .map(async (user) => {
         user.id = userIndex
         user.email =
@@ -96,7 +96,34 @@ export default class CreateUsers implements Seeder {
           user.peak_charge = 600000;
           user.peak_charge_per_km = 1700;
         }
-        
+
+        // map
+        const userSub = await Promise.resolve().then(() => {
+          const uuid = '123asd123asd123qwe';
+          // client.signUp(
+          //   {
+          //     ClientId: 'dnylzvu9n5i1d7kxrroybibv0',
+          //     Username: `${user.email}`,
+          //     Password: '123qwe!',
+          //     UserAttributes: [{ Name: 'email', Value: `${user.email}` }],
+          //   },
+          //   (err, data) => {
+          //     if (err) {
+          //       console.log(err);
+          //     } else {
+          //       console.log(data);
+          //       uuid = data.UserSub;
+          //     }
+          //   },
+          // );
+          return uuid;
+        });
+
+        return user;
+      })
+      .createMany(300);
+
+      for(let i = 0; i < users.length; i ++) {
         const bus = await factory(BusesEntity)().map(async (bus) => {
           if (userIndex < 100) {
             bus.people_available = 20;
@@ -125,37 +152,11 @@ export default class CreateUsers implements Seeder {
           bus.fridge = booleanBox[Math.floor(Math.random() *2)];
           bus.movie = booleanBox[Math.floor(Math.random() *2)];
           bus.audio = booleanBox[Math.floor(Math.random() *2)];
-          bus.user = user;
-
+          bus.user = users[i];
           return bus
         }).create()
-
-        user.bus = bus;
-
-        // map
-        const userSub = await Promise.resolve().then(() => {
-          const uuid = '123asd123asd123qwe';
-          // client.signUp(
-          //   {
-          //     ClientId: 'dnylzvu9n5i1d7kxrroybibv0',
-          //     Username: `${user.email}`,
-          //     Password: '123qwe!',
-          //     UserAttributes: [{ Name: 'email', Value: `${user.email}` }],
-          //   },
-          //   (err, data) => {
-          //     if (err) {
-          //       console.log(err);
-          //     } else {
-          //       console.log(data);
-          //       uuid = data.UserSub;
-          //     }
-          //   },
-          // );
-          return uuid;
-        });
-
-        return user;
-      })
-      .createMany(300);
+        users[i].bus = bus
+        users[i].save();
+      }
   }
 }
