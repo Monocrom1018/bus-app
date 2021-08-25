@@ -1,4 +1,4 @@
-import { UserType, SignUpParams } from '@constants';
+import { UserType } from '@constants';
 import React from 'react';
 
 export * from './api';
@@ -14,7 +14,6 @@ export interface Token {
 }
 
 export interface AuthState extends Token {
-  // isLoading: boolean;
   currentUser: any; // TODO currentUser 인터페이스화
 }
 
@@ -96,7 +95,6 @@ export interface Address {
 
 export interface InfiniteObjects<T> {
   next_cursor: number;
-  total_count: number;
   objects: T[];
 }
 
@@ -111,8 +109,6 @@ export interface Reservation {
   accompany: string;
   price: number;
   status: string;
-  // user: Users;
-  // driver: User;
 }
 
 export interface PointDetail {
@@ -154,3 +150,17 @@ export interface SignUpParams {
   email: string;
   password: string;
 }
+
+export type CognitoErrorCode =
+  | 'UsernameExistsException'
+  | 'UserNotConfirmedException'
+  | 'UserNotFoundException'
+  | 'CodeMismatchException';
+
+export interface CognitoAuthError {
+  code: CognitoErrorCode;
+  message: string;
+  name: string;
+}
+
+export type I18NextCognitoErrorResult = { [key in CognitoErrorCode]: string };

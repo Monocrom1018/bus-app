@@ -15,7 +15,7 @@ const AgreeCheckboxes = ({ names }: AgreeCheckBoxProps) => {
     names.map(async (name) => {
       await setFieldValue(name, true);
       await validateField(name);
-    })
+    });
   };
 
   return (

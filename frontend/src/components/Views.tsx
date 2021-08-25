@@ -4,6 +4,10 @@ import CustomPanel from '@components/shared/CustomPanel';
 import useAuth from '@hooks/useAuth';
 import LandingPage from '@pages/landing';
 import { Auth } from '@aws-amplify/auth';
+import { onNotificationCreateRecevier } from '@graphql/subscriptions';
+import { API, graphqlOperation } from 'aws-amplify';
+import { innerNotification } from '@utils';
+import { Observable } from 'zen-observable-ts';
 import Footer from './shared/Footer';
 
 const F7Views = () => {
@@ -99,11 +103,22 @@ const F7Views = () => {
   };
 
   // ? useAuth 에서 로그인, 로그아웃 될때마다 얘는 계속 호출됨
+  // const getCognitoUserSession = useCallback(async () => {
+  //   try {
+  //     const cognitoUser = await Auth.currentAuthenticatedUser();
+  //     await authenticateUser(cognitoUser);
+  //   } catch (erorr) {
+  //     unAuthenticateUser();
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [authenticateUser, unAuthenticateUser]);
+
   const getCognitoUserSession = useCallback(async () => {
     try {
       const cognitoUser = await Auth.currentAuthenticatedUser();
       await authenticateUser(cognitoUser);
-    } catch (erorr) {
+    } catch (error) {
       unAuthenticateUser();
     } finally {
       setIsLoading(false);
@@ -112,7 +127,29 @@ const F7Views = () => {
 
   useEffect(() => {
     getCognitoUserSession();
-  }, [getCognitoUserSession]);
+  }, []);
+
+  useEffect(() => {
+    if (currentUser.isAuthenticated) {
+      const subscription = (
+        API.graphql(
+          graphqlOperation(onNotificationCreateRecevier, { receiver_id: currentUser.uuid }),
+        ) as Observable<any>
+      ).subscribe({
+        next: (msg: any) => {
+          const notification = msg.value.data.onNotificationCreateRecevier;
+          if (notification?.receiver_id !== currentUser.uuid) return;
+          innerNotification(notification);
+        },
+      });
+      return () => subscription.unsubscribe();
+    }
+    return () => {};
+  }, [currentUser]);
+
+  // useEffect(() => {
+  //   getCognitoUserSession();
+  // }, [getCognitoUserSession]);
 
   if (isLoading) return <LandingPage />;
 

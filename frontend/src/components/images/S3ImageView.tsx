@@ -1,6 +1,7 @@
 import { Storage } from 'aws-amplify';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import defaultImg from '@assets/images/profile.png';
 
 interface S3ImageViewProps {
   imageKey?: string;
@@ -52,13 +53,7 @@ const S3ImageView: React.FC<S3ImageViewProps> = ({
 
   const renderImage = useCallback(() => {
     if (!imageKey)
-      return (
-        <img
-          src="/assets/img/placeholder.png"
-          alt="me"
-          className={`object-fill w-full h-full ${placeHolderClassName}`}
-        />
-      );
+      return <img src={defaultImg} alt="me" className={`object-fill w-full h-full ${placeHolderClassName}`} />;
     if (isLazyLoad) return <img ref={imageRef} data-src={preSignedUrl} className="lazy lazy-fade-in" alt="" />;
     return <img src={preSignedUrl} alt="" className="object-fill w-full h-full" />;
   }, [imageKey, isLazyLoad, preSignedUrl]);

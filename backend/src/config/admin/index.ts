@@ -4,6 +4,7 @@ import { NoticesEntity } from '@notices/notices.entity';
 import { FaqsEntity } from '@faqs/faqs.entity';
 import { ReservationsEntity } from '@reservations/reservations.entity';
 import { MonthsEntity } from '@months/months.entity';
+import { ImagesEntity } from '@images/images.entity';
 
 export const adminOptions = {
   adminBroOptions: {
@@ -13,6 +14,7 @@ export const adminOptions = {
       AdminUsersEntity,
       NoticesEntity,
       FaqsEntity,
+      ImagesEntity,
       ReservationsEntity,
       {
         resource: MonthsEntity,

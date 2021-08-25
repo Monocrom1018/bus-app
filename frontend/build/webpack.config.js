@@ -34,6 +34,8 @@ module.exports = {
     fallback: { crypto: false },
     extensions: ['.js', '.jsx', '.ts', '.tsx', 'less', '.json', '.mjs'],
     alias: {
+      '@appsync': resolvePath('src/common/appsync/'),
+      '@graphql': resolvePath('src/graphql/'),
       '@utils': resolvePath('src/common/utils/'),
       '@components': resolvePath('src/components/'),
       '@styles': resolvePath('src/assets/styles/'),
@@ -44,7 +46,9 @@ module.exports = {
       '@config': resolvePath('src/common/config/'),
       '@routes': resolvePath('src/common/routes/'),
       '@constants': resolvePath('src/common/constants/'),
+      '@interfaces': resolvePath('src/common/interfaces/'),
       '@pages': resolvePath('src/pages/'),
+      '@assets': resolvePath('src/assets/'),
       '@store': resolvePath('src/common/store/'),
       '@js': resolvePath('src/js/'),
     },

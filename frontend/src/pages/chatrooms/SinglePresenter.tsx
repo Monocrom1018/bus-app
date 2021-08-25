@@ -132,7 +132,7 @@ const SinglePresenter = ({
               )}
               <Message
                 key={message.id}
-                iamge={message.image}
+                image={message.image}
                 {...getMessageParameters({
                   message,
                   previousMessage,
@@ -140,7 +140,7 @@ const SinglePresenter = ({
                   users: chatroom.users,
                   currentUserId: currentUser.id,
                 })}
-                ret={isPrevPageLastMessage ? lastMessageRef : null}
+                ref={isPrevPageLastMessage ? lastMessageRef : null}
               >
                 {message.text && <span slot="text">{sanitizeHtml(message.text)}</span>}
                 <div slot="end" className="mx-1 text-gray-400 text-xs">

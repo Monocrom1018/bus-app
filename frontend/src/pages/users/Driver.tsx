@@ -1,4 +1,4 @@
-import { Card, List, ListItem } from 'framework7-react';
+import { Button, Card, Link, List, ListItem } from 'framework7-react';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import { totalChargeState } from '@atoms';
@@ -20,6 +20,9 @@ const Driver = (props) => {
         >
           <img slot="media" src={profile} width="80" alt="profile" />
         </ListItem>
+        <Link className="button" href={`/chatroooms/a123/single?user_id=${id}`}>
+          메시지
+        </Link>
       </List>
     </Card>
   );
