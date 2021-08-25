@@ -247,8 +247,8 @@ export class UsersRepository extends Repository<UsersEntity> {
         }),
       )
       .orderBy(orderQuery)
-      .take(3)
-      .skip(3 * (page - 1))
+      .take(5)
+      .skip(5 * (page - 1))
       .getMany();
 
     return drivers;

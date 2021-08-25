@@ -25,6 +25,7 @@
       "@faqs/*": ["src/modules/faqs/*"],
       "@follows/*": ["src/modules/follows/*"],
       "@filters/*": ["src/common/filters/*"],
+      "@files/*": ["src/modules/files/*"],
       "@guards/*": ["src/common/guards/*"],
       "@interfaces/*": ["src/common/interfaces/*"],
       "@images/*": ["src/modules/images/*"],
