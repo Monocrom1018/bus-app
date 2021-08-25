@@ -1,4 +1,4 @@
-import { User } from '@constants';
+import { User } from '@interfaces';
 import { find } from 'lodash';
 import moment from 'moment';
 // import profile from '@assets/images/profile.png';

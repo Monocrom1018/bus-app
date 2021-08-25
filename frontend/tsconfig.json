@@ -14,12 +14,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react",
+    "jsx": "preserve",
     "paths": {
       "@assets/": ["src/assets/*"],
-      "@utils/*": ["src/common/utils/*"],
-      "@utils": ["src/common/utils/index"],
-      "@components/*": ["src/components/*"],
       "@styles/*": ["src/assets/styles/*"],
       "@hooks/*": ["src/common/hooks/*"],
       "@atoms": ["src/common/atoms/index"],
@@ -34,7 +31,10 @@
       "@store": ["src/common/store/index"],
       "@selectors": ["src/common/selectors/index"],
       "@interfaces": ["src/common/interfaces/index"],
-      "crypto": ["node_modules/crypto-js"]
+      "crypto": ["node_modules/crypto-js"],
+      "@components/*": ["src/components/*"],
+      "@utils": ["src/common/utils/index"],
+      "@utils/*": ["src/common/utils/*"],
     }
   },
   "include": ["src/**/*"],

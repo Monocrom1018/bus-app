@@ -13,12 +13,12 @@ import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import ListPreloader from '@components/shared/ListPreloader';
-import { CurrentUser, InfiniteObjects } from '@interfaces';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
   const allowInfinite = useRef(true);
+  const sortBy = useRef('createdAtDesc');
   const queryClient = useQueryClient();
   const [isInfinite, setIsInfinite] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
@@ -31,31 +31,27 @@ const SearchPage = () => {
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
   });
-  let sortBy = 'createdAtDesc';
 
   useEffect(() => {
     KakaoPlaceRef.current = new (window as any).kakao.maps.services.Places();
   }, []);
 
-  // const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery<
-  //   InfiniteObjects<CurrentUser>
-  // >(
-  const { data, isLoading, isError, error, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
+  const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['drivers'],
     async ({ pageParam: page = 1 }) => {
-      console.log(hasNextPage, isInfinite, page);
-      const response = await getDrivers({ ...searchingOption, schedule: latestTourSchedule.current }, page, sortBy);
-      return response.data || [];
+      const response = await getDrivers(
+        { ...searchingOption, schedule: latestTourSchedule.current },
+        page,
+        sortBy.current,
+      );
+      return response.data;
     },
     {
       enabled: isInfinite,
-      getNextPageParam: (lastPage, pages) => pages.length + 1,
-      // getNextPageParam: (lastPage) => lastPage.next_cursor,
+      getNextPageParam: (lastPage, pages) => (pages[pages?.length - 1]?.length !== 0 ? pages.length + 1 : false),
     },
   );
-  // let drivers = useMemo(() => data?.pages?.flat(), [data]);
-  const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
-  // data?.pages.flatMap((v) => v.objects) || [];
+  const drivers = useMemo(() => data?.pages?.flat() || '', [data]);
   const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {
@@ -66,7 +62,6 @@ const SearchPage = () => {
   }, [fetchNextPage]);
 
   useEffect(() => {
-    console.log(isTargetInView, allowInfinite.current);
     if (!isTargetInView || !allowInfinite.current) return;
     fetchNextPageAsync();
   }, [isTargetInView, fetchNextPageAsync]);
@@ -82,7 +77,7 @@ const SearchPage = () => {
   };
 
   const sortDrivers = async (value) => {
-    sortBy = value;
+    sortBy.current = value;
     queryClient.removeQueries(['drivers']);
     await refetch();
     allowInfinite.current = true;
@@ -171,12 +166,12 @@ const SearchPage = () => {
         />
       ))}
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
-      {!!data && isDriverPresent && isInfinite && (
+      {drivers && drivers?.length !== 0 && (
         <div ref={targetRef}>
           <div className="flex justify-between">
             <Input
               type="select"
-              defaultValue={sortBy}
+              defaultValue={sortBy.current}
               className="w-28 mx-4 px-1 border-b-2 border-red-400"
               onChange={(e) => sortDrivers(e.target.value)}
             >
@@ -193,7 +188,7 @@ const SearchPage = () => {
           </div>
         </div>
       )}
-      {allowInfinite.current && !!data && !isDriverPresent && (
+      {drivers && drivers?.length === 0 && !isDriverPresent && (
         <div className="text-center">
           <i className="f7-icons text-6xl text-gray-400 -mt-10">exclamationmark_bubble</i>
           <div className="text-xl text-gray-400 mt-4 tracking-wide">검색 결과가 없습니다</div>

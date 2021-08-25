@@ -9,6 +9,9 @@ import { Auth } from 'aws-amplify';
 import i18next from 'i18next';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
+import S3MultiFilePicker from '@components/files/S3MultiFilePicker';
+import { IoCloseCircleSharp } from 'react-icons/io5';
+import { MainPlaceHolder } from '@components/images';
 
 interface DriverSignUpParams {
   user_type: string;
@@ -22,10 +25,10 @@ interface DriverSignUpParams {
   password_confirmation: string;
   driver_license: File;
   deductible_confirmation: File;
-  // phone: string;
   termCheck: boolean;
   privacyCheck: boolean;
   marketingCheck: boolean;
+  files: Array<any>;
 }
 
 const SignUpSchema = Yup.object().shape({
@@ -42,10 +45,6 @@ const SignUpSchema = Yup.object().shape({
       is: (val: string) => val && val.length > 0,
       then: Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요'),
     }),
-  // phone: Yup.string()
-  //   .min(9, '길이가 너무 짧습니다')
-  //   .max(15, '길이가 너무 깁니다')
-  //   .required('휴대폰 번호를 인증해주세요'),
   termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
   privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
   marketingCheck: Yup.boolean(),
@@ -61,12 +60,12 @@ const INITIAL_SIGN_UP_PARAMS: DriverSignUpParams = {
   email: '',
   password: '',
   password_confirmation: '',
-  // phone: '',
   termCheck: false,
   privacyCheck: false,
   marketingCheck: false,
   driver_license: null,
   deductible_confirmation: null,
+  files: [],
 };
 
 type AmplifySignUp = (param: DriverSignUpParams) => Promise<ISignUpResult>;
@@ -268,7 +267,21 @@ const DriverSignUpPage: React.FC = () => {
               </List>
               <List noHairlinesMd>
                 <div className="p-3 font-semibold bg-white">사업자 등록증(인증절차에만 사용됩니다)</div>
-                <input className="p-3" type="file" name="certification1Upload" />
+                <S3MultiFilePicker
+                  isMultiple={false}
+                  initialData={undefined}
+                  placeholderComponent={<MainPlaceHolder maxCount={1} />}
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+                  removeFileHandler={(key, removedS3File) => {
+                    if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
+                  }}
+                  addFileHandler={(v: any) => {
+                    // 이미지 컬럼 변경 후 여기도 변경해야함
+                    console.log(v);
+                    setFieldValue('file_contents', v[0]);
+                  }}
+                />
               </List>
               <List noHairlinesMd>
                 <div className="p-3 font-semibold bg-white">
@@ -276,32 +289,76 @@ const DriverSignUpPage: React.FC = () => {
                   <br />
                   (인증절차에만 사용됩니다)
                 </div>
-                <input className="p-3" type="file" name="certification2Upload" />
+                <S3MultiFilePicker
+                  isMultiple={false}
+                  initialData={undefined}
+                  placeholderComponent={<MainPlaceHolder maxCount={1} />}
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+                  removeFileHandler={(key, removedS3File) => {
+                    if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
+                  }}
+                  addFileHandler={(v: any) => {
+                    // 이미지 컬럼 변경 후 여기도 변경해야함
+                    console.log(v);
+                    setFieldValue('file_contents', v[0]);
+                  }}
+                />
               </List>
             </>
           ) : null}
 
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>
-            <input
+            <S3MultiFilePicker
+              isMultiple={false}
+              initialData={undefined}
+              placeholderComponent={<MainPlaceHolder maxCount={1} />}
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+              removeFileHandler={(key, removedS3File) => {
+                if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
+              }}
+              addFileHandler={(v: any) => {
+                // 이미지 컬럼 변경 후 여기도 변경해야함
+                console.log(v);
+                setFieldValue('files[0]', v);
+              }}
+            />
+            {/* <input
               className="p-3"
               type="file"
               name="driver_license"
               onChange={(event) => {
                 setFieldValue('driver_license', event.currentTarget.files[0]);
               }}
-            />
+            /> */}
           </List>
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
-            <input
+            <S3MultiFilePicker
+              isMultiple={false}
+              initialData={undefined}
+              placeholderComponent={<MainPlaceHolder maxCount={1} />}
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+              removeFileHandler={(key, removedS3File) => {
+                if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
+              }}
+              addFileHandler={(v: any) => {
+                // 이미지 컬럼 변경 후 여기도 변경해야함
+                console.log(v);
+                setFieldValue('files[1]', v);
+              }}
+            />
+            {/* <input
               className="p-3"
               type="file"
               name="deductible_confirmation"
               onChange={(event) => {
                 setFieldValue('deductible_confirmation', event.currentTarget.files[0]);
               }}
-            />
+            /> */}
           </List>
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />
@@ -323,3 +380,6 @@ const DriverSignUpPage: React.FC = () => {
 };
 
 export default React.memo(DriverSignUpPage);
+function setRemovedIds(arg0: (prev: any) => any[]) {
+  throw new Error('Function not implemented.');
+}

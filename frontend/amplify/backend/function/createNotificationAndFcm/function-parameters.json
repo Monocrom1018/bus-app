@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "auth": {
+      "backpackbusdevfe582237": [
+        "read"
+      ]
+    },
+    "api": {
+      "backpackbusdev": [
+        "Mutation"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
