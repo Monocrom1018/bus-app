@@ -91,7 +91,7 @@ const DriverSignUpPage: React.FC = () => {
   // const [certComplete, setCertComplete] = useStat
 
   const onSubmitHandler = useCallback(
-    async (signUpParams: DriverSignUpParams, { setSubmitting }: FormikHelpers<DriverSignUpParams>) => {
+    async (signUpParams: DriverSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<DriverSignUpParams>) => {
       setSubmitting(true);
       f7.preloader.show();
       let cognitoUserSession: null | CognitoUser = null; // cognito 유저 생성 여부 실패 시 null
@@ -107,6 +107,12 @@ const DriverSignUpPage: React.FC = () => {
         });
       } catch (error) {
         message = error.message;
+        if(error.code === 'UsernameExistsException') {
+          setFieldValue('email', '')
+          setFieldValue('password', '')
+          setFieldValue('password_confirmation', '')
+          message = "이미 가입된 이메일 입니다"
+        }
         setSubmitting(false);
         f7.preloader.hide();
         f7.dialog.alert(message);

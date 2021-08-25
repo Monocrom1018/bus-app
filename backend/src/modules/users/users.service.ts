@@ -163,14 +163,6 @@ export class UsersService {
     return user;
   }
 
-  async getInformation(): Promise<UsersEntity> {
-    const user = await this.usersRepository.findOne({
-      email: 'test01@bus.com',
-    });
-
-    return user;
-  }
-
   async getDrivers(
     driverSearchDto: DriverSearchDto,
     page: number,

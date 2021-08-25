@@ -24,6 +24,8 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     }
 
     const reservation = new ReservationsEntity();
+    
+    try {
     reservation.user = userId;
     reservation.driver = driverId;
     reservation.total_price = totalCharge;
@@ -35,6 +37,9 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservation.returnTime = returnTime,
     reservation.status = '수락대기중'
     await ReservationsEntity.save(reservation);
+    } catch (err) {
+      throw new ConflictException("예약이 전달되지 않았습니다. 다시 시도해주세요")
+    }
 
     return reservation;
   }
