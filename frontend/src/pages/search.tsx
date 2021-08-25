@@ -13,7 +13,6 @@ import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import ListPreloader from '@components/shared/ListPreloader';
-import { CurrentUser, InfiniteObjects } from '@interfaces';
 import Driver from './users/Driver';
 
 const SearchPage = () => {
@@ -50,12 +49,9 @@ const SearchPage = () => {
     {
       enabled: isInfinite,
       getNextPageParam: (lastPage, pages) => pages.length + 1,
-      // getNextPageParam: (lastPage) => lastPage.next_cursor,
     },
   );
-  // let drivers = useMemo(() => data?.pages?.flat(), [data]);
   const drivers = useMemo(() => data?.pages?.flat() || [], [data]);
-  // data?.pages.flatMap((v) => v.objects) || [];
   const isDriverPresent: boolean = !!hasNextPage && !isLoading && data.pages.flat().length !== 0;
 
   const fetchNextPageAsync = useCallback(async () => {

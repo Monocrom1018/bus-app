@@ -4,4 +4,5 @@
     "source.organizeImports": false
   }, 
   "editor.formatOnSave": false,
+  "search.useIgnoreFiles": false,
 }
