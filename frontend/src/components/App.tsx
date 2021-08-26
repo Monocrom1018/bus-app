@@ -42,6 +42,7 @@ const F7App = () => {
       iosDynamicNavbar: device.ios,
     },
   };
+  console.log(routes);
 
   useEffect(() => {
     f7ready((f7) => {

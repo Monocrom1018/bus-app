@@ -82,27 +82,20 @@
 		"triggerFunction": {
 			"Type": "String"
 		},
-	
+    "functionBackPackImageResizeTriggerName": {
+        "Type": "String",
+        "Default": "functionBackPackImageResizeTriggerName"
+    },
     
+    "functionBackPackImageResizeTriggerArn": {
+        "Type": "String",
+        "Default": "functionBackPackImageResizeTriggerArn"
+    },
     
-        "functionBackPackImageResizeTriggerName": {
-            "Type": "String",
-            "Default": "functionBackPackImageResizeTriggerName"
-        },
-        
-        "functionBackPackImageResizeTriggerArn": {
-            "Type": "String",
-            "Default": "functionBackPackImageResizeTriggerArn"
-        },
-        
-        "functionBackPackImageResizeTriggerLambdaExecutionRole": {
-            "Type": "String",
-            "Default": "functionBackPackImageResizeTriggerLambdaExecutionRole"
-        }
-        
-        
-    
-
+    "functionBackPackImageResizeTriggerLambdaExecutionRole": {
+        "Type": "String",
+        "Default": "functionBackPackImageResizeTriggerLambdaExecutionRole"
+    }
 	},
 	"Conditions": {
 		"ShouldNotCreateEnvResources": {

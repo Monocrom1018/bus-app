@@ -88,8 +88,7 @@ const ReservationPage = (props) => {
             출발일
           </Col>
           <Col width="80" className="text-base">
-            {moment(departureDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+            {`${moment(departureDate).format('YYYY년 MM월 DD일')} ` +
               `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`}
           </Col>
         </Row>
@@ -103,8 +102,7 @@ const ReservationPage = (props) => {
             복귀일
           </Col>
           <Col width="80" className="text-base">
-            {moment(returnDate).format('YYYY년 MM월 DD일') +
-              ' ' +
+            {`${moment(returnDate).format('YYYY년 MM월 DD일')} ` +
               `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`}
           </Col>
         </Row>

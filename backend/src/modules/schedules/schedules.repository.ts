@@ -12,18 +12,22 @@ export class SchedulesRepository extends Repository<SchedulesEntity> {
   async createSchedule(scheduleCreateDto: any, reservation) {
     const { tourSchedule } = scheduleCreateDto;
 
-    for (let singleSchedule of tourSchedule) {
-      const schedule = new SchedulesEntity();
-      const { day, departure, destination, distance, stopOvers } =
-        singleSchedule;
-      schedule.day = day;
-      schedule.departure = departure;
-      schedule.destination = destination;
-      schedule.distance = distance;
-      schedule.reservation = reservation[0];
-      schedule.stopover = stopOvers[0] ? [stopOvers[0].region] : [];
-      stopOvers[1] ? schedule.stopover.push(stopOvers[1].region) : null;
-      SchedulesEntity.save(schedule);
+    try {
+      for (let singleSchedule of tourSchedule) {
+        const schedule = new SchedulesEntity();
+        const { day, departure, destination, distance, stopOvers } =
+          singleSchedule;
+        schedule.day = day;
+        schedule.departure = departure;
+        schedule.destination = destination;
+        schedule.distance = distance;
+        schedule.reservation = reservation[0];
+        schedule.stopover = stopOvers[0] ? [stopOvers[0].region] : [];
+        stopOvers[1] ? schedule.stopover.push(stopOvers[1].region) : null;
+        SchedulesEntity.save(schedule);
+      }
+    } catch(err) {
+      throw new ConflictException("예약이 전달되지 않았습니다. 다시 시도해주세요")
     }
 
     return { message: 'schedule create success' };

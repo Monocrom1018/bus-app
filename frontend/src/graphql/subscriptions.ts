@@ -6,6 +6,7 @@ export const onNotificationCreateRecevier = /* GraphQL */ `
   subscription OnNotificationCreateRecevier($receiver_id: String!) {
     onNotificationCreateRecevier(receiver_id: $receiver_id) {
       id
+      owner
       title
       receiver_id
       content
@@ -17,11 +18,28 @@ export const onNotificationCreateRecevier = /* GraphQL */ `
     }
   }
 `;
-export const onCreateMessage = /* GraphQL */ `
-  subscription OnCreateMessage {
-    onCreateMessage {
+export const onCreateMessageFilterChatroom = /* GraphQL */ `
+  subscription OnCreateMessageFilterChatroom($room_id: String!) {
+    onCreateMessageFilterChatroom(room_id: $room_id) {
       id
       user_id
+      members
+      room_id
+      text
+      image
+      owner
+      view
+      createdAt
+      updatedAt
+    }
+  }
+`;
+export const onCreateMessage = /* GraphQL */ `
+  subscription OnCreateMessage($owner: String!, $members: String!) {
+    onCreateMessage(owner: $owner, members: $members) {
+      id
+      user_id
+      members
       room_id
       text
       image
@@ -33,10 +51,11 @@ export const onCreateMessage = /* GraphQL */ `
   }
 `;
 export const onUpdateMessage = /* GraphQL */ `
-  subscription OnUpdateMessage {
-    onUpdateMessage {
+  subscription OnUpdateMessage($owner: String!, $members: String!) {
+    onUpdateMessage(owner: $owner, members: $members) {
       id
       user_id
+      members
       room_id
       text
       image
@@ -48,10 +67,11 @@ export const onUpdateMessage = /* GraphQL */ `
   }
 `;
 export const onDeleteMessage = /* GraphQL */ `
-  subscription OnDeleteMessage {
-    onDeleteMessage {
+  subscription OnDeleteMessage($owner: String!, $members: String!) {
+    onDeleteMessage(owner: $owner, members: $members) {
       id
       user_id
+      members
       room_id
       text
       image
@@ -63,9 +83,10 @@ export const onDeleteMessage = /* GraphQL */ `
   }
 `;
 export const onCreateNotification = /* GraphQL */ `
-  subscription OnCreateNotification {
-    onCreateNotification {
+  subscription OnCreateNotification($receiver_id: String!) {
+    onCreateNotification(receiver_id: $receiver_id) {
       id
+      owner
       title
       receiver_id
       content
@@ -78,9 +99,10 @@ export const onCreateNotification = /* GraphQL */ `
   }
 `;
 export const onUpdateNotification = /* GraphQL */ `
-  subscription OnUpdateNotification {
-    onUpdateNotification {
+  subscription OnUpdateNotification($receiver_id: String!) {
+    onUpdateNotification(receiver_id: $receiver_id) {
       id
+      owner
       title
       receiver_id
       content
@@ -93,9 +115,10 @@ export const onUpdateNotification = /* GraphQL */ `
   }
 `;
 export const onDeleteNotification = /* GraphQL */ `
-  subscription OnDeleteNotification {
-    onDeleteNotification {
+  subscription OnDeleteNotification($receiver_id: String!) {
+    onDeleteNotification(receiver_id: $receiver_id) {
       id
+      owner
       title
       receiver_id
       content

@@ -63,22 +63,30 @@ const MyPage = () => {
           <li>
             <a onClick={handleSignout}>로그아웃</a>
           </li>
+          <Link className="button" href="/chatrooms/a123/single?user_id=584">
+            584메시지
+          </Link>
+          <Link className="button" href="/chatrooms/a123/single?user_id=573">
+            573메시지
+          </Link>
         </List>
       ) : (
-        <List linksList>
-          <li>
-            <a href="/notices">공지사항</a>
-          </li>
-          <li>
-            <a href="/faqs">자주 묻는 질문</a>
-          </li>
-          <li>
-            <a href="/users/sign_in">로그인</a>
-          </li>
-          <li>
-            <a href="/users/sign_up/intro">회원가입</a>
-          </li>
-        </List>
+        <>
+          <List linksList>
+            <li>
+              <a href="/notices">공지사항</a>
+            </li>
+            <li>
+              <a href="/faqs">자주 묻는 질문</a>
+            </li>
+            <li>
+              <a href="/users/sign_in">로그인</a>
+            </li>
+            <li>
+              <a href="/users/sign_up/intro">회원가입</a>
+            </li>
+          </List>
+        </>
       )}
     </Page>
   );

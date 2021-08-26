@@ -16,6 +16,7 @@
     "paths": {
       "@admin-users/*": ["src/modules/admin-users/*"],
       "@auth/*": ["src/auth/*"],
+      "@chatrooms/*": ["src/modules/chatrooms/*"],
       "@comments/*": ["src/modules/comments/*"],
       "@contacts/*": ["src/modules/contacts/*"],
       "@db/*": ["src/db/*"],
@@ -25,6 +26,7 @@
       "@faqs/*": ["src/modules/faqs/*"],
       "@follows/*": ["src/modules/follows/*"],
       "@filters/*": ["src/common/filters/*"],
+      "@files/*": ["src/modules/files/*"],
       "@guards/*": ["src/common/guards/*"],
       "@interfaces/*": ["src/common/interfaces/*"],
       "@images/*": ["src/modules/images/*"],
@@ -40,6 +42,7 @@
       "@reservations-users/*": ["src/reservations-users/*"],
       "@rooms/*": ["src/modules/rooms/*"],
       "@schedules/*": ["src/modules/schedules/*"],
+      "@users-chatrooms/*": ["src/modules/users-chatrooms/*"],
       "@users/*": ["src/modules/users/*"]
     }
   }

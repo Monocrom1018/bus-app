@@ -11,13 +11,13 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { RoomsEntity } from '@rooms/rooms.entity';
 import { NoticesEntity } from '@notices/notices.entity';
 import { ReservationsEntity } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { MessagesEntity } from '@messages/messages.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { ImagesEntity } from '@images/images.entity';
+import { FilesEntity } from '@files/files.entity';
+import { UsersChatroomsEntity } from 'src/modules/users-chatrooms/user-chatrooms.entity';
 import { UserType } from './enum';
 
 @Entity('users')
@@ -58,13 +58,13 @@ export class UsersEntity extends DateAuditEntity {
   @Column({ nullable: true })
   uuid: string;
 
-  @Column({nullable: true})
+  @Column({ nullable: true })
   term_check: boolean;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   privacy_check: boolean;
-  
-  @Column({nullable: true})
+
+  @Column({ nullable: true })
   marketing_check: boolean;
 
   @Column('text', {
@@ -170,8 +170,9 @@ export class UsersEntity extends DateAuditEntity {
   @JoinColumn({ name: 'image_id' })
   profile: ImagesEntity;
 
-  @OneToMany((type) => MessagesEntity, (message) => message.user)
-  messages: MessagesEntity[];
+  @OneToMany(() => FilesEntity, (file) => file.user)
+  @JoinColumn({ name: 'file_id' })
+  files: FilesEntity[];
 
   @OneToMany((type) => ReservationsEntity, (reservations) => reservations.user)
   reservations: ReservationsEntity[];
@@ -182,8 +183,11 @@ export class UsersEntity extends DateAuditEntity {
   )
   drivingReservations: ReservationsEntity[];
 
-  @ManyToMany(() => RoomsEntity)
-  rooms: RoomsEntity[];
+  @OneToMany(
+    (type) => UsersChatroomsEntity,
+    (usersChatrooms) => usersChatrooms.user,
+  )
+  usersChatRooms: UsersChatroomsEntity[];
 
   @PolymorphicChildren(() => NoticesEntity, { eager: false })
   notices: NoticesEntity[];

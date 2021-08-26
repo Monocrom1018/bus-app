@@ -3,20 +3,18 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import { createSchedules, getOneDriver } from '../common/api/index';
 import moment from 'moment';
-import { createReservation } from '../common/api/index';
 import ScheduleDisplay from '@components/schedule/scheduleDisplay';
 import ScheduleTimeDisplay from '@components/schedule/scheduleTimeDisplay';
 import { showToast } from '@js/utils';
 import Convenience from '@components/driver/convenience';
+import { createReservation, createSchedules, getOneDriver } from '../common/api/index';
 
 const DriverDetailPage = ({ id, f7router }) => {
   const { totalDistance, people } = useRecoilValue(searchingOptionState);
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const { departureDate, departureTime, returnDate, returnTime } = useRecoilValue(searchingOptionState);
   const [driver, setDriver] = useRecoilState(driverState);
-  const [reservation, setReservation] = useRecoilState(reservationState);
   const tourSchedule = useRecoilValue(tourScheduleState);
   const totalCharge = useRecoilValue(totalChargeState);
   const { currentUser } = useAuth();
@@ -35,7 +33,6 @@ const DriverDetailPage = ({ id, f7router }) => {
     f7.preloader.show();
     let message: string;
     try {
-      // todo : 파라미터 정리해서 createReservation api요청 보내기
       const params = {
         userEmail: currentUser.email,
         driverId: Number(id),
@@ -51,7 +48,6 @@ const DriverDetailPage = ({ id, f7router }) => {
       const reservationData = await createReservation(params);
       await createSchedules({ reservationId: reservationData.id, tourSchedule });
 
-      // setReservation(result);
       message = '기사님께 예약이 전달되었습니다';
     } catch (error) {
       if (typeof error.message === 'string') message = error.message;
@@ -118,7 +114,7 @@ const DriverDetailPage = ({ id, f7router }) => {
           returnDate={returnDate}
           returnTime={returnTime}
         />
-        <ScheduleDisplay tourSchedule={tourSchedule} isOpen={true} />
+        <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
       </div>
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
