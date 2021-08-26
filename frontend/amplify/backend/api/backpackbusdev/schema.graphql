@@ -2,10 +2,11 @@ type Message @model
   @key(name: "messagesByDate", fields: ["room_id", "createdAt"], queryField: "messagesByDate")
   @auth(rules: [
     {allow: owner, ownerField: "owner", provider: userPools, operations:[read, create]},
-    {allow: private, provider: userPools, operations: [read]}
+    {allow: owner, ownerField: "members", provider: userPools, operations: [read]}
   ]){
   id: ID!
   user_id: String!
+  members: [String]
   room_id: String!
   text: String!
   image: String
@@ -17,13 +18,14 @@ type Message @model
 
 type Notification @model
 @auth(rules: [
-  {allow: private, provider: userPools, operations: [read, create]}
+  {allow: owner, ownerField: "receiver_id", provider: userPools, operations: [read]}
+  {allow: owner, ownerField: "owner", provider: userPools, operations:[create]},
 ])
 @key(name: "SortByCreatedAt", fields: ["createdAt"], queryField: "NotificationSortedByCreatedAt")
-@aws_cognito_user_pools
 @aws_iam
 {
   id: ID!
+  owner: String
   title: String
   receiver_id: String!
   content: String!
@@ -37,6 +39,9 @@ type Notification @model
 type Subscription{
    onNotificationCreateRecevier(receiver_id: String!): Notification
    @aws_subscribe(mutations: ["createNotification"])
+
+   onCreateMessageFilterChatroom(room_id: String!): Message
+   @aws_subscribe(mutations: ["createMessage"])
 }
 
 type Mutation {
@@ -50,4 +55,5 @@ type Mutation {
   ): String
   @function(name: "createNotificationAndFcm-${env}")
   @aws_cognito_user_pools
+  @aws_iam
 }

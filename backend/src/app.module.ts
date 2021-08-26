@@ -10,16 +10,17 @@ import { STATIC } from '@environments';
 import { AuthModule } from '@auth/auth.module';
 import { SchedulesModule } from '@schedules/schedules.module';
 import { FilesModule } from '@files/files.module';
-import { UsersModule } from './modules/users/users.module';
-import { NoticesModule } from './modules/notices/notices.module';
-import { LikesModule } from './modules/likes/likes.module';
-import { ImagesModule } from './modules/images/images.module';
-import { FollowsModule } from './modules/follows/follows.module';
-import { FaqsModule } from './modules/faqs/faqs.module';
-import { ContactsModule } from './modules/contacts/contacts.module';
-import { CommentsModule } from './modules/comments/comments.module';
-import { ReservationsModule } from './modules/reservations/reservations.module';
-import { MonthsModule } from './modules/months/months.module';
+import { UsersModule } from '@users/users.module';
+import { NoticesModule } from '@notices/notices.module';
+import { LikesModule } from '@likes/likes.module';
+import { ImagesModule } from '@images/images.module';
+import { FaqsModule } from '@faqs/faqs.module';
+import { ContactsModule } from '@contacts/contacts.module';
+import { CommentsModule } from '@comments/comments.module';
+import { ReservationsModule } from '@reservations/reservations.module';
+import { MonthsModule } from '@months/months.module';
+import { ChatroomsModule } from '@chatrooms/chatrooms.module';
+import { UsersChatroomsModule } from '@users-chatrooms/user-chatrooms.module';
 import { typeormOptions, adminOptions } from './config';
 
 AdminBro.registerAdapter({ Database, Resource });
@@ -38,7 +39,6 @@ AdminBro.registerAdapter({ Database, Resource });
     NoticesModule,
     LikesModule,
     ImagesModule,
-    FollowsModule,
     FaqsModule,
     ContactsModule,
     CommentsModule,
@@ -46,6 +46,8 @@ AdminBro.registerAdapter({ Database, Resource });
     MonthsModule,
     SchedulesModule,
     FilesModule,
+    ChatroomsModule,
+    UsersChatroomsModule,
   ],
 })
 export class AppModule {}

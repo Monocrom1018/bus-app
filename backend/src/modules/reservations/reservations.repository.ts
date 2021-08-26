@@ -8,8 +8,16 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     reservationCreateDto: any,
     userId: any,
   ): Promise<ReservationsEntity> {
-    const { driverId, totalCharge, people, totalDistance, departureDate, departureTime, returnDate, returnTime } =
-      reservationCreateDto;
+    const {
+      driverId,
+      totalCharge,
+      people,
+      totalDistance,
+      departureDate,
+      departureTime,
+      returnDate,
+      returnTime,
+    } = reservationCreateDto;
 
     const existingCheck = await ReservationsEntity.findOne({
       where: {
@@ -24,21 +32,23 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     }
 
     const reservation = new ReservationsEntity();
-    
+
     try {
-    reservation.user = userId;
-    reservation.driver = driverId;
-    reservation.total_price = totalCharge;
-    reservation.people = people;
-    reservation.total_distance = totalDistance;
-    reservation.departureDate = departureDate
-    reservation.departureTime = departureTime,
-    reservation.returnDate = returnDate,
-    reservation.returnTime = returnTime,
-    reservation.status = '수락대기중'
-    await ReservationsEntity.save(reservation);
+      reservation.user = userId;
+      reservation.driver = driverId;
+      reservation.total_price = totalCharge;
+      reservation.people = people;
+      reservation.total_distance = totalDistance;
+      reservation.departureDate = departureDate;
+      reservation.departureTime = departureTime;
+      reservation.returnDate = returnDate;
+      reservation.returnTime = returnTime;
+      reservation.status = '수락대기중';
+      await ReservationsEntity.save(reservation);
     } catch (err) {
-      throw new ConflictException("예약이 전달되지 않았습니다. 다시 시도해주세요")
+      throw new ConflictException(
+        '예약이 전달되지 않았습니다. 다시 시도해주세요',
+      );
     }
 
     return reservation;
@@ -48,7 +58,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     const reservations = await ReservationsEntity.find({
       relations: ['schedules', 'driver', 'user'],
       where: {
-        id: id,
+        id,
       },
     });
 

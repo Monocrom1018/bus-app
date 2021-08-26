@@ -8,7 +8,7 @@ module.exports = {
   ssl: false,
   synchronize: false,
   logging: false,
-  entities: ['dist/src/**/*.entity.js'],
+  entities: ['dist/src/modules/**/*.entity.js'],
   seeds: ['dist/src/db/seeds/*.seed.js'],
   factories: ['dist/src/db/factories/*.factory.js'],
   migrations: ['src/db/migration/**/*.ts'],
