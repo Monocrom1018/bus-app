@@ -43,7 +43,8 @@
       "@rooms/*": ["src/modules/rooms/*"],
       "@schedules/*": ["src/modules/schedules/*"],
       "@users-chatrooms/*": ["src/modules/users-chatrooms/*"],
-      "@users/*": ["src/modules/users/*"]
+      "@users/*": ["src/modules/users/*"],
+      "@buses/*": ["src/modules/buses/*"],
     }
   }
 }

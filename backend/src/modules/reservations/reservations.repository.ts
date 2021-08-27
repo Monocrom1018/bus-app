@@ -1,5 +1,6 @@
 import { ConflictException } from '@nestjs/common';
 import { EntityRepository, Repository } from 'typeorm';
+import { Status } from './enum';
 import { ReservationsEntity } from './reservations.entity';
 
 @EntityRepository(ReservationsEntity)
@@ -23,7 +24,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
       where: {
         user: userId,
         driver: driverId,
-        status: '수락대기중',
+        status: Status.PENDING,
       },
     });
 
@@ -43,7 +44,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
       reservation.departureTime = departureTime;
       reservation.returnDate = returnDate;
       reservation.returnTime = returnTime;
-      reservation.status = '수락대기중';
+      reservation.status = Status.PENDING;
       await ReservationsEntity.save(reservation);
     } catch (err) {
       throw new ConflictException(
@@ -93,8 +94,8 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
       where: { id: reservationId },
     });
 
-    if (status === '취소') {
-      if (targetReservation.status === '수락') {
+    if (status === 'cancel') {
+      if (targetReservation.status === 'accepted') {
         throw new ConflictException('이미 체결된 예약은 취소할 수 없습니다.');
       }
 
@@ -106,7 +107,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
       return restReservations;
     }
 
-    targetReservation.status = status;
+    targetReservation.status = Status[status];
     ReservationsEntity.save(targetReservation);
 
     return targetReservation;

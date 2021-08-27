@@ -57,12 +57,7 @@ export interface CurrentUser extends CurrentUserState {
   password: string;
   password_confirmation: string;
   drivable_region: string[];
-  drivable_date: string[];
   company_name: string;
-  bus_number: string;
-  bus_type: string;
-  bus_old: string;
-  people_available: number;
   introduce: string;
   basic_charge: number;
   basic_km: number;
@@ -77,14 +72,9 @@ export interface CurrentUser extends CurrentUserState {
   card_number: string;
   peak_charge: number;
   peak_charge_per_km: number;
-  wifi: boolean;
-  sanitizer: boolean;
-  fridge: boolean;
-  usb: boolean;
-  movie: boolean;
-  audio: boolean;
   bank: string;
   bank_account: string;
+  bus: Bus
 }
 
 export interface Address {
@@ -142,6 +132,18 @@ export interface Schedule {
   distance?: number;
   pointList?: any;
   stopOvers?: StopOver[];
+}
+export interface Bus {
+  bus_number: string;
+  bus_type: string;
+  bus_old: string;
+  people_available: number;
+  wifi: boolean;
+  sanitizer: boolean;
+  fridge: boolean;
+  usb: boolean;
+  movie: boolean;
+  audio: boolean;
 }
 
 export type ImagableModel = 'User' | 'Post' | 'Court';

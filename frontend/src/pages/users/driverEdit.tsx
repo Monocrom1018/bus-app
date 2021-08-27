@@ -13,7 +13,7 @@ import {
   Block,
   Toggle,
 } from 'framework7-react';
-import { convertObjectToFormData, sleep } from '@utils';
+import { sleep } from '@utils';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRecoilState } from 'recoil';
@@ -21,6 +21,10 @@ import { currentUserState } from '@atoms';
 import i18next from 'i18next';
 import { showToast } from '@js/utils';
 import { updateAPI } from '../../common/api/index';
+import { pick } from 'lodash'
+import S3ImagePicker from '@components/images/S3ImagePicker';
+import { MainPlaceHolder } from '@components/images';
+import { IoCloseCircleSharp } from 'react-icons/io5';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -56,12 +60,12 @@ const UserInfoSchema = Yup.object().shape({
 });
 
 const driverEditPage = ({ f7route, f7router }) => {
-  const [imgState, setImgState] = useState({ file: '', imageURL: null });
+  const [removedIds, setRemovedIds] = useState<number[]>([]);
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [drivableRegion, setDrivableRegion] = useState(
     currentUser.drivable_region ? [...currentUser.drivable_region] : [],
   );
-  const { name, profile, email, user_type, company_name } = currentUser;
+  const { name, profile, email, company_name } = currentUser;
   const banks = [
     '경남은행',
     '광주은행',
@@ -128,28 +132,6 @@ const driverEditPage = ({ f7route, f7router }) => {
     }
   };
 
-  const handleImgButton = () => {
-    document.getElementById('imageInput').click();
-  };
-
-  const handleFileOnChange = async (event) => {
-    event.preventDefault();
-
-    if (event.target.files[0]) {
-      const reader = new FileReader();
-      const file = event.target.files[0];
-
-      reader.onloadend = () => {
-        setImgState({
-          file,
-          imageURL: reader.result,
-        });
-      };
-
-      reader.readAsDataURL(file);
-    }
-  };
-
   return (
     <Page noToolbar>
       {/* Top Navbar */}
@@ -164,10 +146,10 @@ const driverEditPage = ({ f7route, f7router }) => {
           profileImg: currentUser.profile || '',
           password: '',
           passwordConfirmation: '',
-          busNumber: currentUser.bus_number || '',
-          busType: currentUser.bus_type || '대형',
-          busOld: currentUser.bus_old || 2010,
-          peopleAvailable: currentUser.people_available || null,
+          busNumber: currentUser.bus?.bus_number || '',
+          busType: currentUser.bus?.bus_type || '대형',
+          busOld: currentUser.bus?.bus_old || 2010,
+          peopleAvailable: currentUser.bus?.people_available || null,
           introduce: currentUser.introduce || '',
           basicCharge: currentUser.basic_charge || '',
           basicKm: currentUser.basic_km || '',
@@ -179,12 +161,12 @@ const driverEditPage = ({ f7route, f7router }) => {
           serviceCharge: currentUser.service_charge || '',
           peakCharge: currentUser.peak_charge || '',
           peakChargePerKm: currentUser.peak_charge_per_km || '',
-          wifi: currentUser.wifi || false,
-          sanitizer: currentUser.sanitizer || false,
-          fridge: currentUser.fridge || false,
-          usb: currentUser.usb || false,
-          movie: currentUser.movie || false,
-          audio: currentUser.audio || false,
+          wifi: currentUser.bus?.wifi || false,
+          sanitizer: currentUser.bus?.sanitizer || false,
+          fridge: currentUser.bus?.fridge || false,
+          usb: currentUser.bus?.usb || false,
+          movie: currentUser.bus?.movie || false,
+          audio: currentUser.bus?.audio || false,
           bank: currentUser.bank || '',
           bank_account: currentUser.bank_account || '',
         }}
@@ -194,18 +176,9 @@ const driverEditPage = ({ f7route, f7router }) => {
           f7.dialog.preloader('잠시만 기다려주세요...');
           await sleep(400);
           try {
-            if (imgState.file !== '') {
-              values.profileImg = imgState.file;
-            }
-
-            const fd = convertObjectToFormData({ modelName: 'user', data: values });
-            fd.append('user[profile]', values.profileImg);
-
-            drivableRegion.forEach((region) => {
-              fd.append('user[drivableRegion]', region);
-            });
-
-            const { data: user } = await updateAPI(fd);
+            values.profileImg = pick(values.profileImg, ['key']);
+            values['drivableRegion'] = drivableRegion;
+            const { data: user } = await updateAPI(values);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
             f7router.back();
@@ -217,22 +190,23 @@ const driverEditPage = ({ f7route, f7router }) => {
         }}
         validateOnMount
       >
-        {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid }) => (
+        {({ handleChange, handleBlur, values, errors, touched, isSubmitting, isValid, setFieldValue }) => (
           <Form encType="multipart/form-data">
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">기본 정보</div>
               <div className="flex flex-col items-center bg-white border-t">
-                <img src={imgState.imageURL} className="rounded-3xl mt-4 w-36 h-36 object-cover" alt="user_image" />
-                <Button className="my-2 font-semibold" onClick={handleImgButton}>
-                  프로필사진 변경
-                </Button>
-                <input
-                  id="imageInput"
-                  type="file"
-                  accept="image/jpg,impge/png,image/jpeg,image/gif"
-                  name="profile"
-                  onChange={handleFileOnChange}
-                  className="hidden"
+                <S3ImagePicker
+                  isMultiple={false}
+                  initialData={profile ? [profile] : undefined}
+                  placeholderComponent={<MainPlaceHolder maxCount={1} isImage />}
+                  deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+                  removeImageHandler={(key, removedS3Image) => {
+                    if (removedS3Image) setRemovedIds((prev) => [...prev, removedS3Image.id]);
+                  }}
+                  containerClassName="w-full h-full relative"
+                  addImageHandler={(v: any) => {
+                    setFieldValue('profileImg', v[0]);
+                  }}
                 />
               </div>
               <ListInput
@@ -275,7 +249,7 @@ const driverEditPage = ({ f7route, f7router }) => {
                 outline
                 label={i18next.t('login.password_confirmation') as string}
                 type="password"
-                name="password_confirmation"
+                name="passwordConfirmation"
                 placeholder="비밀번호를 확인해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -600,16 +574,6 @@ const driverEditPage = ({ f7route, f7router }) => {
               <div className="p-3 font-semibold bg-white">차량사진</div>
               <input className="p-3" type="file" name="busUpload" />
             </List>
-
-            <List noHairlinesMd>
-              <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>
-              <input className="p-3" type="file" name="certification1Upload" />
-            </List>
-            <List noHairlinesMd>
-              <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
-              <input className="p-3" type="file" name="certification2Upload" />
-            </List>
-
             <div className="p-4">
               <button
                 type="submit"

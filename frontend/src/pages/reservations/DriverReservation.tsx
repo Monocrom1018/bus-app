@@ -1,14 +1,13 @@
 import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader, f7, Icon } from 'framework7-react';
 import React, { useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { reservationState } from '@atoms';
 import moment from 'moment';
-import useAuth from '@hooks/useAuth';
 import { createPayment, updateReservation } from '@api';
 import { showToast } from '@js/utils';
 
-const DriverReservationPage = (props) => {
-  const [reservation, setReservation] = useRecoilState(reservationState);
+const DriverReservationPage = ({reservation, refetch}) => {
+  const setReservation = useSetRecoilState(reservationState);
   const actionsToPopover = useRef(null);
   const {
     id,
@@ -23,7 +22,7 @@ const DriverReservationPage = (props) => {
     people,
     createdDate,
     accompany,
-  } = props.reservation;
+  } = reservation;
 
   const handleButton = async (param) => {
     if (status === '수락') {
@@ -35,7 +34,7 @@ const DriverReservationPage = (props) => {
       f7.preloader.show();
       let message: string;
       try {
-        await createPayment(props.reservation);
+        await createPayment(reservation);
         const updatedReservation = await updateReservation(param);
         setReservation(updatedReservation);
         message = `예약을 ${param.status}하였습니다`;
@@ -45,7 +44,7 @@ const DriverReservationPage = (props) => {
       } finally {
         f7.preloader.hide();
         f7.dialog.alert(message);
-        props.refetch();
+        refetch();
       }
     });
   };

@@ -140,4 +140,20 @@ export class SchedulesService {
     );
     return data;
   }
+
+  async getReverseGeoData(x: string, y: string) {
+    const data = await axios.get(
+      'https://apis.openapi.sk.com/tmap/geo/reversegeocoding',
+      {
+        params: {
+          version: 1,
+          lon: x,
+          lat: y,
+          appKey: process.env.TMAP_API_KEY,
+        }
+      }
+    )
+
+    return data;
+  }
 }

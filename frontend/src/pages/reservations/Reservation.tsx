@@ -5,7 +5,7 @@ import { updateReservation } from '@api';
 import { showToast } from '@js/utils';
 import ScheduleDisplay from '@components/schedule/scheduleDisplay';
 
-const ReservationPage = (props) => {
+const ReservationPage = ({reservation, refetch}) => {
   const actionsToPopover = useRef(null);
   const {
     id,
@@ -18,8 +18,9 @@ const ReservationPage = (props) => {
     departureTime,
     returnDate,
     returnTime,
-  } = props.reservation;
-  const { name, bus_old, bus_type } = props.reservation.driver;
+    driver,
+  } = reservation;
+  const { name, bus_old, bus_type } = driver;
 
   const handleReservationCancel = async (param) => {
     if (status === '수락') {
@@ -38,7 +39,7 @@ const ReservationPage = (props) => {
       } finally {
         f7.preloader.hide();
         f7.dialog.alert(message);
-        props.refetch();
+        refetch();
       }
     });
   };
@@ -53,7 +54,7 @@ const ReservationPage = (props) => {
           },
           {
             text: '예약취소',
-            onClick: () => handleReservationCancel({ reservationId: id, status: '취소' }),
+            onClick: () => handleReservationCancel({ reservationId: id, status: 'cancel' }),
           },
           {
             text: 'Cancel',
@@ -88,8 +89,7 @@ const ReservationPage = (props) => {
             출발일
           </Col>
           <Col width="80" className="text-base">
-            {`${moment(departureDate).format('YYYY년 MM월 DD일')} ` +
-              `${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`}
+            {`${moment(departureDate).format('YYYY년 MM월 DD일')} ${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`}
           </Col>
         </Row>
         <Row>
@@ -102,8 +102,7 @@ const ReservationPage = (props) => {
             복귀일
           </Col>
           <Col width="80" className="text-base">
-            {`${moment(returnDate).format('YYYY년 MM월 DD일')} ` +
-              `${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`}
+            {`${moment(returnDate).format('YYYY년 MM월 DD일')} ${returnTime[0]}시 ${returnTime[2]}${returnTime[3]}분`}
           </Col>
         </Row>
         <hr className="my-4" />
