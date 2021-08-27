@@ -2,12 +2,13 @@ import {
   ConflictException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { Brackets, EntityRepository, Repository } from 'typeorm';
+import { Brackets, EntityRepository, getRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { ImagesEntity } from '@images/images.entity';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UsersEntity } from './users.entity';
 import { UserType } from './enum';
+import { BusesEntity } from '@buses/buses.entity';
 
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
@@ -86,7 +87,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
   async me(email: string): Promise<UsersEntity> {
     const user = await this.findOne({
-      relations: ['profile'],
+      relations: ['profile', 'bus'],
       where: {
         email,
       },
@@ -123,10 +124,29 @@ export class UsersRepository extends Repository<UsersEntity> {
     return user;
   }
 
+  async deleteBillingKey(
+    currentApiUser: UsersEntity,
+  ) {
+    const user = currentApiUser
+
+    try {
+    user.card_registered = false;
+    user.card_number = null;
+    user.card_company = null;
+    user.card_billing_key = null;
+    user.save();
+    } catch (err) {
+      throw new ConflictException(err)
+    }
+    
+    return user;
+  }
+
   async updateUser(
     currentApiUser: UsersEntity,
     userUpdateDto,
     profile: ImagesEntity,
+    bus: BusesEntity,
   ) {
     const {
       drivableRegion,
@@ -154,6 +174,7 @@ export class UsersRepository extends Repository<UsersEntity> {
       audio,
       bank,
       bank_account,
+      password,
     } = userUpdateDto;
 
     const user = currentApiUser;
@@ -162,8 +183,27 @@ export class UsersRepository extends Repository<UsersEntity> {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
 
+    if(password) {
+      user.encrypted_password = await bcrypt.hash(`${password}`, 10);
+    }
+
     if (profile) {
       user.profile = profile;
+    }
+
+    if(user.user_type === 'driver') {
+      user.bus = bus
+      user.bus.bus_number = busNumber;
+      user.bus.bus_type = busType;
+      user.bus.bus_old = busOld;
+      user.bus.people_available = peopleAvailable;
+      user.bus.sanitizer = sanitizer === 'true';
+      user.bus.wifi = wifi === 'true';
+      user.bus.fridge = fridge === 'true';
+      user.bus.usb = usb === 'true';
+      user.bus.movie = movie === 'true';
+      user.bus.audio = audio === 'true';
+      user.bus.save();
     }
 
     try {
@@ -182,17 +222,6 @@ export class UsersRepository extends Repository<UsersEntity> {
       user.peak_charge_per_km = peakChargePerKm;
       user.bank = bank;
       user.bank_account = bank_account;
-      // user.bus_old = busOld;
-      // user.bus_type = busType;
-      // user.people_available = peopleAvailable;
-      // user.bus_number = busNumber;
-      // user.sanitizer = sanitizer === true;
-      // user.wifi = wifi === true;
-      // user.movie = movie === true;
-      // user.audio = audio === true;
-      // user.usb = usb === true;
-      // user.fridge = fridge === true;
-
       user.save();
     } catch (err) {
       throw new ConflictException(err);
@@ -203,6 +232,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
   async getOneUserById(param: number): Promise<UsersEntity> {
     const user = await this.findOne({
+      relations: ['profile', 'bus'],
       where: {
         id: param,
       },
@@ -214,6 +244,7 @@ export class UsersRepository extends Repository<UsersEntity> {
     schedule: Array<{ [key: string]: string | number }>,
     page: number,
     sortBy: string,
+    searchBy: string,
   ): Promise<UsersEntity[]> {
     const { departure } = schedule[0];
     const region = (departure as string).split(' ')[0];
@@ -221,36 +252,51 @@ export class UsersRepository extends Repository<UsersEntity> {
 
     switch (sortBy) {
       case 'createdAtDesc':
-        orderQuery = { 'User.created_at': 'DESC' };
+        orderQuery = { 'users.createdAt': 'DESC' };
         break;
       case 'chargeAsc':
         orderQuery = {
-          'User.basic_charge': 'ASC',
-          'User.charge_per_km': 'ASC',
+          'users.basic_charge': 'ASC',
+          'users.charge_per_km': 'ASC',
         };
         break;
       case 'peopleAsc':
-        orderQuery = { 'User.people_available': 'ASC' };
+        orderQuery = { 'buses.people_available': 'ASC' };
         break;
       case 'peopleDesc':
-        orderQuery = { 'User.people_available': 'DESC' };
+        orderQuery = { 'buses.people_available': 'DESC' };
         break;
       default:
-        orderQuery = { 'User.created_at': 'DESC' };
+        orderQuery = { 'users.createdAt': 'DESC' };
     }
 
-    const drivers = await this.createQueryBuilder('User')
+    const drivers = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
       .where(`drivable_region @> ARRAY['${region}']`)
       .andWhere(
         new Brackets((qb) => {
           qb.where('user_type = :driver', { driver: 'driver' });
         }),
-      )
+        )
+      .andWhere("users.name ilike :name", { name:`%${searchBy}%` })
+      .innerJoinAndSelect('users.bus', 'buses')
       .orderBy(orderQuery)
       .take(5)
       .skip(5 * (page - 1))
       .getMany();
 
     return drivers;
+  }
+
+  async findDriversByRegion(region: string) {
+    const drivers = await getRepository(UsersEntity)
+      .createQueryBuilder('users')
+      .where(`drivable_region @> ARRAY['${region.slice(0,2)}']`)
+      .innerJoinAndSelect('users.bus', 'buses')
+      .orderBy('RANDOM()')
+      .getMany()
+
+    const selectFive = drivers.splice(0,5);
+    return selectFive;
   }
 }

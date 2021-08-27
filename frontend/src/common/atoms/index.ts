@@ -87,18 +87,21 @@ export const driverState = atom({
   default: {
     id: null,
     name: '',
-    bus_old: '',
-    bus_type: '',
     company_name: '',
-    people_available: 0,
-    profile: '',
-    sanitizer: false,
-    movie: false,
-    wifi: false,
-    audio: false,
-    fridge: false,
-    usb: false,
     introduce: null,
+    profile: '',
+    bus: {
+      bus_number: '',
+      bus_old: '',
+      bus_type: '',
+      people_available: 0,
+      sanitizer: false,
+      movie: false,
+      wifi: false,
+      audio: false,
+      fridge: false,
+      usb: false,
+    }
   },
 });
 

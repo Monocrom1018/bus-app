@@ -158,7 +158,7 @@ const DriverSignUpPage: React.FC = () => {
   const { setFieldValue, handleChange, submitForm, values, isValid, handleBlur, errors, touched, isSubmitting } = value;
 
   return (
-    <Page>
+    <Page noToolbar>
       <Navbar title="회원가입 - 기사님" backLink sliding={false} />
       <p className="font-semibole text-4xl text-center mt-5">배낭버스</p>
       <FormikProvider value={value}>

@@ -3,11 +3,10 @@ import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput }
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import moment from 'moment';
 import ScheduleDisplay from '@components/schedule/scheduleDisplay';
 import ScheduleTimeDisplay from '@components/schedule/scheduleTimeDisplay';
 import { showToast } from '@js/utils';
-import Convenience from '@components/driver/convenience';
+import BusOption from '@components/driver/BusOption';
 import { createReservation, createSchedules, getOneDriver } from '../common/api/index';
 
 const DriverDetailPage = ({ id, f7router }) => {
@@ -86,7 +85,7 @@ const DriverDetailPage = ({ id, f7router }) => {
             <div className="w-full">
               <h1 className="text-xl font-bold text-gray-900">{driver.name}</h1>
               <p className="mt-1 text-xs font-medium text-gray-500">
-                {driver.bus_old}년식 | {driver.people_available}인승 {driver.bus_type}
+                {driver.bus.bus_old}년식 | {driver.bus.people_available}인승 {driver.bus.bus_type}
               </p>
               <p className="mt-1 text-xs font-medium text-gray-500">{driver.company_name}</p>
             </div>
@@ -103,31 +102,33 @@ const DriverDetailPage = ({ id, f7router }) => {
 
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
       <div className="flex flex-col mb-10 mt-3">
-        <Convenience driver={driver} />
+        <BusOption bus={driver.bus} />
       </div>
 
-      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
-      <div className="flex flex-col -mt-6">
-        <ScheduleTimeDisplay
-          departureDate={departureDate}
-          departureTime={departureTime}
-          returnDate={returnDate}
-          returnTime={returnTime}
-        />
-        <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
-      </div>
+      {totalCharge && (
+      <div>
+        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
+        <div className="flex flex-col -mt-6">
+          <ScheduleTimeDisplay
+            departureDate={departureDate}
+            departureTime={departureTime}
+            returnDate={returnDate}
+            returnTime={returnTime}
+          />
+          <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
+        </div>
 
-      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
-      <List noHairlinesMd className="mt-3 pt-0">
-        <ListInput
-          type="text"
-          placeholder="탑승인원을 숫자만 입력해주세요"
-          clearButton
-          onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
-          value={people}
-        />
-      </List>
-
+        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
+        <List noHairlinesMd className="mt-3 pt-0">
+          <ListInput
+            type="text"
+            placeholder="탑승인원을 숫자만 입력해주세요"
+            clearButton
+            onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+            value={people}
+          />
+        </List>
+      </div>)}
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
       <List accordionList className="mt-3 pb-10">
         <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
@@ -139,11 +140,11 @@ const DriverDetailPage = ({ id, f7router }) => {
         </ListItem>
       </List>
 
-      {currentUser.isAuthenticated ? (
+      {currentUser.isAuthenticated && totalCharge ? (
         <div className="fixed bottom-0 z-50 w-full bg-white pt-1 pb-4">
           <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
             <div>요금 총액</div>
-            <div>{totalCharge.toLocaleString()}₩</div>
+            <div>{totalCharge?.toLocaleString()}₩</div>
           </div>
           <Button
             text="견적 전달하기"
@@ -153,7 +154,13 @@ const DriverDetailPage = ({ id, f7router }) => {
         </div>
       ) : (
         <Button disabled href="#" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
-          로그인 후 예약 가능합니다
+          일정을 입력하고 견적을 전달해보세요
+        </Button>
+      )}
+
+      {!currentUser.isAuthenticated && (
+        <Button href="/users/sign_up/intro" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+          회원가입 하고 이용하기
         </Button>
       )}
     </Page>

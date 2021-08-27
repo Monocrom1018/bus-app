@@ -146,10 +146,10 @@ const driverEditPage = ({ f7route, f7router }) => {
           profileImg: currentUser.profile || '',
           password: '',
           passwordConfirmation: '',
-          busNumber: currentUser.bus_number || '',
-          busType: currentUser.bus_type || '대형',
-          busOld: currentUser.bus_old || 2010,
-          peopleAvailable: currentUser.people_available || null,
+          busNumber: currentUser.bus?.bus_number || '',
+          busType: currentUser.bus?.bus_type || '대형',
+          busOld: currentUser.bus?.bus_old || 2010,
+          peopleAvailable: currentUser.bus?.people_available || null,
           introduce: currentUser.introduce || '',
           basicCharge: currentUser.basic_charge || '',
           basicKm: currentUser.basic_km || '',
@@ -161,12 +161,12 @@ const driverEditPage = ({ f7route, f7router }) => {
           serviceCharge: currentUser.service_charge || '',
           peakCharge: currentUser.peak_charge || '',
           peakChargePerKm: currentUser.peak_charge_per_km || '',
-          wifi: currentUser.wifi || false,
-          sanitizer: currentUser.sanitizer || false,
-          fridge: currentUser.fridge || false,
-          usb: currentUser.usb || false,
-          movie: currentUser.movie || false,
-          audio: currentUser.audio || false,
+          wifi: currentUser.bus?.wifi || false,
+          sanitizer: currentUser.bus?.sanitizer || false,
+          fridge: currentUser.bus?.fridge || false,
+          usb: currentUser.bus?.usb || false,
+          movie: currentUser.bus?.movie || false,
+          audio: currentUser.bus?.audio || false,
           bank: currentUser.bank || '',
           bank_account: currentUser.bank_account || '',
         }}
@@ -177,6 +177,7 @@ const driverEditPage = ({ f7route, f7router }) => {
           await sleep(400);
           try {
             values.profileImg = pick(values.profileImg, ['key']);
+            values['drivableRegion'] = drivableRegion;
             const { data: user } = await updateAPI(values);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
@@ -248,7 +249,7 @@ const driverEditPage = ({ f7route, f7router }) => {
                 outline
                 label={i18next.t('login.password_confirmation') as string}
                 type="password"
-                name="password_confirmation"
+                name="passwordConfirmation"
                 placeholder="비밀번호를 확인해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}
@@ -573,16 +574,6 @@ const driverEditPage = ({ f7route, f7router }) => {
               <div className="p-3 font-semibold bg-white">차량사진</div>
               <input className="p-3" type="file" name="busUpload" />
             </List>
-
-            <List noHairlinesMd>
-              <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>
-              <input className="p-3" type="file" name="certification1Upload" />
-            </List>
-            <List noHairlinesMd>
-              <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
-              <input className="p-3" type="file" name="certification2Upload" />
-            </List>
-
             <div className="p-4">
               <button
                 type="submit"

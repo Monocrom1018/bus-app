@@ -74,8 +74,8 @@ export const getFaqs = async () => {
   return data;
 };
 
-export const getDrivers = async (params, page, sortBy) => {
-  const { data } = await API.post(`/users/drivers?page=${page}&sort_by=${sortBy}`, params);
+export const getDrivers = async (params, page, sortBy, searchBy) => {
+  const { data } = await API.post(`/users/drivers?page=${page}&sort_by=${sortBy}&search_by=${searchBy}`, params);
   return data;
 };
 
@@ -94,6 +94,11 @@ export const getDistance = async (params) => {
   });
   return data;
 };
+
+export const getDriversByRegion = async (x, y) => {
+  const { data } = await API.get(`users/driversByRegion?x=${x}&y=${y}`)
+  return data
+}
 
 export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
@@ -116,9 +121,14 @@ export const updateReservation = async (params) => {
 };
 
 export const getBillingKey = async (params) => {
-  const { data } = await API.post(`users/billing`, params);
+  const { data } = await API.post(`users/getBilling`, params);
   return data;
 };
+
+export const deleteBillingKey = async() => {
+  const { data } = await API.delete(`users/deleteBilling`);
+  return data;
+}
 
 export const createPayment = async (params) => {
   const { data } = await API.post(`users/payment`, params);

@@ -19,6 +19,7 @@ const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
   const allowInfinite = useRef(true);
   const sortBy = useRef('createdAtDesc');
+  const searchBy = useRef('')
   const queryClient = useQueryClient();
   const [isInfinite, setIsInfinite] = useState(false);
   const [popupOpened, setPopupOpened] = useState(false);
@@ -43,6 +44,7 @@ const SearchPage = () => {
         { ...searchingOption, schedule: latestTourSchedule.current },
         page,
         sortBy.current,
+        searchBy.current,
       );
       return response.data;
     },
@@ -76,7 +78,7 @@ const SearchPage = () => {
     return days;
   };
 
-  const sortDrivers = async (value) => {
+  const filterDrivers = async (value = null) => {
     sortBy.current = value;
     queryClient.removeQueries(['drivers']);
     await refetch();
@@ -110,6 +112,7 @@ const SearchPage = () => {
         latestTourSchedule.current = addDistanceSchedules;
         setTourSchedule(addDistanceSchedules);
         setIsInfinite(true);
+        searchBy.current = '';
         await fetchNextPage();
         f7.dialog.close();
       } catch (err) {
@@ -173,13 +176,22 @@ const SearchPage = () => {
               type="select"
               defaultValue={sortBy.current}
               className="w-28 mx-4 px-1 border-b-2 border-red-400"
-              onChange={(e) => sortDrivers(e.target.value)}
+              onChange={(e) => filterDrivers(e.target.value)}
             >
               <option value="createdAtDesc">최신순</option>
               <option value="peopleAsc">낮은인승순</option>
               <option value="peopleDesc">높은인승순</option>
               <option value="chargeAsc">낮은가격순</option>
             </Input>
+            <div className="relative" onKeyPress={(e) => {e.key === 'Enter' && filterDrivers()}}>
+              <Input 
+                type="text" 
+                placeholder="기사이름 검색" 
+                className="w-28 h-6 mx-4 px-1 border-b-2 border-red-400" 
+                onChange={e => { searchBy.current = e.target.value }}
+              />
+              <div className="f7-icons absolute -top-1 right-4 text-red-500 text-xl" onClick={filterDrivers}>search</div>
+            </div>
           </div>
           <div>
             {drivers.map((driver) => (

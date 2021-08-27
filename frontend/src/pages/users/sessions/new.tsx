@@ -85,7 +85,7 @@ const SessionNewPage: React.FC = () => {
   );
 
   return (
-    <Page className="bg-white">
+    <Page className="bg-white" noToolbar>
       <Navbar title={i18next.t('login.title')} backLink sliding={false} />
       <p className="font-semibole text-4xl text-center mt-5">배낭버스</p>
       <Formik

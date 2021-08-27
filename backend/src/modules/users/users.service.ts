@@ -1,13 +1,15 @@
 import {
+  ConflictException,
+  forwardRef,
+  Inject,
   Injectable,
   NotAcceptableException,
-  NotFoundException,
 } from '@nestjs/common';
 import moment from 'moment';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AuthService } from '@auth/auth.service';
 import axios, { AxiosRequestConfig } from 'axios';
-import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
+import { BillingKeyProps } from '@interfaces/index';
 import { ImagesEntity } from '@images/images.entity';
 import { ImagesRepository } from '@images/images.repository';
 import { UserCreateDto } from './dto/user-create.dto';
@@ -16,6 +18,10 @@ import { UsersRepository } from './users.repository';
 import { UsersEntity } from './users.entity';
 import { MonthsService } from '../months/months.service';
 import { UserUpdateDto } from './dto/user-update.dto';
+import { BusesRepository } from '@buses/buses.repository';
+import { BusesEntity } from '@buses/buses.entity';
+import { FilesService } from '@files/files.service';
+import { SchedulesService } from '@schedules/schedules.service';
 
 @Injectable()
 export class UsersService {
@@ -23,16 +29,26 @@ export class UsersService {
     @InjectRepository(UsersRepository)
     private readonly usersRepository: UsersRepository,
     private readonly imagesRepository: ImagesRepository,
+    private readonly filesService: FilesService,
     private readonly monthsService: MonthsService,
+    private readonly busesRepository: BusesRepository,
     private readonly authService: AuthService,
+    @Inject(forwardRef(() => SchedulesService))
+    private scheduleService: SchedulesService,
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
+    const { files } = userCreateDto;
     const uuid = await this.authService.sub();
     const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
+    
     if (!user) {
       throw new NotAcceptableException();
+    }
+
+    if(user.user_type === 'driver') {
+      await this.filesService.saveFiles(user, files)
     }
 
     return 'user created';
@@ -76,7 +92,21 @@ export class UsersService {
       key: profileImg.key,
     });
 
-    return this.usersRepository.updateUser(user, userUpdateColumns, profile);
+    const previousBus = await this.busesRepository.findOne({
+      user
+    })
+
+    if(!previousBus) {
+      await this.busesRepository.save({
+        user
+      })
+    }
+
+    const bus: BusesEntity = await this.busesRepository.findOne({
+      user
+    })
+
+    return this.usersRepository.updateUser(user, userUpdateColumns, profile, bus);
   }
 
   async getBillingKey(body: BillingKeyProps) {
@@ -84,7 +114,7 @@ export class UsersService {
     const user = await this.authService.currentApiUser();
 
     if (!user) {
-      throw new NotFoundException('유저정보가 조회되지 않습니다');
+      throw new ConflictException('유저정보가 조회되지 않습니다');
     }
 
     const encodedKey = Buffer.from(
@@ -106,6 +136,14 @@ export class UsersService {
 
     const { data: apiResult } = await axios(config);
     return this.usersRepository.saveBillingKey(apiResult, user);
+  }
+
+  async deleteBillingKey() {
+    const user = await this.authService.currentApiUser();
+    if(!user) {
+      throw new ConflictException('유저정보가 조회되지 않습니다')
+    }
+    return this.usersRepository.deleteBillingKey(user)
   }
 
   async createPayment(body) {
@@ -167,6 +205,7 @@ export class UsersService {
     driverSearchDto: DriverSearchDto,
     page: number,
     sortBy: string,
+    searchBy: string,
   ) {
     const { departureDate, departureTime, schedule } = driverSearchDto;
     const departureHour = departureTime.split(' ')[0];
@@ -176,6 +215,7 @@ export class UsersService {
       schedule,
       page,
       sortBy,
+      searchBy,
     );
 
     const distance = schedule.reduce(
@@ -211,6 +251,18 @@ export class UsersService {
       });
     }
 
+    return {
+      data: drivers,
+    };
+  }
+
+  async driversByRegion(x: string, y: string) {
+    const { data: { 
+      addressInfo: {
+        city_do: region
+      }}} = await this.scheduleService.getReverseGeoData(x, y);
+    
+    const drivers = await this.usersRepository.findDriversByRegion(region);
     return {
       data: drivers,
     };
