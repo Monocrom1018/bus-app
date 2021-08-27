@@ -5,6 +5,7 @@ import { FilesEntity } from './files.entity';
 @EntityRepository(FilesEntity)
 export class FilesRepository extends Repository<FilesEntity> {
   async saveFiles(user: UsersEntity, files: any) {
+    // eslint-disable-next-line array-callback-return
     files.map((file) => {
       const { fileName, key } = file[0];
       const newFile = new FilesEntity();
