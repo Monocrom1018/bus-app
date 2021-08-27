@@ -11,14 +11,14 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
-import { RoomsEntity } from '@rooms/rooms.entity';
 import { NoticesEntity } from '@notices/notices.entity';
 import { ReservationsEntity } from '@reservations/reservations.entity';
 import { PolymorphicChildren } from 'typeorm-polymorphic';
-import { MessagesEntity } from '@messages/messages.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { ImagesEntity } from '@images/images.entity';
 import { FilesEntity } from '@files/files.entity';
+import { UsersChatroomsEntity } from 'src/modules/users-chatrooms/user-chatrooms.entity';
+import { BusesEntity } from '@buses/buses.entity';
 import { UserType } from './enum';
 
 @Entity('users')
@@ -49,6 +49,9 @@ export class UsersEntity extends DateAuditEntity {
   @Column({ nullable: true })
   phone: string;
 
+  @Column({ nullable: true })
+  introduce: string;
+
   @Column({
     type: 'enum',
     enum: UserType,
@@ -67,6 +70,9 @@ export class UsersEntity extends DateAuditEntity {
 
   @Column({ nullable: true })
   marketing_check: boolean;
+
+  @Column({ nullable: true })
+  company_name: string;
 
   @Column('text', {
     array: true,
@@ -96,25 +102,13 @@ export class UsersEntity extends DateAuditEntity {
   night_charge: number;
 
   @Column({ nullable: true })
-  bus_type: string;
-
-  @Column({ nullable: true })
-  bus_old: number;
-
-  @Column({ nullable: true })
-  people_available: number;
-
-  @Column({ nullable: true })
-  company_name: string;
-
-  @Column({ nullable: true })
-  bus_number: string;
-
-  @Column({ nullable: true })
-  introduce: string;
-
-  @Column({ nullable: true })
   charge_per_day: string;
+
+  @Column({ nullable: true })
+  peak_charge: number;
+
+  @Column({ nullable: true })
+  peak_charge_per_km: number;
 
   @Column({ nullable: true, default: false })
   card_registered: boolean;
@@ -127,30 +121,6 @@ export class UsersEntity extends DateAuditEntity {
 
   @Column({ nullable: true })
   card_company: string;
-
-  @Column({ nullable: true })
-  peak_charge: number;
-
-  @Column({ nullable: true })
-  peak_charge_per_km: number;
-
-  @Column({ nullable: true })
-  sanitizer: boolean;
-
-  @Column({ nullable: true })
-  wifi: boolean;
-
-  @Column({ nullable: true })
-  usb: boolean;
-
-  @Column({ nullable: true })
-  fridge: boolean;
-
-  @Column({ nullable: true })
-  movie: boolean;
-
-  @Column({ nullable: true })
-  audio: boolean;
 
   @Column({ nullable: true })
   director_name: string;
@@ -175,9 +145,6 @@ export class UsersEntity extends DateAuditEntity {
   @JoinColumn({ name: 'file_id' })
   files: FilesEntity[];
 
-  @OneToMany((type) => MessagesEntity, (message) => message.user)
-  messages: MessagesEntity[];
-
   @OneToMany((type) => ReservationsEntity, (reservations) => reservations.user)
   reservations: ReservationsEntity[];
 
@@ -187,11 +154,18 @@ export class UsersEntity extends DateAuditEntity {
   )
   drivingReservations: ReservationsEntity[];
 
-  @ManyToMany(() => RoomsEntity)
-  rooms: RoomsEntity[];
+  @OneToMany(
+    (type) => UsersChatroomsEntity,
+    (usersChatrooms) => usersChatrooms.user,
+  )
+  usersChatRooms: UsersChatroomsEntity[];
 
   @PolymorphicChildren(() => NoticesEntity, { eager: false })
   notices: NoticesEntity[];
+
+  @OneToOne((type) => BusesEntity, (bus) => bus.user)
+  @JoinColumn({ name: 'bus_id' })
+  bus: BusesEntity;
 
   async validateUserPassword(password: string): Promise<boolean> {
     const compareValue = bcrypt.compare(password, this.encrypted_password);

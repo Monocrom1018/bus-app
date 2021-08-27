@@ -7,6 +7,7 @@ export const getMessage = /* GraphQL */ `
     getMessage(id: $id) {
       id
       user_id
+      members
       room_id
       text
       image
@@ -23,6 +24,7 @@ export const listMessages = /* GraphQL */ `
       items {
         id
         user_id
+        members
         room_id
         text
         image
@@ -39,6 +41,7 @@ export const getNotification = /* GraphQL */ `
   query GetNotification($id: ID!) {
     getNotification(id: $id) {
       id
+      owner
       title
       receiver_id
       content
@@ -55,6 +58,7 @@ export const listNotifications = /* GraphQL */ `
     listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
+        owner
         title
         receiver_id
         content
@@ -88,6 +92,7 @@ export const messagesByDate = /* GraphQL */ `
       items {
         id
         user_id
+        members
         room_id
         text
         image
@@ -117,6 +122,7 @@ export const notificationSortedByCreatedAt = /* GraphQL */ `
     ) {
       items {
         id
+        owner
         title
         receiver_id
         content

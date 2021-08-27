@@ -107,11 +107,11 @@ const DriverSignUpPage: React.FC = () => {
         });
       } catch (error) {
         message = error.message;
-        if(error.code === 'UsernameExistsException') {
-          setFieldValue('email', '')
-          setFieldValue('password', '')
-          setFieldValue('password_confirmation', '')
-          message = "이미 가입된 이메일 입니다"
+        if (error.code === 'UsernameExistsException') {
+          setFieldValue('email', '');
+          setFieldValue('password', '');
+          setFieldValue('password_confirmation', '');
+          message = '이미 가입된 이메일 입니다';
         }
         setSubmitting(false);
         f7.preloader.hide();
@@ -158,7 +158,7 @@ const DriverSignUpPage: React.FC = () => {
   const { setFieldValue, handleChange, submitForm, values, isValid, handleBlur, errors, touched, isSubmitting } = value;
 
   return (
-    <Page>
+    <Page noToolbar>
       <Navbar title="회원가입 - 기사님" backLink sliding={false} />
       <p className="font-semibole text-4xl text-center mt-5">배낭버스</p>
       <FormikProvider value={value}>

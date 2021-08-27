@@ -5,6 +5,7 @@
 export type CreateMessageInput = {
   id?: string | null;
   user_id: string;
+  members?: Array<string | null> | null;
   room_id: string;
   text: string;
   image?: string | null;
@@ -80,20 +81,22 @@ export type ModelIntInput = {
 
 export type Message = {
   __typename: 'Message';
-  id?: string;
-  user_id?: string;
-  room_id?: string;
-  text?: string;
+  id: string;
+  user_id: string;
+  members?: Array<string | null> | null;
+  room_id: string;
+  text: string;
   image?: string | null;
   owner?: string | null;
   view?: number | null;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UpdateMessageInput = {
   id: string;
   user_id?: string | null;
+  members?: Array<string | null> | null;
   room_id?: string | null;
   text?: string | null;
   image?: string | null;
@@ -109,6 +112,7 @@ export type DeleteMessageInput = {
 
 export type CreateNotificationInput = {
   id?: string | null;
+  owner?: string | null;
   title?: string | null;
   receiver_id: string;
   content: string;
@@ -121,7 +125,6 @@ export type CreateNotificationInput = {
 
 export type ModelNotificationConditionInput = {
   title?: ModelStringInput | null;
-  receiver_id?: ModelStringInput | null;
   content?: ModelStringInput | null;
   redirect_to?: ModelStringInput | null;
   target_type?: ModelStringInput | null;
@@ -135,19 +138,21 @@ export type ModelNotificationConditionInput = {
 
 export type Notification = {
   __typename: 'Notification';
-  id?: string;
+  id: string;
+  owner?: string | null;
   title?: string | null;
-  receiver_id?: string;
-  content?: string;
+  receiver_id: string;
+  content: string;
   redirect_to?: string | null;
   target_type?: string | null;
   target_id?: string | null;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type UpdateNotificationInput = {
   id: string;
+  owner?: string | null;
   title?: string | null;
   receiver_id?: string | null;
   content?: string | null;
@@ -165,6 +170,7 @@ export type DeleteNotificationInput = {
 export type ModelMessageFilterInput = {
   id?: ModelIDInput | null;
   user_id?: ModelStringInput | null;
+  members?: ModelStringInput | null;
   room_id?: ModelStringInput | null;
   text?: ModelStringInput | null;
   image?: ModelStringInput | null;
@@ -201,6 +207,7 @@ export type ModelMessageConnection = {
 
 export type ModelNotificationFilterInput = {
   id?: ModelIDInput | null;
+  owner?: ModelStringInput | null;
   title?: ModelStringInput | null;
   receiver_id?: ModelStringInput | null;
   content?: ModelStringInput | null;
@@ -235,8 +242,21 @@ export enum ModelSortDirection {
   DESC = 'DESC',
 }
 
+export type CreateNotificationAndFcmMutationVariables = {
+  title?: string | null;
+  receiver_id: string;
+  content: string;
+  redirect_to?: string | null;
+  target_type?: string | null;
+  target_id?: string | null;
+};
+
+export type CreateNotificationAndFcmMutation = {
+  createNotificationAndFcm?: string | null;
+};
+
 export type CreateMessageMutationVariables = {
-  input?: CreateMessageInput;
+  input: CreateMessageInput;
   condition?: ModelMessageConditionInput | null;
 };
 
@@ -245,6 +265,7 @@ export type CreateMessageMutation = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -256,7 +277,7 @@ export type CreateMessageMutation = {
 };
 
 export type UpdateMessageMutationVariables = {
-  input?: UpdateMessageInput;
+  input: UpdateMessageInput;
   condition?: ModelMessageConditionInput | null;
 };
 
@@ -265,6 +286,7 @@ export type UpdateMessageMutation = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -276,7 +298,7 @@ export type UpdateMessageMutation = {
 };
 
 export type DeleteMessageMutationVariables = {
-  input?: DeleteMessageInput;
+  input: DeleteMessageInput;
   condition?: ModelMessageConditionInput | null;
 };
 
@@ -285,6 +307,7 @@ export type DeleteMessageMutation = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -296,7 +319,7 @@ export type DeleteMessageMutation = {
 };
 
 export type CreateNotificationMutationVariables = {
-  input?: CreateNotificationInput;
+  input: CreateNotificationInput;
   condition?: ModelNotificationConditionInput | null;
 };
 
@@ -304,6 +327,7 @@ export type CreateNotificationMutation = {
   createNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -316,7 +340,7 @@ export type CreateNotificationMutation = {
 };
 
 export type UpdateNotificationMutationVariables = {
-  input?: UpdateNotificationInput;
+  input: UpdateNotificationInput;
   condition?: ModelNotificationConditionInput | null;
 };
 
@@ -324,6 +348,7 @@ export type UpdateNotificationMutation = {
   updateNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -336,7 +361,7 @@ export type UpdateNotificationMutation = {
 };
 
 export type DeleteNotificationMutationVariables = {
-  input?: DeleteNotificationInput;
+  input: DeleteNotificationInput;
   condition?: ModelNotificationConditionInput | null;
 };
 
@@ -344,6 +369,7 @@ export type DeleteNotificationMutation = {
   deleteNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -356,7 +382,7 @@ export type DeleteNotificationMutation = {
 };
 
 export type GetMessageQueryVariables = {
-  id?: string;
+  id: string;
 };
 
 export type GetMessageQuery = {
@@ -364,6 +390,7 @@ export type GetMessageQuery = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -387,6 +414,7 @@ export type ListMessagesQuery = {
       __typename: 'Message';
       id: string;
       user_id: string;
+      members?: Array<string | null> | null;
       room_id: string;
       text: string;
       image?: string | null;
@@ -400,13 +428,14 @@ export type ListMessagesQuery = {
 };
 
 export type GetNotificationQueryVariables = {
-  id?: string;
+  id: string;
 };
 
 export type GetNotificationQuery = {
   getNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -430,6 +459,7 @@ export type ListNotificationsQuery = {
     items?: Array<{
       __typename: 'Notification';
       id: string;
+      owner?: string | null;
       title?: string | null;
       receiver_id: string;
       content: string;
@@ -459,6 +489,7 @@ export type MessagesByDateQuery = {
       __typename: 'Message';
       id: string;
       user_id: string;
+      members?: Array<string | null> | null;
       room_id: string;
       text: string;
       image?: string | null;
@@ -485,6 +516,7 @@ export type NotificationSortedByCreatedAtQuery = {
     items?: Array<{
       __typename: 'Notification';
       id: string;
+      owner?: string | null;
       title?: string | null;
       receiver_id: string;
       content: string;
@@ -499,13 +531,14 @@ export type NotificationSortedByCreatedAtQuery = {
 };
 
 export type OnNotificationCreateRecevierSubscriptionVariables = {
-  receiver_id?: string;
+  receiver_id: string;
 };
 
 export type OnNotificationCreateRecevierSubscription = {
   onNotificationCreateRecevier?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -515,6 +548,31 @@ export type OnNotificationCreateRecevierSubscription = {
     createdAt: string;
     updatedAt: string;
   } | null;
+};
+
+export type OnCreateMessageFilterChatroomSubscriptionVariables = {
+  room_id: string;
+};
+
+export type OnCreateMessageFilterChatroomSubscription = {
+  onCreateMessageFilterChatroom?: {
+    __typename: 'Message';
+    id: string;
+    user_id: string;
+    members?: Array<string | null> | null;
+    room_id: string;
+    text: string;
+    image?: string | null;
+    owner?: string | null;
+    view?: number | null;
+    createdAt: string;
+    updatedAt: string;
+  } | null;
+};
+
+export type OnCreateMessageSubscriptionVariables = {
+  owner: string;
+  members: string;
 };
 
 export type OnCreateMessageSubscription = {
@@ -522,6 +580,7 @@ export type OnCreateMessageSubscription = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -530,6 +589,11 @@ export type OnCreateMessageSubscription = {
     createdAt: string;
     updatedAt: string;
   } | null;
+};
+
+export type OnUpdateMessageSubscriptionVariables = {
+  owner: string;
+  members: string;
 };
 
 export type OnUpdateMessageSubscription = {
@@ -537,6 +601,7 @@ export type OnUpdateMessageSubscription = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -545,6 +610,11 @@ export type OnUpdateMessageSubscription = {
     createdAt: string;
     updatedAt: string;
   } | null;
+};
+
+export type OnDeleteMessageSubscriptionVariables = {
+  owner: string;
+  members: string;
 };
 
 export type OnDeleteMessageSubscription = {
@@ -552,6 +622,7 @@ export type OnDeleteMessageSubscription = {
     __typename: 'Message';
     id: string;
     user_id: string;
+    members?: Array<string | null> | null;
     room_id: string;
     text: string;
     image?: string | null;
@@ -562,10 +633,15 @@ export type OnDeleteMessageSubscription = {
   } | null;
 };
 
+export type OnCreateNotificationSubscriptionVariables = {
+  receiver_id: string;
+};
+
 export type OnCreateNotificationSubscription = {
   onCreateNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -575,12 +651,17 @@ export type OnCreateNotificationSubscription = {
     createdAt: string;
     updatedAt: string;
   } | null;
+};
+
+export type OnUpdateNotificationSubscriptionVariables = {
+  receiver_id: string;
 };
 
 export type OnUpdateNotificationSubscription = {
   onUpdateNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;
@@ -592,10 +673,15 @@ export type OnUpdateNotificationSubscription = {
   } | null;
 };
 
+export type OnDeleteNotificationSubscriptionVariables = {
+  receiver_id: string;
+};
+
 export type OnDeleteNotificationSubscription = {
   onDeleteNotification?: {
     __typename: 'Notification';
     id: string;
+    owner?: string | null;
     title?: string | null;
     receiver_id: string;
     content: string;

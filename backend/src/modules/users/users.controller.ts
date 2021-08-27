@@ -7,6 +7,7 @@ import {
   UseInterceptors,
   Param,
   Query,
+  Delete,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { BillingKeyProps, TotalChargeProps } from '@interfaces/index';
@@ -27,7 +28,6 @@ export class UsersController {
     description: 'create User success',
   })
   async signUp(@Body() userCreateDto: UserCreateDto) {
-    console.log(userCreateDto);
     await this.usersService.signUp(userCreateDto);
     return 'user saved';
   }
@@ -67,9 +67,23 @@ export class UsersController {
     @Body() driverSearchDto: DriverSearchDto,
     @Query('page') page: number,
     @Query('sort_by') sortBy: string,
+    @Query('search_by') searchBy: string,
   ) {
     console.log(`page ${page}`);
-    return this.usersService.getDrivers(driverSearchDto, page, sortBy);
+    return this.usersService.getDrivers(driverSearchDto, page, sortBy, searchBy);
+  }
+
+  @ApiOperation({ summary: '내 주변 기사리스트' })
+  @Get('driversByRegion')
+  @ApiResponse({
+    status: 200,
+    description: 'get an array of matching drivers by region success',
+  })
+  async driversByRegion(
+    @Query('x') x: string,
+    @Query('y') y: string,
+  ) {
+    return this.usersService.driversByRegion(x, y);
   }
 
   @ApiOperation({ summary: '단일기사 정보 가져오기' })
@@ -87,7 +101,7 @@ export class UsersController {
     status: 200,
     description: 'get billingkey success',
   })
-  @Post('/billing')
+  @Post('/getBilling')
   async getBillingKey(@Body() body: BillingKeyProps) {
     return this.usersService.getBillingKey(body);
   }
@@ -100,5 +114,15 @@ export class UsersController {
   @Post('/payment')
   async createPayment(@Body() body: TotalChargeProps) {
     return this.usersService.createPayment(body);
+  }
+
+  @ApiOperation({ summary: '등록된 카드 삭제' })
+  @ApiResponse({
+    status: 200,
+    description: 'delete card success',
+  })
+  @Delete('/deleteBilling')
+  async deleteBillingKey() {
+    return this.usersService.deleteBillingKey();
   }
 }

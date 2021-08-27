@@ -8,6 +8,7 @@ import {
 import { UsersEntity } from '@users/users.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { SchedulesEntity } from '@schedules/schedules.entity';
+import { Status } from './enum';
 
 @Entity('reservations')
 export class ReservationsEntity extends DateAuditEntity {
@@ -17,7 +18,11 @@ export class ReservationsEntity extends DateAuditEntity {
   @Column({ nullable: true })
   people: number;
 
-  @Column()
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.PENDING,
+  })
   status: string;
 
   @Column({ nullable: true })
