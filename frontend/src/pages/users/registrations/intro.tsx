@@ -3,7 +3,7 @@ import React from 'react';
 import { Navbar, Page, NavTitle, Button } from 'framework7-react';
 
 const SignUpIntroPage = () => (
-  <Page name="SignUpIntro" className="relative">
+  <Page name="SignUpIntro" className="relative" noToolbar>
     <Navbar backLink>
       <NavTitle>가입유형 선택</NavTitle>
     </Navbar>

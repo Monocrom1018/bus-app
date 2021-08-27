@@ -33,11 +33,6 @@ export class UserUpdateDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
-  password_confirmation: string;
-
-  @IsString()
-  @IsOptional()
-  @ApiProperty()
   bank: string;
 
   @IsString()

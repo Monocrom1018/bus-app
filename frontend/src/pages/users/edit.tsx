@@ -17,8 +17,8 @@ const UserInfoSchema = Yup.object().shape({
   passwordConfirmation: Yup.string().when('password', {
     is: (val: string) => val && val.length > 0,
     then:
-      Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요') &&
-      Yup.string().required('필수 입력사항 입니다'),
+      Yup.string().oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않아요') &&
+      Yup.string().required('필수 입력사항 입니다')
   }),
 });
 
@@ -102,7 +102,7 @@ const EditPage = () => {
                 outline
                 label={i18next.t('login.password_confirmation') as string}
                 type="password"
-                name="password_confirmation"
+                name="passwordConfirmation"
                 placeholder="비밀번호를 확인해주세요"
                 onBlur={handleBlur}
                 onChange={handleChange}

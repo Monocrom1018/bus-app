@@ -2,6 +2,7 @@ import { Factory, Seeder } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
 import { UsersEntity } from '@users/users.entity';
 import { UserType } from '@users/enum';
+import { BusesEntity } from '@buses/buses.entity';
 // import * as AWS from 'aws-sdk';
 
 export default class CreateUsers implements Seeder {
@@ -37,14 +38,22 @@ export default class CreateUsers implements Seeder {
       '세종',
       '제주',
     ];
-    await factory(UsersEntity)()
+
+    const booleanBox = [true, false];
+
+    const users = await factory(UsersEntity)()
       .map(async (user) => {
+        user.id = userIndex
         user.email =
           userIndex < 100
             ? `backPack${`0${userIndex++}`.slice(-2)}@bus.com`
             : `backPack${`${userIndex++}`}@bus.com`;
         user.user_type = userIndex < 11 ? UserType.NORMAL : UserType.DRIVER;
         user.registration_confirmed = false;
+        user.marketing_check = true;
+        user.privacy_check = true;
+        user.term_check = true;
+        user.card_registered = false;
         user.drivable_region = []
           .concat(regions1[Math.floor(Math.random() * 8)])
           .concat(regions2[Math.floor(Math.random() * 8)]);
@@ -54,9 +63,6 @@ export default class CreateUsers implements Seeder {
           user.basic_charge = 300000;
           user.charge_per_km = 1000;
           user.service_charge = 50000;
-          user.people_available = 20;
-          user.bus_old = 2020;
-          user.bus_type = '미니우등';
           user.company_name = '햇살운수';
           user.night_begin = 22;
           user.night_end = 4;
@@ -70,9 +76,6 @@ export default class CreateUsers implements Seeder {
           user.basic_charge = 350000;
           user.charge_per_km = 1050;
           user.service_charge = 30000;
-          user.people_available = 40;
-          user.bus_old = 2015;
-          user.bus_type = '대형우등';
           user.company_name = '달빛여행사';
           user.night_begin = 24;
           user.night_end = 5;
@@ -86,9 +89,6 @@ export default class CreateUsers implements Seeder {
           user.basic_charge = 400000;
           user.charge_per_km = 1100;
           user.service_charge = 70000;
-          user.people_available = 28;
-          user.bus_old = 2017;
-          user.bus_type = '중형';
           user.company_name = '바람관광';
           user.night_begin = 23;
           user.night_end = 4;
@@ -122,5 +122,41 @@ export default class CreateUsers implements Seeder {
         return user;
       })
       .createMany(300);
+
+      for(let i = 0; i < users.length; i ++) {
+        const bus = await factory(BusesEntity)().map(async (bus) => {
+          if (userIndex < 100) {
+            bus.people_available = 20;
+            bus.bus_old = 2020;
+            bus.bus_type = '미니우등';
+            bus.bus_number = '12서울가1234'
+          }
+  
+          if (userIndex >= 100 && userIndex < 200) {
+            bus.people_available = 40;
+            bus.bus_old = 2015;
+            bus.bus_type = '대형우등';
+            bus.bus_number = '12경기가1234'
+          }
+  
+          if (userIndex >= 200) {
+            bus.people_available = 30;
+            bus.bus_old = 2017;
+            bus.bus_type = '중형';
+            bus.bus_number = '12인천가1234'
+          }
+
+          bus.sanitizer = booleanBox[Math.floor(Math.random() *2)];
+          bus.wifi = booleanBox[Math.floor(Math.random() *2)];
+          bus.usb = booleanBox[Math.floor(Math.random() *2)];
+          bus.fridge = booleanBox[Math.floor(Math.random() *2)];
+          bus.movie = booleanBox[Math.floor(Math.random() *2)];
+          bus.audio = booleanBox[Math.floor(Math.random() *2)];
+          bus.user = users[i];
+          return bus
+        }).create()
+        users[i].bus = bus
+        users[i].save();
+      }
   }
 }
