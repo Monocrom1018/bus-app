@@ -7,7 +7,7 @@ import usePostBillingProcess from '@hooks/usePostBillingProcess';
 import { useQuery } from 'react-query';
 import { sleep } from '@js/utils';
 import ReactQueryState from '@components/shared/ReactQueryState';
-import Driver from './users/Driver';
+import DriverListItem from './users/DriverListItem';
 import { getDriversByRegion } from '@api';
 
 const HomePage = ({ f7route, f7router }) => {
@@ -50,7 +50,7 @@ const HomePage = ({ f7route, f7router }) => {
          {data && (
             <div>
               {data.map((driver) => (
-                <Driver driver={driver} key={`driver-${driver.id}`} />
+                <DriverListItem driver={driver} key={`driver-${driver.id}`} />
               ))}
             </div>
           )}
