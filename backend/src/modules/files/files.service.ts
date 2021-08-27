@@ -8,13 +8,12 @@ import { FilesRepository } from './files.repository';
 export class FilesService {
   constructor(
     @InjectRepository(FilesRepository)
-    private readonly filesRepository: FilesRepository
+    private readonly filesRepository: FilesRepository,
   ) {}
 
   async saveFiles(user: UsersEntity, files: any) {
     this.filesRepository.saveFiles(user, files);
   }
 
-  async updateFiles(user, files) {
-  }
+  async updateFiles(user, files) {}
 }

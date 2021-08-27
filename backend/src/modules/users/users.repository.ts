@@ -5,10 +5,10 @@ import {
 import { Brackets, EntityRepository, getRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { ImagesEntity } from '@images/images.entity';
+import { BusesEntity } from '@buses/buses.entity';
 import { UserCreateDto } from './dto/user-create.dto';
 import { UsersEntity } from './users.entity';
 import { UserType } from './enum';
-import { BusesEntity } from '@buses/buses.entity';
 
 @EntityRepository(UsersEntity)
 export class UsersRepository extends Repository<UsersEntity> {
@@ -125,21 +125,19 @@ export class UsersRepository extends Repository<UsersEntity> {
     return user;
   }
 
-  async deleteBillingKey(
-    currentApiUser: UsersEntity,
-  ) {
-    const user = currentApiUser
+  async deleteBillingKey(currentApiUser: UsersEntity) {
+    const user = currentApiUser;
 
     try {
-    user.card_registered = false;
-    user.card_number = null;
-    user.card_company = null;
-    user.card_billing_key = null;
-    user.save();
+      user.card_registered = false;
+      user.card_number = null;
+      user.card_company = null;
+      user.card_billing_key = null;
+      user.save();
     } catch (err) {
-      throw new ConflictException(err)
+      throw new ConflictException(err);
     }
-    
+
     return user;
   }
 
@@ -184,7 +182,7 @@ export class UsersRepository extends Repository<UsersEntity> {
       throw new ConflictException('유저정보가 조회되지 않습니다');
     }
 
-    if(password) {
+    if (password) {
       user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     }
 
@@ -192,8 +190,8 @@ export class UsersRepository extends Repository<UsersEntity> {
       user.profile = profile;
     }
 
-    if(user.user_type === 'driver') {
-      user.bus = bus
+    if (user.user_type === 'driver') {
+      user.bus = bus;
       user.bus.bus_number = busNumber;
       user.bus.bus_type = busType;
       user.bus.bus_old = busOld;
@@ -278,8 +276,8 @@ export class UsersRepository extends Repository<UsersEntity> {
         new Brackets((qb) => {
           qb.where('user_type = :driver', { driver: 'driver' });
         }),
-        )
-      .andWhere("users.name ilike :name", { name:`%${searchBy}%` })
+      )
+      .andWhere('users.name ilike :name', { name: `%${searchBy}%` })
       .innerJoinAndSelect('users.bus', 'buses')
       .orderBy(orderQuery)
       .take(5)
@@ -292,12 +290,12 @@ export class UsersRepository extends Repository<UsersEntity> {
   async findDriversByRegion(region: string) {
     const drivers = await getRepository(UsersEntity)
       .createQueryBuilder('users')
-      .where(`drivable_region @> ARRAY['${region.slice(0,2)}']`)
+      .where(`drivable_region @> ARRAY['${region.slice(0, 2)}']`)
       .innerJoinAndSelect('users.bus', 'buses')
       .orderBy('RANDOM()')
-      .getMany()
+      .getMany();
 
-    const selectFive = drivers.splice(0,5);
+    const selectFive = drivers.splice(0, 5);
     return selectFive;
   }
 }

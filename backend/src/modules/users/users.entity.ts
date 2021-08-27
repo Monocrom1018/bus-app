@@ -18,8 +18,8 @@ import { DateAuditEntity } from '@entities/date-audit.entity';
 import { ImagesEntity } from '@images/images.entity';
 import { FilesEntity } from '@files/files.entity';
 import { UsersChatroomsEntity } from 'src/modules/users-chatrooms/user-chatrooms.entity';
-import { UserType } from './enum';
 import { BusesEntity } from '@buses/buses.entity';
+import { UserType } from './enum';
 
 @Entity('users')
 @Unique(['email'])

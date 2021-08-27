@@ -1,3 +1,5 @@
+/* eslint-disable no-loop-func */
+/* eslint-disable no-await-in-loop */
 import { Factory, Seeder } from 'typeorm-seeding';
 import { Connection } from 'typeorm';
 import { UsersEntity } from '@users/users.entity';
@@ -43,7 +45,7 @@ export default class CreateUsers implements Seeder {
 
     const users = await factory(UsersEntity)()
       .map(async (user) => {
-        user.id = userIndex
+        user.id = userIndex;
         user.email =
           userIndex < 100
             ? `backPack${`0${userIndex++}`.slice(-2)}@bus.com`
@@ -123,40 +125,42 @@ export default class CreateUsers implements Seeder {
       })
       .createMany(300);
 
-      for(let i = 0; i < users.length; i ++) {
-        const bus = await factory(BusesEntity)().map(async (bus) => {
+    for (let i = 0; i < users.length; i++) {
+      const bus = await factory(BusesEntity)()
+        .map(async (bus) => {
           if (userIndex < 100) {
             bus.people_available = 20;
             bus.bus_old = 2020;
             bus.bus_type = '미니우등';
-            bus.bus_number = '12서울가1234'
+            bus.bus_number = '12서울가1234';
           }
-  
+
           if (userIndex >= 100 && userIndex < 200) {
             bus.people_available = 40;
             bus.bus_old = 2015;
             bus.bus_type = '대형우등';
-            bus.bus_number = '12경기가1234'
+            bus.bus_number = '12경기가1234';
           }
-  
+
           if (userIndex >= 200) {
             bus.people_available = 30;
             bus.bus_old = 2017;
             bus.bus_type = '중형';
-            bus.bus_number = '12인천가1234'
+            bus.bus_number = '12인천가1234';
           }
 
-          bus.sanitizer = booleanBox[Math.floor(Math.random() *2)];
-          bus.wifi = booleanBox[Math.floor(Math.random() *2)];
-          bus.usb = booleanBox[Math.floor(Math.random() *2)];
-          bus.fridge = booleanBox[Math.floor(Math.random() *2)];
-          bus.movie = booleanBox[Math.floor(Math.random() *2)];
-          bus.audio = booleanBox[Math.floor(Math.random() *2)];
+          bus.sanitizer = booleanBox[Math.floor(Math.random() * 2)];
+          bus.wifi = booleanBox[Math.floor(Math.random() * 2)];
+          bus.usb = booleanBox[Math.floor(Math.random() * 2)];
+          bus.fridge = booleanBox[Math.floor(Math.random() * 2)];
+          bus.movie = booleanBox[Math.floor(Math.random() * 2)];
+          bus.audio = booleanBox[Math.floor(Math.random() * 2)];
           bus.user = users[i];
-          return bus
-        }).create()
-        users[i].bus = bus
-        users[i].save();
-      }
+          return bus;
+        })
+        .create();
+      users[i].bus = bus;
+      users[i].save();
+    }
   }
 }

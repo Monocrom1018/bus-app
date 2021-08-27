@@ -12,16 +12,16 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { BillingKeyProps } from '@interfaces/index';
 import { ImagesEntity } from '@images/images.entity';
 import { ImagesRepository } from '@images/images.repository';
+import { BusesRepository } from '@buses/buses.repository';
+import { BusesEntity } from '@buses/buses.entity';
+import { FilesService } from '@files/files.service';
+import { SchedulesService } from '@schedules/schedules.service';
 import { UserCreateDto } from './dto/user-create.dto';
 import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
 import { UsersEntity } from './users.entity';
 import { MonthsService } from '../months/months.service';
 import { UserUpdateDto } from './dto/user-update.dto';
-import { BusesRepository } from '@buses/buses.repository';
-import { BusesEntity } from '@buses/buses.entity';
-import { FilesService } from '@files/files.service';
-import { SchedulesService } from '@schedules/schedules.service';
 
 @Injectable()
 export class UsersService {
@@ -42,13 +42,12 @@ export class UsersService {
     const uuid = await this.authService.sub();
     const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
-    
     if (!user) {
       throw new NotAcceptableException();
     }
 
-    if(user.user_type === 'driver') {
-      await this.filesService.saveFiles(user, files)
+    if (user.user_type === 'driver') {
+      await this.filesService.saveFiles(user, files);
     }
 
     return 'user created';
@@ -93,20 +92,25 @@ export class UsersService {
     });
 
     const previousBus = await this.busesRepository.findOne({
-      user
-    })
+      user,
+    });
 
-    if(!previousBus) {
+    if (!previousBus) {
       await this.busesRepository.save({
-        user
-      })
+        user,
+      });
     }
 
     const bus: BusesEntity = await this.busesRepository.findOne({
-      user
-    })
+      user,
+    });
 
-    return this.usersRepository.updateUser(user, userUpdateColumns, profile, bus);
+    return this.usersRepository.updateUser(
+      user,
+      userUpdateColumns,
+      profile,
+      bus,
+    );
   }
 
   async getBillingKey(body: BillingKeyProps) {
@@ -140,10 +144,10 @@ export class UsersService {
 
   async deleteBillingKey() {
     const user = await this.authService.currentApiUser();
-    if(!user) {
-      throw new ConflictException('유저정보가 조회되지 않습니다')
+    if (!user) {
+      throw new ConflictException('유저정보가 조회되지 않습니다');
     }
-    return this.usersRepository.deleteBillingKey(user)
+    return this.usersRepository.deleteBillingKey(user);
   }
 
   async createPayment(body) {
@@ -257,11 +261,12 @@ export class UsersService {
   }
 
   async driversByRegion(x: string, y: string) {
-    const { data: { 
-      addressInfo: {
-        city_do: region
-      }}} = await this.scheduleService.getReverseGeoData(x, y);
-    
+    const {
+      data: {
+        addressInfo: { city_do: region },
+      },
+    } = await this.scheduleService.getReverseGeoData(x, y);
+
     const drivers = await this.usersRepository.findDriversByRegion(region);
     return {
       data: drivers,
