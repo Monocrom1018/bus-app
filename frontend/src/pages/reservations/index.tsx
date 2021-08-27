@@ -6,8 +6,8 @@ import useAuth from '@hooks/useAuth';
 import { useInfiniteQuery } from 'react-query';
 import { useInView } from 'react-intersection-observer';
 import { REACT_QUERY_KEYS } from '@constants';
-import DriverReservationPage from './DriverReservation';
-import ReservationPage from './Reservation';
+import DriverReservation from './DriverReservation';
+import Reservation from './Reservation';
 
 const ReservationIndexPage = () => {
   const { currentUser } = useAuth();
@@ -71,9 +71,11 @@ const ReservationIndexPage = () => {
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
-                      return <ReservationPage reservation={reservation} refetch={refetch} key={reservation?.id} />;
+                      return <Reservation reservation={reservation} refetch={refetch} key={reservation?.id || ''} />;
                     }
-                    return <DriverReservationPage reservation={reservation} refetch={refetch} key={reservation?.id} />;
+                    return (
+                      <DriverReservation reservation={reservation} refetch={refetch} key={reservation?.id || ''} />
+                    );
                   })}
                 </>
               ) : (

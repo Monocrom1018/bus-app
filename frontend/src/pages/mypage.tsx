@@ -86,12 +86,6 @@ const MyPage = () => {
               <a href="/users/sign_up/intro">회원가입</a>
             </li>
           </List>
-          <Link className="button" href="/chatroooms/a123/single?user_id=584">
-            584메시지
-          </Link>
-          <Link className="button" href="/chatroooms/a123/single?user_id=573">
-            573메시지
-          </Link>
         </>
       )}
     </Page>

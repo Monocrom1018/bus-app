@@ -107,11 +107,11 @@ const DriverSignUpPage: React.FC = () => {
         });
       } catch (error) {
         message = error.message;
-        if(error.code === 'UsernameExistsException') {
-          setFieldValue('email', '')
-          setFieldValue('password', '')
-          setFieldValue('password_confirmation', '')
-          message = "이미 가입된 이메일 입니다"
+        if (error.code === 'UsernameExistsException') {
+          setFieldValue('email', '');
+          setFieldValue('password', '');
+          setFieldValue('password_confirmation', '');
+          message = '이미 가입된 이메일 입니다';
         }
         setSubmitting(false);
         f7.preloader.hide();

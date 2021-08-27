@@ -125,7 +125,9 @@ const SessionNewPage: React.FC = () => {
               />
             </List>
             <div className="flex justify-end mr-4 -mt-8 mb-6">
-              <a href="" className="text-red-500 font-semibold italic">비밀번호를 잃어버리셨어요?</a>
+              <a href="" className="text-red-500 font-semibold italic">
+                비밀번호를 잃어버리셨나요?
+              </a>
             </div>
             <div className="p-1">
               <button

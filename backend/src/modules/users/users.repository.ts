@@ -96,6 +96,7 @@ export class UsersRepository extends Repository<UsersEntity> {
   }
 
   async findByUuid(uuid: string): Promise<UsersEntity> {
+    console.log(uuid);
     const user = await this.findOne({
       where: {
         uuid,

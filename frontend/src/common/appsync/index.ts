@@ -53,10 +53,10 @@ export const getMessageInfiniteQuery =
 // Mutations
 
 // Subscriptions
-export const onCreateMessageSubscription = () => {
-  const subscription = API.graphql({
-    query: subscriptions.onCreateMessage,
-  }) as Observable<any>;
+export const onCreateMessageSubscription = (room_id) => {
+  const subscription = API.graphql(
+    graphqlOperation(subscriptions.onCreateMessageFilterChatroom, { room_id }),
+  ) as Observable<any>;
 
   return subscription;
 };

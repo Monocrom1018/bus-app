@@ -57,7 +57,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
         setOpUser(() => user);
       })();
     }
-  }, []); // ]);
+  }, []);
 
   const { data, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
     InfiniteAppSync<MessageType>,
@@ -119,9 +119,10 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
       messagebar.current = f7.messagebar.get(`.messagebar-${room_id}`);
       if (newChat) messagebar.current.focus();
     });
-    const subscription = onCreateMessageSubscription().subscribe({
+    const subscription = onCreateMessageSubscription(room_id).subscribe({
       next: ({ value }) => {
-        const message: MessageType = value.data.onCreateMessage;
+        const message: MessageType = value.data.onCreateMessageFilterChatroom;
+        console.log(value);
         if (message.room_id === room_id && currentUser.id.toString() !== message.user_id) {
           refetch();
         }
@@ -163,6 +164,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
               const newMessage = {
                 ...newMessageProps,
                 room_id: cr.id,
+                members: [opUser?.uuid as string, currentUser.uuid],
               };
               createMessageMutation.mutate(newMessage, {
                 onSuccess: () => {
@@ -179,6 +181,7 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
         const newMessage = {
           ...newMessageProps,
           room_id,
+          members: chatroom?.users.map((v) => v.uuid),
         };
         const tempId = `temp-${moment().format('x')}`;
         queryClient.setQueryData<MessageType[]>(RECV_MESSAGES_KEY, (msgs: any) => [
