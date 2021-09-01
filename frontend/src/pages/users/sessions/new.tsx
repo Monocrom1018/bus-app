@@ -66,7 +66,7 @@ const SessionNewPage: React.FC = () => {
         message = '성공적으로 로그인 하였습니다';
       } catch (error) {
         // amplift error
-        if (typeof error.message === 'string') message = error.messgae;
+        if (typeof error.message === 'string') message = error.message;
         // unknown error
         else message = '예상치 못한 오류가 발생하였습니다';
       } finally {
