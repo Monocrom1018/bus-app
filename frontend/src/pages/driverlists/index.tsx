@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page, Navbar, NavTitle, Block, Input } from 'framework7-react';
-import Driver from '../users/Driver';
+import DriverListItem from '../users/DriverListItem';
 
 const DriverListPage = () => (
   <Page noToolbar name="driverlist">
@@ -16,10 +16,6 @@ const DriverListPage = () => (
           <option value="연식순">차량연식순</option>
         </Input>
       </div>
-      <Driver />
-      <Driver />
-      <Driver />
-      <Driver />
     </Block>
   </Page>
 );

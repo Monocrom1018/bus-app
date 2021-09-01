@@ -13,7 +13,7 @@ import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import ListPreloader from '@components/shared/ListPreloader';
-import Driver from './users/Driver';
+import DriverListItem from './users/DriverListItem';
 
 const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
@@ -40,6 +40,9 @@ const SearchPage = () => {
   const { data, isLoading, refetch, fetchNextPage, hasNextPage } = useInfiniteQuery(
     ['drivers'],
     async ({ pageParam: page = 1 }) => {
+      if (page === false) {
+        return [];
+      }
       const response = await getDrivers(
         { ...searchingOption, schedule: latestTourSchedule.current },
         page,
@@ -191,10 +194,11 @@ const SearchPage = () => {
             >
               <Input
                 type="text"
+                defaultValue={searchBy.current}
                 placeholder="기사이름 검색"
                 className="w-28 h-6 mx-4 px-1 border-b-2 border-red-400"
                 onChange={(e) => {
-                  searchBy.current = e.target.value;
+                  searchBy.current = (e.target.value).replace(/(\s*)/g, "");
                 }}
               />
               <div className="f7-icons absolute -top-1 right-4 text-red-500 text-xl" onClick={filterDrivers}>
@@ -204,7 +208,7 @@ const SearchPage = () => {
           </div>
           <div>
             {drivers.map((driver) => (
-              <Driver driver={driver} key={`driver-${driver.id}`} />
+              <DriverListItem driver={driver} key={`driver-${driver.id}`} />
             ))}
           </div>
         </div>
