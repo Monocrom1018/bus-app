@@ -14,6 +14,4 @@ export class FilesService {
   async saveFiles(user: UsersEntity, files: any) {
     this.filesRepository.saveFiles(user, files);
   }
-
-  async updateFiles(user, files) {}
 }

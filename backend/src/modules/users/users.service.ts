@@ -38,7 +38,12 @@ export class UsersService {
   ) {}
 
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
-    const { files } = userCreateDto;
+    const { files, user_type } = userCreateDto;
+
+    if(user_type === 'DRIVER' && files.length < 2) {
+      throw new ConflictException("파일을 모두 첨부해주세요")
+    }
+
     const uuid = await this.authService.sub();
     const user = await this.usersRepository.signUp(userCreateDto, uuid);
 
@@ -49,6 +54,7 @@ export class UsersService {
     if (user.user_type === 'driver') {
       await this.filesService.saveFiles(user, files);
     }
+
 
     return 'user created';
   }
