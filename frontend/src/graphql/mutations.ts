@@ -27,10 +27,7 @@ export const callPhoneCertification = /* GraphQL */ `
   }
 `;
 export const createMessage = /* GraphQL */ `
-  mutation CreateMessage(
-    $input: CreateMessageInput!
-    $condition: ModelMessageConditionInput
-  ) {
+  mutation CreateMessage($input: CreateMessageInput!, $condition: ModelMessageConditionInput) {
     createMessage(input: $input, condition: $condition) {
       id
       user_id
@@ -46,10 +43,7 @@ export const createMessage = /* GraphQL */ `
   }
 `;
 export const updateMessage = /* GraphQL */ `
-  mutation UpdateMessage(
-    $input: UpdateMessageInput!
-    $condition: ModelMessageConditionInput
-  ) {
+  mutation UpdateMessage($input: UpdateMessageInput!, $condition: ModelMessageConditionInput) {
     updateMessage(input: $input, condition: $condition) {
       id
       user_id
@@ -65,10 +59,7 @@ export const updateMessage = /* GraphQL */ `
   }
 `;
 export const deleteMessage = /* GraphQL */ `
-  mutation DeleteMessage(
-    $input: DeleteMessageInput!
-    $condition: ModelMessageConditionInput
-  ) {
+  mutation DeleteMessage($input: DeleteMessageInput!, $condition: ModelMessageConditionInput) {
     deleteMessage(input: $input, condition: $condition) {
       id
       user_id
@@ -84,10 +75,7 @@ export const deleteMessage = /* GraphQL */ `
   }
 `;
 export const createNotification = /* GraphQL */ `
-  mutation CreateNotification(
-    $input: CreateNotificationInput!
-    $condition: ModelNotificationConditionInput
-  ) {
+  mutation CreateNotification($input: CreateNotificationInput!, $condition: ModelNotificationConditionInput) {
     createNotification(input: $input, condition: $condition) {
       id
       owner
@@ -103,10 +91,7 @@ export const createNotification = /* GraphQL */ `
   }
 `;
 export const updateNotification = /* GraphQL */ `
-  mutation UpdateNotification(
-    $input: UpdateNotificationInput!
-    $condition: ModelNotificationConditionInput
-  ) {
+  mutation UpdateNotification($input: UpdateNotificationInput!, $condition: ModelNotificationConditionInput) {
     updateNotification(input: $input, condition: $condition) {
       id
       owner
@@ -122,10 +107,7 @@ export const updateNotification = /* GraphQL */ `
   }
 `;
 export const deleteNotification = /* GraphQL */ `
-  mutation DeleteNotification(
-    $input: DeleteNotificationInput!
-    $condition: ModelNotificationConditionInput
-  ) {
+  mutation DeleteNotification($input: DeleteNotificationInput!, $condition: ModelNotificationConditionInput) {
     deleteNotification(input: $input, condition: $condition) {
       id
       owner

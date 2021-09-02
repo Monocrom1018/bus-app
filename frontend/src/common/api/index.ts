@@ -96,9 +96,9 @@ export const getDistance = async (params) => {
 };
 
 export const getDriversByRegion = async (x, y) => {
-  const { data } = await API.get(`users/driversByRegion?x=${x}&y=${y}`)
-  return data
-}
+  const { data } = await API.get(`users/driversByRegion?x=${x}&y=${y}`);
+  return data;
+};
 
 export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
@@ -125,10 +125,10 @@ export const getBillingKey = async (params) => {
   return data;
 };
 
-export const deleteBillingKey = async() => {
+export const deleteBillingKey = async () => {
   const { data } = await API.delete(`users/deleteBilling`);
   return data;
-}
+};
 
 export const createPayment = async (params) => {
   const { data } = await API.post(`users/payment`, params);

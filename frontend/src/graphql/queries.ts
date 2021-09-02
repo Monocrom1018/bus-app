@@ -19,11 +19,7 @@ export const getMessage = /* GraphQL */ `
   }
 `;
 export const listMessages = /* GraphQL */ `
-  query ListMessages(
-    $filter: ModelMessageFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListMessages($filter: ModelMessageFilterInput, $limit: Int, $nextToken: String) {
     listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id
@@ -58,11 +54,7 @@ export const getNotification = /* GraphQL */ `
   }
 `;
 export const listNotifications = /* GraphQL */ `
-  query ListNotifications(
-    $filter: ModelNotificationFilterInput
-    $limit: Int
-    $nextToken: String
-  ) {
+  query ListNotifications($filter: ModelNotificationFilterInput, $limit: Int, $nextToken: String) {
     listNotifications(filter: $filter, limit: $limit, nextToken: $nextToken) {
       items {
         id

@@ -106,29 +106,30 @@ const DriverDetailPage = ({ id, f7router }) => {
       </div>
 
       {totalCharge && (
-      <div>
-        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
-        <div className="flex flex-col -mt-6">
-          <ScheduleTimeDisplay
-            departureDate={departureDate}
-            departureTime={departureTime}
-            returnDate={returnDate}
-            returnTime={returnTime}
-          />
-          <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
-        </div>
+        <div>
+          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
+          <div className="flex flex-col -mt-6">
+            <ScheduleTimeDisplay
+              departureDate={departureDate}
+              departureTime={departureTime}
+              returnDate={returnDate}
+              returnTime={returnTime}
+            />
+            <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
+          </div>
 
-        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
-        <List noHairlinesMd className="mt-3 pt-0">
-          <ListInput
-            type="text"
-            placeholder="탑승인원을 숫자만 입력해주세요"
-            clearButton
-            onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
-            value={people}
-          />
-        </List>
-      </div>)}
+          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
+          <List noHairlinesMd className="mt-3 pt-0">
+            <ListInput
+              type="text"
+              placeholder="탑승인원을 숫자만 입력해주세요"
+              clearButton
+              onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+              value={people}
+            />
+          </List>
+        </div>
+      )}
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
       <List accordionList className="mt-3 pb-10">
         <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
