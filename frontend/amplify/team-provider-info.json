@@ -30,7 +30,7 @@
         },
         "callPhoneCertification": {
           "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
-          "s3Key": "amplify-builds/callPhoneCertification-357572455650334d4871-build.zip"
+          "s3Key": "amplify-builds/callPhoneCertification-30435334783854654d37-build.zip"
         }
       }
     }

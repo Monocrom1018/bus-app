@@ -58,23 +58,17 @@
               "userPoolId": "authbackpackbusdevfe582237"
             }
           },
-          "additionalAuthenticationProviders": []
-        }
-      }
-    },
-    "backpackBusRestApi": {
-      "service": "API Gateway",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": [
-        {
-          "category": "function",
-          "resourceName": "callPhoneCertification",
-          "attributes": [
-            "Name",
-            "Arn"
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 365,
+                "description": "forPhoneCertification"
+              }
+            }
           ]
         }
-      ]
+      }
     }
   },
   "storage": {
