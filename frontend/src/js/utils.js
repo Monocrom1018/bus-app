@@ -88,6 +88,6 @@ export const saleRate = ({ list_price, sale_price }) => {
   return result;
 };
 
-export const showToast = (text, position = 'center') => {
-  f7.toast.show({ text, position, closeTimeout: 2000 });
+export const showToast = (text, timeout = 2000, position = 'center') => {
+  f7.toast.show({ text, position, closeTimeout: timeout });
 };

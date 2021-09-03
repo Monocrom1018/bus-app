@@ -65,6 +65,39 @@ const DriverDetailPage = ({ id, f7router }) => {
     getTargetDriver();
   }, [id, setDriver]);
 
+  const showButton = (isAuthenticated: boolean, charge: number) => {
+    if (isAuthenticated && charge) {
+      return (
+        <div className="fixed bottom-0 z-50 w-full bg-white pt-1 pb-4">
+          <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
+            <div>요금 총액</div>
+            <div>{charge?.toLocaleString()}₩</div>
+          </div>
+          <Button
+            text="견적 전달하기"
+            className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg"
+            onClick={handleSubmit}
+          />
+        </div>
+      );
+    }
+    if (isAuthenticated && !charge) {
+      return (
+        <Button disabled href="#" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+          일정을 입력하고 견적을 전달해보세요
+        </Button>
+      );
+    }
+    if (!isAuthenticated) {
+      return (
+        <Button href="/users/sign_up/intro" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+          회원가입 하고 이용하기
+        </Button>
+      );
+    }
+    return false;
+  };
+
   return (
     <Page noToolbar name="driverdetail">
       {/* Top Navbar */}
@@ -140,30 +173,7 @@ const DriverDetailPage = ({ id, f7router }) => {
           </AccordionContent>
         </ListItem>
       </List>
-
-      {currentUser.isAuthenticated && totalCharge ? (
-        <div className="fixed bottom-0 z-50 w-full bg-white pt-1 pb-4">
-          <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
-            <div>요금 총액</div>
-            <div>{totalCharge?.toLocaleString()}₩</div>
-          </div>
-          <Button
-            text="견적 전달하기"
-            className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg"
-            onClick={handleSubmit}
-          />
-        </div>
-      ) : (
-        <Button disabled href="#" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
-          일정을 입력하고 견적을 전달해보세요
-        </Button>
-      )}
-
-      {!currentUser.isAuthenticated && (
-        <Button href="/users/sign_up/intro" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
-          회원가입 하고 이용하기
-        </Button>
-      )}
+      {showButton(currentUser.isAuthenticated, totalCharge)}
     </Page>
   );
 };
