@@ -13,7 +13,7 @@ import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import ListPreloader from '@components/shared/ListPreloader';
-import DriverListItem from './users/driverListItem';
+import DriverListItem from './users/DriverListItem';
 
 const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
