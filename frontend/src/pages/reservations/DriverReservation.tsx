@@ -6,7 +6,7 @@ import moment from 'moment';
 import { createPayment, updateReservation } from '@api';
 import { showToast } from '@js/utils';
 
-const DriverReservationPage = ({reservation, refetch}) => {
+const DriverReservationPage = ({ reservation, refetch }) => {
   const setReservation = useSetRecoilState(reservationState);
   const actionsToPopover = useRef(null);
   const {

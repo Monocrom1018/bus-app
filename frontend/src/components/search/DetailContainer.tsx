@@ -247,7 +247,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
                 onFocus={onFocus}
               />
-              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('departure', '')}></span>
+              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('departure', '')} />
             </div>
             {searchResult('departure')}
           </div>
@@ -269,7 +269,10 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                     onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
                     onFocus={onFocus}
                   />
-                  <span className="input-clear-button mr-6" onClick={() => setPostCode('', 'stopOvers', `${stopOver.id}`)}></span>
+                  <span
+                    className="input-clear-button mr-6"
+                    onClick={() => setPostCode('', 'stopOvers', `${stopOver.id}`)}
+                  />
                 </div>
                 {searchResult('stopOvers', stopOver.id)}
               </div>
@@ -284,7 +287,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
                 onFocus={onFocus}
               />
-              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('destination', '')}></span>
+              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('destination', '')} />
             </div>
             {searchResult('destination')}
           </div>

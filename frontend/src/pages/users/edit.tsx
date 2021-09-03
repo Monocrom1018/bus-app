@@ -18,7 +18,7 @@ const UserInfoSchema = Yup.object().shape({
     is: (val: string) => val && val.length > 0,
     then:
       Yup.string().oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않아요') &&
-      Yup.string().required('필수 입력사항 입니다')
+      Yup.string().required('필수 입력사항 입니다'),
   }),
 });
 

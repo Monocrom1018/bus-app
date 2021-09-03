@@ -14,7 +14,7 @@ const TimePicker = (props: { el: string }) => {
       rotateEffect: true,
       backdrop: true,
       value: ['0', '00'],
-      formatValue: function (values) {
+      formatValue(values) {
         return `${values[0]} : ${values[1]}`;
       },
       cols: [
