@@ -16,6 +16,7 @@ import { BusesRepository } from '@buses/buses.repository';
 import { BusesEntity } from '@buses/buses.entity';
 import { FilesService } from '@files/files.service';
 import { SchedulesService } from '@schedules/schedules.service';
+import { MailerService } from '@nestjs-modules/mailer';
 import { UserCreateDto } from './dto/user-create.dto';
 import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
@@ -33,6 +34,7 @@ export class UsersService {
     private readonly monthsService: MonthsService,
     private readonly busesRepository: BusesRepository,
     private readonly authService: AuthService,
+    private readonly mailerService: MailerService,
     @Inject(forwardRef(() => SchedulesService))
     private scheduleService: SchedulesService,
   ) {}
@@ -40,8 +42,8 @@ export class UsersService {
   async signUp(userCreateDto: UserCreateDto): Promise<string> {
     const { files, user_type } = userCreateDto;
 
-    if(user_type === 'DRIVER' && files.length < 2) {
-      throw new ConflictException("파일을 모두 첨부해주세요")
+    if (user_type === 'DRIVER' && files.length < 2) {
+      throw new ConflictException('파일을 모두 첨부해주세요');
     }
 
     const uuid = await this.authService.sub();
@@ -54,7 +56,6 @@ export class UsersService {
     if (user.user_type === 'driver') {
       await this.filesService.saveFiles(user, files);
     }
-
 
     return 'user created';
   }
@@ -284,5 +285,18 @@ export class UsersService {
       .format('YYYY년 M월 DD일 HH시 MM분')
       .split(' ')[1];
     return month;
+  }
+
+  async sendMail(user_email: string) {
+    this.mailerService.sendMail({
+      to: 'dkrnfls@naver.com', // list of receivers
+      from: 'woobyeong@insomenia.com', // sender address
+      subject: '[배낭버스] 비밀번호 재설정 안내', // Subject line
+      template: `${process.cwd()}/src/config/mailer/template`, // The `.pug`, `.ejs` or `.hbs` extension is appended automatically.
+      context: {
+        // Data to be sent to template engine.
+        user_email,
+      },
+    });
   }
 }

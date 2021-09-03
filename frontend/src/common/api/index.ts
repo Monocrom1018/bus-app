@@ -28,6 +28,7 @@ export const loginAPI = (params: FormData) => PlainAPI.post('/login', params);
 export const updateAPI = (params: DefaultParams = {}) => API.post('/users/update', params);
 export const signupAPI = (params: DefaultParams = {}) => API.post('/users/signup', params);
 export const logoutAPI = () => API.delete('/logout');
+export const resetPasswordApi = (params: any) => PlainAPI.get('/users/reset-password', params);
 
 export const getSmsAuth = (params) => API.get('/phone_certifications/sms_auth', { params });
 export const deleteImage = (id, params) => API.delete(`/images/${id}`, { params });
@@ -96,9 +97,9 @@ export const getDistance = async (params) => {
 };
 
 export const getDriversByRegion = async (x, y) => {
-  const { data } = await API.get(`users/driversByRegion?x=${x}&y=${y}`)
-  return data
-}
+  const { data } = await API.get(`users/driversByRegion?x=${x}&y=${y}`);
+  return data;
+};
 
 export const createReservation = async (params) => {
   const { data } = await API.post(`reservations/create`, params);
@@ -125,10 +126,10 @@ export const getBillingKey = async (params) => {
   return data;
 };
 
-export const deleteBillingKey = async() => {
+export const deleteBillingKey = async () => {
   const { data } = await API.delete(`users/deleteBilling`);
   return data;
-}
+};
 
 export const createPayment = async (params) => {
   const { data } = await API.post(`users/payment`, params);

@@ -1,13 +1,10 @@
 import Auth, { CognitoUser } from '@aws-amplify/auth';
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { f7, Page, Navbar, List, ListInput } from 'framework7-react';
 import { Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import i18next from 'i18next';
 import useAuth from '@hooks/useAuth';
-import { loginAPI, userMeApi } from '@api';
-import { convertObjectToFormData } from '@utils';
-import { showToast } from '@js/utils';
 
 type AmplifySignIn = (param: UserSignInParams) => Promise<CognitoUser>;
 
@@ -125,7 +122,7 @@ const SessionNewPage: React.FC = () => {
               />
             </List>
             <div className="flex justify-end mr-4 -mt-8 mb-6">
-              <a href="" className="text-red-500 font-semibold italic">
+              <a href="/users/passwords/new" className="text-red-500 font-semibold italic">
                 비밀번호를 잃어버리셨나요?
               </a>
             </div>

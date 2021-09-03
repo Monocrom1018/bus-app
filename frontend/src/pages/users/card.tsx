@@ -9,7 +9,7 @@ import { showToast } from '@js/utils';
 import { sleep } from '@utils';
 
 const CardPage = () => {
-  const [ currentUser, setCurrentUser ] = useRecoilState(currentUserState);
+  const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const clientKey = 'test_ck_7XZYkKL4Mrj9XXponbaV0zJwlEWR';
   const { card_number, card_company, uuid } = currentUser;
 
@@ -24,24 +24,24 @@ const CardPage = () => {
   };
 
   const deleteCard = async () => {
-    f7.dialog.confirm("카드를 삭제하시겠습니까?", async () => {
+    f7.dialog.confirm('카드를 삭제하시겠습니까?', async () => {
       let message: string;
       f7.dialog.preloader('잠시만 기다려주세요...');
       await sleep(400);
       try {
-        const user =await deleteBillingKey();
+        const user = await deleteBillingKey();
         setCurrentUser({ ...user, isAuthenticated: true });
         f7.dialog.close();
-        message = "카드가 삭제되었습니다"
-      } catch(error) {
+        message = '카드가 삭제되었습니다';
+      } catch (error) {
         if (typeof error.message === 'string') message = error.message;
         else message = '예상치 못한 오류가 발생하였습니다';
         f7.dialog.close();
       } finally {
-        showToast(message)
+        showToast(message);
       }
-    })
-  }
+    });
+  };
 
   return (
     <Page className="bg-white" noToolbar>
@@ -51,8 +51,8 @@ const CardPage = () => {
           <div className="font-bold">{card_company}</div>
           <div className="font-bold">{card_number}</div>
           <div className="image-slide-delete-btn absolute -top-3 -right-3" onClick={deleteCard}>
-              <IoCloseCircle size="25px" />
-            </div>
+            <IoCloseCircle size="25px" />
+          </div>
         </Card>
       ) : (
         <div className="flex flex-col items-center">
