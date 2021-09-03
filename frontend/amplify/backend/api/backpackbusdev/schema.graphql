@@ -56,4 +56,11 @@ type Mutation {
   @function(name: "createNotificationAndFcm-${env}")
   @aws_cognito_user_pools
   @aws_iam
+
+  callPhoneCertification(
+    code: String!
+    phone_number: String!
+  ): String
+  @function(name: "callPhoneCertification-${env}")
+  @aws_api_key
 }

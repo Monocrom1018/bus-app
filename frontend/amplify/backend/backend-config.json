@@ -39,6 +39,11 @@
           ]
         }
       ]
+    },
+    "callPhoneCertification": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
     }
   },
   "api": {
@@ -53,7 +58,15 @@
               "userPoolId": "authbackpackbusdevfe582237"
             }
           },
-          "additionalAuthenticationProviders": []
+          "additionalAuthenticationProviders": [
+            {
+              "authenticationType": "API_KEY",
+              "apiKeyConfig": {
+                "apiKeyExpirationDays": 365,
+                "description": "forPhoneCertification"
+              }
+            }
+          ]
         }
       }
     }

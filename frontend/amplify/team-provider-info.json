@@ -27,6 +27,10 @@
         "createNotificationAndFcm": {
           "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
           "s3Key": "amplify-builds/createNotificationAndFcm-334c4d7858425a323073-build.zip"
+        },
+        "callPhoneCertification": {
+          "deploymentBucketName": "amplify-backpackbusdev-dev-155633-deployment",
+          "s3Key": "amplify-builds/callPhoneCertification-30435334783854654d37-build.zip"
         }
       }
     }
