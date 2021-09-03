@@ -40,7 +40,11 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
             </NavRight>
           </Navbar>
           <Block>
-            <div className="my-20">
+            <div className="my-10 mx-3">
+              <div className="font-semibold text-3xl tracking-wide">일정 선택</div>
+              <div className="my-2 text-gray-500 text-base tracking-wider">검색하실 일정을 선택해주세요</div>
+            </div>
+            <div className="mb-12 mt-8">
               <Row>
                 <Col width="50">
                   <ListInput
