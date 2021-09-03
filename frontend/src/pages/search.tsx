@@ -1,8 +1,8 @@
-import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button } from 'framework7-react';
+import { f7, Link, Navbar, NavLeft, NavTitle, Page, Input, Button, NavRight } from 'framework7-react';
 import { Dom7 as $$ } from 'framework7/lite-bundle';
 import { sleep } from '@utils';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useResetRecoilState } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector, tourScheduleState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
@@ -28,6 +28,8 @@ const SearchPage = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const { totalDistance } = useRecoilValue(searchingOptionState);
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const resetTourSchedule = useResetRecoilState(tourScheduleState);
+  const resetSearchingOptions = useResetRecoilState(searchingOptionState);
   const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
   const { ref: targetRef, inView: isTargetInView } = useInView({
     threshold: 1,
@@ -152,6 +154,17 @@ const SearchPage = () => {
     return KakaoPlaceRef.current.keywordSearch(keyword, callback);
   };
 
+  const resetStatus = async () => {
+    showToast("일정을 초기화합니다", 1000)
+    await sleep(500)
+    resetTourSchedule();
+    resetSearchingOptions();
+    queryClient.removeQueries(['drivers']);
+    setIsInfinite(false);
+    searchBy.current = '';
+    sortBy.current = 'createdAtDesc'
+  }
+
   return (
     <Page name="search">
       <Navbar>
@@ -159,6 +172,9 @@ const SearchPage = () => {
           <Link icon="las la-bars" panelOpen="left" />
         </NavLeft>
         <NavTitle>검색</NavTitle>
+        <NavRight>
+          <div className="fas fa-undo text-red-400 mr-3" onClick={resetStatus}></div>
+        </NavRight>
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
       <DatePopup popupOpened={popupOpened} setPopupOpened={setPopupOpened} />
@@ -172,7 +188,7 @@ const SearchPage = () => {
         />
       ))}
       <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
-      {drivers && drivers?.length !== 0 && (
+      {totalDistance && drivers && drivers?.length !== 0 && (
         <div ref={targetRef}>
           <div className="flex justify-between">
             <Input
@@ -213,13 +229,13 @@ const SearchPage = () => {
           </div>
         </div>
       )}
-      {drivers && drivers?.length === 0 && !isDriverPresent && (
+      {totalDistance && drivers?.length === 0 && !isDriverPresent && (
         <div className="text-center">
           <i className="f7-icons text-6xl text-gray-400 -mt-10">exclamationmark_bubble</i>
           <div className="text-xl text-gray-400 mt-4 tracking-wide">검색 결과가 없습니다</div>
         </div>
       )}
-      {hasNextPage && <ListPreloader ref={targetRef} />}
+      {totalDistance && hasNextPage && <ListPreloader ref={targetRef} />}
     </Page>
   );
 };
