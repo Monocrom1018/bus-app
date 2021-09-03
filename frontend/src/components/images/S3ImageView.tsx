@@ -55,7 +55,7 @@ const S3ImageView: React.FC<S3ImageViewProps> = ({
     if (!imageKey)
       return <img src={defaultImg} alt="me" className={`object-fill w-full h-full ${placeHolderClassName}`} />;
     if (isLazyLoad) return <img ref={imageRef} data-src={preSignedUrl} className="lazy lazy-fade-in" alt="" />;
-    return <img src={preSignedUrl} alt="" className="object-fill w-full h-full" />;
+    return <img src={preSignedUrl} alt="" className={className} />;
   }, [imageKey, isLazyLoad, preSignedUrl]);
 
   return (

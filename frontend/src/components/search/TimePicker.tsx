@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { f7, ListInput } from 'framework7-react';
 import { searchingOptionState } from '@atoms';
 import { useSetRecoilState } from 'recoil';
+import { formatTime } from '@utils';
 
 const TimePicker = (props: { el: string }) => {
   const setSearchingOption = useSetRecoilState(searchingOptionState);
@@ -13,6 +14,9 @@ const TimePicker = (props: { el: string }) => {
       rotateEffect: true,
       backdrop: true,
       value: ['0', '00'],
+      formatValue: function (values) {
+        return `${values[0]} : ${values[1]}`;
+      },
       cols: [
         {
           textAlign: 'left',
