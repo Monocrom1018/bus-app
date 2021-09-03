@@ -3,7 +3,6 @@ import { Page, Navbar, PageContent, List, Panel, Link } from 'framework7-react';
 import S3ImageView from '@components/images/S3ImageView';
 
 const CustomPanel = ({ currentUser, handleLogout, isLoggedIn }) => {
-
   const { email, name, profile = { key: '', level: '' } } = currentUser;
 
   return (
@@ -14,13 +13,11 @@ const CustomPanel = ({ currentUser, handleLogout, isLoggedIn }) => {
           <a href="#" className="mb-8 my-2 mx-2 px-3 flex-shrink-0 group block">
             <div className="flex items-center">
               <div>
-                { isLoggedIn && profile ? 
-                  (
-                    <S3ImageView imageKey={profile.key} className="w-16 h-16 rounded-full"/>
-                  ) : (
-                    <i className="las la-user-circle" style={{ fontSize: '64px', color: '#374151' }} />
-                  )
-                }
+                {isLoggedIn && profile ? (
+                  <S3ImageView imageKey={profile.key} className="w-16 h-16 rounded-full" />
+                ) : (
+                  <i className="las la-user-circle" style={{ fontSize: '64px', color: '#374151' }} />
+                )}
               </div>
               <div className="ml-3">
                 <p className="text-lg font-medium text-gray-700 group-hover:text-gray-900">

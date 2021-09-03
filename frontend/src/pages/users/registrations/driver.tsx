@@ -12,6 +12,7 @@ import useAuth from '@hooks/useAuth';
 import S3MultiFilePicker from '@components/files/S3MultiFilePicker';
 import { IoCloseCircleSharp } from 'react-icons/io5';
 import { MainPlaceHolder } from '@components/images';
+import { showToast } from '@js/utils';
 
 interface DriverSignUpParams {
   user_type: string;
@@ -100,6 +101,10 @@ const DriverSignUpPage: React.FC = () => {
 
       // amplify signup 시도
       try {
+        // if (values.files.length < 2) {
+        //   showToast('파일을 모두 첨부해주세요');
+        //   return;
+        // }
         await amplifySignUp(signUpParams);
         cognitoUserSession = await Auth.signIn({
           username: signUpParams.email,
@@ -130,7 +135,8 @@ const DriverSignUpPage: React.FC = () => {
         message = '성공적으로 가입 하였습니다';
       } catch (error) {
         console.log(error);
-        message = (error as AxiosError).response?.data?.message;
+        if (typeof error.message === 'string') message = error.message;
+        else message = '예상치 못한 오류가 발생하였습니다';
 
         // TODO: need test amplify 유저 풀 삭제
         cognitoUserSession.deleteUser((deleteUserError) => {
@@ -230,7 +236,7 @@ const DriverSignUpPage: React.FC = () => {
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
           </List>
-          {isCompany ? (
+          {isCompany && (
             <>
               <List noHairlinesMd>
                 <div className="p-3 font-semibold bg-white">회사 정보</div>
@@ -277,7 +283,7 @@ const DriverSignUpPage: React.FC = () => {
                   isMultiple={false}
                   initialData={undefined}
                   placeholderComponent={<MainPlaceHolder maxCount={1} />}
-                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
                   deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
                   removeFileHandler={(key, removedS3File) => {
                     if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
@@ -299,7 +305,7 @@ const DriverSignUpPage: React.FC = () => {
                   isMultiple={false}
                   initialData={undefined}
                   placeholderComponent={<MainPlaceHolder maxCount={1} />}
-                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
                   deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
                   removeFileHandler={(key, removedS3File) => {
                     if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
@@ -312,7 +318,7 @@ const DriverSignUpPage: React.FC = () => {
                 />
               </List>
             </>
-          ) : null}
+          )}
 
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">버스운전자격증 (인증절차에만 사용됩니다)</div>
@@ -320,15 +326,15 @@ const DriverSignUpPage: React.FC = () => {
               isMultiple={false}
               initialData={undefined}
               placeholderComponent={<MainPlaceHolder maxCount={1} />}
-              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
               deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
               removeFileHandler={(key, removedS3File) => {
                 if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
               }}
               addFileHandler={(v: any) => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
-                console.log(v);
-                setFieldValue('files[0]', v);
+                console.log(v[0]);
+                setFieldValue('files[0]', v[0]);
               }}
             />
             {/* <input
@@ -346,15 +352,15 @@ const DriverSignUpPage: React.FC = () => {
               isMultiple={false}
               initialData={undefined}
               placeholderComponent={<MainPlaceHolder maxCount={1} />}
-              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
               deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
               removeFileHandler={(key, removedS3File) => {
                 if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
               }}
               addFileHandler={(v: any) => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
-                console.log(v);
-                setFieldValue('files[1]', v);
+                console.log(v[0]);
+                setFieldValue('files[1]', v[0]);
               }}
             />
             {/* <input

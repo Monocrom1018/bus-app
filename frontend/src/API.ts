@@ -255,6 +255,15 @@ export type CreateNotificationAndFcmMutation = {
   createNotificationAndFcm?: string | null;
 };
 
+export type CallPhoneCertificationMutationVariables = {
+  code: string;
+  phone_number: string;
+};
+
+export type CallPhoneCertificationMutation = {
+  callPhoneCertification?: string | null;
+};
+
 export type CreateMessageMutationVariables = {
   input: CreateMessageInput;
   condition?: ModelMessageConditionInput | null;

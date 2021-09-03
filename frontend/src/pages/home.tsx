@@ -7,8 +7,8 @@ import usePostBillingProcess from '@hooks/usePostBillingProcess';
 import { useQuery } from 'react-query';
 import { sleep } from '@js/utils';
 import ReactQueryState from '@components/shared/ReactQueryState';
-import Driver from './users/Driver';
 import { getDriversByRegion } from '@api';
+import DriverListItem from './users/DriverListItem';
 
 const HomePage = ({ f7route, f7router }) => {
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
@@ -47,13 +47,13 @@ const HomePage = ({ f7route, f7router }) => {
       <Block className="border-t-2 pt-8">
         <BlockTitle className="text-center text-xl font-bold">내 주변 추천 기사님들</BlockTitle>
         <ReactQueryState data={data} status={status} error={error} isFetching={isFetching} />
-         {data && (
-            <div>
-              {data.map((driver) => (
-                <Driver driver={driver} key={`driver-${driver.id}`} />
-              ))}
-            </div>
-          )}
+        {data && (
+          <div>
+            {data.map((driver) => (
+              <DriverListItem driver={driver} key={`driver-${driver.id}`} />
+            ))}
+          </div>
+        )}
       </Block>
       <Footer />
     </Page>

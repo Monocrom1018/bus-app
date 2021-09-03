@@ -2,6 +2,7 @@ import React from 'react';
 import { Col, ListInput, Row } from 'framework7-react';
 import { searchingOptionDateSelector, searchingOptionTimeSelector } from '@atoms';
 import { useRecoilValue } from 'recoil';
+import { formatTime } from '@utils';
 import moment from 'moment';
 
 const TimeDisplay = ({ setPopupOpened }) => {
@@ -28,7 +29,7 @@ const TimeDisplay = ({ setPopupOpened }) => {
               wrap={false}
               type="text"
               readonly
-              value={departureTime || '0시 00분'}
+              value={departureTime ? formatTime(departureTime) : '0시 00분'}
               className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
             />
           </div>
@@ -50,7 +51,7 @@ const TimeDisplay = ({ setPopupOpened }) => {
               wrap={false}
               type="text"
               readonly
-              value={returnTime || '0시 00분'}
+              value={returnTime ? formatTime(returnTime) : '0시 00분'}
               className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
             />
           </div>

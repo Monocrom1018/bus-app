@@ -21,6 +21,11 @@ export const createNotificationAndFcm = /* GraphQL */ `
     )
   }
 `;
+export const callPhoneCertification = /* GraphQL */ `
+  mutation CallPhoneCertification($code: String!, $phone_number: String!) {
+    callPhoneCertification(code: $code, phone_number: $phone_number)
+  }
+`;
 export const createMessage = /* GraphQL */ `
   mutation CreateMessage($input: CreateMessageInput!, $condition: ModelMessageConditionInput) {
     createMessage(input: $input, condition: $condition) {

@@ -20,11 +20,11 @@ import { useRecoilState } from 'recoil';
 import { currentUserState } from '@atoms';
 import i18next from 'i18next';
 import { showToast } from '@js/utils';
-import { updateAPI } from '../../common/api/index';
-import { pick } from 'lodash'
+import { pick } from 'lodash';
 import S3ImagePicker from '@components/images/S3ImagePicker';
 import { MainPlaceHolder } from '@components/images';
 import { IoCloseCircleSharp } from 'react-icons/io5';
+import { updateAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
   password: Yup.string(),
@@ -59,7 +59,7 @@ const UserInfoSchema = Yup.object().shape({
   audio: Yup.boolean(),
 });
 
-const driverEditPage = ({ f7route, f7router }) => {
+const DriverEditPage = ({ f7route, f7router }) => {
   const [removedIds, setRemovedIds] = useState<number[]>([]);
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [drivableRegion, setDrivableRegion] = useState(
@@ -169,6 +169,7 @@ const driverEditPage = ({ f7route, f7router }) => {
           audio: currentUser.bus?.audio || false,
           bank: currentUser.bank || '',
           bank_account: currentUser.bank_account || '',
+          drivableRegion: currentUser.drivable_region || '',
         }}
         validationSchema={UserInfoSchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -177,7 +178,7 @@ const driverEditPage = ({ f7route, f7router }) => {
           await sleep(400);
           try {
             values.profileImg = pick(values.profileImg, ['key']);
-            values['drivableRegion'] = drivableRegion;
+            values.drivableRegion = drivableRegion;
             const { data: user } = await updateAPI(values);
             setCurrentUser({ ...user, isAuthenticated: true });
             f7.dialog.close();
@@ -590,4 +591,4 @@ const driverEditPage = ({ f7route, f7router }) => {
   );
 };
 
-export default driverEditPage;
+export default DriverEditPage;
