@@ -24,7 +24,7 @@ export const toFormData = ({ modelName, data }: { modelName: string; data: unkno
   return fd;
 };
 
-export const formatTime = (time_at: string) => moment(time_at).format('YYYY.MM.DD');
+// export const formatTime = (time_at: string) => moment(time_at).format('YYYY.MM.DD');
 
 export const formatTimeAgo = (time_at: string) => moment(time_at).fromNow();
 
@@ -105,3 +105,11 @@ export const innerNotification = (notification) => {
       .open();
   }
 };
+
+export const formatTime = (time) => {
+  if (time.length === 4) {
+    return `${time[0]} : ${time[2]}${time[3]}`
+  } else if (time.length === 5) {
+    return `${time[0]}${time[1]} : ${time[3]}${time[4]}`
+  }
+}

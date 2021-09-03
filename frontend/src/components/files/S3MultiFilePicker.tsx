@@ -41,7 +41,7 @@ const S3MultiFilesPicker: React.FC<FilePickerProps> = ({
         <div className={`grid grid-cols-${maxCount} gap-6`}>
           {(data.length &&
             data.map(({ previewSrc, key, isUploaded }) => (
-              <div className="image-slide image-small rounded-md bg-gray-200 rounded-md" key={previewSrc}>
+              <div className="image-slide image-small rounded-md bg-gray-200 rounded-md relative" key={previewSrc}>
                 <div
                   className={`image-slide-image flex justify-center cursor-pointer align-center ${
                     isUploaded ? '' : 'image-slide-image-uploading'
@@ -52,7 +52,7 @@ const S3MultiFilesPicker: React.FC<FilePickerProps> = ({
                   </div>
                 </div>
                 <div
-                  className="image-slide-delete-btn"
+                  className="image-slide-delete-btn absolute -top-2 -right-3"
                   onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                     e.stopPropagation();
                     onRemoveHandler(key);
@@ -65,11 +65,11 @@ const S3MultiFilesPicker: React.FC<FilePickerProps> = ({
             null}
           {(s3Files.length &&
             s3Files?.map(({ key }) => (
-              <div className="image-slide image-small rounded-md bg-gray-200 cursor-pointer" key={key}>
+              <div className="image-slide image-small rounded-md bg-gray-200 cursor-pointer relative" key={key}>
                 <div className="flex justify-center items-center p-4 break-all w-full h-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
                   {key?.split('/')[1]}
                 </div>
-                <div className="image-slide-delete-btn" onClick={() => onRemoveHandler(key)}>
+                <div className="image-slide-delete-btn absolute -top-2 -right-3" onClick={() => onRemoveHandler(key)}>
                   {deleteButtonComponent}
                 </div>
               </div>

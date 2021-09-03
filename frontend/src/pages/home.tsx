@@ -7,7 +7,7 @@ import usePostBillingProcess from '@hooks/usePostBillingProcess';
 import { useQuery } from 'react-query';
 import { sleep } from '@js/utils';
 import ReactQueryState from '@components/shared/ReactQueryState';
-import DriverListItem from './users/DriverListItem';
+import DriverListItem from './users/driverListItem';
 import { getDriversByRegion } from '@api';
 
 const HomePage = ({ f7route, f7router }) => {
