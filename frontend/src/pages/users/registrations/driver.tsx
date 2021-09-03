@@ -101,10 +101,10 @@ const DriverSignUpPage: React.FC = () => {
 
       // amplify signup 시도
       try {
-        if(values.files.length < 2 ) {
-          showToast("파일을 모두 첨부해주세요")
-          return; 
-        }
+        // if (values.files.length < 2) {
+        //   showToast('파일을 모두 첨부해주세요');
+        //   return;
+        // }
         await amplifySignUp(signUpParams);
         cognitoUserSession = await Auth.signIn({
           username: signUpParams.email,

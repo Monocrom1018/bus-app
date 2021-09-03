@@ -21,7 +21,8 @@ import { ReservationsModule } from '@reservations/reservations.module';
 import { MonthsModule } from '@months/months.module';
 import { ChatroomsModule } from '@chatrooms/chatrooms.module';
 import { UsersChatroomsModule } from '@users-chatrooms/user-chatrooms.module';
-import { typeormOptions, adminOptions } from './config';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { typeormOptions, adminOptions, mailerOptions } from './config';
 
 AdminBro.registerAdapter({ Database, Resource });
 @Module({
@@ -34,6 +35,7 @@ AdminBro.registerAdapter({ Database, Resource });
     MulterModule.register({
       dest: '../uploads',
     }),
+    MailerModule.forRoot(mailerOptions),
     AuthModule,
     UsersModule,
     NoticesModule,

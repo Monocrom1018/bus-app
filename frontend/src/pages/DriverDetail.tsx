@@ -65,13 +65,13 @@ const DriverDetailPage = ({ id, f7router }) => {
     getTargetDriver();
   }, [id, setDriver]);
 
-  const showButton = (isAuthenticated: boolean, totalCharge: number ) => {
-    if(isAuthenticated && totalCharge) {
+  const showButton = (isAuthenticated: boolean, charge: number) => {
+    if (isAuthenticated && charge) {
       return (
         <div className="fixed bottom-0 z-50 w-full bg-white pt-1 pb-4">
           <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
             <div>요금 총액</div>
-            <div>{totalCharge?.toLocaleString()}₩</div>
+            <div>{charge?.toLocaleString()}₩</div>
           </div>
           <Button
             text="견적 전달하기"
@@ -79,21 +79,24 @@ const DriverDetailPage = ({ id, f7router }) => {
             onClick={handleSubmit}
           />
         </div>
-      )
-    } else if (isAuthenticated && !totalCharge) {
+      );
+    }
+    if (isAuthenticated && !charge) {
       return (
         <Button disabled href="#" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
           일정을 입력하고 견적을 전달해보세요
         </Button>
-      )
-    } else if (!isAuthenticated) {
+      );
+    }
+    if (!isAuthenticated) {
       return (
         <Button href="/users/sign_up/intro" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
           회원가입 하고 이용하기
         </Button>
-      )
+      );
     }
-  }
+    return false;
+  };
 
   return (
     <Page noToolbar name="driverdetail">
@@ -136,29 +139,30 @@ const DriverDetailPage = ({ id, f7router }) => {
       </div>
 
       {totalCharge && (
-      <div>
-        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
-        <div className="flex flex-col -mt-6">
-          <ScheduleTimeDisplay
-            departureDate={departureDate}
-            departureTime={departureTime}
-            returnDate={returnDate}
-            returnTime={returnTime}
-          />
-          <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
-        </div>
+        <div>
+          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
+          <div className="flex flex-col -mt-6">
+            <ScheduleTimeDisplay
+              departureDate={departureDate}
+              departureTime={departureTime}
+              returnDate={returnDate}
+              returnTime={returnTime}
+            />
+            <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
+          </div>
 
-        <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
-        <List noHairlinesMd className="mt-3 pt-0">
-          <ListInput
-            type="text"
-            placeholder="탑승인원을 숫자만 입력해주세요"
-            clearButton
-            onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
-            value={people}
-          />
-        </List>
-      </div>)}
+          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
+          <List noHairlinesMd className="mt-3 pt-0">
+            <ListInput
+              type="text"
+              placeholder="탑승인원을 숫자만 입력해주세요"
+              clearButton
+              onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+              value={people}
+            />
+          </List>
+        </div>
+      )}
       <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
       <List accordionList className="mt-3 pb-10">
         <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">

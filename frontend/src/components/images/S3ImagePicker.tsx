@@ -42,12 +42,18 @@ const S3ImagePicker: React.FC<ImagePickerProps> = ({
           {(!data?.length && !s3Images?.length && placeholderComponent) || null}
         </div>
         {(data.length && (
-          <div className="image-slide-delete-btn inline-block absolute right-8 top-1" onClick={() => onRemoveHandler(data[0].key)}>
+          <div
+            className="image-slide-delete-btn inline-block absolute right-8 top-1"
+            onClick={() => onRemoveHandler(data[0].key)}
+          >
             {deleteButtonComponent}
           </div>
         )) ||
           (s3Images.length && (
-            <div className="image-slide-delete-btn inline-block absolute right-8 top-1" onClick={() => onRemoveHandler(s3Images[0].key)}>
+            <div
+              className="image-slide-delete-btn inline-block absolute right-8 top-1"
+              onClick={() => onRemoveHandler(s3Images[0].key)}
+            >
               {deleteButtonComponent}
             </div>
           )) ||

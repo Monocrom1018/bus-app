@@ -74,7 +74,7 @@ export interface CurrentUser extends CurrentUserState {
   peak_charge_per_km: number;
   bank: string;
   bank_account: string;
-  bus: Bus
+  bus: Bus;
 }
 
 export interface Address {

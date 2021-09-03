@@ -70,7 +70,12 @@ export class UsersController {
     @Query('search_by') searchBy: string,
   ) {
     console.log(`page ${page}`);
-    return this.usersService.getDrivers(driverSearchDto, page, sortBy, searchBy);
+    return this.usersService.getDrivers(
+      driverSearchDto,
+      page,
+      sortBy,
+      searchBy,
+    );
   }
 
   @ApiOperation({ summary: '내 주변 기사리스트' })
@@ -79,10 +84,7 @@ export class UsersController {
     status: 200,
     description: 'get an array of matching drivers by region success',
   })
-  async driversByRegion(
-    @Query('x') x: string,
-    @Query('y') y: string,
-  ) {
+  async driversByRegion(@Query('x') x: string, @Query('y') y: string) {
     return this.usersService.driversByRegion(x, y);
   }
 
@@ -124,5 +126,15 @@ export class UsersController {
   @Delete('/deleteBilling')
   async deleteBillingKey() {
     return this.usersService.deleteBillingKey();
+  }
+
+  @ApiOperation({ summary: '비밀번호 초기화' })
+  @ApiResponse({
+    status: 200,
+    description: 'reset password',
+  })
+  @Get('/reset-password/')
+  async resetPassword(@Query('email') email: string) {
+    return this.usersService.sendMail(email);
   }
 }

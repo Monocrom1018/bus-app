@@ -108,8 +108,10 @@ export const innerNotification = (notification) => {
 
 export const formatTime = (time) => {
   if (time.length === 4) {
-    return `${time[0]} : ${time[2]}${time[3]}`
-  } else if (time.length === 5) {
-    return `${time[0]}${time[1]} : ${time[3]}${time[4]}`
+    return `${time[0]} : ${time[2]}${time[3]}`;
   }
-}
+  if (time.length === 5) {
+    return `${time[0]}${time[1]} : ${time[3]}${time[4]}`;
+  }
+  return false;
+};

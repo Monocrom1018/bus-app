@@ -13,7 +13,7 @@ import { getDistance, getDrivers } from '@api';
 import { showToast } from '@js/utils';
 import { useInfiniteQuery, useQueryClient } from 'react-query';
 import ListPreloader from '@components/shared/ListPreloader';
-import DriverListItem from './users/driverListItem';
+import DriverListItem from './users/DriverListItem';
 
 const SearchPage = () => {
   const KakaoPlaceRef = useRef(null);
@@ -155,15 +155,15 @@ const SearchPage = () => {
   };
 
   const resetStatus = async () => {
-    showToast("일정을 초기화합니다", 1000)
-    await sleep(500)
+    showToast('일정을 초기화합니다', 1000);
+    await sleep(500);
     resetTourSchedule();
     resetSearchingOptions();
     queryClient.removeQueries(['drivers']);
     setIsInfinite(false);
     searchBy.current = '';
-    sortBy.current = 'createdAtDesc'
-  }
+    sortBy.current = 'createdAtDesc';
+  };
 
   return (
     <Page name="search">
@@ -173,7 +173,7 @@ const SearchPage = () => {
         </NavLeft>
         <NavTitle>검색</NavTitle>
         <NavRight>
-          <div className="fas fa-undo text-red-400 mr-3" onClick={resetStatus}></div>
+          <div className="fas fa-undo text-red-400 mr-3" onClick={resetStatus} />
         </NavRight>
       </Navbar>
       <TimeDisplay setPopupOpened={setPopupOpened} />
@@ -214,7 +214,7 @@ const SearchPage = () => {
                 placeholder="기사이름 검색"
                 className="w-28 h-6 mx-4 px-1 border-b-2 border-red-400"
                 onChange={(e) => {
-                  searchBy.current = (e.target.value).replace(/(\s*)/g, "");
+                  searchBy.current = e.target.value.replace(/(\s*)/g, '');
                 }}
               />
               <div className="f7-icons absolute -top-1 right-4 text-red-500 text-xl" onClick={filterDrivers}>
