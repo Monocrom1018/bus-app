@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-shadow */
+import React, { useState } from 'react';
 import {
   Row,
   Col,
@@ -6,45 +7,111 @@ import {
   Button,
   Page,
   Navbar,
-  NavRight,
+  NavLeft,
+  NavTitle,
   Link,
   Block,
   Icon,
   Toolbar,
   ListInput,
 } from 'framework7-react';
-import Calendar from '@components/search/Calendar';
 import TimePicker from '@components/search/TimePicker';
-import moment from 'moment';
-import { useRecoilValue } from 'recoil';
-import { searchingOptionDateSelector } from '@atoms';
+import moment, { Moment } from 'moment';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { searchingOptionState, tourScheduleState } from '@atoms';
+import 'react-dates/initialize';
+import { DayPickerRangeController, FocusedInputShape } from 'react-dates';
+import 'react-dates/lib/css/_datepicker.css';
+import '@styles/calendar.less';
 
 const DatePopUp = ({ popupOpened, setPopupOpened }) => {
-  const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
+  const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
+  const setTourSchedule = useSetRecoilState(tourScheduleState);
+  const { departureDate, returnDate } = searchingOption;
+  const [startDate, setStartDate] = useState<Moment | null>(moment());
+  const [endDate, setEndDate] = useState<Moment | null>(null);
+  const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>('startDate');
+
+  const handleDatesChange = ({ startDate, endDate }) => {
+    const set = {} as any;
+    const [departureDate, returnDate] = [startDate?._d, endDate?._d];
+    set.departureDate = departureDate;
+    set.returnDate = '';
+    if (startDate !== null || endDate !== null) {
+      set.returnDate = returnDate;
+      const days = [];
+      const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
+      [...Array(dayDiff)].forEach((day, index) => {
+        days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
+      });
+      setTourSchedule(days.map((day) => ({ day, stopOvers: [] }), []));
+    }
+    setSearchingOption((prev) => ({ ...prev, ...set }));
+
+    setStartDate(startDate);
+    setEndDate(endDate);
+  };
+
+  const handleFocusChange = (arg: FocusedInputShape | null) => {
+    if (arg === null) {
+      arg = 'startDate';
+    }
+    setFocusedInput(arg);
+  };
+
+  const isDayBlocked = (day: Moment): boolean => {
+    if (day.isBefore(moment().subtract(1, 'days'))) {
+      return true;
+    }
+    return false;
+  };
+
+  const renderDay = (day: Moment) =>
+    startDate && endDate ? (
+      <>
+        <div className="day-wrapper" />
+        <div>{day.format('D')}</div>
+      </>
+    ) : (
+      day.format('D')
+    );
+
+  const renderWeekHeaderElement = (day: string) => <div>{day}</div>;
+
+  const resetCalendar = () => {
+    setStartDate(null);
+    setEndDate(null);
+    setTourSchedule([]);
+    setSearchingOption(() => ({
+      totalDistance: 0,
+      departureDate: new Date(),
+      returnDate: '',
+      departureTime: '',
+      returnTime: '',
+      people: null,
+    }));
+  };
 
   return (
     <>
       <Popup
-        className="demo-popup mt-20"
+        className="demo-popup"
         swipeToClose
         animate
         opened={popupOpened}
         onPopupClosed={() => setPopupOpened(false)}
       >
         <Page>
-          <Navbar title="날짜">
-            <NavRight>
-              <Link popupClose>
+          <Navbar>
+            <NavLeft>
+              <Link popupClose onClick={resetCalendar}>
                 <Icon f7="multiply" />
               </Link>
-            </NavRight>
+            </NavLeft>
+            <NavTitle>날짜 및 시간 선택</NavTitle>
           </Navbar>
-          <Block>
-            <div className="my-10 mx-3">
-              <div className="font-semibold text-3xl tracking-wide">일정 선택</div>
-              <div className="my-2 text-gray-500 text-base tracking-wider">검색하실 일정을 선택해주세요</div>
-            </div>
-            <div className="mb-12 mt-8">
+          <Block style={{ height: '25%' }}>
+            <div>
               <Row>
                 <Col width="50">
                   <ListInput
@@ -76,11 +143,37 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
                 </Col>
               </Row>
             </div>
-            <Calendar />
           </Block>
-          <Toolbar position="bottom" className="mb-20 justify-end">
-            <div className="w-full">
-              <Button popupClose text="완료" className="w-60 text-xl py-4" fill style={{ margin: '0 auto' }} />
+          <div style={{ height: '75%' }}>
+            <DayPickerRangeController
+              startDate={startDate}
+              endDate={endDate}
+              onDatesChange={handleDatesChange}
+              renderWeekHeaderElement={renderWeekHeaderElement}
+              focusedInput={focusedInput}
+              onFocusChange={handleFocusChange}
+              orientation="verticalScrollable"
+              isDayBlocked={isDayBlocked}
+              minimumNights={0}
+              initialVisibleMonth={() => moment().add(0, 'month')}
+              monthFormat="M월"
+              numberOfMonths={12}
+              verticalHeight={800}
+              noNavPrevButton
+              noNavNextButton
+              renderDayContents={renderDay}
+            />
+          </div>
+          <Toolbar position="bottom" className="justify-end">
+            <div className="w-full flex">
+              <Button
+                text="날짜지우기"
+                className="text-xl py-4"
+                fill
+                style={{ margin: '0 auto' }}
+                onClick={resetCalendar}
+              />
+              <Button popupClose text="완료" className="text-xl py-4" fill style={{ margin: '0 auto' }} />
             </div>
           </Toolbar>
         </Page>

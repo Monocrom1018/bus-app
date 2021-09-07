@@ -121,8 +121,8 @@ export type Point = {
 };
 
 export interface StopOver {
-  id: number | string;
-  region: string;
+  id?: string | number;
+  region?: string;
 }
 export interface Schedule {
   day: string;

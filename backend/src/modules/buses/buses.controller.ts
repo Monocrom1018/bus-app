@@ -6,5 +6,4 @@ import { BusesService } from './buses.service';
 @Controller('buses')
 export class BusesController {
   constructor(private readonly busesService: BusesService) {}
-  
 }

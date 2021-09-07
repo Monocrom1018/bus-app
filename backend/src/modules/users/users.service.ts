@@ -294,7 +294,6 @@ export class UsersService {
       subject: '[배낭버스] 비밀번호 재설정 안내', // Subject line
       template: `${process.cwd()}/src/config/mailer/template`, // The `.pug`, `.ejs` or `.hbs` extension is appended automatically.
       context: {
-        // Data to be sent to template engine.
         user_email,
       },
     });
