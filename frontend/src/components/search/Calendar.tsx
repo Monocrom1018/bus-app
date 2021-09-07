@@ -1,84 +1,87 @@
-import { f7 } from 'framework7-react';
-import React, { useEffect } from 'react';
-import jQuery from 'jquery';
+/* eslint-disable @typescript-eslint/no-shadow */
+import React, { useState } from 'react';
+import 'react-dates/initialize';
+import { DayPickerRangeController, FocusedInputShape } from 'react-dates';
+import moment, { Moment } from 'moment';
+import 'react-dates/lib/css/_datepicker.css';
+import '@styles/calendar.less';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { searchingOptionState, tourScheduleState } from '@atoms';
-import { useRecoilState } from 'recoil';
-import moment from 'moment';
 
 const Calendar = () => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
-  const [tourSchedule, setTourSchedule] = useRecoilState(tourScheduleState);
-  const { departureDate: departure, returnDate: arrival } = searchingOption;
-  const Dates = [departure as Date, arrival as unknown as Date];
-  const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-  const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+  const setTourSchedule = useSetRecoilState(tourScheduleState);
+  const { departureDate, returnDate } = searchingOption;
+  const [startDate, setStartDate] = useState<Moment | null>(moment());
+  const [endDate, setEndDate] = useState<Moment | null>(null);
+  const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>('startDate');
 
-  useEffect(() => {
-    const today = new Date();
-    const yesterDay = new Date().setDate(today.getDate() - 1);
-    const calendarInline = f7.calendar.create({
-      containerEl: '#demo-calendar-inline-container',
-      locale: 'en-US',
-      dayNamesShort: dayNames,
-      rangePicker: true,
-      disabled: {
-        to: new Date(yesterDay),
-      },
-      renderToolbar() {
-        return `
-          <div class="toolbar calendar-custom-toolbar no-shadow">
-            <div class="toolbar-inner">
-              <div class="left">
-                <a href="#" class="link icon-only"><i class="icon icon-back"></i></a>
-              </div>
-              <div class="center"></div>
-              <div class="right">
-                <a href="#" class="link icon-only"><i class="icon icon-forward"></i></a>
-              </div>
-            </div>
-          </div>
-          `;
-      },
-      on: {
-        init(c) {
-          jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
-          jQuery('.calendar-custom-toolbar .left .link').on('click', () => {
-            calendarInline.prevMonth(100);
-          });
-          jQuery('.calendar-custom-toolbar .right .link').on('click', () => {
-            calendarInline.nextMonth(100);
-          });
-          if (Dates) {
-            c.setValue(Dates);
-          }
-        },
-        monthYearChangeStart(c) {
-          jQuery('.calendar-custom-toolbar .center').text(`${monthNames[c.currentMonth]}, ${c.currentYear}`);
-        },
-        change(_, value: Array<string>) {
-          const set = {};
-          const [departureDate, returnDate] = value;
-          (set as any).departureDate = departureDate;
-          (set as any).returnDate = '';
-          if (value.length !== 1) {
-            (set as any).returnDate = returnDate;
-            const days = [];
-            const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
-            [...Array(dayDiff)].forEach((day, index) => {
-              days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
-            });
-            setTourSchedule(days.map((day) => ({ day, stopOvers: [] }), []));
-          }
-          setSearchingOption((prev) => ({ ...prev, ...set }));
-        },
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const handleDatesChange = ({ startDate, endDate }) => {
+    const set = {} as any;
+    const [departureDate, returnDate] = [startDate?._d, endDate?._d];
+    set.departureDate = departureDate;
+    set.returnDate = '';
+    if (startDate !== null || endDate !== null) {
+      set.returnDate = returnDate;
+      const days = [];
+      const dayDiff = returnDate ? moment(returnDate).diff(moment(departureDate), 'days') + 1 : 0;
+      [...Array(dayDiff)].forEach((day, index) => {
+        days.push(moment(departureDate).add(index, 'days').format('YY년 MM월 D일'));
+      });
+      setTourSchedule(days.map((day) => ({ day, stopOvers: [] }), []));
+    }
+    setSearchingOption((prev) => ({ ...prev, ...set }));
+
+    setStartDate(startDate);
+    setEndDate(endDate);
+  };
+
+  const handleFocusChange = (arg: FocusedInputShape | null) => {
+    if (arg === null) {
+      arg = 'startDate';
+    }
+    setFocusedInput(arg);
+  };
+
+  const isDayBlocked = (day: Moment): boolean => {
+    if (day.isBefore(moment().subtract(1, 'days'))) {
+      return true;
+    }
+    return false;
+  };
+
+  const renderDay = (day: Moment) =>
+    startDate && endDate ? (
+      <>
+        <div className="day-wrapper" />
+        <div>{day.format('D')}</div>
+      </>
+    ) : (
+      day.format('D')
+    );
+
+  const renderWeekHeaderElement = (day: string) => <div>{day}</div>;
 
   return (
-    <div className="block block-strong no-padding -mt-10">
-      <div id="demo-calendar-inline-container" />
+    <div style={{ height: '75%' }}>
+      <DayPickerRangeController
+        startDate={startDate}
+        endDate={endDate}
+        onDatesChange={handleDatesChange}
+        renderWeekHeaderElement={renderWeekHeaderElement}
+        focusedInput={focusedInput}
+        onFocusChange={handleFocusChange}
+        orientation="verticalScrollable"
+        isDayBlocked={isDayBlocked}
+        minimumNights={0}
+        initialVisibleMonth={() => moment().add(0, 'month')}
+        monthFormat="M월"
+        numberOfMonths={12}
+        verticalHeight={800}
+        noNavPrevButton
+        noNavNextButton
+        renderDayContents={renderDay}
+      />
     </div>
   );
 };
