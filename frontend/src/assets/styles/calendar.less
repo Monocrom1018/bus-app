@@ -1,0 +1,264 @@
+:root {
+  --white: #fff;
+  --black: #000;
+  --primary: #51abf3;
+  --secondary: #33b893;
+  --warning: #ffbf00;
+  --error: #fa5b4a;
+  --gray-50: #f8f9fa;
+  --gray-60: #f5f6f7;
+  --gray-80: #f1f3f5;
+  --gray-100: #e9ecef;
+  --gray-200: #dee2e6;
+  --gray-300: #ced4da;
+  --red-400: #adb5bd;
+  --gray-500: #848c94;
+  --gray-600: #666d75;
+  --gray-700: #495056;
+  --gray-800: #343a40;
+  --gray-900: #212529;
+  --blue-50: #f5fbff;
+  --blue-80: #e7f4fd;
+  --blue-100: #cbe7fd;
+  --blue-200: #a7d4f9;
+  --blue-300: #79bef5;
+  --blue-400: #51abf3;
+  --blue-500: #2b96ed;
+  --blue-600: #1583db;
+  --blue-700: #0a70c2;
+  --blue-800: #025ba5;
+  --blue-900: #01457d;
+  --green-50: #e6f8f3;
+  --green-80: #d7f6ee;
+  --green-100: #94e7d1;
+  --green-200: #71d2b8;
+  --green-300: #58caab;
+  --green-400: #33b893;
+  --green-500: #27ab86;
+  --green-600: #1c9674;
+  --green-700: #137b5e;
+  --green-800: #10634c;
+  --green-900: #0a4534;
+  --yellow-50: #fff8e1;
+  --yellow-80: #fff2c6;
+  --yellow-100: #ffe182;
+  --yellow-200: #ffd74e;
+  --yellow-300: #ffc929;
+  --yellow-400: #ffbf00;
+  --yellow-500: #ffad01;
+  --yellow-600: #ff9a00;
+  --yellow-700: #f78000;
+  --yellow-800: #db5600;
+  --yellow-900: #b94100;
+  --red-50: #fbf1ef;
+  --red-80: #ffd4cc;
+  --red-100: #ffaea1;
+  --red-200: #ff8d7c;
+  --red-300: #fe6a54;
+  --red-400: #fa5b4a;
+  --red-500: #ec4937;
+  --red-600: #dd3c2a;
+  --red-700: #c83323;
+  --red-800: #aa2a1b;
+  --red-900: #8d2115;
+  --selected-array: var(--blue-200);
+  --selected-node: var(--blue-600);
+}
+
+.DayPicker_transitionContainer__verticalScrollable::-webkit-scrollbar {
+  display: none;
+}
+
+.DayPicker__hidden {
+  visibility: visible;
+}
+
+.DayPicker_weekHeader, .DayPicker_weekHeader:last-of-type {
+  border-bottom: 1px solid var(--gray-200);
+  width: 100%;
+  padding: 0px !important;
+}
+
+.DayPicker_weekHeader_ul:last-of-type {
+  border-bottom: 1px solid var(--gray-200);
+  width: 100%;
+  padding: 0px !important;
+}
+
+.DayPicker_transitionContainer__verticalScrollable {
+  padding-top: 14.28vw;
+}
+
+.DayPicker_weekHeader_ul {
+  display: flex;
+  margin: 0px;
+  font-size: 13px;
+  color: var(--gray-600);
+  padding: 8px 0px;
+  
+  .DayPicker_weekHeader_li {
+    width: 14.28% !important;
+    height: 14.28vw !important;
+    font-size: 14px;
+    flex: 1 1 auto;
+    text-align: center;
+    font-size: inherit;
+
+    div {
+      line-height: 14.28vw !important;
+      height: 14.28vw;
+      font-size: medium;
+    }
+  }
+}
+
+.CalendarMonth_table {
+  width: 100% !important;
+  border-collapse: separate;
+  border-spacing: 0 10px !important;
+}
+
+.CalendarMonthGrid {
+  width: 100% !important;
+}
+
+.CalendarMonth {
+  padding: 0px !important;
+}
+
+.CalendarMonth_caption {
+  padding: 24px 16px 12px 0px;
+}
+
+.CalendarMonth_caption {
+  text-align: left;
+  color: var(--gray-800);
+  margin-left: 16px;
+}
+
+.CalendarMonth_table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0px;
+}
+
+// 달력 각 칸의 기본 스타일.
+.CalendarDay__default {
+  color: black;
+  border: none;
+  vertical-align: middle;
+  outline: none; 
+}
+
+// 달력 각 칸에 호버가 되었을 때 스타일
+.CalendarDay__default:hover {
+  background: transparent;
+  border: none;
+  color: black;
+}
+
+// 체크인 체크아웃이 선택되었을 때 그 사의 날짜들에 대한 스타일
+.CalendarDay__selected_span {
+  background-color: var(--selected-array);
+  border: none;
+  color: black;
+}
+
+// 체크인 체크아웃이 선택되었을 때 그 사의 날짜들에 호버 혹은 클릭했을 시 스타일
+.CalendarDay__selected_span:active,
+.CalendarDay__selected_span:hover {
+  color: black;
+  background-color: var(--selected-array);
+}
+
+// 선택된 체크인 체크아웃 날짜에 대한 스타일
+.CalendarDay__selected,
+.CalendarDay__selected:active,
+.CalendarDay__selected:hover {
+  background: var(--selected-node);
+  border: none;
+  color: white;
+}
+
+// 블록된 날짜에 대한 스타일링
+.CalendarDay__blocked_calendar,
+.CalendarDay__blocked_calendar:active,
+.CalendarDay__blocked_calendar:hover {
+  background: white;
+  border: none;
+  color: #d2d2d2;
+  box-shadow: none;
+  text-decoration: line-through;
+}
+
+// 선택될 범위에 대한 스타일링
+.CalendarDay__hovered_span,
+.CalendarDay__hovered_span:hover {
+  color: black;
+  background-color: var(--gray-400);
+  border: none;
+}
+
+// 요일 표시 부분에 대한 스타일.
+.CalendarMonth_caption {
+  margin-bottom: 10px;
+}
+
+.CalendarDay {
+  position: relative;
+  transform-style: preserve-3d;
+  width: 14.28% !important;
+  height: 14.28vw !important;
+  padding: 2.2% 0px !important;
+}
+
+.CalendarDay__selected_start {
+  border-radius: 30px;
+}
+
+.CalendarDay__selected_start:after {
+  border-radius: 30px;
+}
+
+.CalendarDay__selected_end {
+  border-radius: 30px;
+}
+
+.CalendarDay.CalendarDay__selected.CalendarDay__selected_start.CalendarDay__selected_end::after {
+  content: '';
+  width: 50%;
+  height: 14.28vw;
+  padding: 2.2% 0px;
+  background: var(--selected-array);
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 0px;
+  transform: translateZ(-1px);
+  border-top-left-radius: 35px;
+  border-bottom-left-radius: 35px;
+}
+
+.CalendarDay.CalendarDay__default.CalendarDay__selected_start.CalendarDay__selected {
+  .day-wrapper {
+    width: 50%;
+    height: 100%;
+    top: 0px;
+    right: 0px;
+    background-color: var(--selected-array);
+    position: fixed;
+    transform: translateZ(-1px);
+  }
+}
+
+.CalendarDay.CalendarDay__default.CalendarDay__selected_end.CalendarDay__selected {
+  .day-wrapper {
+    width: 50%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: var(--selected-array);
+    position: fixed;
+    transform: translateZ(-1px);
+  }
+}

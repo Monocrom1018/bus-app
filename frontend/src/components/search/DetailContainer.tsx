@@ -58,18 +58,20 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
     stopOverCount.current -= 1;
   };
 
-  const placesSearchCallBack = (data: string, status: any) => {
-    const cutData = data.slice(0, 5);
-    const kakaoCompleteStatus = 'OK';
-    const isSearchTargetStopOver = searchTarget === 'stopOvers';
-
-    if (status === kakaoCompleteStatus && isSearchTargetStopOver) {
-      setPointList((prev) => ({ ...prev, [stopOverId]: cutData }));
-    } else if (status === kakaoCompleteStatus) {
-      setPointList((prev) => ({ ...prev, [searchTarget]: cutData }));
-    } else {
-      setPointList({});
-    }
+  const placesSearchCallBack = async (data: string, status: any) => {
+    setTimeout(() => {
+      const cutData = data.slice(0, 5);
+      const kakaoCompleteStatus = 'OK';
+      const isSearchTargetStopOver = searchTarget === 'stopOvers';
+      console.log(cutData, status);
+      if (status === kakaoCompleteStatus && isSearchTargetStopOver) {
+        setPointList((prev) => ({ ...prev, [stopOverId]: cutData }));
+      } else if (status === kakaoCompleteStatus) {
+        setPointList((prev) => ({ ...prev, [searchTarget]: cutData }));
+      } else {
+        setPointList({});
+      }
+    }, 400);
   };
 
   const setScheduleByType = (type: string, value: string) => {
@@ -180,12 +182,11 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
             : schedule,
         ),
       );
-      setPointList((prev) => ({ ...prev, [`${type}`]: mapped }));
     }
 
+    stopOverId = id;
     setScheduleByType(type, value);
     searchTarget = type;
-    stopOverId = id;
 
     if (!value) {
       setTimeout(() => setPointList({}), 300);
@@ -194,10 +195,24 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
     }
   };
 
+  const setPostCodeByType = (type: string, id) => {
+    if (type === 'stopOvers') {
+      return setPostCode('', 'stopOvers', `${id}`);
+    }
+    console.log(type, id);
+    return setScheduleByType(`${type}`, '');
+  };
+
   const searchResult = (type: string, id = null) => (
     <div className="z-50 absolute left-0 buttom-0 right-0 top-12 bg-white w-auto mx-4 rounded-lg">
       {focused && pointList[id || type] && (
-        <div className="image-slide-delete-btn absolute top-2 right-4" onClick={() => setFocused(false)}>
+        <div
+          className="image-slide-delete-btn absolute top-2 right-4"
+          onClick={() => {
+            setPostCodeByType(type, id);
+            setFocused(false);
+          }}
+        >
           <IoCloseCircle size="20px" />
         </div>
       )}
@@ -212,9 +227,9 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 setFocused(true);
               }}
             >
-              {point.road_address_name || point.place_name}
+              {point.place_name || point.road_address_name}
+              <div className="text-gray-500 text-sm pl-3">{point.road_address_name || point.address_name}</div>
             </a>
-            <div className="text-gray-500 text-sm pl-3">{point.address_name}</div>
           </div>
         ))}
     </div>
@@ -244,14 +259,20 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
                 value={departure || ''}
                 placeholder="출발지를 검색해주세요"
-                onChange={(e) => setPostCode(e.currentTarget.value, 'departure', null)}
+                onChange={(e) => setPostCode(e.target.value, 'departure', null)}
                 onFocus={onFocus}
+                onKeyUp={onFocus}
               />
-              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('departure', '')} />
+              <span
+                className="input-clear-button mr-6"
+                onClick={() => {
+                  setScheduleByType('departure', '');
+                  setFocused(false);
+                }}
+              />
             </div>
             {searchResult('departure')}
           </div>
-
           {stopOvers &&
             stopOvers.map((stopOver) => (
               <div className="relative" key={stopOver.id}>
@@ -264,14 +285,19 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                   </button>
                   <input
                     className="pl-3 h-8 ml-1 flex-1 rounded-lg bg-gray-50"
-                    value={stopOver?.region || ''}
+                    value={stopOver.region}
                     placeholder="경유지를 입력해주세요"
-                    onChange={(e) => setPostCode(e.currentTarget.value, 'stopOvers', `${stopOver.id}`)}
+                    onChange={(e) => {
+                      setPostCode(e.target.value, 'stopOvers', `${stopOver.id}`);
+                    }}
                     onFocus={onFocus}
                   />
                   <span
                     className="input-clear-button mr-6"
-                    onClick={() => setPostCode('', 'stopOvers', `${stopOver.id}`)}
+                    onClick={() => {
+                      setPostCode('', 'stopOvers', `${stopOver.id}`);
+                      setFocused(false);
+                    }}
                   />
                 </div>
                 {searchResult('stopOvers', stopOver.id)}
@@ -284,10 +310,16 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
                 className="pl-3 h-8 flex-1 rounded-lg bg-gray-50"
                 value={destination || ''}
                 placeholder="목적지를 검색해주세요"
-                onChange={(e) => setPostCode(e.currentTarget.value, 'destination', null)}
+                onChange={(e) => setPostCode(e.target.value, 'destination', null)}
                 onFocus={onFocus}
               />
-              <span className="input-clear-button mr-6" onClick={() => setScheduleByType('destination', '')} />
+              <span
+                className="input-clear-button mr-6"
+                onClick={() => {
+                  setScheduleByType('destination', '');
+                  setFocused(false);
+                }}
+              />
             </div>
             {searchResult('destination')}
           </div>

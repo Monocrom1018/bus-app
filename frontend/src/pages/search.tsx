@@ -151,7 +151,7 @@ const SearchPage = () => {
     if (!keyword.replace(/^\s+|\s+$/g, '')) {
       return false;
     }
-    return KakaoPlaceRef.current.keywordSearch(keyword, callback);
+    return KakaoPlaceRef.current.keywordSearch(keyword, await callback);
   };
 
   const resetStatus = async () => {
