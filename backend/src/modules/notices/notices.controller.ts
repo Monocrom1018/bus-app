@@ -1,5 +1,5 @@
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { NoticesService } from './notices.service';
 
 @ApiTags('공지사항')
@@ -17,5 +17,11 @@ export class NoticesController {
   @Get(':id')
   getOne(@Param('id') id: number) {
     return this.noticesService.getOne(id);
+  }
+
+  @ApiOperation({ summary: '단일 공지사항 삭제하기' })
+  @Delete(':id')
+  deleteOne(@Param('id') id: number) {
+    return this.noticesService.deleteOne(id);
   }
 }

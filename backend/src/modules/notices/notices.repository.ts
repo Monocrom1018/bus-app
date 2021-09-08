@@ -1,4 +1,4 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { EntityRepository, Repository, TreeLevelColumn } from 'typeorm';
 import { NoticesEntity } from './notices.entity';
 
 @EntityRepository(NoticesEntity)

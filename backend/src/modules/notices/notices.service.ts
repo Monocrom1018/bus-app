@@ -11,12 +11,22 @@ export class NoticesService {
   ) {}
 
   async getAll(): Promise<NoticesEntity[]> {
-    const notices = this.noticesRepository.getAll();
+    const notices = await this.noticesRepository.getAll();
     return notices;
   }
 
   async getOne(id: number): Promise<NoticesEntity> {
     const notice = this.noticesRepository.getOne(id);
     return notice;
+  }
+
+  async deleteOne(id: number): Promise<boolean> {
+    try {
+      await this.noticesRepository.delete(id);
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+    return true;
   }
 }

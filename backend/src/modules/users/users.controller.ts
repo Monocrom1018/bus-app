@@ -133,7 +133,7 @@ export class UsersController {
     status: 200,
     description: 'reset password',
   })
-  @Get('/reset-password/')
+  @Get('/reset-password')
   async resetPassword(@Query('email') email: string) {
     return this.usersService.sendMail(email);
   }
