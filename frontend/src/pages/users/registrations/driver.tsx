@@ -105,6 +105,10 @@ const DriverSignUpPage: React.FC = () => {
 
       // amplify signup 시도
       try {
+        // if (values.files.length < 2) {
+        //   showToast('파일을 모두 첨부해주세요');
+        //   return;
+        // }
         await amplifySignUp(signUpParams);
         cognitoUserSession = await Auth.signIn({
           username: signUpParams.email,
@@ -283,7 +287,7 @@ const DriverSignUpPage: React.FC = () => {
                   isMultiple={false}
                   initialData={undefined}
                   placeholderComponent={<MainPlaceHolder maxCount={1} />}
-                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
                   deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
                   removeFileHandler={(key, removedS3File) => {
                     if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
@@ -305,7 +309,7 @@ const DriverSignUpPage: React.FC = () => {
                   isMultiple={false}
                   initialData={undefined}
                   placeholderComponent={<MainPlaceHolder maxCount={1} />}
-                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+                  containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
                   deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
                   removeFileHandler={(key, removedS3File) => {
                     if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
@@ -326,7 +330,7 @@ const DriverSignUpPage: React.FC = () => {
               isMultiple={false}
               initialData={undefined}
               placeholderComponent={<MainPlaceHolder maxCount={1} />}
-              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
               deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
               removeFileHandler={(key, removedS3File) => {
                 if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
@@ -354,7 +358,7 @@ const DriverSignUpPage: React.FC = () => {
               isMultiple={false}
               initialData={undefined}
               placeholderComponent={<MainPlaceHolder maxCount={1} />}
-              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6"
+              containerClassName="flex justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-md py-6 mt-5 -mb-4 relative"
               deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
               removeFileHandler={(key, removedS3File) => {
                 if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);

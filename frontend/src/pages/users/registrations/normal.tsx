@@ -1,14 +1,16 @@
 import { signupAPI } from '@api';
 import AgreeCheckboxes from '@components/shared/AgreeCheckboxes';
-import React, { useState, useCallback } from 'react';
-import { f7, Navbar, Page, List, ListInput } from 'framework7-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { f7, Navbar, Page, List, ListInput, Button } from 'framework7-react';
 import { FormikHelpers, FormikProvider, useFormik } from 'formik';
 import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
 import { AxiosError } from 'axios';
-import { Auth } from 'aws-amplify';
+import Amplify, { API, Auth } from 'aws-amplify';
+import { configs } from '@config';
 import i18next from 'i18next';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
+import { callPhoneCertification } from '@graphql/mutations';
 
 interface NormalSignUpParams {
   user_type: string;
@@ -16,6 +18,8 @@ interface NormalSignUpParams {
   email: string;
   password: string;
   password_confirmation: string;
+  phone: string;
+  phone_certification: string;
   // phone: string;
   termCheck: boolean;
   privacyCheck: boolean;
@@ -47,6 +51,8 @@ const INITIAL_SIGN_UP_PARAMS: NormalSignUpParams = {
   email: '',
   password: '',
   password_confirmation: '',
+  phone: '',
+  phone_certification: '',
   termCheck: false,
   privacyCheck: false,
   marketingCheck: false,
@@ -71,7 +77,30 @@ const amplifySignUp: AmplifySignUp = async (params: NormalSignUpParams) => {
 
 const NormalSignUpPage: React.FC = () => {
   const { authenticateUser } = useAuth();
-  // const [certComplete, setCertComplete] = useStat
+  const [code, setCode] = useState('');
+  const certificateCode = useRef(code);
+
+  useEffect(() => {
+    Amplify.configure({
+      aws_appsync_authenticationType: configs.AWS_API_KEY,
+    });
+  }, []);
+
+  const sendPhoneCertifiction = async () => {
+    const tempCode = `${Math.floor(1000 + Math.random() * 1000)}`;
+    setCode(tempCode);
+    certificateCode.current = tempCode;
+
+    await API.graphql(
+      {
+        query: callPhoneCertification,
+        variables: { code: certificateCode.current, phone_number: '01063612834' },
+      },
+      {
+        'x-api-key': configs.AWS_API_KEY,
+      },
+    );
+  };
 
   const onSubmitHandler = useCallback(
     async (signUpParams: NormalSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<NormalSignUpParams>) => {
@@ -83,6 +112,9 @@ const NormalSignUpPage: React.FC = () => {
 
       // amplify signup 시도
       try {
+        Amplify.configure({
+          aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS',
+        });
         await amplifySignUp(signUpParams);
         cognitoUserSession = await Auth.signIn({
           username: signUpParams.email,
@@ -195,6 +227,53 @@ const NormalSignUpPage: React.FC = () => {
               errorMessageForce
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
+            <li className="grid grid-cols-12 gap-4">
+              <div className="col-span-9">
+                <ListInput
+                  label="핸드폰번호"
+                  type="text"
+                  name="phone"
+                  placeholder="핸드폰 번호를 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phone}
+                  errorMessageForce
+                  errorMessage={touched.phone && errors.phone}
+                />
+              </div>
+              <div className="col-span-3 my-auto mx-0">
+                <Button fill onClick={sendPhoneCertifiction}>
+                  인증받기
+                </Button>
+              </div>
+            </li>
+            <li className="grid grid-cols-12 gap-4">
+              <div className="col-span-9">
+                <ListInput
+                  label="인증번호"
+                  type="number"
+                  name="phone_certificate"
+                  placeholder="인증번호를 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phone_certification}
+                  errorMessageForce
+                  errorMessage={touched.phone_certification && errors.phone_certification}
+                />
+              </div>
+              <div className="col-span-3 my-auto mx-0">
+                <Button
+                  fill
+                  onClick={() => {
+                    console.log('12312');
+                  }}
+                >
+                  인증확인
+                </Button>
+              </div>
+            </li>
           </List>
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />

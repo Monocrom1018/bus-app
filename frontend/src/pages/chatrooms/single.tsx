@@ -12,7 +12,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from 'react-query';
 import { CreateMessageInput, CreateNotificationInput } from 'src/API';
-
 import { createMessage, createNotification } from '@graphql/mutations';
 import { getMessageInfiniteQuery, getMessageListQuery, onCreateMessageSubscription } from '@appsync';
 

@@ -13,8 +13,9 @@ import DriverDetailPage from '@pages/DriverDetail';
 import CompanySignUpPage from '@pages/users/registrations/Company';
 import EstimatePage from '@pages/estimates';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
-import driverEditPage from '@pages/users/DriverEdit';
+import DriverEditPage from '@pages/users/DriverEdit';
 import CardPage from '@pages/users/Card';
+import NewPasswordPage from '@pages/users/passwords/new';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 import PastReservationListPage from '@pages/reservations/PastReservationList';
 import CreateReviewPage from '@pages/reviews/Create';
@@ -91,14 +92,15 @@ const customRoutes = [
   { path: '/users/sign_up/driver', component: DriverSignUpPage },
   { path: '/users/sign_up/company', component: CompanySignUpPage },
   { path: '/users/sign_up/intro', component: SignUpIntroPage },
+  { path: '/users/passwords/new', component: NewPasswordPage },
   { path: '/users/card', component: CardPage },
-  { path: '/users/edit', component: EditPage },
-  { path: '/users/driverEdit', component: driverEditPage },
-  { path: '/reservations/pastReservationList', component: PastReservationListPage },
-  { path: '/reviews/create/:id', component: CreateReviewPage },
+  { path: '/users/modify', component: EditPage },
+  { path: '/users/driverModify', component: DriverEditPage },
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
+  { path: '/review/create/:id', component: CreateReviewPage },
+  { path: '/reservations/pastReservationList', component: PastReservationListPage },
 ];
 
 /**

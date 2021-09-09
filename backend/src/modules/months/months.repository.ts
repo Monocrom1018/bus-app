@@ -10,4 +10,13 @@ export class MonthsRepository extends Repository<MonthsEntity> {
 
     return targetMonth.peak;
   }
+
+  async getAll(): Promise<MonthsEntity[]> {
+    const months = await this.find({
+      order: {
+        createdAt: 'ASC',
+      },
+    });
+    return months;
+  }
 }

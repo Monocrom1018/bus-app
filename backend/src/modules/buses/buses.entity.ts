@@ -51,7 +51,9 @@ export class BusesEntity extends DateAuditEntity {
   @JoinColumn({ name: 'user_id' })
   user: UsersEntity;
 
-  @OneToMany((type) => ImagesEntity, (profiles) => profiles.bus, {nullable: true})
+  @OneToMany((type) => ImagesEntity, (profiles) => profiles.bus, {
+    nullable: true,
+  })
   @JoinColumn({ name: 'image_id' })
   profiles: ImagesEntity[];
 }

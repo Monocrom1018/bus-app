@@ -5,7 +5,7 @@ import { updateReservation } from '@api';
 import { showToast } from '@js/utils';
 import ScheduleDisplay from '@components/schedule/ScheduleDisplay';
 
-const ReservationPage = ({reservation, refetch}) => {
+const ReservationPage = ({ reservation, refetch }) => {
   const actionsToPopover = useRef(null);
   const {
     id,
@@ -89,7 +89,9 @@ const ReservationPage = ({reservation, refetch}) => {
             출발일
           </Col>
           <Col width="80" className="text-base">
-            {`${moment(departureDate).format('YYYY년 MM월 DD일')} ${departureTime[0]}시 ${departureTime[2]}${departureTime[3]}분`}
+            {`${moment(departureDate).format('YYYY년 MM월 DD일')} ${departureTime[0]}시 ${departureTime[2]}${
+              departureTime[3]
+            }분`}
           </Col>
         </Row>
         <Row>

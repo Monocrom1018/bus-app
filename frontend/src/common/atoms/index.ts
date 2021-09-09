@@ -101,7 +101,7 @@ export const driverState = atom({
       audio: false,
       fridge: false,
       usb: false,
-    }
+    },
   },
 });
 

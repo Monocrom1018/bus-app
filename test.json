@@ -1,0 +1,89 @@
+{
+  "data": {
+    "callPhoneCertification": "{statusCode=200, body=
+      \"event: {
+        \\n  \\\"typeName\\\": \\\"Mutation\\\",
+        \\n  \\\"fieldName\\\": \\\"callPhoneCertification\\\",
+        \\n  \\\"arguments\\\": {
+          \\n    \\\"phone_number\\\": \\\"\\\",
+          \\n    \\\"code\\\": \\\"\\\"
+          \\n  },
+        \\n  \\\"identity\\\": {
+          \\n    \\\"claims\\\": {
+          \\n      \\\"sub\\\": \\\"4c50278c-65cd-490c-b83c-0fe33d99564c\\\",
+          \\n      \\\"email_verified\\\": false,
+          \\n      \\\"iss\\\": \\\"https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_DJbbNgcV8\\\",
+          \\n      \\\"cognito:username\\\": \\\"4c50278c-65cd-490c-b83c-0fe33d99564c\\\",
+          \\n      \\\"origin_jti\\\": \\\"ae4a0ce4-54ff-4576-9f46-d39648afae5b\\\",
+          \\n      \\\"aud\\\": \\\"4brjki7pgor65dt47si4ift5r0\\\",
+          \\n      \\\"event_id\\\": \\\"8b9e4ca9-298c-4eb3-af5f-081bbc237a06\\\",
+          \\n      \\\"token_use\\\": \\\"id\\\",
+          \\n      \\\"auth_time\\\": 1629981037,
+          \\n      \\\"exp\\\": 1629984637,
+          \\n      \\\"iat\\\": 1629981037,
+          \\n      \\\"jti\\\": \\\"09c66911-575f-4958-a591-c2bf0669cb0b\\\",
+          \\n      \\\"email\\\": \\\"normal01@bus.com\\\"
+          \\n    },
+        \\n    \\\"defaultAuthStrategy\\\": \\\"ALLOW\\\",
+          \\n    \\\"groups\\\": null,
+          \\n    \\\"issuer\\\": \\\"https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_DJbbNgcV8\\\",
+          \\n    \\\"sourceIp\\\": [
+          \\n      \\\"220.117.38.70\\\"
+          \\n    ],
+          \\n    \\\"sub\\\": \\\"4c50278c-65cd-490c-b83c-0fe33d99564c\\\",
+          \\n    \\\"username\\\": \\\"4c50278c-65cd-490c-b83c-0fe33d99564c\\\"
+          \\n  },
+          \\n  \\\"source\\\": null,
+          \\n  \\\"request\\\": {
+          \\n    \\\"headers\\\": {
+          \\n      \\\"x-forwarded-for\\\": \\\"220.117.38.70, 130.176.30.146\\\",
+          \\n      \\\"sec-ch-ua-mobile\\\": \\\"?0\\\",
+          \\n      \\\"cloudfront-viewer-country\\\": \\\"KR\\\",
+          \\n      \\\"cloudfront-is-tablet-viewer\\\": \\\"false\\\",
+          \\n      \\\"x-amzn-requestid\\\": \\\"31552295-d134-48a3-ba2c-4e86fbff2433\\\",
+          \\n      \\\"via\\\": \\\"2.0 98fffaac73e627a0ba863b11e0e19b00.cloudfront.net (CloudFront)\\\",
+          \\n      \\\"cloudfront-forwarded-proto\\\": \\\"https\\\",
+          \\n      \\\"origin\\\": \\\"https://ap-northeast-2.console.aws.amazon.com\\\",
+          \\n      \\\"content-length\\\": \\\"142\\\",
+          \\n      \\\"x-forwarded-proto\\\": \\\"https\\\",
+          \\n      \\\"accept-language\\\": \\\"ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\\\",
+          \\n      \\\"host\\\": \\\"3bhj6nlgjvd6ljhmzx2afr3b2u.appsync-api.ap-northeast-2.amazonaws.com\\\",
+          \\n      \\\"user-agent\\\": \\\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.159 Safari/537.36\\\",
+          \\n      \\\"cloudfront-is-mobile-viewer\\\": \\\"false\\\",
+          \\n      \\\"accept\\\": \\\"application/json, text/plain, */*\\\",
+          \\n      \\\"cloudfront-is-smarttv-viewer\\\": \\\"false\\\",
+          \\n      \\\"accept-encoding\\\": \\\"gzip, deflate, br\\\",
+          \\n      \\\"referer\\\": \\\"https://ap-northeast-2.console.aws.amazon.com/\\\",
+          \\n      \\\"content-type\\\": \\\"application/json\\\",
+          \\n      \\\"sec-fetch-mode\\\": \\\"cors\\\",
+          \\n      \\\"x-amzn-trace-id\\\": \\\"Root=1-61278ed1-43a475381f9ec3627034344d\\\",
+          \\n      \\\"x-amz-cf-id\\\": \\\"yVoE9AUr5nBIw-gBbG7WmswB56q3DQvctP4MTcDHn2x6Qo6KZMSODQ==\\\",
+          \\n      \\\"authorization\\\": \\\"eyJraWQiOiIwZkY5U2FzNkJCMGZvQ2dkQ2EybmxCNUhaUk10WlVsdVBHYVo2bDQzczM0PSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiI0YzUwMjc4Yy02NWNkLTQ5MGMtYjgzYy0wZmUzM2Q5OTU2NGMiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC5hcC1ub3J0aGVhc3QtMi5hbWF6b25hd3MuY29tXC9hcC1ub3J0aGVhc3QtMl9ESmJiTmdjVjgiLCJjb2duaXRvOnVzZXJuYW1lIjoiNGM1MDI3OGMtNjVjZC00OTBjLWI4M2MtMGZlMzNkOTk1NjRjIiwib3JpZ2luX2p0aSI6ImFlNGEwY2U0LTU0ZmYtNDU3Ni05ZjQ2LWQzOTY0OGFmYWU1YiIsImF1ZCI6IjRicmpraTdwZ29yNjVkdDQ3c2k0aWZ0NXIwIiwiZXZlbnRfaWQiOiI4YjllNGNhOS0yOThjLTRlYjMtYWY1Zi0wODFiYmMyMzdhMDYiLCJ0b2tlbl91c2UiOiJpZCIsImF1dGhfdGltZSI6MTYyOTk4MTAzNywiZXhwIjoxNjI5OTg0NjM3LCJpYXQiOjE2Mjk5ODEwMzcsImp0aSI6IjA5YzY2OTExLTU3NWYtNDk1OC1hNTkxLWMyYmYwNjY5Y2IwYiIsImVtYWlsIjoibm9ybWFsMDFAYnVzLmNvbSJ9.MOzuklIHr1jbuNN3dnzeq4IeLVCuvfYaqsXeuTUHAcDxOLLjI6OCeD4vwaRYvD180ihD3ljxOF1nbGTHB8JYZjoOPjn9G4qgJUKSoRl7xtMZ8swaM-SmBbyotIx1YBMhv735MWgB5xbYGAupPvWy1mis_SH8fQzit2vwEvvPB1PIEHUR8Jmk4VJis4CAMEGiX8sisntRjN6udXyVffYahid96ZCrJw3Y6MRmMC0ecZ-Y1G2nk4HansxdfD92XPKU3itkijSKsHUXKOPyVqk0PFKgaDO6cir21KxE_7R8juA1dY9nPU94XbU-u7hmdztDbLm46s4s3z0yL6AbC5Qv1g\\\",
+          \\n      \\\"sec-fetch-dest\\\": \\\"empty\\\",
+          \\n      \\\"x-amz-user-agent\\\": \\\"AWS-Console-AppSync/\\\",
+          \\n      \\\"cloudfront-is-desktop-viewer\\\": \\\"true\\\",
+          \\n      \\\"sec-fetch-site\\\": \\\"cross-site\\\",
+          \\n      \\\"sec-ch-ua\\\": \\\"\\\\\\\"Chromium\\\\\\\";v=\\\\\\\"92\\\\\\\", \\\\\\\" Not A;Brand\\\\\\\";v=\\\\\\\"99\\\\\\\", \\\\\\\"Google Chrome\\\\\\\";v=\\\\\\\"92\\\\\\\"\\\",
+          \\n      \\\"x-forwarded-port\\\": \\\"443\\\"
+          \\n    }
+          \\n  },
+          \\n  \\\"prev\\\": {
+          \\n    \\\"result\\\": {}
+          \\n  }
+          \\n}, context: {
+          \\n  \\\"callbackWaitsForEmptyEventLoop\\\": true,
+          \\n  \\\"functionVersion\\\": \\\"$LATEST\\\",
+          \\n  \\\"functionName\\\": \\\"callPhoneCertification-dev\\\",
+          \\n  \\\"memoryLimitInMB\\\": \\\"128\\\",
+          \\n  \\\"logGroupName\\\": \\\"/aws/lambda/callPhoneCertification-dev\\\",
+          \\n  \\\"logStreamName\\\": \\\"2021/08/26/[$LATEST]51ba42fd5dfb47cda1c9af4a56fd9136\\\",
+          \\n  \\\"invokedFunctionArn\\\": \\\"arn:aws:lambda:ap-northeast-2:450752033014:function:callPhoneCertification-dev\\\",
+          \\n  \\\"awsRequestId\\\": \\\"f53b27c0-f52d-4bcc-8cc5-6f7ea4425b70\\\"
+          \\n}, callback: function () {
+          \\n      if (!finished) {
+          \\n        toWrap.apply(null, arguments);
+          \\n        finished = true;
+          \\n      }
+          \\n    }\"}"
+  }
+}

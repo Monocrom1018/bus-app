@@ -5,9 +5,7 @@ import { BusesRepository } from './buses.repository';
 import { BusesService } from './buses.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BusesRepository]),
-  ],
+  imports: [TypeOrmModule.forFeature([BusesRepository])],
   controllers: [BusesController],
   providers: [BusesService],
   exports: [BusesService],

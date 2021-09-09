@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Page, Navbar, Button, List, ListItem } from 'framework7-react';
+import React, { useMemo } from 'react';
+import { Page, Navbar } from 'framework7-react';
 import SimpleCard from '@components/reservations/SimpleCard';
 import useAuth from '@hooks/useAuth';
 import { REACT_QUERY_KEYS } from '@constants';
@@ -16,6 +16,8 @@ const PastReservationListPage = () => {
       if (currentUser.isAuthenticated) {
         const response = await getReservations(currentUser.email,'all', page);
         return response || [];
+      } else {
+        return [];
       }
     },
     {
