@@ -94,7 +94,7 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
               </Row>
             </div>
           </Block>
-          <Calendar />
+          <Calendar startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
           <Toolbar position="bottom" className="justify-end">
             <div className="w-full flex">
               <Button
