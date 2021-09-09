@@ -10,7 +10,6 @@ import {
 } from 'framework7-react';
 import { showToast } from '@js/utils';
 import { createReview, getTargetReview, updateReviews } from '@api';
-import { useQuery } from 'react-query';
 
 const EditReviewPage = ({id, f7router}) => {
   const [rating, setRating] = useState(5);
@@ -26,9 +25,16 @@ const EditReviewPage = ({id, f7router}) => {
   }, [])
 
   const handleReviewButton = async () => {
-    f7.preloader.show();
     let message: string;
+
+    if(content === '') {
+      message = '내용을 입력해주세요';
+      showToast(message);
+      return;
+    }
+
     try {
+      f7.preloader.show();
       const params = {
         reservationId: id,
         rating: rating,

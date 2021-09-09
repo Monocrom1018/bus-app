@@ -50,7 +50,7 @@ export class ReservationsController {
   }
 
   @ApiOperation({ summary: '유저 이메일로 예약목록 가져오기' })
-  @Get()
+  @Get('email')
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',

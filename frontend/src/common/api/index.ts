@@ -112,7 +112,7 @@ export const createSchedules = async (params) => {
 };
 
 export const getReservations = async (email, status, page) => {
-  const { data } = await API.get(`reservations?email=${email}&status=${status}&page=${page}`);
+  const { data } = await API.get(`reservations/email/?email=${email}&status=${status}&page=${page}`);
   return data;
 };
 
@@ -173,4 +173,4 @@ export const getReviews = (id: ID) => API.get(`/reviews/${id}`);
 
 export const getTargetReview = (id: ID) => API.get(`/reviews/target/${id}`);
 
-export const updateReviews = (params: object) => API.post(`/reviews/update`, params);
+export const updateReviews = (params: object) => API.patch(`/reviews/update`, params);

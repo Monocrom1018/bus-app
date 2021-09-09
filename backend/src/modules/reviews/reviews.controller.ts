@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -46,7 +47,7 @@ export class ReviewsController {
   }
 
   @ApiOperation({ summary: '리뷰 업데이트' })
-  @Post('/update')
+  @Patch('/update')
   @ApiResponse({
     status: 200,
     description: 'get all Reviews of target driver success',
