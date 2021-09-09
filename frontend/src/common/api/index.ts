@@ -110,8 +110,8 @@ export const createSchedules = async (params) => {
   return data;
 };
 
-export const getReservations = async (email, page) => {
-  const { data } = await API.get(`reservations?email=${email}&page=${page}`);
+export const getReservations = async (email, status, page) => {
+  const { data } = await API.get(`reservations?email=${email}&status=${status}&page=${page}`);
   return data;
 };
 
@@ -165,3 +165,7 @@ export const createUserChatroom =
 export const createImageAPI = (params: FormData) => API.post('/images', params);
 
 export const destroyImageAPI = (params: FormData) => API.delete('/images', { data: params });
+
+export const createReview = (params) => API.post('/reviews/create', params);
+
+export const getReviews = (id: ID) => API.get(`/reviews/${id}`);

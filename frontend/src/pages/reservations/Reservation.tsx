@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import moment from 'moment';
 import { updateReservation } from '@api';
 import { showToast } from '@js/utils';
-import ScheduleDisplay from '@components/schedule/scheduleDisplay';
+import ScheduleDisplay from '@components/schedule/ScheduleDisplay';
 
 const ReservationPage = ({reservation, refetch}) => {
   const actionsToPopover = useRef(null);

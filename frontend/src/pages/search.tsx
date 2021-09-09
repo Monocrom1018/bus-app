@@ -6,7 +6,7 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { searchingOptionState, searchingOptionDateSelector, tourScheduleState } from '@atoms';
 import DetailContainer from '@components/search/DetailContainer';
 import DatePopup from '@components/search/DatePopUp';
-import TimeDisplay from '@components/search/timeDisplay';
+import TimeDisplay from '@components/search/TimeDisplay';
 import moment from 'moment';
 import { useInView } from 'react-intersection-observer';
 import { getDistance, getDrivers } from '@api';

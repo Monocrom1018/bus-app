@@ -47,7 +47,7 @@ const HomePage = ({ f7route, f7router }) => {
       <Block className="border-t-2 pt-8">
         <BlockTitle className="text-center text-xl font-bold">내 주변 추천 기사님들</BlockTitle>
         <ReactQueryState data={data} status={status} error={error} isFetching={isFetching} />
-         {data && (
+          {data && (
             <div>
               {data.map((driver) => (
                 <DriverListItem driver={driver} key={`driver-${driver.id}`} />

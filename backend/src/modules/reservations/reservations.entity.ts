@@ -4,11 +4,14 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { UsersEntity } from '@users/users.entity';
 import { DateAuditEntity } from '@entities/date-audit.entity';
 import { SchedulesEntity } from '@schedules/schedules.entity';
 import { Status } from './enum';
+import { ReviewsEntity } from '@reviews/reviews.entity';
 
 @Entity('reservations')
 export class ReservationsEntity extends DateAuditEntity {
@@ -53,4 +56,8 @@ export class ReservationsEntity extends DateAuditEntity {
     nullable: true,
   })
   schedules: SchedulesEntity[];
+
+  @OneToOne((type) => ReviewsEntity, (review) => review.reservation, {onDelete: 'SET NULL'})
+  @JoinColumn({ name: 'reviewId' })
+  review: ReviewsEntity;
 }

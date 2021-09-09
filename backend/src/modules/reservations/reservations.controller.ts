@@ -57,8 +57,9 @@ export class ReservationsController {
   })
   async getListByEmail(
     @Query('email') email: string,
+    @Query('status') status: string,
     @Query('page') page: number,
   ) {
-    return this.reservationsService.getListByEmail(email, page);
+    return this.reservationsService.getListByEmail(email, status, page);
   }
 }

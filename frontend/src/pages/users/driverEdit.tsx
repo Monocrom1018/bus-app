@@ -59,7 +59,7 @@ const UserInfoSchema = Yup.object().shape({
   audio: Yup.boolean(),
 });
 
-const driverEditPage = ({ f7route, f7router }) => {
+const DriverEditPage = ({ f7route, f7router }) => {
   const [removedIds, setRemovedIds] = useState<number[]>([]);
   const [currentUser, setCurrentUser] = useRecoilState(currentUserState);
   const [drivableRegion, setDrivableRegion] = useState(
@@ -590,4 +590,4 @@ const driverEditPage = ({ f7route, f7router }) => {
   );
 };
 
-export default driverEditPage;
+export default DriverEditPage;

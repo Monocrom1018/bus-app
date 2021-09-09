@@ -1,21 +1,23 @@
 import _ from 'lodash';
-import HomePage from '@pages/home';
-import MyPage from '@pages/mypage';
-import EditPage from '@pages/users/edit';
-import SearchPage from '@pages/search';
-import LoginPage from '@pages/users/sessions/new';
-import NormalSignUpPage from '@pages/users/registrations/normal';
-import DriverSignUpPage from '@pages/users/registrations/driver';
-import SignUpIntroPage from '@pages/users/registrations/intro';
+import HomePage from '@pages/Home';
+import MyPage from '@pages/Mypage';
+import EditPage from '@pages/users/Edit';
+import SearchPage from '@pages/Search';
+import LoginPage from '@pages/users/sessions/New';
+import NormalSignUpPage from '@pages/users/registrations/Normal';
+import DriverSignUpPage from '@pages/users/registrations/Driver';
+import SignUpIntroPage from '@pages/users/registrations/Intro';
 import { ResourceRoute } from '@interfaces';
-import IntroPage from '@pages/intro';
+import IntroPage from '@pages/Intro';
 import DriverDetailPage from '@pages/DriverDetail';
-import CompanySignUpPage from '@pages/users/registrations/company';
+import CompanySignUpPage from '@pages/users/registrations/Company';
 import EstimatePage from '@pages/estimates';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
-import driverEditPage from '@pages/users/driverEdit';
-import CardPage from '@pages/users/card';
+import driverEditPage from '@pages/users/DriverEdit';
+import CardPage from '@pages/users/Card';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
+import PastReservationListPage from '@pages/reservations/PastReservationList';
+import CreateReviewPage from '@pages/reviews/Create';
 
 /**
  * @resourceRoutes
@@ -90,8 +92,10 @@ const customRoutes = [
   { path: '/users/sign_up/company', component: CompanySignUpPage },
   { path: '/users/sign_up/intro', component: SignUpIntroPage },
   { path: '/users/card', component: CardPage },
-  { path: '/users/modify', component: EditPage },
-  { path: '/users/driverModify', component: driverEditPage },
+  { path: '/users/edit', component: EditPage },
+  { path: '/users/driverEdit', component: driverEditPage },
+  { path: '/reservations/pastReservationList', component: PastReservationListPage },
+  { path: '/reviews/create/:id', component: CreateReviewPage },
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
