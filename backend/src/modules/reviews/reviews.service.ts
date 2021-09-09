@@ -39,8 +39,17 @@ export class ReviewsService {
     }
   }
 
-  async get(id: number) {
-    const reviews = this.reviewsRepository.getReviews(id)
+  async get(driverId?: number) {
+    let reviews;
+    if(driverId) {
+      reviews = this.reviewsRepository.getReviews(driverId)
+    } else {
+      reviews = this.reviewsRepository.find({
+        order: {
+          createdAt: 'DESC'
+        }
+      });
+    }
     return reviews;
   }
 

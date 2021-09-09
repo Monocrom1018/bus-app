@@ -112,12 +112,12 @@ export const createSchedules = async (params) => {
 };
 
 export const getReservations = async (email, status, page) => {
-  const { data } = await API.get(`reservations/?email=${email}&status=${status}&page=${page}`);
+  const { data } = await API.get(`reservations?email=${email}&status=${status}&page=${page}`);
   return data;
 };
 
-export const updateReservation = async (params) => {
-  const { data } = await API.post(`reservations/update`, params);
+export const updateReservation = async (params, id) => {
+  const { data } = await API.patch(`reservations/${id}`, params);
   return data;
 };
 
@@ -167,10 +167,10 @@ export const createImageAPI = (params: FormData) => API.post('/images', params);
 
 export const destroyImageAPI = (params: FormData) => API.delete('/images', { data: params });
 
-export const createReview = (params: object) => API.post('/reviews/create', params);
+export const createReview = (params: object) => API.post('reviews/create', params);
 
-export const getReviews = (driverId: ID) => API.get(`/reviews/?driver=${driverId}`);
+export const getReviews = (driverId: ID) => API.get(`reviews?driver=${driverId}`);
 
-export const getTargetReview = (reservationId: ID) => API.get(`/reviews/?reservation=${reservationId}`);
+export const getTargetReview = (reservationId: ID) => API.get(`reviews?reservation=${reservationId}`);
 
-export const updateReviews = (params: object, id: ID) => API.patch(`/reviews/${id}`, params);
+export const updateReviews = (params: object, id: ID) => API.patch(`reviews/${id}`, params);

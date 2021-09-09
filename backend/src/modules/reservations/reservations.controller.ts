@@ -5,11 +5,14 @@ import {
   Post,
   UseInterceptors,
   Query,
+  Patch,
+  Param,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ReservationCreateDto } from './dto/create-reservation.dto';
 import { ReservationsService } from './reservations.service';
+import { ReservationUpdateDto } from './dto/update-reservation.dto'
 
 @Controller('reservations')
 export class ReservationsController {
@@ -29,27 +32,19 @@ export class ReservationsController {
   }
 
   @ApiOperation({ summary: '예약요청 수락, 거절 또는 취소' })
-  @Post('update')
+  @Patch('/:id')
   @ApiResponse({
     status: 200,
     description: 'confirm or refusal success',
   })
-  async updateReservation(@Body() param: any) {
-    return this.reservationsService.updateReservation(param);
+  async updateReservation(
+    @Body() reservationUpdateDto: ReservationUpdateDto, 
+    @Param('id') reservationId: number,
+  ) {
+    return this.reservationsService.updateReservation(reservationUpdateDto, reservationId);
   }
 
-  @ApiOperation({ summary: '예약id로 예약목록 가져오기' })
-  @Get('getList')
-  @ApiResponse({
-    status: 200,
-    description: 'get all Reservations success',
-  })
-  async getListByReservationId(@Query('id') id: number) {
-    const data = await this.reservationsService.getListById(id);
-    return data;
-  }
-
-  @ApiOperation({ summary: '유저 이메일로 예약목록 가져오기' })
+  @ApiOperation({ summary: '예약목록 가져오기' })
   @Get()
   @ApiResponse({
     status: 200,
@@ -59,9 +54,9 @@ export class ReservationsController {
     @Query('email') email?: string,
     @Query('status') status?: string,
     @Query('page') page?: number,
+    @Query('id') id?: number,
   ) {
-    if(email && status && page) {
-      return this.reservationsService.getListByEmail(email, status, page);
-    }
+    if(id) return await this.reservationsService.getListById(id);
+    return this.reservationsService.getListByEmail(email, status, page);
   }
 }

@@ -37,8 +37,8 @@ export class ReviewsController {
     @Query('driver') driverId?: number,
     @Query('reservation') reservationId?: number
   ) {
-    if(driverId) return this.reviewsService.get(driverId);
     if(reservationId) return this.reviewsService.getTarget(reservationId);
+    return this.reviewsService.get(driverId);
   }
 
   @ApiOperation({ summary: '리뷰 업데이트' })
@@ -47,7 +47,10 @@ export class ReviewsController {
     status: 200,
     description: 'get all Reviews of target driver success',
   })
-  async updateReviews(@Body() reviewUpdateDto: ReviewUpdateDto, @Param('id') reservationId: number) {
+  async updateReviews(
+    @Body() reviewUpdateDto: ReviewUpdateDto, 
+    @Param('id') reservationId: number
+  ) {
     return this.reviewsService.update(reviewUpdateDto, reservationId);
   }
 

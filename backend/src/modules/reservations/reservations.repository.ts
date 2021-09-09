@@ -98,8 +98,8 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     return reservations;
   }
 
-  async updateReservation(param: any) {
-    const { reservationId, status } = param;
+  async updateReservation(reservationUpdateDto, reservationId) {
+    const { status } = reservationUpdateDto;
     const targetReservation = await ReservationsEntity.findOne({
       where: { id: reservationId },
     });

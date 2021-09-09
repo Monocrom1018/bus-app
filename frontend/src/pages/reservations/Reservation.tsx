@@ -31,7 +31,8 @@ const ReservationPage = ({ reservation, refetch }) => {
       f7.preloader.show();
       let message: string;
       try {
-        await updateReservation(param);
+        const { status, reservationId } = param;
+        await updateReservation(param, reservationId);
         message = '예약이 취소되었습니다';
       } catch (error) {
         if (typeof error.message === 'string') message = error.message;
