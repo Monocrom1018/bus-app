@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { ReviewCreateDto } from './dto/create-review-dto';
@@ -26,43 +27,37 @@ export class ReviewsController {
     return this.reviewsService.create(reviewCreateDto);
   }
 
-  @ApiOperation({ summary: '특정 기사의 리뷰 모두 가져오기' })
-  @Get('/:id')
+  @ApiOperation({ summary: '리뷰 가져오기' })
+  @Get()
   @ApiResponse({
     status: 200,
-    description: 'get all Reviews of driver success',
+    description: 'get Reviews of target success',
   })
-  async getAllReviews(@Param('id') id: number) {
-    return this.reviewsService.get(id);
-  }
-
-  @ApiOperation({ summary: '특정 예약의 단일 리뷰 가져오기' })
-  @Get('/target/:id')
-  @ApiResponse({
-    status: 200,
-    description: 'get Reviews of target reservation success',
-  })
-  async getTargetReviews(@Param('id') id: number) {
-    return this.reviewsService.getTarget(id);
+  async getReviews(
+    @Query('driver') driverId?: number,
+    @Query('reservation') reservationId?: number
+  ) {
+    if(driverId) return this.reviewsService.get(driverId);
+    if(reservationId) return this.reviewsService.getTarget(reservationId);
   }
 
   @ApiOperation({ summary: '리뷰 업데이트' })
-  @Patch('/update')
+  @Patch('/:id')
   @ApiResponse({
     status: 200,
     description: 'get all Reviews of target driver success',
   })
-  async updateReviews(@Body() reviewUpdateDto: ReviewUpdateDto) {
-    return this.reviewsService.update(reviewUpdateDto);
+  async updateReviews(@Body() reviewUpdateDto: ReviewUpdateDto, @Param('id') reservationId: number) {
+    return this.reviewsService.update(reviewUpdateDto, reservationId);
   }
 
   @ApiOperation({ summary: '리뷰 제거' })
-  @Delete()
+  @Delete('/:id')
   @ApiResponse({
     status: 200,
     description: 'destroy Review success',
   })
-  async delete(@Param() reviewId: number) {
+  async delete(@Param('id') reviewId: number) {
     return this.reviewsService.delete(reviewId);
   }
 }

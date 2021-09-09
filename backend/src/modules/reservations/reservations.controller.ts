@@ -50,16 +50,18 @@ export class ReservationsController {
   }
 
   @ApiOperation({ summary: '유저 이메일로 예약목록 가져오기' })
-  @Get('email')
+  @Get()
   @ApiResponse({
     status: 200,
     description: 'get all Reservations success',
   })
   async getListByEmail(
-    @Query('email') email: string,
-    @Query('status') status: string,
-    @Query('page') page: number,
+    @Query('email') email?: string,
+    @Query('status') status?: string,
+    @Query('page') page?: number,
   ) {
-    return this.reservationsService.getListByEmail(email, status, page);
+    if(email && status && page) {
+      return this.reservationsService.getListByEmail(email, status, page);
+    }
   }
 }

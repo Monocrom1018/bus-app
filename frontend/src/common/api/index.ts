@@ -112,7 +112,7 @@ export const createSchedules = async (params) => {
 };
 
 export const getReservations = async (email, status, page) => {
-  const { data } = await API.get(`reservations/email/?email=${email}&status=${status}&page=${page}`);
+  const { data } = await API.get(`reservations/?email=${email}&status=${status}&page=${page}`);
   return data;
 };
 
@@ -169,8 +169,8 @@ export const destroyImageAPI = (params: FormData) => API.delete('/images', { dat
 
 export const createReview = (params: object) => API.post('/reviews/create', params);
 
-export const getReviews = (id: ID) => API.get(`/reviews/${id}`);
+export const getReviews = (driverId: ID) => API.get(`/reviews/?driver=${driverId}`);
 
-export const getTargetReview = (id: ID) => API.get(`/reviews/target/${id}`);
+export const getTargetReview = (reservationId: ID) => API.get(`/reviews/?reservation=${reservationId}`);
 
-export const updateReviews = (params: object) => API.patch(`/reviews/update`, params);
+export const updateReviews = (params: object, id: ID) => API.patch(`/reviews/${id}`, params);

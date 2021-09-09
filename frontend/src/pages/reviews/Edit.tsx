@@ -36,12 +36,10 @@ const EditReviewPage = ({id, f7router}) => {
     try {
       f7.preloader.show();
       const params = {
-        reservationId: id,
         rating: rating,
         content: content,
       };
-      console.log(params)
-      await updateReviews(params);
+      await updateReviews(params, id);
       message = '리뷰가 수정되었습니다'
     } catch (error) {
       if (typeof error.message === 'string') message = error.message;

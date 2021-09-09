@@ -57,11 +57,11 @@ export class ReviewsService {
     return data;
   }
 
-  async update(reviewUpdateDto: ReviewUpdateDto) {
-    const {reservationId, rating, content} = reviewUpdateDto;
+  async update(reviewUpdateDto: ReviewUpdateDto, reservationId: number) {
+    const {rating, content} = reviewUpdateDto;
     try {
       const targetReservation = await this.reservationsRepository.findOne(reservationId)
-      const data = await this.reviewsRepository.update({ reservation: targetReservation }, { rating: rating, content: content });
+      await this.reviewsRepository.update({ reservation: targetReservation }, { rating: rating, content: content });
     } catch (error) {
       console.log(error)
       throw new ConflictException("예상치 못한 오류가 발생하였습니다")
