@@ -19,6 +19,7 @@ import NewPasswordPage from '@pages/users/passwords/new';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 import PastReservationListPage from '@pages/reservations/PastReservationList';
 import CreateReviewPage from '@pages/reviews/Create';
+import EditReviewPage from '@pages/reviews/Edit';
 
 /**
  * @resourceRoutes
@@ -99,7 +100,8 @@ const customRoutes = [
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
-  { path: '/review/create/:id', component: CreateReviewPage },
+  { path: '/reviews/create/:id', component: CreateReviewPage },
+  { path: '/reviews/edit/:id', component: EditReviewPage },
   { path: '/reservations/pastReservationList', component: PastReservationListPage },
 ];
 

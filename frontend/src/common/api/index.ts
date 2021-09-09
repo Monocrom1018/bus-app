@@ -167,6 +167,10 @@ export const createImageAPI = (params: FormData) => API.post('/images', params);
 
 export const destroyImageAPI = (params: FormData) => API.delete('/images', { data: params });
 
-export const createReview = (params) => API.post('/reviews/create', params);
+export const createReview = (params: object) => API.post('/reviews/create', params);
 
 export const getReviews = (id: ID) => API.get(`/reviews/${id}`);
+
+export const getTargetReview = (id: ID) => API.get(`/reviews/target/${id}`);
+
+export const updateReviews = (params: object) => API.post(`/reviews/update`, params);

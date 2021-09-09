@@ -20,7 +20,7 @@ const SingleReview = ({ reviews }) => {
             {`${moment(review.createdAt).format('YYYY/MM/DD')}`}
             </div>
           </div>
-          <div className="mt-1">{review.content}</div>
+          <div className="mt-2">{review.content}</div>
         </div>
       ))}
     </div>

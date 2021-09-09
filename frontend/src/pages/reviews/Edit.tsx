@@ -9,11 +9,21 @@ import {
   Page,
 } from 'framework7-react';
 import { showToast } from '@js/utils';
-import { createReview } from '@api';
+import { createReview, getTargetReview, updateReviews } from '@api';
+import { useQuery } from 'react-query';
 
-const CreateReviewPage = ({id, f7router}) => {
+const EditReviewPage = ({id, f7router}) => {
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState('');
+
+  useEffect(() => {
+    const getTargetReviewData = async () => {
+      const { data: review } = await getTargetReview(id);
+      setRating(Number(review.rating));
+      setContent(review.content);
+    }
+    getTargetReviewData();
+  }, [])
 
   const handleReviewButton = async () => {
     f7.preloader.show();
@@ -24,8 +34,9 @@ const CreateReviewPage = ({id, f7router}) => {
         rating: rating,
         content: content,
       };
-      await createReview(params);
-      message = '리뷰가 작성되었습니다'
+      console.log(params)
+      await updateReviews(params);
+      message = '리뷰가 수정되었습니다'
     } catch (error) {
       if (typeof error.message === 'string') message = error.message;
     } finally {
@@ -42,7 +53,7 @@ const CreateReviewPage = ({id, f7router}) => {
   return (
     <Page name="review" noToolbar className="px-4">
       {/* Top Navbar */}
-      <Navbar title={'리뷰남기기'} backLink="Back"></Navbar>
+      <Navbar title={'리뷰 수정'} backLink="Back"></Navbar>
 
       {/* Page Contents */}
 
@@ -63,6 +74,7 @@ const CreateReviewPage = ({id, f7router}) => {
           type="textarea"
           placeholder="버스 이용에 대한 솔직한 리뷰를 남겨주세요"
           required
+          defaultValue={content || ''}
           onChange={e => setContent(e.target.value)}
         ></ListInput>
       </List>
@@ -73,4 +85,4 @@ const CreateReviewPage = ({id, f7router}) => {
   );
 };
 
-export default CreateReviewPage;
+export default EditReviewPage;

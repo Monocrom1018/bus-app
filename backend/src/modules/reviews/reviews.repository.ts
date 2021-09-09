@@ -14,15 +14,16 @@ export class ReviewsRepository extends Repository<ReviewsEntity> {
     review.reservation = reservationId;
     review.content = content;
     review.rating = rating;
-    ReviewsEntity.save(review);
+    await ReviewsEntity.save(review);
     } catch (error) {
       console.log(error);
       throw new ConflictException(
         '리뷰가 작성되지 않았습니다. 다시 시도해주세요',
       );
+    } finally {
+      return review;
     }
 
-    return review;
   }
   
   async getReviews(id) {

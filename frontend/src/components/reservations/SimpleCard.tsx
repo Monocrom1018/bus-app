@@ -8,7 +8,7 @@ const SimpleCard = ({reservation}) => {
 
   console.log(reservation)
 
-  const { departureDate, returnDate, driver, schedules, review } = reservation;
+  const { departureDate, returnDate, driver, schedules, review, id } = reservation;
   const { name } = driver;
   const departure = schedules[0].departure
   const destination = schedules[schedules.length - 1].departure
@@ -43,7 +43,7 @@ const SimpleCard = ({reservation}) => {
             ↓
           </Col>
         </Row>
-        <Row className="mb-2">
+        <Row>
           <Col width="20" className="border-2 rounded-xl border-red-400 text-center text-red-400 font-semibold">
             목적지
           </Col>
@@ -56,12 +56,12 @@ const SimpleCard = ({reservation}) => {
       { review === null ? (
         <CardFooter className="flex flex-row justify-center">
           <i className="f7-icons">pencil</i>
-          <a className="text-lg font-semibold" href={`/reviews/create/${309}`}>리뷰작성</a>
+          <a className="text-lg font-semibold" href={`/reviews/create/${Number(id)}`}>리뷰작성</a>
         </CardFooter>
       ) : (
         <CardFooter className="flex flex-row justify-center">
           <i className="f7-icons">pencil</i>
-          <a className="text-lg font-semibold" href={`/reviews/create/${309}`}>리뷰수정</a>
+          <a className="text-lg font-semibold" href={`/reviews/edit/${Number(id)}`}>리뷰수정</a>
         </CardFooter>
       ) }
       <Button
