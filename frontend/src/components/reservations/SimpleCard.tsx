@@ -2,19 +2,12 @@ import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader } from 'fra
 import moment from 'moment';
 import React from 'react';
 
-// todo : 상세확인, 하드코딩 돼있는 부분들 props 처리
-
 const SimpleCard = ({reservation}) => {
-
-  console.log(reservation)
 
   const { departureDate, returnDate, driver, schedules, review, id } = reservation;
   const { name } = driver;
   const departure = schedules[0].departure
   const destination = schedules[schedules.length - 1].departure
-  
-  // reservation 에서 기사이름, 일정날짜, 출발지, 도착지, 리뷰 존재여부 파악해서 매핑
-  // const { reser } = reservation;
 
   return (
     <Card className="bg-white mb-5 rounded relative h-auto" key={1}>
