@@ -69,7 +69,6 @@ const SessionNewPage: React.FC = () => {
       } finally {
         setSubmitting(false);
         f7.preloader.hide();
-        console.log(user);
         if (user) {
           await authenticateUser(user);
           window.location.replace('/');

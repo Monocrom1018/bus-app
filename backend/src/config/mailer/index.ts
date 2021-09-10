@@ -2,8 +2,6 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
 import { MailerOptions } from '@nestjs-modules/mailer/dist/interfaces/mailer-options.interface';
 import { SMTP_USERNAME, SMTP_PASSWORD } from '@environments';
 
-console.log(SMTP_USERNAME);
-
 export const mailerOptions: MailerOptions = {
   // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
   transport: {

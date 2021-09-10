@@ -4,7 +4,6 @@ import {
   Post,
   Get,
   Controller,
-  UseInterceptors,
   Param,
   Query,
   Delete,
@@ -69,7 +68,6 @@ export class UsersController {
     @Query('sort_by') sortBy: string,
     @Query('search_by') searchBy: string,
   ) {
-    console.log(`page ${page}`);
     return this.usersService.getDrivers(
       driverSearchDto,
       page,
@@ -133,7 +131,7 @@ export class UsersController {
     status: 200,
     description: 'reset password',
   })
-  @Get('/reset-password/')
+  @Get('/reset-password')
   async resetPassword(@Query('email') email: string) {
     return this.usersService.sendMail(email);
   }

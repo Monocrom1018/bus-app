@@ -154,4 +154,8 @@ export class UserUpdateDto {
   @IsOptional()
   @ApiProperty()
   audio: string;
+
+  @IsOptional()
+  @ApiProperty()
+  busProfiles: any;
 }

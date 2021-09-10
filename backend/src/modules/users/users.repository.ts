@@ -20,8 +20,9 @@ export class UsersRepository extends Repository<UsersEntity> {
       email,
       password,
       name,
+      phone,
       user_type,
-      company,
+      company_name,
       director_name,
       director_email,
       director_phone,
@@ -33,6 +34,7 @@ export class UsersRepository extends Repository<UsersEntity> {
     const user = new UsersEntity();
     user.email = email;
     user.name = name;
+    user.phone = phone;
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
@@ -42,7 +44,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
     if (user_type === 'DRIVER') {
       user.director_name = director_name || null;
-      user.company_name = company || null;
+      user.company_name = company_name || null;
       user.director_email = director_email || null;
       user.director_phone = director_phone || null;
       user.registration_confirmed = false;
@@ -87,7 +89,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
   async me(email: string): Promise<UsersEntity> {
     const user = await this.findOne({
-      relations: ['profile', 'bus'],
+      relations: ['profile', 'bus', 'bus.profiles'],
       where: {
         email,
       },
@@ -96,7 +98,6 @@ export class UsersRepository extends Repository<UsersEntity> {
   }
 
   async findByUuid(uuid: string): Promise<UsersEntity> {
-    console.log(uuid);
     const user = await this.findOne({
       where: {
         uuid,
@@ -146,6 +147,7 @@ export class UsersRepository extends Repository<UsersEntity> {
     userUpdateDto,
     profile: ImagesEntity,
     bus: BusesEntity,
+    busProfileImages: ImagesEntity[],
   ) {
     const {
       drivableRegion,
@@ -202,7 +204,8 @@ export class UsersRepository extends Repository<UsersEntity> {
       user.bus.usb = usb === 'true';
       user.bus.movie = movie === 'true';
       user.bus.audio = audio === 'true';
-      user.bus.save();
+      user.bus.profiles = busProfileImages;
+      await user.bus.save();
     }
 
     try {
@@ -221,17 +224,23 @@ export class UsersRepository extends Repository<UsersEntity> {
       user.peak_charge_per_km = peakChargePerKm;
       user.bank = bank;
       user.bank_account = bank_account;
-      user.save();
+      await user.save();
     } catch (err) {
       throw new ConflictException(err);
     }
 
-    return user;
+    const updatedUser = await this.findOne({
+      relations: ['profile', 'bus', 'bus.profiles'],
+      where: {
+        id: user.id,
+      },
+    });
+    return updatedUser;
   }
 
   async getOneUserById(param: number): Promise<UsersEntity> {
     const user = await this.findOne({
-      relations: ['profile', 'bus'],
+      relations: ['profile', 'bus', 'profiles'],
       where: {
         id: param,
       },

@@ -121,8 +121,8 @@ export type Point = {
 };
 
 export interface StopOver {
-  id: number | string;
-  region: string;
+  id?: string | number;
+  region?: string;
 }
 export interface Schedule {
   day: string;
@@ -144,6 +144,7 @@ export interface Bus {
   usb: boolean;
   movie: boolean;
   audio: boolean;
+  profiles: any[];
 }
 
 export type ImagableModel = 'User' | 'Post' | 'Court';

@@ -45,7 +45,7 @@ const MyPage = () => {
             <a href="/faqs">자주 묻는 질문</a>
           </li>
           <li>
-            <a href="#">저장한 일정</a>
+            <a href="/reservations/pastReservationList">예약내역</a>
           </li>
           <li>
             <a href="/contacts">이메일 문의</a>
@@ -53,11 +53,11 @@ const MyPage = () => {
           <li>
             {currentUser.user_type === 'normal' ? (
               <>
-                <a href="/users/modify">회원정보 수정</a>
+                <a href="/users/edit">회원정보 수정</a>
                 <a href="/users/card">카드목록</a>
               </>
             ) : (
-              <a href="/users/driverModify">회원정보 수정</a>
+              <a href="/users/driverEdit">회원정보 수정</a>
             )}
           </li>
           <li>

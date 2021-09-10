@@ -1,18 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from 'react';
-import {
-  f7,
-  Navbar,
-  Page,
-  List,
-  ListInput,
-  Button,
-  ListItem,
-  AccordionContent,
-  Chip,
-  Block,
-  Toggle,
-} from 'framework7-react';
+import { f7, Navbar, Page, List, ListInput, ListItem, AccordionContent, Chip, Block, Toggle } from 'framework7-react';
 import { sleep } from '@utils';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
@@ -24,6 +12,7 @@ import { pick } from 'lodash';
 import S3ImagePicker from '@components/images/S3ImagePicker';
 import { MainPlaceHolder } from '@components/images';
 import { IoCloseCircleSharp } from 'react-icons/io5';
+import S3MultiImagePicker from '@components/images/S3MultiImagePicker';
 import { updateAPI } from '../../common/api/index';
 
 const UserInfoSchema = Yup.object().shape({
@@ -65,7 +54,13 @@ const DriverEditPage = ({ f7route, f7router }) => {
   const [drivableRegion, setDrivableRegion] = useState(
     currentUser.drivable_region ? [...currentUser.drivable_region] : [],
   );
-  const { name, profile, email, company_name } = currentUser;
+  const { name, profile, email, company_name, bus } = currentUser;
+
+  let bus_profiles;
+  if (bus && bus?.profiles) {
+    bus_profiles = bus.profiles;
+  }
+
   const banks = [
     '경남은행',
     '광주은행',
@@ -134,10 +129,8 @@ const DriverEditPage = ({ f7route, f7router }) => {
 
   return (
     <Page noToolbar>
-      {/* Top Navbar */}
       <Navbar title="회원정보 수정" backLink sliding={false} />
 
-      {/* Page Contents */}
       <Formik
         enableReinitialize
         initialValues={{
@@ -149,6 +142,7 @@ const DriverEditPage = ({ f7route, f7router }) => {
           busNumber: currentUser.bus?.bus_number || '',
           busType: currentUser.bus?.bus_type || '대형',
           busOld: currentUser.bus?.bus_old || 2010,
+          busProfiles: currentUser.bus?.profiles || [],
           peopleAvailable: currentUser.bus?.people_available || null,
           introduce: currentUser.introduce || '',
           basicCharge: currentUser.basic_charge || '',
@@ -573,7 +567,20 @@ const DriverEditPage = ({ f7route, f7router }) => {
             </List>
             <List noHairlinesMd>
               <div className="p-3 font-semibold bg-white">차량사진</div>
-              <input className="p-3" type="file" name="busUpload" />
+              <S3MultiImagePicker
+                isMultiple
+                maxCount={5}
+                initialData={bus_profiles ? [...bus_profiles] : undefined}
+                placeholderComponent={<MainPlaceHolder maxCount={5} isImage />}
+                deleteButtonComponent={<IoCloseCircleSharp size={26} className="text-black bg-white rounded-full" />}
+                removeImageHandler={(key, removedS3Image) => {
+                  if (removedS3Image) setRemovedIds((prev) => [...prev, removedS3Image.id]);
+                }}
+                containerClassName="w-full h-full relative"
+                addImageHandler={(v: any) => {
+                  setFieldValue('busProfiles', v);
+                }}
+              />
             </List>
             <div className="p-4">
               <button

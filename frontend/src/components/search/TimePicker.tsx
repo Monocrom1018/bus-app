@@ -36,15 +36,14 @@ const TimePicker = (props: { el: string }) => {
   }, []);
 
   return (
-    <div className="">
+    <div className="-mt-6">
       <ListInput
-        label="탑승시간"
         wrap={false}
         type="text"
         placeholder="탑승시간을 선택해주세요"
         readonly
         inputId={`${el}_picker`}
-        className="bg-gray-50 mb-4 h-20 border rounded-lg mr-3 p-3"
+        className="border-b-2 w-24 h-10 text-lg font-bold pt-5 pl-6 border-black"
       />
     </div>
   );

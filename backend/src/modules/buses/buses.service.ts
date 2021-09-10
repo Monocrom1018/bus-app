@@ -8,5 +8,4 @@ export class BusesService {
     @InjectRepository(BusesRepository)
     private busesRepository: BusesRepository,
   ) {}
-  
 }

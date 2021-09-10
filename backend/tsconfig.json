@@ -45,6 +45,7 @@
       "@users-chatrooms/*": ["src/modules/users-chatrooms/*"],
       "@users/*": ["src/modules/users/*"],
       "@buses/*": ["src/modules/buses/*"],
+      "@reviews/*": ["src/modules/reviews/*"],
     }
   }
 }
