@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { f7, Views, View, Toolbar, Link, Popup, Navbar, Page, Button } from 'framework7-react';
 import CustomPanel from '@components/shared/CustomPanel';
 import useAuth from '@hooks/useAuth';
-import LandingPage from '@pages/landing';
+import LandingPage from '@pages/Landing';
 import { Auth } from '@aws-amplify/auth';
 import { onNotificationCreateRecevier } from '@graphql/subscriptions';
 import { API, graphqlOperation } from 'aws-amplify';

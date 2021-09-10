@@ -10,7 +10,7 @@ const TimeDisplay = ({ setPopupOpened }) => {
   const { departureTime, returnTime } = useRecoilValue(searchingOptionTimeSelector);
 
   return (
-    <div className="mt-4 -mb-2">
+    <div className="mt-4 -mb-4">
       <Row>
         <Col width="50" onClick={() => setPopupOpened(true)}>
           <ListInput

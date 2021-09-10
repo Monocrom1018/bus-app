@@ -8,12 +8,9 @@ import '@styles/calendar.less';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { searchingOptionState, tourScheduleState } from '@atoms';
 
-const Calendar = () => {
+const Calendar = ({ startDate, endDate, setStartDate, setEndDate }) => {
   const [searchingOption, setSearchingOption] = useRecoilState(searchingOptionState);
   const setTourSchedule = useSetRecoilState(tourScheduleState);
-  const { departureDate, returnDate } = searchingOption;
-  const [startDate, setStartDate] = useState<Moment | null>(moment());
-  const [endDate, setEndDate] = useState<Moment | null>(null);
   const [focusedInput, setFocusedInput] = useState<FocusedInputShape | null>('startDate');
 
   const handleDatesChange = ({ startDate, endDate }) => {

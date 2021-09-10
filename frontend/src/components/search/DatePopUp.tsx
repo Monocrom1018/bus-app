@@ -71,7 +71,7 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
               <TimePicker el="returnTime" />
             </div>
           </Block>
-          <Calendar />
+          <Calendar startDate={startDate} endDate={endDate} setStartDate={setStartDate} setEndDate={setEndDate} />
           <Toolbar position="bottom">
             <div className="w-full flex justify-between">
               <Button
