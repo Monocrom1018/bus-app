@@ -11,6 +11,7 @@ import i18next from 'i18next';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
 import { callPhoneCertification } from '@graphql/mutations';
+import { showToast } from '@js/utils';
 
 interface NormalSignUpParams {
   user_type: string;
@@ -20,7 +21,6 @@ interface NormalSignUpParams {
   password_confirmation: string;
   phone: string;
   phone_certification: string;
-  // phone: string;
   termCheck: boolean;
   privacyCheck: boolean;
   marketingCheck: boolean;
@@ -86,7 +86,7 @@ const NormalSignUpPage: React.FC = () => {
     });
   }, []);
 
-  const sendPhoneCertifiction = async () => {
+  const sendPhoneCertification = async () => {
     const tempCode = `${Math.floor(1000 + Math.random() * 1000)}`;
     setCode(tempCode);
     certificateCode.current = tempCode;
@@ -94,13 +94,20 @@ const NormalSignUpPage: React.FC = () => {
     await API.graphql(
       {
         query: callPhoneCertification,
-        variables: { code: certificateCode.current, phone_number: '01063612834' },
+        variables: { code: certificateCode.current, phone_number: '01051026048' },
       },
       {
         'x-api-key': configs.AWS_API_KEY,
       },
     );
+
+    showToast("인증번호가 발송되었습니다")
   };
+
+  const checkPhoneCertification = async () => {
+    const isMatched = values.phone_certification === code;
+    showToast(isMatched)
+  }
 
   const onSubmitHandler = useCallback(
     async (signUpParams: NormalSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<NormalSignUpParams>) => {
@@ -243,7 +250,7 @@ const NormalSignUpPage: React.FC = () => {
                 />
               </div>
               <div className="col-span-3 my-auto mx-0">
-                <Button fill onClick={sendPhoneCertifiction}>
+                <Button fill onClick={sendPhoneCertification}>
                   인증받기
                 </Button>
               </div>
@@ -253,7 +260,7 @@ const NormalSignUpPage: React.FC = () => {
                 <ListInput
                   label="인증번호"
                   type="number"
-                  name="phone_certificate"
+                  name="phone_certification"
                   placeholder="인증번호를 입력해주세요"
                   clearButton
                   onChange={handleChange}
@@ -266,9 +273,7 @@ const NormalSignUpPage: React.FC = () => {
               <div className="col-span-3 my-auto mx-0">
                 <Button
                   fill
-                  onClick={() => {
-                    console.log('12312');
-                  }}
+                  onClick={checkPhoneCertification}
                 >
                   인증확인
                 </Button>
