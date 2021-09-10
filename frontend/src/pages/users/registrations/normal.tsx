@@ -12,6 +12,7 @@ import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
 import { callPhoneCertification } from '@graphql/mutations';
 import { showToast } from '@js/utils';
+import { sleep } from '@utils';
 
 interface NormalSignUpParams {
   user_type: string;
@@ -110,8 +111,11 @@ const NormalSignUpPage: React.FC = () => {
 
   const checkPhoneCertification = async () => {
     const isMatched = values.phone_certification === Number(code)
-
+    f7.preloader.show();
+    await sleep(500);
+    f7.preloader.hide();
     if(isMatched) {
+
       setFieldValue('phone_matched', true);
       showToast("인증이 완료되었습니다")
       return;
