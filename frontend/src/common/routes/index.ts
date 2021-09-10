@@ -98,7 +98,6 @@ const customRoutes = [
   { path: '/users/modify', component: EditPage },
   { path: '/users/driverModify', component: DriverEditPage },
   { path: '/drivers/:id', component: DriverDetailPage },
-  { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
   { path: '/reviews/create/:id', component: CreateReviewPage },
   { path: '/reviews/edit/:id', component: EditReviewPage },

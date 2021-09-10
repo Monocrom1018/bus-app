@@ -60,7 +60,7 @@ const Calendar = ({ startDate, endDate, setStartDate, setEndDate }) => {
   const renderWeekHeaderElement = (day: string) => <div>{day}</div>;
 
   return (
-    <div style={{ height: '75%' }}>
+    <div style={{ height: '80%' }}>
       <DayPickerRangeController
         startDate={startDate}
         endDate={endDate}
