@@ -93,7 +93,6 @@ export class StorageService {
         return false;
       }
     } catch (error) {
-      console.log(error);
       return false;
     }
     return true;

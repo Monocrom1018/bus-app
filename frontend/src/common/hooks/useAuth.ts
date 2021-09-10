@@ -27,7 +27,6 @@ const useAuth: UseAuthHooks = () => {
       const userEmail = cognitoUser.attributes.email;
       if (!isCognitoUser) return;
       const { data: user } = await userMeApi(userEmail);
-      console.log(user);
       setCurrentUser({ ...user, ...cognitoUser.attributes, isAuthenticated: true });
     },
     [setCurrentUser],

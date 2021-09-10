@@ -121,7 +121,6 @@ const ChatroomSinglePage = ({ f7route, f7router }: PageRouteProps) => {
     const subscription = onCreateMessageSubscription(room_id).subscribe({
       next: ({ value }) => {
         const message: MessageType = value.data.onCreateMessageFilterChatroom;
-        console.log(value);
         if (message.room_id === room_id && currentUser.id.toString() !== message.user_id) {
           refetch();
         }

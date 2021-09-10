@@ -8,8 +8,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UsersEntity } from '@users/users.entity';
-import { ImageType, Level } from './enum';
 import { BusesEntity } from '@buses/buses.entity';
+import { ImageType, Level } from './enum';
 
 @Entity('images')
 export class ImagesEntity extends DateAuditEntity {
@@ -43,7 +43,7 @@ export class ImagesEntity extends DateAuditEntity {
   @OneToOne(() => UsersEntity, (user) => user.profile, { nullable: true })
   @JoinColumn({ name: 'user_id' })
   user: UsersEntity;
-  
+
   @ManyToOne(() => BusesEntity, (bus) => bus.profiles, { nullable: true })
   @JoinColumn({ name: 'bus_id' })
   bus: BusesEntity;
