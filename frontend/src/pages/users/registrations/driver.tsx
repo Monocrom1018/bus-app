@@ -371,6 +371,18 @@ const DriverSignUpPage: React.FC = () => {
                   errorMessageForce
                   errorMessage={touched.director_email && errors.director_email}
                 />
+                <ListInput
+                  label={i18next.t('담당자 연락처') as string}
+                  type="text"
+                  name="director_phone"
+                  placeholder="담당자 연락처를 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.director_phone}
+                  errorMessageForce
+                  errorMessage={touched.director_phone && errors.director_phone}
+                />
               </List>
               <List noHairlinesMd>
                 <div className="p-3 font-semibold bg-white">사업자 등록증(인증절차에만 사용됩니다)</div>
