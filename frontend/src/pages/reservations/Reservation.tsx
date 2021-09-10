@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import moment from 'moment';
 import { updateReservation } from '@api';
 import { showToast } from '@js/utils';
-import ScheduleDisplay from '@components/schedule/scheduleDisplay';
+import ScheduleDisplay from '@components/schedule/ScheduleDisplay';
 
 const ReservationPage = ({ reservation, refetch }) => {
   const actionsToPopover = useRef(null);
@@ -31,7 +31,8 @@ const ReservationPage = ({ reservation, refetch }) => {
       f7.preloader.show();
       let message: string;
       try {
-        await updateReservation(param);
+        const { reservationId } = param;
+        await updateReservation(param, reservationId);
         message = '예약이 취소되었습니다';
       } catch (error) {
         if (typeof error.message === 'string') message = error.message;

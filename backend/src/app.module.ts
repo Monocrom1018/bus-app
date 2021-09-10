@@ -21,6 +21,7 @@ import { ReservationsModule } from '@reservations/reservations.module';
 import { MonthsModule } from '@months/months.module';
 import { ChatroomsModule } from '@chatrooms/chatrooms.module';
 import { UsersChatroomsModule } from '@users-chatrooms/user-chatrooms.module';
+import { ReviewsModule } from '@reviews/reviews.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { typeormOptions, adminOptions, mailerOptions } from './config';
 
@@ -50,6 +51,7 @@ AdminBro.registerAdapter({ Database, Resource });
     FilesModule,
     ChatroomsModule,
     UsersChatroomsModule,
+    ReviewsModule,
   ],
 })
 export class AppModule {}

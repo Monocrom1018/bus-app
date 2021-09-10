@@ -218,20 +218,23 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
       )}
       {focused &&
         pointList[id || type] &&
-        pointList[id || type].map((point: PointDetail) => (
-          <div className="mt-3" key={point.id}>
-            <a
-              className="font-medium pl-3"
-              onClick={() => {
-                departureSelect(point.road_address_name || `${point.address_name} ${point.place_name}`, type, id);
-                setFocused(true);
-              }}
-            >
-              {point.place_name || point.road_address_name}
-              <div className="text-gray-500 text-sm pl-3">{point.road_address_name || point.address_name}</div>
-            </a>
-          </div>
-        ))}
+        pointList[id || type].map((point: PointDetail) => {
+          const selectedDeparture = point.road_address_name === '' ? `${point.address_name} ${point.place_name}` : `${point.road_address_name} ${point.place_name}`;
+          return (
+            <div className="mt-3" key={point.id}>
+              <a
+                className="font-medium pl-3"
+                onClick={() => {
+                  departureSelect(selectedDeparture, type, id);
+                  setFocused(true);
+                }}
+              >
+                {point.place_name || point.road_address_name}
+                <div className="text-gray-500 text-sm pl-3">{point.road_address_name || point.address_name}</div>
+              </a>
+            </div>
+          )
+        })}
     </div>
   );
 
@@ -324,7 +327,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
             {searchResult('destination')}
           </div>
           {stopOvers && stopOvers.length < maxStopOverLength && (
-            <div className="flex px-4 py-2">
+            <div className="flex px-4 pt-1">
               <div
                 className="flex-initial text-white bg-red-500 py-2 px-4 rounded-lg"
                 onClick={() => addStopOver('stopOvers')}

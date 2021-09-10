@@ -29,15 +29,25 @@ export class ReservationsService {
     return data;
   }
 
-  async getListByEmail(email, page) {
-    const me = await this.usersService.me(email);
-    const myId = me.id;
-    const data = await this.reservationsRepository.getListByEmail(myId, page);
+  async getListByEmail(email, status, page) {
+    let data;
+
+    if(email) {
+      const { id: myId } = await this.usersService.me(email);
+      data = await this.reservationsRepository.getListByEmail(myId, status, page);
+    } else {
+      data = await this.reservationsRepository.find({
+        order: {
+          createdAt: 'DESC'
+        }
+      })
+    }
+
     return data;
   }
 
-  async updateReservation(param) {
-    const data = await this.reservationsRepository.updateReservation(param);
+  async updateReservation(reservationUpdateDto, reservationId) {
+    const data = await this.reservationsRepository.updateReservation(reservationUpdateDto, reservationId);
     return data;
   }
 }
