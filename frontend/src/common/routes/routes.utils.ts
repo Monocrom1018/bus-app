@@ -1,7 +1,7 @@
 import { DEFAULT_ACTIONS, ACTIONS } from '@constants';
 import { ResourceRoute, Route } from '@interfaces';
 import { Auth } from 'aws-amplify';
-import IntroPage from '@pages/intro';
+import IntroPage from '@pages/Intro';
 
 const isActionMember = { index: false, new: false, edit: true, show: true };
 

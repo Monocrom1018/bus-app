@@ -1,6 +1,5 @@
 import React from 'react';
 import { Page, Navbar, NavTitle, Block, Input } from 'framework7-react';
-import DriverListItem from '../users/DriverListItem';
 
 const DriverListPage = () => (
   <Page noToolbar name="driverlist">

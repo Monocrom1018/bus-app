@@ -17,7 +17,7 @@ const ReservationIndexPage = () => {
     // eslint-disable-next-line consistent-return
     async ({ pageParam: page = 1 }) => {
       if (currentUser.isAuthenticated) {
-        const response = await getReservations(currentUser.email, page);
+        const response = await getReservations(currentUser.email, 'all', page);
         return response || [];
       }
     },
@@ -67,7 +67,7 @@ const ReservationIndexPage = () => {
             <Block>{(error as any).message}</Block>
           ) : (
             <>
-              {reservations && reservations.length !== 0 ? (
+              {reservations && reservations.length > 0 ? (
                 <>
                   {reservations.map((reservation) => {
                     if (currentUser.user_type === 'normal') {
