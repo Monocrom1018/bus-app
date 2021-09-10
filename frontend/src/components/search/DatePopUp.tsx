@@ -1,8 +1,6 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import React, { useState } from 'react';
 import {
-  Row,
-  Col,
   Popup,
   Button,
   Page,
@@ -13,7 +11,6 @@ import {
   Block,
   Icon,
   Toolbar,
-  ListInput,
 } from 'framework7-react';
 import moment, { Moment } from 'moment';
 import TimePicker from '@components/search/TimePicker';
@@ -60,51 +57,30 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
             </NavLeft>
             <NavTitle>날짜 및 시간 선택</NavTitle>
           </Navbar>
-          <Block style={{ height: '25%' }}>
-            <div>
-              <Row>
-                <Col width="50">
-                  <ListInput
-                    label="가는날"
-                    type="text"
-                    placeholder="가는날을 선택해주세요"
-                    readonly
-                    className="bg-gray-50 mb-4 h-20 border rounded-lg ml-3 p-3"
-                    value={moment(departureDate).format('YYYY년 MM월 DD일')}
-                    wrap={false}
-                  />
-                </Col>
-                <Col width="50">
-                  <TimePicker el="departureTime" />
-                </Col>
-                <Col width="50">
-                  <ListInput
-                    label="오는날"
-                    type="text"
-                    placeholder="오는날을 선택해주세요"
-                    readonly
-                    className="bg-gray-50 h-20 border rounded-lg ml-3 p-3"
-                    value={returnDate ? moment(returnDate).format('YYYY년 MM월 DD일') : ''}
-                    wrap={false}
-                  />
-                </Col>
-                <Col width="50">
-                  <TimePicker el="returnTime" />
-                </Col>
-              </Row>
+          <Block style={{ height: '20%' }}>
+            <div className="flex justify-between mt-6 mx-20">
+              <div 
+                className="border-b-2 w-24 h-10 border-black text-base font-bold truncate pt-4"
+              >{moment(departureDate).format('YYYY년 M월 DD일')}</div>
+              <div
+                className="border-b-2 w-24 h-10 border-black text-base font-bold truncate pt-4"
+              >{returnDate ? moment(returnDate).format('YYYY년 M월 DD일') : ''}</div>
+            </div>
+            <div className="flex justify-between mt-10 mx-20">
+              <TimePicker el="departureTime" />
+              <TimePicker el="returnTime" />
             </div>
           </Block>
           <Calendar />
-          <Toolbar position="bottom" className="justify-end">
-            <div className="w-full flex">
+          <Toolbar position="bottom">
+            <div className="w-full flex justify-between">
               <Button
                 text="날짜지우기"
-                className="text-xl py-4"
-                fill
-                style={{ margin: '0 auto' }}
+                className="text-lg py-4"
+                style={{ margin: '0 5' }}
                 onClick={resetCalendar}
               />
-              <Button popupClose text="완료" className="text-xl py-4" fill style={{ margin: '0 auto' }} />
+              <Button popupClose text="적용" className="text-lg py-4 mx-2" fill style={{ margin: '0 5' }} />
             </div>
           </Toolbar>
         </Page>

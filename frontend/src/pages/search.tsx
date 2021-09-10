@@ -166,7 +166,7 @@ const SearchPage = () => {
   };
 
   return (
-    <Page name="search">
+    <Page name="search" className="relative">
       <Navbar>
         <NavLeft>
           <Link icon="las la-bars" panelOpen="left" />
@@ -187,7 +187,7 @@ const SearchPage = () => {
           lastIndex={dayDiff - 1}
         />
       ))}
-      <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-32 mx-4 h-10 text-lg" />
+      <Button onClick={getResult} text="검색" className="bg-red-500 text-white my-10 mx-4 h-10 text-lg" />
       {totalDistance && drivers && drivers?.length !== 0 && (
         <div ref={targetRef}>
           <div className="flex justify-between">

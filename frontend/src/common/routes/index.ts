@@ -1,20 +1,19 @@
 import _ from 'lodash';
-import HomePage from '@pages/home';
-import MyPage from '@pages/mypage';
-import EditPage from '@pages/users/edit';
-import SearchPage from '@pages/search';
-import LoginPage from '@pages/users/sessions/new';
-import NormalSignUpPage from '@pages/users/registrations/normal';
-import DriverSignUpPage from '@pages/users/registrations/driver';
-import SignUpIntroPage from '@pages/users/registrations/intro';
+import HomePage from '@pages/Home';
+import MyPage from '@pages/Mypage';
+import EditPage from '@pages/users/Edit';
+import SearchPage from '@pages/Search';
+import LoginPage from '@pages/users/sessions/New';
+import NormalSignUpPage from '@pages/users/registrations/Normal';
+import DriverSignUpPage from '@pages/users/registrations/Driver';
+import SignUpIntroPage from '@pages/users/registrations/Intro';
 import { ResourceRoute } from '@interfaces';
-import IntroPage from '@pages/intro';
+import IntroPage from '@pages/Intro';
 import DriverDetailPage from '@pages/DriverDetail';
-import CompanySignUpPage from '@pages/users/registrations/company';
-import EstimatePage from '@pages/estimates';
+import CompanySignUpPage from '@pages/users/registrations/Company';
 import DriverReservationPage from '@pages/reservations/DriverReservation';
 import DriverEditPage from '@pages/users/DriverEdit';
-import CardPage from '@pages/users/card';
+import CardPage from '@pages/users/Card';
 import NewPasswordPage from '@pages/users/passwords/new';
 import { mapResourceRoute, mapAsyncRoute, mergeRoutes } from './routes.utils';
 
@@ -95,7 +94,6 @@ const customRoutes = [
   { path: '/users/modify', component: EditPage },
   { path: '/users/driverModify', component: DriverEditPage },
   { path: '/drivers/:id', component: DriverDetailPage },
-  { path: '/drivers/:id/esimate', component: EstimatePage },
   { path: '/driverReservation', component: DriverReservationPage },
 ];
 
