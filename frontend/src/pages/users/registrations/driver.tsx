@@ -290,7 +290,6 @@ const DriverSignUpPage: React.FC = () => {
                   }}
                   addFileHandler={(v: any) => {
                     // 이미지 컬럼 변경 후 여기도 변경해야함
-                    console.log(v);
                     setFieldValue('file_contents', v[0]);
                   }}
                 />
@@ -312,7 +311,6 @@ const DriverSignUpPage: React.FC = () => {
                   }}
                   addFileHandler={(v: any) => {
                     // 이미지 컬럼 변경 후 여기도 변경해야함
-                    console.log(v);
                     setFieldValue('file_contents', v[0]);
                   }}
                 />
@@ -332,19 +330,9 @@ const DriverSignUpPage: React.FC = () => {
                 if (removedS3File) setRemovedIds((prev) => [...prev, removedS3File.id]);
               }}
               addFileHandler={(v: any) => {
-                // 이미지 컬럼 변경 후 여기도 변경해야함
-                console.log(v[0]);
                 setFieldValue('files[0]', v[0]);
               }}
             />
-            {/* <input
-              className="p-3"
-              type="file"
-              name="driver_license"
-              onChange={(event) => {
-                setFieldValue('driver_license', event.currentTarget.files[0]);
-              }}
-            /> */}
           </List>
           <List noHairlinesMd>
             <div className="p-3 font-semibold bg-white">공제 가입 확인서 (인증절차에만 사용됩니다)</div>
@@ -359,18 +347,9 @@ const DriverSignUpPage: React.FC = () => {
               }}
               addFileHandler={(v: any) => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
-                console.log(v[0]);
                 setFieldValue('files[1]', v[0]);
               }}
             />
-            {/* <input
-              className="p-3"
-              type="file"
-              name="deductible_confirmation"
-              onChange={(event) => {
-                setFieldValue('deductible_confirmation', event.currentTarget.files[0]);
-              }}
-            /> */}
           </List>
 
           <AgreeCheckboxes names={['termCheck', 'privacyCheck', 'marketingCheck']} />

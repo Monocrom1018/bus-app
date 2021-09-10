@@ -144,6 +144,7 @@ export interface Bus {
   usb: boolean;
   movie: boolean;
   audio: boolean;
+  profiles: any[];
 }
 
 export type ImagableModel = 'User' | 'Post' | 'Court';

@@ -17,6 +17,7 @@ import { BusesEntity } from '@buses/buses.entity';
 import { FilesService } from '@files/files.service';
 import { SchedulesService } from '@schedules/schedules.service';
 import { MailerService } from '@nestjs-modules/mailer';
+import { In } from 'typeorm';
 import { UserCreateDto } from './dto/user-create.dto';
 import { DriverSearchDto } from './dto/driver-search.dto';
 import { UsersRepository } from './users.repository';
@@ -66,7 +67,8 @@ export class UsersService {
   }
 
   async update(userUpdateDto: UserUpdateDto) {
-    const { profileImg, ...userUpdateColumns } = userUpdateDto;
+    const { profileImg, busProfiles, ...userUpdateColumns } = userUpdateDto;
+
     const user = await this.authService.currentApiUser();
 
     if (profileImg && user) {
@@ -112,11 +114,31 @@ export class UsersService {
       user,
     });
 
+    const busProfilesInputs = busProfiles.map((el) => ({
+      ...el,
+      bus,
+      imagable_type: 'bus',
+      imagable_id: bus.id,
+    }));
+
+    if (bus && busProfiles.length !== 0) {
+      await this.imagesRepository.save(busProfilesInputs);
+      // 버스사진이 하나도 없는경우
+      // 버스사진이 몇개 있는 경우
+      // 버스사진이 5개 있는 경우
+      // 버스사진이 5개 있었는데 삭제하는 경우
+    }
+    const busProfileKeys = busProfiles.map((el) => el.key);
+    const busProfileImages = await this.imagesRepository.find({
+      key: In([...busProfileKeys]),
+    });
+
     return this.usersRepository.updateUser(
       user,
       userUpdateColumns,
       profile,
       bus,
+      busProfileImages,
     );
   }
 

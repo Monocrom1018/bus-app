@@ -45,8 +45,6 @@ export default class CreateReservations implements Seeder {
             statusIndex++;
           }
         } catch (error) {
-          console.log(error);
-
           const normal = await getRepository(UsersEntity)
             .createQueryBuilder('user')
             .where('user.user_type = :user_type', { user_type: 'normal' })

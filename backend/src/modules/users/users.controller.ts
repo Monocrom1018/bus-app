@@ -4,7 +4,6 @@ import {
   Post,
   Get,
   Controller,
-  UseInterceptors,
   Param,
   Query,
   Delete,
@@ -69,7 +68,6 @@ export class UsersController {
     @Query('sort_by') sortBy: string,
     @Query('search_by') searchBy: string,
   ) {
-    console.log(`page ${page}`);
     return this.usersService.getDrivers(
       driverSearchDto,
       page,

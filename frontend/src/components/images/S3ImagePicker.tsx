@@ -32,6 +32,7 @@ const S3ImagePicker: React.FC<ImagePickerProps> = ({
     maxCount,
     removeImageHandler,
   });
+
   return (
     <>
       <input {...inputProps} onChange={onChangeHandler} ref={inputRef} />

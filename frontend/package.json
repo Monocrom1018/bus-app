@@ -7,7 +7,6 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "npm run dev",
-    "start:development": "concurrently --kill-others-on-fail \"npm run dev\" \"yarn cognito-mock start\"",
     "dev": "cross-env NODE_ENV=development webpack serve --config ./build/webpack.config.js --host 0.0.0.0",
     "build": "cross-env NODE_ENV=production node ./build/build.js",
     "build-capacitor-ios": "cross-env NODE_ENV=production node ./build/build.js && npx cap copy ios",
