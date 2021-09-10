@@ -11,6 +11,8 @@ import i18next from 'i18next';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
 import { callPhoneCertification } from '@graphql/mutations';
+import { showToast } from '@js/utils';
+import { sleep } from '@utils';
 
 interface NormalSignUpParams {
   user_type: string;
@@ -19,8 +21,8 @@ interface NormalSignUpParams {
   password: string;
   password_confirmation: string;
   phone: string;
-  phone_certification: string;
-  // phone: string;
+  phone_certification: number | null;
+  phone_matched: boolean;
   termCheck: boolean;
   privacyCheck: boolean;
   marketingCheck: boolean;
@@ -36,10 +38,11 @@ const SignUpSchema = Yup.object().shape({
       is: (val: string) => val && val.length > 0,
       then: Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요'),
     }),
-  // phone: Yup.string()
-  //   .min(9, '길이가 너무 짧습니다')
-  //   .max(15, '길이가 너무 깁니다')
-  //   .required('휴대폰 번호를 인증해주세요'),
+  phone: Yup.string()
+    .min(9, '길이가 너무 짧습니다')
+    .max(15, '길이가 너무 깁니다')
+    .required('휴대폰 번호를 입력해주세요'),
+  phone_matched: Yup.boolean().oneOf([true], '휴대폰 인증을 완료해주세요'),
   termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
   privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
   marketingCheck: Yup.boolean(),
@@ -52,7 +55,8 @@ const INITIAL_SIGN_UP_PARAMS: NormalSignUpParams = {
   password: '',
   password_confirmation: '',
   phone: '',
-  phone_certification: '',
+  phone_certification: null,
+  phone_matched: false,
   termCheck: false,
   privacyCheck: false,
   marketingCheck: false,
@@ -86,21 +90,39 @@ const NormalSignUpPage: React.FC = () => {
     });
   }, []);
 
-  const sendPhoneCertifiction = async () => {
+  const sendPhoneCertification = async () => {
     const tempCode = `${Math.floor(1000 + Math.random() * 1000)}`;
+    const phoneNumber = (values.phone).replace(/-/g, '');
     setCode(tempCode);
     certificateCode.current = tempCode;
 
     await API.graphql(
       {
         query: callPhoneCertification,
-        variables: { code: certificateCode.current, phone_number: '01063612834' },
+        variables: { code: certificateCode.current, phone_number: phoneNumber },
       },
       {
         'x-api-key': configs.AWS_API_KEY,
       },
     );
+
+    showToast("인증번호가 발송되었습니다")
   };
+
+  const checkPhoneCertification = async () => {
+    const isMatched = values.phone_certification === Number(code)
+    f7.preloader.show();
+    await sleep(500);
+    f7.preloader.hide();
+    if(isMatched) {
+      setFieldValue('phone_matched', true);
+      showToast("인증이 완료되었습니다")
+      return;
+    } else {
+      setFieldValue('phone_certification', null);
+      showToast("인증번호가 일치하지 않습니다")
+    }
+  }
 
   const onSubmitHandler = useCallback(
     async (signUpParams: NormalSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<NormalSignUpParams>) => {
@@ -242,8 +264,8 @@ const NormalSignUpPage: React.FC = () => {
                   errorMessage={touched.phone && errors.phone}
                 />
               </div>
-              <div className="col-span-3 my-auto mx-0">
-                <Button fill onClick={sendPhoneCertifiction}>
+              <div className="col-span-3 my-auto mr-4">
+                <Button outline onClick={sendPhoneCertification}>
                   인증받기
                 </Button>
               </div>
@@ -253,7 +275,7 @@ const NormalSignUpPage: React.FC = () => {
                 <ListInput
                   label="인증번호"
                   type="number"
-                  name="phone_certificate"
+                  name="phone_certification"
                   placeholder="인증번호를 입력해주세요"
                   clearButton
                   onChange={handleChange}
@@ -263,12 +285,10 @@ const NormalSignUpPage: React.FC = () => {
                   errorMessage={touched.phone_certification && errors.phone_certification}
                 />
               </div>
-              <div className="col-span-3 my-auto mx-0">
+              <div className="col-span-3 my-auto mr-4">
                 <Button
                   fill
-                  onClick={() => {
-                    console.log('12312');
-                  }}
+                  onClick={checkPhoneCertification}
                 >
                   인증확인
                 </Button>

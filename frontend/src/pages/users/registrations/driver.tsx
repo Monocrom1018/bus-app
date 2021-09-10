@@ -1,17 +1,20 @@
 import { signupAPI } from '@api';
 import AgreeCheckboxes from '@components/shared/AgreeCheckboxes';
-import React, { useCallback, useState } from 'react';
-import { f7, Navbar, Page, List, ListInput, Checkbox } from 'framework7-react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { f7, Navbar, Page, List, ListInput, Checkbox, Button } from 'framework7-react';
 import { FormikHelpers, FormikProvider, useFormik } from 'formik';
 import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
-import { Auth } from 'aws-amplify';
+import Amplify, { API, Auth } from 'aws-amplify';
+import { configs } from '@config';
 import i18next from 'i18next';
 import * as Yup from 'yup';
 import useAuth from '@hooks/useAuth';
 import S3MultiFilePicker from '@components/files/S3MultiFilePicker';
+import { callPhoneCertification } from '@graphql/mutations';
 import { IoCloseCircleSharp } from 'react-icons/io5';
 import { MainPlaceHolder } from '@components/images';
 import { showToast } from '@js/utils';
+import { sleep } from '@utils';
 
 interface DriverSignUpParams {
   user_type: string;
@@ -19,10 +22,13 @@ interface DriverSignUpParams {
   company_name: string;
   director_name: string;
   director_email: string;
-  director_phone: number;
+  director_phone: string;
   email: string;
   password: string;
   password_confirmation: string;
+  phone: string;
+  phone_certification: number | null;
+  phone_matched: boolean;
   driver_license: File;
   deductible_confirmation: File;
   termCheck: boolean;
@@ -45,6 +51,11 @@ const SignUpSchema = Yup.object().shape({
       is: (val: string) => val && val.length > 0,
       then: Yup.string().oneOf([Yup.ref('password')], '비밀번호가 일치하지 않아요'),
     }),
+  phone: Yup.string()
+    .min(9, '길이가 너무 짧습니다')
+    .max(15, '길이가 너무 깁니다')
+    .required('휴대폰 번호를 입력해주세요'),
+  phone_matched: Yup.boolean().oneOf([true], '휴대폰 인증을 완료해주세요'),
   termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
   privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
   marketingCheck: Yup.boolean(),
@@ -61,10 +72,13 @@ const INITIAL_SIGN_UP_PARAMS: DriverSignUpParams = {
   company_name: '',
   director_name: '',
   director_email: '',
-  director_phone: undefined,
+  director_phone: '',
   email: '',
   password: '',
   password_confirmation: '',
+  phone: '',
+  phone_certification: null,
+  phone_matched: false,
   termCheck: false,
   privacyCheck: false,
   marketingCheck: false,
@@ -93,7 +107,48 @@ const amplifySignUp: AmplifySignUp = async (params: DriverSignUpParams) => {
 const DriverSignUpPage: React.FC = () => {
   const [isCompany, setIsCompany] = useState(false);
   const { authenticateUser } = useAuth();
-  // const [certComplete, setCertComplete] = useStat
+  const [code, setCode] = useState('');
+  const certificateCode = useRef(code);
+
+  useEffect(() => {
+    Amplify.configure({
+      aws_appsync_authenticationType: configs.AWS_API_KEY,
+    });
+  }, []);
+
+  const sendPhoneCertification = async () => {
+    const tempCode = `${Math.floor(1000 + Math.random() * 1000)}`;
+    const phoneNumber = (values.phone).replace(/-/g, '');
+    setCode(tempCode);
+    certificateCode.current = tempCode;
+
+    await API.graphql(
+      {
+        query: callPhoneCertification,
+        variables: { code: certificateCode.current, phone_number: phoneNumber },
+      },
+      {
+        'x-api-key': configs.AWS_API_KEY,
+      },
+    );
+
+    showToast("인증번호가 발송되었습니다")
+  };
+
+  const checkPhoneCertification = async () => {
+    const isMatched = values.phone_certification === Number(code)
+    f7.preloader.show();
+    await sleep(500);
+    f7.preloader.hide();
+    if(isMatched) {
+      setFieldValue('phone_matched', true);
+      showToast("인증이 완료되었습니다")
+      return;
+    } else {
+      setFieldValue('phone_certification', null);
+      showToast("인증번호가 일치하지 않습니다")
+    }
+  }
 
   const onSubmitHandler = useCallback(
     async (signUpParams: DriverSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<DriverSignUpParams>) => {
@@ -109,6 +164,9 @@ const DriverSignUpPage: React.FC = () => {
         //   showToast('파일을 모두 첨부해주세요');
         //   return;
         // }
+        Amplify.configure({
+          aws_appsync_authenticationType: 'AMAZON_COGNITO_USER_POOLS',
+        });
         await amplifySignUp(signUpParams);
         cognitoUserSession = await Auth.signIn({
           username: signUpParams.email,
@@ -239,6 +297,51 @@ const DriverSignUpPage: React.FC = () => {
               errorMessageForce
               errorMessage={touched.password_confirmation && errors.password_confirmation}
             />
+            <li className="grid grid-cols-12 gap-4">
+              <div className="col-span-9">
+                <ListInput
+                  label="핸드폰번호"
+                  type="text"
+                  name="phone"
+                  placeholder="핸드폰 번호를 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phone}
+                  errorMessageForce
+                  errorMessage={touched.phone && errors.phone}
+                />
+              </div>
+              <div className="col-span-3 my-auto mr-4">
+                <Button outline onClick={sendPhoneCertification}>
+                  인증받기
+                </Button>
+              </div>
+            </li>
+            <li className="grid grid-cols-12 gap-4">
+              <div className="col-span-9">
+                <ListInput
+                  label="인증번호"
+                  type="number"
+                  name="phone_certification"
+                  placeholder="인증번호를 입력해주세요"
+                  clearButton
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.phone_certification}
+                  errorMessageForce
+                  errorMessage={touched.phone_certification && errors.phone_certification}
+                />
+              </div>
+              <div className="col-span-3 my-auto mr-4">
+                <Button
+                  fill
+                  onClick={checkPhoneCertification}
+                >
+                  인증확인
+                </Button>
+              </div>
+            </li>
           </List>
           {isCompany && (
             <>
@@ -272,7 +375,7 @@ const DriverSignUpPage: React.FC = () => {
                   label={i18next.t('담당자 연락처') as string}
                   type="text"
                   name="director_phone"
-                  placeholder="담당자 연락처를 숫자만 입력해주세요"
+                  placeholder="담당자 연락처를 입력해주세요"
                   clearButton
                   onChange={handleChange}
                   onBlur={handleBlur}

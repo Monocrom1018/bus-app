@@ -33,6 +33,11 @@ export class UserCreateDto {
   @IsString()
   @IsOptional()
   @ApiProperty()
+  phone: string;
+
+  @IsString()
+  @IsOptional()
+  @ApiProperty()
   company: string;
 
   @IsString()
