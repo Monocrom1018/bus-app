@@ -20,6 +20,7 @@ import { FilesEntity } from '@files/files.entity';
 import { UsersChatroomsEntity } from 'src/modules/users-chatrooms/user-chatrooms.entity';
 import { BusesEntity } from '@buses/buses.entity';
 import { UserType } from './enum';
+import { ReviewsEntity } from '../reviews/reviews.entity';
 
 @Entity('users')
 @Unique(['email'])
@@ -153,6 +154,20 @@ export class UsersEntity extends DateAuditEntity {
     (drivingReservations) => drivingReservations.driver,
   )
   drivingReservations: ReservationsEntity[];
+  
+  @OneToMany(
+    (type) => ReviewsEntity, 
+    (reviews) => reviews.user, 
+    {cascade: true}
+  )
+  reviews: ReviewsEntity[];
+
+  @OneToMany(
+    (type) => ReviewsEntity,
+    (driverReviews) => driverReviews.driver,
+    {cascade: true}
+  )
+  driverReview: ReviewsEntity[];
 
   @OneToMany(
     (type) => UsersChatroomsEntity,

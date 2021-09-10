@@ -34,8 +34,9 @@ const DriverReservationPage = ({ reservation, refetch }) => {
       f7.preloader.show();
       let message: string;
       try {
+        const{ reservationId } = param;
         await createPayment(reservation);
-        const updatedReservation = await updateReservation(param);
+        const updatedReservation = await updateReservation(param, reservationId);
         setReservation(updatedReservation);
         message = `예약을 ${param.status}하였습니다`;
       } catch (error) {

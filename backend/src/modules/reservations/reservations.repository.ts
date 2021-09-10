@@ -66,18 +66,28 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     return reservations;
   }
 
-  async getListByEmail(myId: number, page): Promise<ReservationsEntity[]> {
+  async getListByEmail(myId: number, status: string ,page): Promise<ReservationsEntity[]> {
     const perPage = 3;
+    const whereValue = status === '완료' ? [
+      {
+        user: myId,
+        status: status
+      },
+      {
+        driver: myId,
+        status: status
+      },
+    ] : [
+      {
+        user: myId,
+      },
+      {
+        driver: myId,
+      },
+    ] 
     const reservations = await ReservationsEntity.find({
-      relations: ['schedules', 'driver', 'user'],
-      where: [
-        {
-          user: myId,
-        },
-        {
-          driver: myId,
-        },
-      ],
+      relations: ['schedules', 'driver', 'user', 'review'],
+      where: whereValue,
       order: {
         createdAt: 'DESC',
       },
@@ -88,14 +98,14 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     return reservations;
   }
 
-  async updateReservation(param: any) {
-    const { reservationId, status } = param;
+  async updateReservation(reservationUpdateDto, reservationId) {
+    const { status } = reservationUpdateDto;
     const targetReservation = await ReservationsEntity.findOne({
       where: { id: reservationId },
     });
 
     if (status === 'cancel') {
-      if (targetReservation.status === 'accepted') {
+      if (targetReservation.status === '수락') {
         throw new ConflictException('이미 체결된 예약은 취소할 수 없습니다.');
       }
 

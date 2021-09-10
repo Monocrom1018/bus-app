@@ -4,7 +4,6 @@ import React, { useCallback, useState } from 'react';
 import { f7, Navbar, Page, List, ListInput, Checkbox } from 'framework7-react';
 import { FormikHelpers, FormikProvider, useFormik } from 'formik';
 import { CognitoUser, ISignUpResult } from 'amazon-cognito-identity-js';
-import { AxiosError } from 'axios';
 import { Auth } from 'aws-amplify';
 import i18next from 'i18next';
 import * as Yup from 'yup';
@@ -49,6 +48,11 @@ const SignUpSchema = Yup.object().shape({
   termCheck: Yup.boolean().oneOf([true], '이용약관에 동의해주세요'),
   privacyCheck: Yup.boolean().oneOf([true], '개인정보 보호정책에 동의해주세요'),
   marketingCheck: Yup.boolean(),
+  files: Yup.mixed().test("fileLength", "파일을 모두 첨부해주세요", (value) => {
+    if (value.length < 2) return false
+    return true
+  }),
+
 });
 
 const INITIAL_SIGN_UP_PARAMS: DriverSignUpParams = {
@@ -335,6 +339,8 @@ const DriverSignUpPage: React.FC = () => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
                 console.log(v[0]);
                 setFieldValue('files[0]', v[0]);
+                console.log(values)
+                console.log(values.files.length)
               }}
             />
             {/* <input
@@ -361,6 +367,8 @@ const DriverSignUpPage: React.FC = () => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
                 console.log(v[0]);
                 setFieldValue('files[1]', v[0]);
+                console.log(values)
+                console.log(values.files.length)
               }}
             />
             {/* <input

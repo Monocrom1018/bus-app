@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput } from 'framework7-react';
+import { f7, Page, Navbar, Button, List, ListItem, AccordionContent, ListInput, Tabs, Link, Tab } from 'framework7-react';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { driverState, reservationState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
+import { driverState, searchingOptionState, totalChargeState, tourScheduleState } from '@atoms';
 import useAuth from '@hooks/useAuth';
-import ScheduleDisplay from '@components/schedule/scheduleDisplay';
-import ScheduleTimeDisplay from '@components/schedule/scheduleTimeDisplay';
+import ScheduleDisplay from '@components/schedule/ScheduleDisplay';
+import ScheduleTimeDisplay from '@components/schedule/ScheduleTimeDisplay';
 import { showToast } from '@js/utils';
 import BusOption from '@components/driver/BusOption';
-import { createReservation, createSchedules, getOneDriver } from '../common/api/index';
+import { createReservation, createSchedules, getOneDriver, getReviews } from '../common/api/index';
+import SingleReview from '@components/reviews/SingleReview';
 
 const DriverDetailPage = ({ id, f7router }) => {
   const { totalDistance, people } = useRecoilValue(searchingOptionState);
@@ -17,6 +18,7 @@ const DriverDetailPage = ({ id, f7router }) => {
   const tourSchedule = useRecoilValue(tourScheduleState);
   const totalCharge = useRecoilValue(totalChargeState);
   const { currentUser } = useAuth();
+  const [reviews, setReviews] = useState([])
 
   const handleSubmit = async () => {
     if (currentUser.card_registered === false) {
@@ -60,6 +62,8 @@ const DriverDetailPage = ({ id, f7router }) => {
   useEffect(() => {
     async function getTargetDriver() {
       const targetDriver = await getOneDriver(id);
+      const { data: reviews } = await getReviews(id);
+      setReviews(reviews);
       setDriver(targetDriver);
     }
     getTargetDriver();
@@ -131,49 +135,92 @@ const DriverDetailPage = ({ id, f7router }) => {
         </div>
       </div>
 
-      <hr />
-
-      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
-      <div className="flex flex-col mb-10 mt-3">
-        <BusOption bus={driver.bus} />
+      <div className="toolbar tabbar">
+        <div className="toolbar-inner">
+          <Link tabLink="#tab-1" tabLinkActive>견적</Link>
+          <Link tabLink="#tab-2">리뷰({reviews.length})</Link>
+        </div>
       </div>
 
-      {totalCharge && (
-        <div>
-          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
-          <div className="flex flex-col -mt-6">
-            <ScheduleTimeDisplay
-              departureDate={departureDate}
-              departureTime={departureTime}
-              returnDate={returnDate}
-              returnTime={returnTime}
-            />
-            <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
+      <Tabs>
+        <Tab id="tab-1" tabActive>
+          <div className="mx-4 mt-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">편의시설</div>
+          <div className="flex flex-col mb-10 mt-3">
+            <BusOption bus={driver.bus} />
           </div>
 
-          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
-          <List noHairlinesMd className="mt-3 pt-0">
-            <ListInput
-              type="text"
-              placeholder="탑승인원을 숫자만 입력해주세요"
-              clearButton
-              onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
-              value={people}
-            />
-          </List>
-        </div>
-      )}
-      <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
-      <List accordionList className="mt-3 pb-10">
-        <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
-          <AccordionContent>
-            <div className="px-4 py-3">
-              <p>견적신청 후 기사님과 본 앱을 통해 채팅하실 수 있습니다.</p>
+          {totalCharge && (
+          <div>
+            <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">나의일정</div>
+            <div className="flex flex-col -mt-6">
+              <ScheduleTimeDisplay
+                departureDate={departureDate}
+                departureTime={departureTime}
+                returnDate={returnDate}
+                returnTime={returnTime}
+              />
+              <ScheduleDisplay tourSchedule={tourSchedule} isOpen />
             </div>
-          </AccordionContent>
-        </ListItem>
-      </List>
-      {showButton(currentUser.isAuthenticated, totalCharge)}
+
+            <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">탑승인원</div>
+            <List noHairlinesMd className="mt-3 pt-0">
+              <ListInput
+                type="text"
+                placeholder="탑승인원을 숫자만 입력해주세요"
+                clearButton
+                onChange={(e) => setSearchingOption({ ...searchingOption, people: e.target.value })}
+                value={people}
+              />
+            </List>
+          </div>)}
+          <div className="mx-4 block text-base font-bold tracking-tight text-gray-900 sm:text-4xl">Q&A</div>
+          <List accordionList className="mt-3 pb-10">
+            <ListItem accordionItem title="기사님과 연락은 어떻게 할 수 있나요?">
+              <AccordionContent>
+                <div className="px-4 py-3">
+                  <p>견적신청 후 기사님과 본 앱을 통해 채팅하실 수 있습니다.</p>
+                </div>
+              </AccordionContent>
+            </ListItem>
+          </List>
+
+          {currentUser.isAuthenticated && totalCharge ? (
+            <div className="fixed bottom-0 z-50 w-full bg-white pt-1 pb-4">
+              <div className="flex flex-row justify-between text-lg font-semibold tracking-wider mx-4 -mb-3">
+                <div>요금 총액</div>
+                <div>{totalCharge?.toLocaleString()}₩</div>
+              </div>
+              <Button
+                text="견적 전달하기"
+                className="bg-red-500 text-white mt-6 mx-4 h-10 text-lg"
+                onClick={handleSubmit}
+              />
+            </div>
+          ) : (
+            <Button disabled href="#" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+              일정을 입력하고 견적을 전달해보세요
+            </Button>
+          )}
+
+          {!currentUser.isAuthenticated && (
+            <Button href="/users/sign_up/intro" fill outline className="py-5 mx-4 font-bold text-lg tracking-wide">
+              회원가입 하고 이용하기
+            </Button>
+          )}
+        </Tab>
+
+        <Tab id="tab-2">
+          { reviews.length > 0 ? (
+            <SingleReview reviews={reviews} />
+            ) : (
+              <div className="text-center mt-16">
+                <i className="f7-icons text-6xl text-gray-400">pencil_slash</i>
+                <div className="text-lg text-gray-400 mt-4 tracking-wide">작성된 리뷰가 없습니다</div>
+              </div>
+            )
+          }
+        </Tab>
+      </Tabs>
     </Page>
   );
 };
