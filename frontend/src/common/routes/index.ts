@@ -96,7 +96,7 @@ const customRoutes = [
   { path: '/users/passwords/new', component: NewPasswordPage },
   { path: '/users/card', component: CardPage },
   { path: '/users/modify', component: EditPage },
-  { path: '/users/driverModify', component: DriverEditPage },
+  { path: '/users/driverEdit', component: DriverEditPage },
   { path: '/drivers/:id', component: DriverDetailPage },
   { path: '/driverReservation', component: DriverReservationPage },
   { path: '/reviews/create/:id', component: CreateReviewPage },

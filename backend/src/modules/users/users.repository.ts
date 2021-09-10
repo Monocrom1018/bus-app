@@ -22,7 +22,7 @@ export class UsersRepository extends Repository<UsersEntity> {
       name,
       phone,
       user_type,
-      company,
+      company_name,
       director_name,
       director_email,
       director_phone,
@@ -44,7 +44,7 @@ export class UsersRepository extends Repository<UsersEntity> {
 
     if (user_type === 'DRIVER') {
       user.director_name = director_name || null;
-      user.company_name = company || null;
+      user.company_name = company_name || null;
       user.director_email = director_email || null;
       user.director_phone = director_phone || null;
       user.registration_confirmed = false;

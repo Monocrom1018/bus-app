@@ -115,7 +115,6 @@ const NormalSignUpPage: React.FC = () => {
     await sleep(500);
     f7.preloader.hide();
     if(isMatched) {
-
       setFieldValue('phone_matched', true);
       showToast("인증이 완료되었습니다")
       return;
