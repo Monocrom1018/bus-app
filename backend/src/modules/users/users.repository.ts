@@ -20,6 +20,7 @@ export class UsersRepository extends Repository<UsersEntity> {
       email,
       password,
       name,
+      phone,
       user_type,
       company,
       director_name,
@@ -33,6 +34,7 @@ export class UsersRepository extends Repository<UsersEntity> {
     const user = new UsersEntity();
     user.email = email;
     user.name = name;
+    user.phone = phone;
     user.user_type = UserType[user_type] || undefined;
     user.encrypted_password = await bcrypt.hash(`${password}`, 10);
     user.uuid = uuid;
