@@ -37,12 +37,13 @@ export class ReviewsController {
     @Query('driver') driverId?: number,
     @Query('reservation') reservationId?: number
   ) {
-    if(reservationId) return this.reviewsService.getTarget(reservationId);
-    return this.reviewsService.get(driverId);
+    if(reservationId) return this.reviewsService.getReviewsOfReservation(reservationId);
+    if(driverId) return this.reviewsService.getReviewsOfDriver(driverId);
+    return this.reviewsService.getAllReviews()
   }
 
   @ApiOperation({ summary: '리뷰 업데이트' })
-  @Patch('/:id')
+  @Patch(':id')
   @ApiResponse({
     status: 200,
     description: 'get all Reviews of target driver success',
@@ -55,7 +56,7 @@ export class ReviewsController {
   }
 
   @ApiOperation({ summary: '리뷰 제거' })
-  @Delete('/:id')
+  @Delete(':id')
   @ApiResponse({
     status: 200,
     description: 'destroy Review success',

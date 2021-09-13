@@ -265,7 +265,7 @@ const NormalSignUpPage: React.FC = () => {
                 />
               </div>
               <div className="col-span-3 my-auto mr-4">
-                <Button outline onClick={sendPhoneCertification}>
+                <Button outline disabled={(values.phone.length < 9) || values.phone.length > 15} onClick={sendPhoneCertification}>
                   인증받기
                 </Button>
               </div>

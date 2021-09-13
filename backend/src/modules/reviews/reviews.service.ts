@@ -39,12 +39,22 @@ export class ReviewsService {
     }
   }
 
-  async get(driverId?: number) {
+  async getAllReviews() {
+    const allReviews = await this.reviewsRepository.find({
+      order: {
+        createdAt: 'DESC'
+      }
+    });
+
+    return allReviews
+  }
+
+  async getReviewsOfDriver(driverId?: number) {
     let reviews;
     if(driverId) {
-      reviews = this.reviewsRepository.getReviews(driverId)
+      reviews = await this.reviewsRepository.getReviews(driverId)
     } else {
-      reviews = this.reviewsRepository.find({
+      reviews = await this.reviewsRepository.find({
         order: {
           createdAt: 'DESC'
         }
@@ -53,11 +63,11 @@ export class ReviewsService {
     return reviews;
   }
 
-  async getTarget(id: number) {
+  async getReviewsOfReservation(reservationId: number) {
     const {review: data } = await this.reservationsRepository.findOne({
       relations: ['review'],
       where: {
-        id: id
+        id: reservationId
       }
     })
     
