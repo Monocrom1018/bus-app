@@ -63,9 +63,13 @@ const SessionNewPage: React.FC = () => {
         message = '성공적으로 로그인 하였습니다';
       } catch (error) {
         // amplift error
-        if (typeof error.message === 'string') message = error.message;
-        // unknown error
-        else message = '예상치 못한 오류가 발생하였습니다';
+        if (error.code === "UserNotFoundException") {
+          message = "해당 계정이 존재하지 않습니다";
+        } else if (error.code === "NotAuthorizedException") {
+          message = "이메일 또는 비밀번호를 확인해주세요";
+        } else {
+          message = '예상치 못한 오류가 발생하였습니다';
+        }
       } finally {
         setSubmitting(false);
         f7.preloader.hide();
@@ -73,7 +77,7 @@ const SessionNewPage: React.FC = () => {
           await authenticateUser(user);
           window.location.replace('/');
         } else {
-          f7.dialog.alert('정보를 확인 해주세요. ');
+          f7.dialog.alert(message);
         }
       }
     },
