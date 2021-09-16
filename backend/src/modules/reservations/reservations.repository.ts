@@ -66,7 +66,7 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     return reservations;
   }
 
-  async getReservationsListOfUser(userId: number, status: string ,page): Promise<ReservationsEntity[]> {
+  async getListByUserId(userId: number, status: string ,page): Promise<ReservationsEntity[]> {
     const perPage = 3;
     const whereValue = status === '완료' ? [
       {

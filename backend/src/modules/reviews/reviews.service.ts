@@ -39,7 +39,11 @@ export class ReviewsService {
     }
   }
 
-  async getAllReviews() {
+  async getReviews(driverId: number, reservationId: number) {
+    let reviews;
+    if(reservationId) return this.getReviewsOfReservation(reservationId);
+    if(driverId) return this.getReviewsOfDriver(driverId);
+
     const allReviews = await this.reviewsRepository.find({
       order: {
         createdAt: 'DESC'
@@ -49,17 +53,8 @@ export class ReviewsService {
     return allReviews
   }
 
-  async getReviewsOfDriver(driverId?: number) {
-    let reviews;
-    if(driverId) {
-      reviews = await this.reviewsRepository.getReviews(driverId)
-    } else {
-      reviews = await this.reviewsRepository.find({
-        order: {
-          createdAt: 'DESC'
-        }
-      });
-    }
+  async getReviewsOfDriver(driverId: number) {
+    const reviews = await this.reviewsRepository.getReviews(driverId)
     return reviews;
   }
 

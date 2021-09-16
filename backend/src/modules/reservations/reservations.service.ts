@@ -29,12 +29,12 @@ export class ReservationsService {
     return data;
   }
 
-  async getReservationsListOfUser(email, status, page) {
+  async getListOfUser(email, status, page) {
     let data;
 
     if(email) {
       const { id: userId } = await this.usersService.me(email);
-      data = await this.reservationsRepository.getReservationsListOfUser(userId, status, page);
+      data = await this.reservationsRepository.getListByUserId(userId, status, page);
     } else {
       data = await this.reservationsRepository.find({
         order: {

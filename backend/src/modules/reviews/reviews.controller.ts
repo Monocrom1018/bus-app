@@ -37,9 +37,7 @@ export class ReviewsController {
     @Query('driver') driverId?: number,
     @Query('reservation') reservationId?: number
   ) {
-    if(reservationId) return this.reviewsService.getReviewsOfReservation(reservationId);
-    if(driverId) return this.reviewsService.getReviewsOfDriver(driverId);
-    return this.reviewsService.getAllReviews()
+    return this.reviewsService.getReviews(driverId, reservationId)
   }
 
   @ApiOperation({ summary: '리뷰 업데이트' })

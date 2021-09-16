@@ -37,7 +37,7 @@ export class ReservationsController {
     status: 200,
     description: 'get all Reservations success',
   })
-  async getListByReservationId(@Query('id') id: number) {
+  async getListByReservationId(@Param('id') id: number) {
     const data = await this.reservationsService.getListById(id);
     return data;
   }
@@ -66,6 +66,6 @@ export class ReservationsController {
     @Query('status') status?: string,
     @Query('page') page?: number,
   ) {
-    return this.reservationsService.getReservationsListOfUser(email, status, page);
+    return this.reservationsService.getListOfUser(email, status, page);
   }
 }
