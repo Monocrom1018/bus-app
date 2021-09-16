@@ -43,7 +43,6 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
     <>
       <Popup
         className="demo-popup"
-        swipeToClose
         animate
         opened={popupOpened}
         onPopupClosed={() => setPopupOpened(false)}
