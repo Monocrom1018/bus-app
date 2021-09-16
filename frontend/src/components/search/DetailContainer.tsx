@@ -28,7 +28,7 @@ const DetailContainer = ({ searchPlaces, day, index, lastIndex }) => {
           schedule.day === currentDate
             ? {
                 ...schedule,
-                ...{ [`${type}`]: stopOvers.concat({ id: `${stopOverCount.current}`, region: '' }) },
+                ...{ [`${type}`]: stopOvers.concat({ id: `${stopOverCount.current}`, region: '' }) }, 
               }
             : schedule,
         ),

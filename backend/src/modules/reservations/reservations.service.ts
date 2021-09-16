@@ -32,22 +32,29 @@ export class ReservationsService {
   async getListOfUser(email, status, page) {
     let data;
 
-    if(email) {
+    if (email) {
       const { id: userId } = await this.usersService.me(email);
-      data = await this.reservationsRepository.getListByUserId(userId, status, page);
+      data = await this.reservationsRepository.getListByUserId(
+        userId,
+        status,
+        page,
+      );
     } else {
       data = await this.reservationsRepository.find({
         order: {
-          createdAt: 'DESC'
-        }
-      })
+          createdAt: 'DESC',
+        },
+      });
     }
 
     return data;
   }
 
   async updateReservation(reservationUpdateDto, reservationId) {
-    const data = await this.reservationsRepository.updateReservation(reservationUpdateDto, reservationId);
+    const data = await this.reservationsRepository.updateReservation(
+      reservationUpdateDto,
+      reservationId,
+    );
     return data;
   }
 }
