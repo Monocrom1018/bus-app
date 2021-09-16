@@ -83,6 +83,7 @@ const NormalSignUpPage: React.FC = () => {
   const { authenticateUser } = useAuth();
   const [code, setCode] = useState('');
   const certificateCode = useRef(code);
+  const phoneRegExp = new RegExp("^(01[016789]{1}|02|0[3-9]{1}[0-9]{1})-?[0-9]{3,4}-?[0-9]{4}$")
 
   useEffect(() => {
     Amplify.configure({
@@ -265,7 +266,7 @@ const NormalSignUpPage: React.FC = () => {
                 />
               </div>
               <div className="col-span-3 my-auto mr-4">
-                <Button outline onClick={sendPhoneCertification}>
+                <Button outline disabled={!phoneRegExp.test(values.phone)} onClick={sendPhoneCertification}>
                   인증받기
                 </Button>
               </div>

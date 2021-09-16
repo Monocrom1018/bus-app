@@ -118,6 +118,8 @@ export class SchedulesService {
         tmapApi.data.features[0].properties.totalDistance / 1000,
       );
 
+      console.log(kmData);
+
       return kmData;
     } catch (err) {
       throw new BadRequestException('over 1000km');
