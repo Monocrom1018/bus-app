@@ -31,8 +31,19 @@ export class ReservationsController {
     return this.reservationsService.create(reservationCreateDto);
   }
 
+  @ApiOperation({ summary: '예약id로 예약목록 가져오기' })
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'get all Reservations success',
+  })
+  async getListByReservationId(@Param('id') id: number) {
+    const data = await this.reservationsService.getListById(id);
+    return data;
+  }
+
   @ApiOperation({ summary: '예약요청 수락, 거절 또는 취소' })
-  @Patch('/:id')
+  @Patch(':id')
   @ApiResponse({
     status: 200,
     description: 'confirm or refusal success',
@@ -50,13 +61,11 @@ export class ReservationsController {
     status: 200,
     description: 'get all Reservations success',
   })
-  async getListByEmail(
+  async getReservationsListOfUser(
     @Query('email') email?: string,
     @Query('status') status?: string,
     @Query('page') page?: number,
-    @Query('id') id?: number,
   ) {
-    if(id) return await this.reservationsService.getListById(id);
-    return this.reservationsService.getListByEmail(email, status, page);
+    return this.reservationsService.getListOfUser(email, status, page);
   }
 }

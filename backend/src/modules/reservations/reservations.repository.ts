@@ -66,23 +66,23 @@ export class ReservationsRepository extends Repository<ReservationsEntity> {
     return reservations;
   }
 
-  async getListByEmail(myId: number, status: string ,page): Promise<ReservationsEntity[]> {
+  async getListByUserId(userId: number, status: string ,page): Promise<ReservationsEntity[]> {
     const perPage = 3;
     const whereValue = status === '완료' ? [
       {
-        user: myId,
+        user: userId,
         status: status
       },
       {
-        driver: myId,
+        driver: userId,
         status: status
       },
     ] : [
       {
-        user: myId,
+        user: userId,
       },
       {
-        driver: myId,
+        driver: userId,
       },
     ] 
     const reservations = await ReservationsEntity.find({
