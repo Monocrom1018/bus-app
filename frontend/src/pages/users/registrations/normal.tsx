@@ -93,7 +93,7 @@ const NormalSignUpPage: React.FC = () => {
 
   const sendPhoneCertification = async () => {
     const tempCode = `${Math.floor(1000 + Math.random() * 1000)}`;
-    const phoneNumber = (values.phone).replace(/-/g, '');
+    const phoneNumber = values.phone.replace(/-/g, '');
     setCode(tempCode);
     certificateCode.current = tempCode;
 
@@ -107,23 +107,22 @@ const NormalSignUpPage: React.FC = () => {
       },
     );
 
-    showToast("인증번호가 발송되었습니다")
+    showToast('인증번호가 발송되었습니다');
   };
 
   const checkPhoneCertification = async () => {
-    const isMatched = values.phone_certification === Number(code)
+    const isMatched = values.phone_certification === Number(code);
     f7.preloader.show();
     await sleep(500);
     f7.preloader.hide();
-    if(isMatched) {
+    if (isMatched) {
       setFieldValue('phone_matched', true);
-      showToast("인증이 완료되었습니다")
-      return;
+      showToast('인증이 완료되었습니다');
     } else {
       setFieldValue('phone_certification', null);
-      showToast("인증번호가 일치하지 않습니다")
+      showToast('인증번호가 일치하지 않습니다');
     }
-  }
+  };
 
   const onSubmitHandler = useCallback(
     async (signUpParams: NormalSignUpParams, { setSubmitting, setFieldValue }: FormikHelpers<NormalSignUpParams>) => {
@@ -287,10 +286,7 @@ const NormalSignUpPage: React.FC = () => {
                 />
               </div>
               <div className="col-span-3 my-auto mr-4">
-                <Button
-                  fill
-                  onClick={checkPhoneCertification}
-                >
+                <Button fill onClick={checkPhoneCertification}>
                   인증확인
                 </Button>
               </div>
