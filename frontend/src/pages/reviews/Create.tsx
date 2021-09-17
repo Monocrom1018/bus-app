@@ -10,8 +10,11 @@ import {
 } from 'framework7-react';
 import { showToast } from '@js/utils';
 import { createReview } from '@api';
+import { useQueryClient } from 'react-query';
+import { REACT_QUERY_KEYS } from '@constants';
 
 const CreateReviewPage = ({id, f7router}) => {
+  const queryClient = useQueryClient();
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState('');
 
@@ -25,6 +28,7 @@ const CreateReviewPage = ({id, f7router}) => {
         content: content,
       };
       await createReview(params);
+      await queryClient.fetchQuery(REACT_QUERY_KEYS.RESERVATION)
       message = '리뷰가 작성되었습니다'
     } catch (error) {
       if (typeof error.message === 'string') message = error.message;

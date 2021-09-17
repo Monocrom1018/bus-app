@@ -14,7 +14,7 @@ const PastReservationListPage = () => {
     REACT_QUERY_KEYS.RESERVATION,
     async ({ pageParam: page = 1 }) => {
       if (currentUser.isAuthenticated) {
-        // todo : 차후 아래 'all' -> '완료'로 수정
+        // todo : 차후 아래 'all' -> '완료'로 수정해야 완료된 예약들만 걸려옵니다.
         const response = await getReservations(currentUser.email,'all', page);
         return response || [];
       } else {
