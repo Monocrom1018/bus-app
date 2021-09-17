@@ -10,8 +10,11 @@ import {
 } from 'framework7-react';
 import { showToast } from '@js/utils';
 import { createReview, getTargetReview, updateReviews } from '@api';
+import { useQueryClient } from 'react-query';
+import { REACT_QUERY_KEYS } from '@constants';
 
 const EditReviewPage = ({id, f7router}) => {
+  const queryClient = useQueryClient();
   const [rating, setRating] = useState(5);
   const [content, setContent] = useState('');
 
@@ -40,6 +43,7 @@ const EditReviewPage = ({id, f7router}) => {
         content: content,
       };
       await updateReviews(params, id);
+      await queryClient.fetchQuery(REACT_QUERY_KEYS.RESERVATION)
       message = '리뷰가 수정되었습니다'
     } catch (error) {
       if (typeof error.message === 'string') message = error.message;

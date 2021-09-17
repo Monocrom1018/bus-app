@@ -2,8 +2,7 @@ import { Col, Row, Button, Card, CardContent, CardFooter, CardHeader } from 'fra
 import moment from 'moment';
 import React from 'react';
 
-const SimpleCard = ({reservation}) => {
-
+const SimpleCard = ({ reservation }) => {
   const { departureDate, returnDate, driver, schedules, review, id } = reservation;
   const { name } = driver;
   const departure = schedules[0].departure
@@ -45,7 +44,6 @@ const SimpleCard = ({reservation}) => {
           </Col>
         </Row>
       </CardContent>
-      {/* 리뷰가 이미 있으면 리뷰수정, 아니면 리뷰작성 */}
       { review === null ? (
         <CardFooter className="flex flex-row justify-center">
           <i className="f7-icons">pencil</i>
