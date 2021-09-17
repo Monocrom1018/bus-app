@@ -438,8 +438,6 @@ const DriverSignUpPage: React.FC = () => {
               }}
               addFileHandler={(v: any) => {
                 setFieldValue('files[0]', v[0]);
-                console.log(values)
-                console.log(values.files.length)
               }}
             />
           </List>
@@ -457,8 +455,6 @@ const DriverSignUpPage: React.FC = () => {
               addFileHandler={(v: any) => {
                 // 이미지 컬럼 변경 후 여기도 변경해야함
                 setFieldValue('files[1]', v[0]);
-                console.log(values)
-                console.log(values.files.length)
               }}
             />
           </List>

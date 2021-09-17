@@ -43,7 +43,6 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
     <>
       <Popup
         className="demo-popup"
-        swipeToClose
         animate
         opened={popupOpened}
         onPopupClosed={() => setPopupOpened(false)}
@@ -58,15 +57,15 @@ const DatePopUp = ({ popupOpened, setPopupOpened }) => {
             <NavTitle>날짜 및 시간 선택</NavTitle>
           </Navbar>
           <Block style={{ height: '20%' }}>
-            <div className="flex justify-between mt-6 mx-20">
+            <div className="flex justify-between mt-6 mx-10">
               <div 
-                className="border-b-2 w-24 h-10 border-black text-base font-bold truncate pt-4"
+                className="border-b-2 h-10 border-black text-base font-bold truncate pt-4" style={{ width: '45%' }}
               >{moment(departureDate).format('YYYY년 M월 DD일')}</div>
               <div
-                className="border-b-2 w-24 h-10 border-black text-base font-bold truncate pt-4"
+                className="border-b-2 h-10 border-black text-base font-bold truncate pt-4" style={{ width: '45%' }}
               >{returnDate ? moment(returnDate).format('YYYY년 M월 DD일') : ''}</div>
             </div>
-            <div className="flex justify-between mt-10 mx-20">
+            <div className="flex justify-between mt-10 mx-10">
               <TimePicker el="departureTime" />
               <TimePicker el="returnTime" />
             </div>

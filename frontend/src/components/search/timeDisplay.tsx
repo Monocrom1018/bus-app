@@ -4,56 +4,33 @@ import { searchingOptionDateSelector, searchingOptionTimeSelector } from '@atoms
 import { useRecoilValue } from 'recoil';
 import { formatTime } from '@utils';
 import moment from 'moment';
+import 'moment/locale/ko';
+moment.locale('ko');
 
 const TimeDisplay = ({ setPopupOpened }) => {
   const { departureDate, returnDate } = useRecoilValue(searchingOptionDateSelector);
   const { departureTime, returnTime } = useRecoilValue(searchingOptionTimeSelector);
 
   return (
-    <div className="mt-4 -mb-4">
+    <div className="mt-4 -mb-4 relative">
       <Row>
-        <Col width="50" onClick={() => setPopupOpened(true)}>
-          <ListInput
-            label="출발일자"
-            type="text"
-            readonly
-            className="bg-gray-50 mb-4 h-14 border rounded-lg ml-3 px-3 pt-1"
-            value={moment(departureDate).format('YYYY년 MM월 DD일')}
-            wrap={false}
-          />
-        </Col>
-        <Col width="50" onClick={() => setPopupOpened(true)}>
-          <div className="">
-            <ListInput
-              label="출발시간"
-              wrap={false}
-              type="text"
-              readonly
-              value={departureTime ? formatTime(departureTime) : '0시 00분'}
-              className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
-            />
+        <Col onClick={() => setPopupOpened(true)}>
+          <div className="bg-gray-50 mb-4 h-14 border rounded-lg mx-4 px-3 pt-3 text-xl font-semibold">
+            <div className="f7-icons text-xl mr-2">calendar</div>
+            {`${moment(departureDate).format('M월 DD일 (ddd)')} ${departureTime ? formatTime(departureTime) : '0시 00분'}`}
           </div>
         </Col>
-        <Col width="50" onClick={() => setPopupOpened(true)}>
-          <ListInput
-            label="하차일자"
-            type="text"
-            readonly
-            className="bg-gray-50 mb-4 h-14 border rounded-lg ml-3 px-3 pt-1"
-            value={returnDate ? moment(returnDate).format('YYYY년 MM월 DD일') : ''}
-            wrap={false}
-          />
+      </Row>
+      <Row>
+        <Col>
+        <div className="f7-icons z-50 absolute top-11 left-9 border-l-2 border-dashed border-gray-500" style={{height: '25%'}}></div>
         </Col>
-        <Col width="50" onClick={() => setPopupOpened(true)}>
-          <div className="">
-            <ListInput
-              label="하차시간"
-              wrap={false}
-              type="text"
-              readonly
-              value={returnTime ? formatTime(returnTime) : '0시 00분'}
-              className="bg-gray-50 mb-4 h-14 border rounded-lg mr-3 px-3 pt-1"
-            />
+      </Row>
+      <Row>
+        <Col onClick={() => setPopupOpened(true)}>
+          <div className="bg-gray-50 mb-4 h-14 border rounded-lg mx-4 px-3 pt-3 text-xl font-semibold">
+            <div className="f7-icons text-xl mr-2">calendar</div>
+            {returnDate ? `${moment(returnDate).format('M월 DD일 (ddd)')} ${returnTime ? formatTime(returnTime) : '0시 00분'}` : ''}
           </div>
         </Col>
       </Row>
